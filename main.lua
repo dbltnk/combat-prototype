@@ -95,6 +95,18 @@ Player = Tile:extend
 	end,
 }
 
+FocusSprite = Sprite:extend 
+{
+	width = 1,
+	height = 1,
+	
+	onUpdate = function (self)
+		local worldMouseX, worldMouseY = ScreenPosToWorldPos(the.mouse.x, the.mouse.y)
+		local x,y = Vector.add(worldMouseX, worldMouseY, the.app.player.x, the.app.player.y)
+		self.x, self.y = Vector.mul(x, y, 0.5)
+	end
+}
+
 Cursor = Tile:extend
 {
 	width = 32,
@@ -163,6 +175,9 @@ the.app = App:new
 		the.app.console:watch("viewx", "the.view.translate.x")
 		the.app.console:watch("viewy", "the.view.translate.y")
 		
-		the.view.focus = self.player
+		self.focusSprite = FocusSprite:new{ x = 0, y = 0 }
+		self:add(self.focusSprite)
+		
+		the.view.focus = self.focusSprite
     end
 }
