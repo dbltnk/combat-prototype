@@ -147,6 +147,8 @@ Bullet = Tile:extend
 the.app = App:new
 {
     onRun = function (self)
+		self:enterFullscreen()
+    
 		-- setup background
     
 		for x=-1,1 do
