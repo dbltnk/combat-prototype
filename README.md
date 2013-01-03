@@ -1,4 +1,13 @@
-controls-zoetrope
-=================
+TODO
+* tune mouse controls
+* background, size, collision
+* controller input
+* touch input
+* simple multiplayer
+* gameplay :)
 
-Trying to get three different control schemes to play nicely together.
+NOTES
+* enable focus on hotkey?
+* zoom en/disable
+* rotation?
+* perspective camera?
