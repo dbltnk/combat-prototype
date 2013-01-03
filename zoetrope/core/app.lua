@@ -136,7 +136,7 @@ App = Class:extend
 
 		-- screen dimensions and state
 
-		obj.width, obj.height, obj.fullscreen = love.graphics.getMode()
+		obj.width, obj.height, obj.fullscreen = 800,600,false,0 -- love.graphics.getMode()
 
 		-- housekeeping
 		
