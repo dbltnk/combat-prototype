@@ -3,6 +3,11 @@ DEBUG = true
 
 require 'zoetrope'
 
+-- balancing variables
+walkspeed = 100
+animspeed_walk = 16
+arrowspeed = 500
+
 Vector = {
 	len = function(x,y)
 		return math.sqrt(x*x + y*y)
@@ -50,20 +55,26 @@ function ScreenPosToWorldPos(x,y)
 	return Vector.add(vx,vy, x,y)
 end
 
-Player = Tile:extend
+Player = Animation:extend
 {
-	width = 32,
-	height = 32,
-	image = '/assets/graphics/player.png',
+	width = 50,
+	height = 50,
+	image = '/assets/graphics/player.png', -- source: http://www.synapsegaming.com/forums/t/1711.aspx
+	  sequences = 
+	  {
+		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = animspeed_walk },
+	   },
 	
 	onUpdate = function (self, elapsed)
 		self.velocity.x = 0
 		self.velocity.y = 0
 
-		if the.keys:pressed('left', 'a') then self.velocity.x = -200 end
-		if the.keys:pressed('right', 'd') then self.velocity.x = 200 end
-		if the.keys:pressed('up', 'w') then self.velocity.y = -200 end
-		if the.keys:pressed('down', 's') then self.velocity.y = 200	end	
+		if the.keys:pressed('left', 'a','right', 'd','up', 'w','down', 's') then self:play('walk') else self:freeze(5) end
+		
+		if the.keys:pressed('left', 'a') then self.velocity.x = -1 * walkspeed end
+		if the.keys:pressed('right', 'd') then self.velocity.x = walkspeed end
+		if the.keys:pressed('up', 'w') then self.velocity.y = -1 * walkspeed end
+		if the.keys:pressed('down', 's') then self.velocity.y = walkspeed end	
 		
 		local worldMouseX, worldMouseY = ScreenPosToWorldPos(the.mouse.x, the.mouse.y)
 		
@@ -73,21 +84,20 @@ Player = Tile:extend
 		
 		self.rotation = math.atan2(dy, dx) - math.pi / 2
 		
-		local bulletvx, bulletvy = -dx, -dy
-		local l = Vector.len(bulletvx, bulletvy)
-		local bulletspeed = 800
-		bulletvx, bulletvy = Vector.normalizeToLen(bulletvx, bulletvy, bulletspeed)
+		local arrowvx, arrowvy = -dx, -dy
+		local l = Vector.len(arrowvx, arrowvy)
+		arrowvx, arrowvy = Vector.normalizeToLen(arrowvx, arrowvy, arrowspeed)
 		
 		if the.mouse:justPressed('l') then
-			-- assert: bullet size == player size
-			local bullet = Bullet:new{ 
+			-- assert: arrow size == player size
+			local arrow = arrow:new{ 
 				x = self.x, y = self.y, 
 				rotation = self.rotation,
-				velocity = { x = bulletvx, y = bulletvy },
+				velocity = { x = arrowvx, y = arrowvy },
 				start = { x = self.x, y = self.y },
 				target = { x = worldMouseX, y = worldMouseY},
 			}
-			the.app:add(bullet)
+			the.app:add(arrow)
 		end
 		
 		-- easy exit
@@ -120,11 +130,11 @@ Cursor = Tile:extend
 	end
 }
 
-Bullet = Tile:extend
+arrow = Tile:extend
 {
 	width = 32,
 	height = 32,
-	image = '/assets/graphics/bullet.png',
+	image = '/assets/graphics/arrow.png',
     -- target.x target.y start.x start.y
     
 	onUpdate = function (self)
@@ -144,20 +154,31 @@ Bullet = Tile:extend
 	--~ image = '/assets/graphics/debugpoint.png',
 --~ }
 
+--~ CustomView = View:extend
+--~ {
+--~     onNew = function (self)
+--~ 	self:loadLayers('/assets/tilemap/map.lua')
+--~ 	self.focus = the.app.focusSprite
+--~     end
+--~ }
+
 the.app = App:new
 {
     onRun = function (self)
-		self:enterFullscreen()
+		--the.app.width, the.app.height = 1680, 1050
+		--self:enterFullscreen()
     
 		-- setup background
+		
+--~ 		self.view = CustomView:new()
     
 		for x=-1,1 do
 		for y=-1,1 do
 			self:add(Tile:new{
-				width = 800,
-				height = 600,
-				x = 0 + x * 800, y = 0 + y * 600,
-				image = '/assets/graphics/bg.png',
+				width = 2239,
+				height = 2235,
+				x = 0 + x * 2239, y = 0 + y * 2235,
+				image = '/assets/graphics/bg.png', -- source: http://opengameart.org/content/castle-tiles-for-rpgs
 			})
 		end
 		end
@@ -183,3 +204,5 @@ the.app = App:new
 		the.view.focus = self.focusSprite
     end
 }
+
+
