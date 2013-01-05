@@ -5,7 +5,8 @@ require 'zoetrope'
 
 -- balancing variables
 walkspeed = 100
-animspeed_walk = 16
+runspeed = 200
+animspeed = 16
 arrowspeed = 500
 
 Vector = {
@@ -60,9 +61,10 @@ Player = Animation:extend
 	width = 50,
 	height = 50,
 	image = '/assets/graphics/player.png', -- source: http://www.synapsegaming.com/forums/t/1711.aspx
+
 	  sequences = 
 	  {
-		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = animspeed_walk },
+		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = animspeed },
 	   },
 	
 	onUpdate = function (self, elapsed)
@@ -71,10 +73,15 @@ Player = Animation:extend
 
 		if the.keys:pressed('left', 'a','right', 'd','up', 'w','down', 's') then self:play('walk') else self:freeze(5) end
 		
-		if the.keys:pressed('left', 'a') then self.velocity.x = -1 * walkspeed end
-		if the.keys:pressed('right', 'd') then self.velocity.x = walkspeed end
-		if the.keys:pressed('up', 'w') then self.velocity.y = -1 * walkspeed end
-		if the.keys:pressed('down', 's') then self.velocity.y = walkspeed end	
+		local speed = walkspeed
+		if the.keys:pressed('shift') then speed, animspeed = runspeed, animspeed * runspeed / walkspeed -- to-do: animspeed soll sich ändern, tuts aber nicht 
+			else speed, animspeed = walkspeed, 16 
+		end
+		
+		if the.keys:pressed('left', 'a') then self.velocity.x = -1 * speed end
+		if the.keys:pressed('right', 'd') then self.velocity.x = speed end
+		if the.keys:pressed('up', 'w') then self.velocity.y = -1 * speed end
+		if the.keys:pressed('down', 's') then self.velocity.y = speed end
 		
 		local worldMouseX, worldMouseY = ScreenPosToWorldPos(the.mouse.x, the.mouse.y)
 		
