@@ -19,6 +19,27 @@ function WorldPosToScreenPos(x,y)
 	return vector.add(vx,vy, x,y)
 end
 
+Skill = Class:extend
+{
+	nr = 0,	
+	timeout = 0,
+	
+	lastUsed = 0,
+	
+	isPossibleToUse = function (self)
+		return love.timer.getTime() - self.lastUsed >= self.timeout
+	end,
+	
+	timeTillPossibleToUse = function (self)
+		return math.max(0, self.lastUsed + self.timeout - love.timer.getTime())
+	end,
+	
+	use = function (self)
+		self.lastUsed = love.timer.getTime()
+		if self.onUse then self:onUse() end
+	end,
+}
+
 SkillIcon = Animation:extend
 {
 	width = 32,
@@ -65,6 +86,8 @@ SkillBar = Class:extend
 	-- contains references to SkillIcon
 	skillIcons = {},
 	
+	skillInactiveIcons = {},
+	
 	-- position
 	x = 0,
 	y = 0,
@@ -75,8 +98,14 @@ SkillBar = Class:extend
 			the.ui:add(icon)
 			
 			self.skillIcons[index] = icon
+			
+			local overlay = Tile:new{
+				width = 32, height = 32, image = "/assets/graphics/skills_inactive_overlay.png",
+			}
+			self.skillInactiveIcons[index] = overlay
+			the.ui:add(overlay)
 		end
-
+		
 		self:setPosition (self.x, self.y)
 		self:setSkills (self.skills)
 	end,
@@ -88,6 +117,9 @@ SkillBar = Class:extend
 		for index, skillIcon in pairs(self.skillIcons) do
 			skillIcon.x = (index - 1) * 32 + self.x
 			skillIcon.y = self.y
+			
+			self.skillInactiveIcons[index].x = skillIcon.x
+			self.skillInactiveIcons[index].y = skillIcon.y
 		end
 	end,
 	
@@ -98,25 +130,42 @@ SkillBar = Class:extend
 			self.skillIcons[index]:setSkill(skillNr)
 		end
 	end,
+	
+	onUpdate = function (self, elapsed)
+		-- mark inactive skill as inactive
+		for index, overlay in pairs(self.skillInactiveIcons) do
+			if the.player and the.player.skills and the.player.skills[index] then
+				local skill = the.player.skills[index]
+				overlay.visible = skill:isPossibleToUse () == false
+			end
+		end
+	end,
 }
 
 Player = Animation:extend
 {
-	shootTimeout = 0.2,
-	timeSinceLastShoot = 0,
+	-- list of Skill
+	skills = {},
 	
 	width = 50,
 	height = 50,
 	image = '/assets/graphics/player.png', -- source: http://www.synapsegaming.com/forums/t/1711.aspx
 
-	  sequences = 
-	  {
+	sequences = 
+	{
 		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = config.animspeed },
-	   },
+	},
+	
+	onNew = function (self)
+		self.skills[1] = Skill:new { timeout = 0.1, nr = 1, }
+		self.skills[2] = Skill:new { timeout = 0.1, nr = 2, }
+		self.skills[3] = Skill:new { timeout = 0.1, nr = 3, }
+		self.skills[4] = Skill:new { timeout = 0.1, nr = 4, }
+		self.skills[5] = Skill:new { timeout = 0.1, nr = 5, }
+		self.skills[6] = Skill:new { timeout = 0.1, nr = 6, }
+	end,
 	
 	onUpdate = function (self, elapsed)
-		self.timeSinceLastShoot = self.timeSinceLastShoot + elapsed
-		
 		self.velocity.x = 0
 		self.velocity.y = 0
 
@@ -203,8 +252,10 @@ Player = Animation:extend
 		local l = vector.len(arrowvx, arrowvy)
 		arrowvx, arrowvy = vector.normalizeToLen(arrowvx, arrowvy, config.arrowspeed)
 		
-		if doShoot and self.timeSinceLastShoot > self.shootTimeout then
-			self.timeSinceLastShoot = 0
+		local activeSkillNr = 1
+		
+		if doShoot and self.skills[activeSkillNr]:isPossibleToUse()  then
+			self.skills[activeSkillNr]:use()
 		
 			-- assert: arrow size == player size
 			local arrow = Arrow:new{ 
@@ -214,6 +265,7 @@ Player = Animation:extend
 				start = { x = self.x, y = self.y },
 				target = { x = worldMouseX, y = worldMouseY},
 			}
+			
 			the.app:add(arrow)
 		end
 		
@@ -322,7 +374,11 @@ GameView = View:extend
 		self:add(the.ui)
 		
 		the.skillbar = SkillBar:new()
-    end
+    end,
+    
+    onUpdate = function (self, elapsed)
+		the.skillbar:onUpdate(elapsed)
+    end,
 }
 
 the.app = App:new
