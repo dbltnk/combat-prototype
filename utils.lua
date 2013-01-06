@@ -44,4 +44,17 @@ function utils.vardump_rec(max_depth, value, depth, key)
   end
 end
 
+function utils.clamp (value, min, max)
+	if value < min then return min
+	elseif value > max then return max
+	else return value end
+end
+
+function utils.mapIntoRange (srcValue, srcMin, srcMax, dstMin, dstMax)
+	if srcMax - srcMin <= 0.0000001 then return dstMin end
+	local r = (utils.clamp (srcValue, srcMin, srcMax) - srcMin) / (srcMax - srcMin)
+	return dstMin + (dstMax - dstMin) * r
+end
+
+
 return utils

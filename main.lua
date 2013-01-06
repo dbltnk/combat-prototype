@@ -5,6 +5,7 @@ require 'zoetrope'
 local vector = require 'vector'
 local utils = require 'utils'
 local config = require 'config'
+local input = require 'input'
 
 -- returns x,y
 function ScreenPosToWorldPos(x,y)
@@ -12,8 +13,17 @@ function ScreenPosToWorldPos(x,y)
 	return vector.add(vx,vy, x,y)
 end
 
+-- returns x,y
+function WorldPosToScreenPos(x,y)
+	local vx,vy = vector.mul(the.view.translate.x, the.view.translate.y, 1)
+	return vector.add(vx,vy, x,y)
+end
+
 Player = Animation:extend
 {
+	shootTimeout = 0.2,
+	timeSinceLastShoot = 0,
+	
 	width = 50,
 	height = 50,
 	image = '/assets/graphics/player.png', -- source: http://www.synapsegaming.com/forums/t/1711.aspx
@@ -24,25 +34,83 @@ Player = Animation:extend
 	   },
 	
 	onUpdate = function (self, elapsed)
+		self.timeSinceLastShoot = self.timeSinceLastShoot + elapsed
+		
 		self.velocity.x = 0
 		self.velocity.y = 0
 
-		if the.keys:pressed('left', 'a','right', 'd','up', 'w','down', 's') then self:play('walk') else self:freeze(5) end
+		-- 0 slowest -> 1 fastest
+		local speed = 0
+		-- -1->1, -1->1
+		local dirx, diry = 0,0
 		
-		local speed = config.walkspeed
-		if the.keys:pressed('shift') then
-			 -- to-do: animspeed soll sich ändern, tuts aber nicht 
-			 speed, animspeed = config.runspeed, config.animspeed * config.runspeed / config.walkspeed
-		else 
-			speed, animspeed = config.walkspeed, 16 
+		local doShoot = false
+		
+		if input.getMode() == input.MODE_GAMEPAD then
+			-- move player by axes 12
+			dirx = the.gamepads[1].axes[1]
+			diry = the.gamepads[1].axes[2]
+			local l = vector.len(dirx, diry)
+			if l < 0.2 then 
+				speed = 0
+				dirx, diry = 0,0 
+			else
+				speed = utils.mapIntoRange (l, 0, 1, 0,1)
+			end
+			
+			-- move cursor by axes 34
+			local curx = the.gamepads[1].axes[3]
+			local cury = the.gamepads[1].axes[4]
+			local cur = vector.len(curx, cury)
+			if cur < 0.2 then 
+				curx, cury = 0,0 
+			else
+				cur = utils.mapIntoRange (cur, 0, 1, 0, config.gamepad_cursor_speed)
+				curx, cury = vector.normalizeToLen(curx, cury, cur * elapsed)
+			end
+			
+			input.cursor.x, input.cursor.y = vector.add(input.cursor.x, input.cursor.y, curx, cury)
+
+			-- clamp cursor distance
+			local dx,dy = vector.fromTo (self.x, self.y, ScreenPosToWorldPos(input.cursor.x, input.cursor.y))
+			
+			if vector.len(dx, dy) > config.gamepad_cursor_max_distance then
+				dx, dy = vector.normalizeToLen (dx, dy, config.gamepad_cursor_max_distance)
+				input.cursor.x, input.cursor.y = WorldPosToScreenPos(vector.add(self.x, self.y, dx,dy))
+			end
+			
+			-- shoot?
+			doShoot = the.gamepads[1].axes[5] > 0.2
+		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
+			if the.mouse:pressed('l') then doShoot = true end
+		
+			if the.keys:pressed('shift') then speed = 1 else speed = 0 end
+			
+			if the.keys:pressed('left', 'a') then dirx = -1 end
+			if the.keys:pressed('right', 'd') then dirx = 1 end
+			if the.keys:pressed('up', 'w') then diry = -1 end
+			if the.keys:pressed('down', 's') then diry = 1 end
+
+			input.cursor.x = the.mouse.x
+			input.cursor.y = the.mouse.y
+		elseif input.getMode() == input.MODE_TOUCH then
+			-- TODO
 		end
 		
-		if the.keys:pressed('left', 'a') then self.velocity.x = -1 * speed end
-		if the.keys:pressed('right', 'd') then self.velocity.x = speed end
-		if the.keys:pressed('up', 'w') then self.velocity.y = -1 * speed end
-		if the.keys:pressed('down', 's') then self.velocity.y = speed end
+		-- move into direction?
+		if vector.len(dirx, diry) > 0 then
+			local s = utils.mapIntoRange (speed, 0, 1, config.walkspeed, config.runspeed)
+			self.velocity.x, self.velocity.y = vector.normalizeToLen(dirx, diry, s)
+			
+			local animspeed = utils.mapIntoRange (speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
+			
+			self:play('walk')
+		else
+			self:freeze(5)
+		end
 		
-		local worldMouseX, worldMouseY = ScreenPosToWorldPos(the.mouse.x, the.mouse.y)
+		
+		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 		
 		local cx,cy = self.x + self.width / 2, self.y + self.height / 2
 		-- mouse -> player vector
@@ -54,9 +122,11 @@ Player = Animation:extend
 		local l = vector.len(arrowvx, arrowvy)
 		arrowvx, arrowvy = vector.normalizeToLen(arrowvx, arrowvy, config.arrowspeed)
 		
-		if the.mouse:justPressed('l') then
+		if doShoot and self.timeSinceLastShoot > self.shootTimeout then
+			self.timeSinceLastShoot = 0
+		
 			-- assert: arrow size == player size
-			local arrow = arrow:new{ 
+			local arrow = Arrow:new{ 
 				x = self.x, y = self.y, 
 				rotation = self.rotation,
 				velocity = { x = arrowvx, y = arrowvy },
@@ -66,8 +136,6 @@ Player = Animation:extend
 			the.app:add(arrow)
 		end
 		
-		-- easy exit
-		if the.keys:pressed('escape') then os.exit() end
 	end,
 }
 
@@ -77,7 +145,7 @@ FocusSprite = Sprite:extend
 	height = 1,
 	
 	onUpdate = function (self)
-		local worldMouseX, worldMouseY = ScreenPosToWorldPos(the.mouse.x, the.mouse.y)
+		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 		local x,y = vector.add(worldMouseX, worldMouseY, the.player.x, the.player.y)
 		self.x, self.y = vector.mul(x, y, 0.5)
 	end,
@@ -94,13 +162,13 @@ Cursor = Tile:extend
 	image = '/assets/graphics/cursor.png',
     
 	onUpdate = function (self)
-		self.x = the.mouse.x - self.width / 2
-		self.y = the.mouse.y - self.height / 2
+		self.x = input.cursor.x - self.width / 2
+		self.y = input.cursor.y - self.height / 2
 		self.x, self.y = ScreenPosToWorldPos(self.x, self.y)
 	end
 }
 
-arrow = Tile:extend
+Arrow = Tile:extend
 {
 	width = 32,
 	height = 32,
@@ -113,6 +181,8 @@ arrow = Tile:extend
 		
 		if distFromStart >= totalDistance then
 			self:die()
+			-- not possible to revive them later
+			the.app:remove(self)
 		end
 	end,
 }
@@ -160,6 +230,21 @@ GameView = View:extend
 
 the.app = App:new
 {
+	numGamepads = 1,
+
+	onUpdate = function (self, elapsed)
+		-- set input mode
+		if the.keys:justPressed ("f1") then print("input mode: mouse+keyboard") input.setMode (input.MODE_MOUSE_KEYBOARD) end
+		if the.keys:justPressed ("f2") then print("input mode: gamepad") input.setMode (input.MODE_GAMEPAD) end
+		if the.keys:justPressed ("f3") then print("input mode: touch") input.setMode (input.MODE_TOUCH) end	
+		
+		-- toggle fullscreen
+		if the.keys:justPressed ("f10") then self:toggleFullscreen() end
+
+		-- easy exit
+		if the.keys:pressed('escape') then os.exit() end
+	end,
+
     onRun = function (self)
 		--the.app.width, the.app.height = 1680, 1050
 		--self:enterFullscreen()

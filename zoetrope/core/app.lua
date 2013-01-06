@@ -136,7 +136,13 @@ App = Class:extend
 
 		-- screen dimensions and state
 
-		obj.width, obj.height, obj.fullscreen = 800,600,false,0 -- love.graphics.getMode()
+		if love.graphics.getMode then
+			obj.width, obj.height, obj.fullscreen = love.graphics.getMode()
+		else
+			-- pre 0.8 compatibility
+			local t = {}
+			obj.width, obj.height, obj.fullscreen = t.screen.width, t.screen.height, t.screen.fullscreen
+		end
 
 		-- housekeeping
 		
