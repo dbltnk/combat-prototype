@@ -2,58 +2,14 @@ STRICT = true
 DEBUG = true
 
 require 'zoetrope'
-
--- balancing variables
-walkspeed = 100
-runspeed = 200
-animspeed = 16
-arrowspeed = 500
-
-Vector = {
-	len = function(x,y)
-		return math.sqrt(x*x + y*y)
-	end,
-	
-	-- returns dx,dy
-	fromTo = function(x0,y0, x1,y1)
-		return x1-x0, y1-y0
-	end,
-	
-	lenFromTo = function(x0,y0, x1,y1)
-		return Vector.len(Vector.fromTo(x0,y0, x1,y1))
-	end,
-	
-	-- returns x,y
-	normalize = function(x,y)
-		local l = Vector.len(x,y)
-		return x/l, y/l
-	end,
-	
-	normalizeToLen = function(x,y,l)
-		local nx,ny = Vector.normalize (x,y)
-		return nx*l, ny*l
-	end,
-	
-	-- returns x,y
-	add = function(x0,y0, x1,y1)
-		return x0+x1, y0+y1
-	end,
-	
-	-- returns x,y
-	sub = function(x0,y0, x1,y1)
-		return x0-x1, y0-y1
-	end,
-	
-	-- returns x,y
-	mul = function(x,y,s)
-		return x*s,y*s
-	end,
-}
+local vector = require 'vector'
+local utils = require 'utils'
+local config = require 'config'
 
 -- returns x,y
 function ScreenPosToWorldPos(x,y)
-	local vx,vy = Vector.mul(the.view.translate.x, the.view.translate.y, -1)
-	return Vector.add(vx,vy, x,y)
+	local vx,vy = vector.mul(the.view.translate.x, the.view.translate.y, -1)
+	return vector.add(vx,vy, x,y)
 end
 
 Player = Animation:extend
@@ -64,7 +20,7 @@ Player = Animation:extend
 
 	  sequences = 
 	  {
-		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = animspeed },
+		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = config.animspeed },
 	   },
 	
 	onUpdate = function (self, elapsed)
@@ -73,9 +29,9 @@ Player = Animation:extend
 
 		if the.keys:pressed('left', 'a','right', 'd','up', 'w','down', 's') then self:play('walk') else self:freeze(5) end
 		
-		local speed = walkspeed
+		local speed = config.walkspeed
 		if the.keys:pressed('shift') then speed, animspeed = runspeed, animspeed * runspeed / walkspeed -- to-do: animspeed soll sich ändern, tuts aber nicht 
-			else speed, animspeed = walkspeed, 16 
+			else speed, animspeed = config.walkspeed, 16 
 		end
 		
 		if the.keys:pressed('left', 'a') then self.velocity.x = -1 * speed end
@@ -92,8 +48,8 @@ Player = Animation:extend
 		self.rotation = math.atan2(dy, dx) - math.pi / 2
 		
 		local arrowvx, arrowvy = -dx, -dy
-		local l = Vector.len(arrowvx, arrowvy)
-		arrowvx, arrowvy = Vector.normalizeToLen(arrowvx, arrowvy, arrowspeed)
+		local l = vector.len(arrowvx, arrowvy)
+		arrowvx, arrowvy = vector.normalizeToLen(arrowvx, arrowvy, config.arrowspeed)
 		
 		if the.mouse:justPressed('l') then
 			-- assert: arrow size == player size
@@ -119,9 +75,13 @@ FocusSprite = Sprite:extend
 	
 	onUpdate = function (self)
 		local worldMouseX, worldMouseY = ScreenPosToWorldPos(the.mouse.x, the.mouse.y)
-		local x,y = Vector.add(worldMouseX, worldMouseY, the.app.player.x, the.app.player.y)
-		self.x, self.y = Vector.mul(x, y, 0.5)
-	end
+		local x,y = vector.add(worldMouseX, worldMouseY, the.player.x, the.player.y)
+		self.x, self.y = vector.mul(x, y, 0.5)
+	end,
+	
+	__tostring = function (self)
+		return Sprite.__tostring(self)
+	end,
 }
 
 Cursor = Tile:extend
@@ -145,8 +105,8 @@ arrow = Tile:extend
     -- target.x target.y start.x start.y
     
 	onUpdate = function (self)
-		local totalDistance = Vector.lenFromTo(self.start.x, self.start.y, self.target.x, self.target.y)
-		local distFromStart = Vector.lenFromTo(self.start.x, self.start.y, self.x, self.y)
+		local totalDistance = vector.lenFromTo(self.start.x, self.start.y, self.target.x, self.target.y)
+		local distFromStart = vector.lenFromTo(self.start.x, self.start.y, self.x, self.y)
 		
 		if distFromStart >= totalDistance then
 			self:die()
@@ -161,13 +121,39 @@ arrow = Tile:extend
 	--~ image = '/assets/graphics/debugpoint.png',
 --~ }
 
---~ CustomView = View:extend
---~ {
---~     onNew = function (self)
---~ 	self:loadLayers('/assets/tilemap/map.lua')
---~ 	self.focus = the.app.focusSprite
---~     end
---~ }
+GameView = View:extend
+{
+    onNew = function (self)
+		self:loadLayers('/assets/tilemap/map.lua')
+		--~ self.focus = the.focusSprite
+		
+		--~ for x=-1,1 do
+		--~ for y=-1,1 do
+			--~ self:add(Tile:new{
+				--~ width = 2239,
+				--~ height = 2235,
+				--~ x = 0 + x * 2239, y = 0 + y * 2235,
+				--~ image = '/assets/graphics/bg.png', -- source: http://opengameart.org/content/castle-tiles-for-rpgs
+			--~ })
+		--~ end
+		--~ end
+		
+		-- setup player
+		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
+		self:add(the.player)
+		
+		the.cursor = Cursor:new{ x = 0, y = 0 }
+		self:add(the.cursor)
+		
+		--~ self.debugpoint = DebugPoint:new{ x = 0, y = 0 }
+		--~ self:add(self.debugpoint)
+		
+		the.focusSprite = FocusSprite:new{ x = 0, y = 0 }
+		self:add(the.focusSprite)
+		
+		self.focus = the.focusSprite
+    end
+}
 
 the.app = App:new
 {
@@ -175,41 +161,12 @@ the.app = App:new
 		--the.app.width, the.app.height = 1680, 1050
 		--self:enterFullscreen()
     
-		-- setup background
-		
---~ 		self.view = CustomView:new()
-    
-		for x=-1,1 do
-		for y=-1,1 do
-			self:add(Tile:new{
-				width = 2239,
-				height = 2235,
-				x = 0 + x * 2239, y = 0 + y * 2235,
-				image = '/assets/graphics/bg.png', -- source: http://opengameart.org/content/castle-tiles-for-rpgs
-			})
-		end
-		end
-		
-		-- setup player
-		self.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
-		self:add(self.player)
-		
-		self.cursor = Cursor:new{ x = 0, y = 0 }
-		self:add(self.cursor)
-		
-		--~ self.debugpoint = DebugPoint:new{ x = 0, y = 0 }
-		--~ self:add(self.debugpoint)
-		
 		self:useSysCursor(false)
 		
 		the.app.console:watch("viewx", "the.view.translate.x")
 		the.app.console:watch("viewy", "the.view.translate.y")
 		
-		self.focusSprite = FocusSprite:new{ x = 0, y = 0 }
-		self:add(self.focusSprite)
-		
-		the.view.focus = self.focusSprite
+		-- setup background
+		self.view = GameView:new()
     end
 }
-
-
