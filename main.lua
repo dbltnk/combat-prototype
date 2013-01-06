@@ -30,8 +30,11 @@ Player = Animation:extend
 		if the.keys:pressed('left', 'a','right', 'd','up', 'w','down', 's') then self:play('walk') else self:freeze(5) end
 		
 		local speed = config.walkspeed
-		if the.keys:pressed('shift') then speed, animspeed = runspeed, animspeed * runspeed / walkspeed -- to-do: animspeed soll sich ändern, tuts aber nicht 
-			else speed, animspeed = config.walkspeed, 16 
+		if the.keys:pressed('shift') then
+			 -- to-do: animspeed soll sich ändern, tuts aber nicht 
+			 speed, animspeed = config.runspeed, config.animspeed * config.runspeed / config.walkspeed
+		else 
+			speed, animspeed = config.walkspeed, 16 
 		end
 		
 		if the.keys:pressed('left', 'a') then self.velocity.x = -1 * speed end
