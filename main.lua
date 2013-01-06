@@ -19,6 +19,87 @@ function WorldPosToScreenPos(x,y)
 	return vector.add(vx,vy, x,y)
 end
 
+SkillIcon = Animation:extend
+{
+	width = 32,
+	height = 32,
+	image = '/assets/graphics/skills.png', -- source: http://opengameart.org/content/powers-icons
+	sequences = 
+	{
+		skill_1 = { frames = {1}, fps = 1 },
+		skill_2 = { frames = {2}, fps = 1 },
+		skill_3 = { frames = {3}, fps = 1 },
+		skill_4 = { frames = {4}, fps = 1 },
+		skill_5 = { frames = {5}, fps = 1 },
+		
+		skill_6 = { frames = {7}, fps = 1 },
+		skill_7 = { frames = {8}, fps = 1 },
+		skill_8 = { frames = {9}, fps = 1 },
+		skill_9 = { frames = {10}, fps = 1 },
+		
+		skill_10 = { frames = {12}, fps = 1 },
+		skill_11 = { frames = {13}, fps = 1 },
+		skill_12 = { frames = {14}, fps = 1 },
+		skill_13 = { frames = {15}, fps = 1 },
+
+		skill_14 = { frames = {17}, fps = 1 },
+		skill_15 = { frames = {18}, fps = 1 },
+		skill_16 = { frames = {19}, fps = 1 },
+		skill_17 = { frames = {20}, fps = 1 },
+	},
+	
+	onNew = function (self)
+		self:setSkill(1)
+	end,
+	
+	setSkill = function (self, skill_nr)
+		self:play("skill_" .. skill_nr)
+	end,
+}
+
+SkillBar = Class:extend
+{
+	-- skill nrs
+	skills = {1,2,3,4,5,6},
+	
+	-- contains references to SkillIcon
+	skillIcons = {},
+	
+	-- position
+	x = 0,
+	y = 0,
+	
+	onNew = function (self)
+		for index, skillNr in pairs(self.skills) do
+			local icon = SkillIcon:new { x = 0, y = 0 }
+			the.ui:add(icon)
+			
+			self.skillIcons[index] = icon
+		end
+
+		self:setPosition (self.x, self.y)
+		self:setSkills (self.skills)
+	end,
+	
+	setPosition = function (self, x, y)
+		self.x = x
+		self.y = y
+		
+		for index, skillIcon in pairs(self.skillIcons) do
+			skillIcon.x = (index - 1) * 32 + self.x
+			skillIcon.y = self.y
+		end
+	end,
+	
+	setSkills = function (self, skills)
+		self.skills = skills
+		
+		for index, skillNr in pairs(self.skills) do
+			self.skillIcons[index]:setSkill(skillNr)
+		end
+	end,
+}
+
 Player = Animation:extend
 {
 	shootTimeout = 0.2,
@@ -187,6 +268,17 @@ Arrow = Tile:extend
 	end,
 }
 
+UiGroup = Group:extend
+{
+	solid = false,
+
+	onUpdate = function(self)
+		local x,y = ScreenPosToWorldPos(0,0)
+		self.translate.x = x
+		self.translate.y = y
+	end,
+}
+
 --~ DebugPoint = Tile:extend
 --~ {
 	--~ width = 32,
@@ -225,6 +317,11 @@ GameView = View:extend
 		self:add(the.focusSprite)
 		
 		self.focus = the.focusSprite
+		
+		the.ui = UiGroup:new()
+		self:add(the.ui)
+		
+		the.skillbar = SkillBar:new()
     end
 }
 
