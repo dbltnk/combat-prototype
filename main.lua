@@ -214,7 +214,7 @@ Player = Animation:extend
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
 			if the.mouse:pressed('l') then doShoot = true end
 		
-			if the.keys:pressed('shift') then speed = 1 else speed = 0 end
+			if the.keys:pressed('shift') then speed = 1 else speed = 0 end -- to-do: in eine fähigkeit umwandeln (hotbar)
 			
 			if the.keys:pressed('left', 'a') then dirx = -1 end
 			if the.keys:pressed('right', 'd') then dirx = 1 end
@@ -341,7 +341,7 @@ UiGroup = Group:extend
 GameView = View:extend
 {
     onNew = function (self)
-		self:loadLayers('/assets/tilemap/map.lua')
+		self:loadLayers('/assets/maps/desert/desert.lua')
 		--~ self.focus = the.focusSprite
 		
 		--~ for x=-1,1 do
@@ -374,16 +374,22 @@ GameView = View:extend
 		self:add(the.ui)
 		
 		the.skillbar = SkillBar:new()
+		
     end,
     
     onUpdate = function (self, elapsed)
 		the.skillbar:onUpdate(elapsed)
+		
+		self.buildings:subdisplace(the.player)
+		--self.buildings:subdisplace(the.arrow) -- to-do: pfeile sollen mit gebäuden kollidieren
     end,
 }
 
 the.app = App:new
 {
 	numGamepads = 1,
+	name = "Combat Prototype",
+	icon = '/graphics/icon.png',
 
 	onUpdate = function (self, elapsed)
 		-- set input mode
