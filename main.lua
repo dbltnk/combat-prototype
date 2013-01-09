@@ -281,8 +281,11 @@ FocusSprite = Sprite:extend
 	
 	onUpdate = function (self)
 		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
-		local x,y = vector.add(worldMouseX, worldMouseY, the.player.x, the.player.y)
-		self.x, self.y = vector.mul(x, y, 0.5)
+		local x,y = 0,0
+		-- weighted average
+		x,y = vector.add(x,y, vector.mul(worldMouseX, worldMouseY, 0.4))
+		x,y = vector.add(x,y, vector.mul(the.player.x, the.player.y, 0.6))
+		self.x, self.y = x,y
 	end,
 	
 	__tostring = function (self)
