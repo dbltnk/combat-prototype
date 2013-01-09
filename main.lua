@@ -267,6 +267,8 @@ Player = Animation:extend
 			}
 			
 			the.app:add(arrow)
+			-- stores an arrow reference, arrows get stored in the key
+			the.arrows[arrow] = true
 		end
 		
 	end,
@@ -307,7 +309,15 @@ Arrow = Tile:extend
 	height = 32,
 	image = '/assets/graphics/arrow.png',
     -- target.x target.y start.x start.y
-    
+
+	onCollide = function(self, other, horizOverlap, vertOverlap)
+		self:die()
+		-- not possible to revive them later
+		the.app:remove(self)
+		-- will remove the arrow reference from the map
+		the.arrows[self] = nil
+	end,	
+	
 	onUpdate = function (self)
 		local totalDistance = vector.lenFromTo(self.start.x, self.start.y, self.target.x, self.target.y)
 		local distFromStart = vector.lenFromTo(self.start.x, self.start.y, self.x, self.y)
@@ -316,6 +326,8 @@ Arrow = Tile:extend
 			self:die()
 			-- not possible to revive them later
 			the.app:remove(self)
+			-- will remove the arrow reference from the map
+			the.arrows[self] = nil
 		end
 	end,
 }
@@ -362,6 +374,9 @@ GameView = View:extend
 		the.cursor = Cursor:new{ x = 0, y = 0 }
 		self:add(the.cursor)
 		
+		-- object -> true map for easy remove, key contains arrow reference
+		the.arrows = {}
+		
 		--~ self.debugpoint = DebugPoint:new{ x = 0, y = 0 }
 		--~ self:add(self.debugpoint)
 		
@@ -381,7 +396,10 @@ GameView = View:extend
 		the.skillbar:onUpdate(elapsed)
 		
 		self.buildings:subdisplace(the.player)
-		--self.buildings:subdisplace(the.arrow) -- to-do: pfeile sollen mit gebäuden kollidieren
+		
+		for arrow,v in pairs(the.arrows) do
+			self.buildings:subcollide(arrow)
+		end
     end,
 }
 
