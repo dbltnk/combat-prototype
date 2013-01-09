@@ -343,6 +343,18 @@ UiGroup = Group:extend
 	end,
 }
 
+PlayerDetails = Tile:extend
+{
+	width = 80,
+	height = 100,
+	image = '/assets/graphics/player_details.png',
+    
+	onUpdate = function (self)
+		self.x = the.player.x - the.player.width / 4
+		self.y = the.player.y - the.player.height / 2
+	end
+}
+
 --~ DebugPoint = Tile:extend
 --~ {
 	--~ width = 32,
@@ -389,6 +401,9 @@ GameView = View:extend
 		self:add(the.ui)
 		
 		the.skillbar = SkillBar:new()
+		
+		the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
+		self:add(the.playerDetails)
 		
     end,
     
