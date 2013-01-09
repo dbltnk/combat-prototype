@@ -85,8 +85,10 @@ SkillBar = Class:extend
 	
 	-- contains references to SkillIcon
 	skillIcons = {},
-	
+	-- inactive overlay tiles
 	skillInactiveIcons = {},
+	-- timeout texts
+	skillTimerText = {},
 	
 	-- position
 	x = 0,
@@ -99,11 +101,20 @@ SkillBar = Class:extend
 			
 			self.skillIcons[index] = icon
 			
+			-- black inactive overlay
 			local overlay = Tile:new{
 				width = 32, height = 32, image = "/assets/graphics/skills_inactive_overlay.png",
 			}
 			self.skillInactiveIcons[index] = overlay
 			the.ui:add(overlay)
+
+			-- timeout text
+			local t = Text:new{
+				font = 14,
+				text = "X",
+			}
+			self.skillTimerText[index] = t
+			the.ui:add(t)
 		end
 		
 		self:setPosition (self.x, self.y)
@@ -120,6 +131,9 @@ SkillBar = Class:extend
 			
 			self.skillInactiveIcons[index].x = skillIcon.x
 			self.skillInactiveIcons[index].y = skillIcon.y
+
+			self.skillTimerText[index].x = skillIcon.x + 8
+			self.skillTimerText[index].y = skillIcon.y + 8
 		end
 	end,
 	
@@ -137,6 +151,21 @@ SkillBar = Class:extend
 			if the.player and the.player.skills and the.player.skills[index] then
 				local skill = the.player.skills[index]
 				overlay.visible = skill:isPossibleToUse () == false
+			end
+		end
+		
+		-- show timeout
+		for index, timeout in pairs(self.skillTimerText) do
+			if the.player and the.player.skills and the.player.skills[index] then
+				local skill = the.player.skills[index]
+				timeout.visible = skill:isPossibleToUse () == false
+				
+				local t = skill:timeTillPossibleToUse()
+				if t >= 10 then
+					timeout.text = string.format("%0.0f", t)
+				else
+					timeout.text = string.format("%0.1f", t)
+				end
 			end
 		end
 	end,
@@ -157,7 +186,7 @@ Player = Animation:extend
 	},
 	
 	onNew = function (self)
-		self.skills[1] = Skill:new { timeout = 0.1, nr = 1, }
+		self.skills[1] = Skill:new { timeout = 1/4, nr = 1, }
 		self.skills[2] = Skill:new { timeout = 0.1, nr = 2, }
 		self.skills[3] = Skill:new { timeout = 0.1, nr = 3, }
 		self.skills[4] = Skill:new { timeout = 0.1, nr = 4, }
