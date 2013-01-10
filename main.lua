@@ -186,7 +186,7 @@ Player = Animation:extend
 	},
 	
 	onNew = function (self)
-		self.skills[1] = Skill:new { timeout = 1/4, nr = 1, }
+		self.skills[1] = Skill:new { timeout = 2, nr = 1, }
 		self.skills[2] = Skill:new { timeout = 0.1, nr = 2, }
 		self.skills[3] = Skill:new { timeout = 0.1, nr = 3, }
 		self.skills[4] = Skill:new { timeout = 0.1, nr = 4, }
@@ -312,8 +312,8 @@ FocusSprite = Sprite:extend
 		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 		local x,y = 0,0
 		-- weighted average
-		x,y = vector.add(x,y, vector.mul(worldMouseX, worldMouseY, 0.4))
-		x,y = vector.add(x,y, vector.mul(the.player.x, the.player.y, 0.6))
+		x,y = vector.add(x,y, vector.mul(worldMouseX, worldMouseY, 0.45))
+		x,y = vector.add(x,y, vector.mul(the.player.x, the.player.y, 0.55))
 		self.x, self.y = x,y
 	end,
 	
