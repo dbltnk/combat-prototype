@@ -91,8 +91,8 @@ SkillBar = Class:extend
 	skillTimerText = {},
 	
 	-- position
-	x = 0,
-	y = 0,
+	x = 400 - SkillIcon.width / 2 * 6, -- to-do: 6 ersetzen durch table.getn(skills) oder ähnliche zählmethode
+	y = 600 - SkillIcon.height,
 	
 	onNew = function (self)
 		for index, skillNr in pairs(self.skills) do
