@@ -140,7 +140,8 @@ App = Class:extend
 			obj.width, obj.height, obj.fullscreen = love.graphics.getMode()
 		else
 			-- pre 0.8 compatibility
-			local t = {}
+			local t = { screen = {}, modules = {} }
+                        love.conf(t)
 			obj.width, obj.height, obj.fullscreen = t.screen.width, t.screen.height, t.screen.fullscreen
 		end
 
