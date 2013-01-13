@@ -51,22 +51,17 @@ SkillIcon = Animation:extend
 		skill_2 = { frames = {2}, fps = 1 },
 		skill_3 = { frames = {3}, fps = 1 },
 		skill_4 = { frames = {4}, fps = 1 },
-		skill_5 = { frames = {5}, fps = 1 },
+		skill_5 = { frames = {6}, fps = 1 },
 		
 		skill_6 = { frames = {7}, fps = 1 },
 		skill_7 = { frames = {8}, fps = 1 },
-		skill_8 = { frames = {9}, fps = 1 },
-		skill_9 = { frames = {10}, fps = 1 },
+		skill_8 = { frames = {10}, fps = 1 },
+		skill_9 = { frames = {11}, fps = 1 },
 		
 		skill_10 = { frames = {12}, fps = 1 },
-		skill_11 = { frames = {13}, fps = 1 },
-		skill_12 = { frames = {14}, fps = 1 },
-		skill_13 = { frames = {15}, fps = 1 },
-
-		skill_14 = { frames = {17}, fps = 1 },
-		skill_15 = { frames = {18}, fps = 1 },
-		skill_16 = { frames = {19}, fps = 1 },
-		skill_17 = { frames = {20}, fps = 1 },
+		skill_11 = { frames = {14}, fps = 1 },
+		skill_12 = { frames = {15}, fps = 1 },
+		skill_13 = { frames = {16}, fps = 1 },
 	},
 	
 	onNew = function (self)
@@ -176,8 +171,8 @@ Player = Animation:extend
 	-- list of Skill
 	skills = {},
 	
-	width = 50,
-	height = 50,
+	width = 64,
+	height = 64,
 	image = '/assets/graphics/player.png', -- source: http://www.synapsegaming.com/forums/t/1711.aspx
 
 	sequences = 
@@ -377,13 +372,13 @@ UiGroup = Group:extend
 
 PlayerDetails = Tile:extend
 {
-	width = 80,
-	height = 100,
+	width = 128,
+	height = 128,
 	image = '/assets/graphics/player_details.png',
     
 	onUpdate = function (self)
-		self.x = the.player.x - the.player.width / 4
-		self.y = the.player.y - the.player.height / 2
+		self.x = the.player.x - the.player.width / 1.5
+		self.y = the.player.y - the.player.height / 1.5
 	end
 }
 
