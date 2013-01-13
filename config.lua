@@ -8,7 +8,8 @@ config.animspeed = 16
 config.arrowspeed = 500
 
 -- gamepad
-config.gamepad_cursor_speed = 400
-config.gamepad_cursor_max_distance = 400
+config.gamepad_cursor_speed_near = 300
+config.gamepad_cursor_speed_far = 800
+config.gamepad_cursor_near_distance = 300
 
 return config

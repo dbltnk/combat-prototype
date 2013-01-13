@@ -219,7 +219,11 @@ Player = Animation:extend
 			if cur < 0.2 then 
 				curx, cury = 0,0 
 			else
-				cur = utils.mapIntoRange (cur, 0, 1, 0, config.gamepad_cursor_speed)
+				-- adjust speed depending on cursor-player-distance
+				local speed = config.gamepad_cursor_speed_near
+				local len = vector.lenFromTo (self.x, self.y, ScreenPosToWorldPos(input.cursor.x, input.cursor.y))
+				if len > config.gamepad_cursor_near_distance then speed = config.gamepad_cursor_speed_far end
+				cur = utils.mapIntoRange (cur, 0, 1, 0, speed)
 				curx, cury = vector.normalizeToLen(curx, cury, cur * elapsed)
 			end
 			
@@ -228,8 +232,22 @@ Player = Animation:extend
 			-- clamp cursor distance
 			local dx,dy = vector.fromTo (self.x, self.y, ScreenPosToWorldPos(input.cursor.x, input.cursor.y))
 			
-			if vector.len(dx, dy) > config.gamepad_cursor_max_distance then
-				dx, dy = vector.normalizeToLen (dx, dy, config.gamepad_cursor_max_distance)
+			if vector.len(dx, dy) > 0 then
+				local f = 4/5
+				local maxdx,maxdy = the.app.width * f, the.app.height * f
+				local l = vector.len(dx,dy)
+				
+				if math.abs(dx) > maxdx then
+					local newL = l * utils.sign(dx) * maxdx / dx
+					dx, dy = vector.normalizeToLen (dx, dy, newL)
+					l = newL
+				end
+				
+				if math.abs(dy) > maxdy then
+					local newL = l * utils.sign(dy) * maxdy / dy
+					dx, dy = vector.normalizeToLen (dx, dy, newL)
+				end
+
 				input.cursor.x, input.cursor.y = WorldPosToScreenPos(vector.add(self.x, self.y, dx,dy))
 			end
 			
@@ -304,10 +322,10 @@ FocusSprite = Sprite:extend
 	height = 1,
 	
 	onUpdate = function (self)
-		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
+		local worldCursorX, worldCursorY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 		local x,y = 0,0
 		-- weighted average
-		x,y = vector.add(x,y, vector.mul(worldMouseX, worldMouseY, 0.45))
+		x,y = vector.add(x,y, vector.mul(worldCursorX, worldCursorY, 0.45))
 		x,y = vector.add(x,y, vector.mul(the.player.x, the.player.y, 0.55))
 		self.x, self.y = x,y
 	end,
@@ -447,7 +465,7 @@ GameView = View:extend
 
 the.app = App:new
 {
-	numGamepads = 1,
+	numGamepads = love.joystick and 1 or 0,
 	name = "Combat Prototype",
 	icon = '/graphics/icon.png',
 

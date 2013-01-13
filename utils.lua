@@ -56,5 +56,10 @@ function utils.mapIntoRange (srcValue, srcMin, srcMax, dstMin, dstMax)
 	return dstMin + (dstMax - dstMin) * r
 end
 
+function utils.sign (x)
+	if x < 0 then return -1 end
+	if x > 0 then return 1 end
+	return 0
+end
 
 return utils

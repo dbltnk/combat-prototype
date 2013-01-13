@@ -74,7 +74,7 @@ Gamepad = Sprite:extend
 		obj.balls = {}
 		obj.hats = {}
 
-		if obj.number <= love.joystick.getNumJoysticks() then
+		if love.joystick and obj.number <= love.joystick.getNumJoysticks() then
 			if not love.joystick.isOpen(obj.number) then love.joystick.open(obj.number) end
 			obj.name = love.joystick.getName(obj.number)
 			obj.numAxes = love.joystick.getNumAxes(obj.number)
