@@ -220,9 +220,22 @@ Player = Animation:extend
 				curx, cury = 0,0 
 			else
 				-- adjust speed depending on cursor-player-distance
-				local speed = config.gamepad_cursor_speed_near
+				local speed = 0
 				local len = vector.lenFromTo (self.x, self.y, ScreenPosToWorldPos(input.cursor.x, input.cursor.y))
-				if len > config.gamepad_cursor_near_distance then speed = config.gamepad_cursor_speed_far end
+				
+				if len < config.gamepad_cursor_near_distance - config.gamepad_cursor_near_border / 2 then
+					-- near
+					speed = config.gamepad_cursor_speed_near
+				elseif len < config.gamepad_cursor_near_distance + config.gamepad_cursor_near_border / 2 then
+					-- blend
+					local border = len - (config.gamepad_cursor_near_distance - config.gamepad_cursor_near_border / 2)
+					speed = utils.mapIntoRange (border, 0, config.gamepad_cursor_near_border, 
+						config.gamepad_cursor_speed_near, config.gamepad_cursor_speed_far)
+				else
+					-- far
+					speed = config.gamepad_cursor_speed_far
+				end
+				
 				cur = utils.mapIntoRange (cur, 0, 1, 0, speed)
 				curx, cury = vector.normalizeToLen(curx, cury, cur * elapsed)
 			end
