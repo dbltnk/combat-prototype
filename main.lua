@@ -318,7 +318,7 @@ Player = Animation:extend
 				rotation = self.rotation,
 				velocity = { x = arrowvx, y = arrowvy },
 				start = { x = self.x, y = self.y },
-				target = { x = worldMouseX, y = worldMouseY},
+				target = { x = worldMouseX, y = worldMouseY },
 			}
 			
 			the.app:add(arrow)
@@ -440,6 +440,9 @@ GameView = View:extend
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
 		self:add(the.player)
+		-- set spawn position
+		the.player.x = the.spawnpoint.x
+		the.player.y = the.spawnpoint.y
 		
 		the.cursor = Cursor:new{ x = 0, y = 0 }
 		self:add(the.cursor)
