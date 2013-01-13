@@ -288,14 +288,14 @@ Player = Animation:extend
 			if the.keys:pressed('up', 'w') then diry = -1 end
 			if the.keys:pressed('down', 's') then diry = 1 end
 			
-			if the.keys:pressed('left', 'a','right', 'd','up', 'w','down', 's') and self.footstepsPossible()  then 
+			if the.keys:pressed('left', 'a','right', 'd','up', 'w','down', 's') and self:footstepsPossible()  then 
 			local footstep = Footstep:new{ 
 				x = self.x, y = self.y, 
 				rotation = self.rotation,
 			}
 			the.app:add(footstep)
 			the.footsteps[footstep] = true
-			self.makeStep()
+			self:makeStep()
 			end
 
 			input.cursor.x = the.mouse.x
@@ -466,8 +466,6 @@ GameView = View:extend
 		--~ end
 		--~ end
 		
-		the.footsteps = {}
-		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
 		self:add(the.player)
@@ -480,6 +478,9 @@ GameView = View:extend
 		
 		-- object -> true map for easy remove, key contains arrow reference
 		the.arrows = {}
+		
+		-- object -> true map for easy remove, key contains footstep reference
+		the.footsteps = {}
 		
 		--~ self.debugpoint = DebugPoint:new{ x = 0, y = 0 }
 		--~ self:add(self.debugpoint)
