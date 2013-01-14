@@ -51,5 +51,20 @@
     <property name="_the" value="spawnpoint"/>
    </properties>
   </object>
+  <object name="TargetDummy" gid="525" x="1965" y="2238">
+   <properties>
+    <property name="_the" value="dummy1"/>
+   </properties>
+  </object>
+  <object name="TargetDummy" gid="525" x="1896" y="2240">
+   <properties>
+    <property name="_the" value="dummy0"/>
+   </properties>
+  </object>
+  <object name="TargetDummy" gid="525" x="2021" y="2239">
+   <properties>
+    <property name="_the" value="dummy2"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

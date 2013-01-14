@@ -166,6 +166,24 @@ SkillBar = Class:extend
 	end,
 }
 
+TargetDummy = Tile:extend
+{
+	width = 32,
+	height = 32,
+	image = '/assets/graphics/icon.png',
+	
+	onNew = function (self)
+		self.width = 32
+		self.height = 32
+		
+		print(self)
+	end,
+	
+	__tostring = function (self)
+		return Tile.__tostring(self)
+	end,
+}
+
 Player = Animation:extend
 {
 	-- list of Skill
@@ -293,7 +311,7 @@ Player = Animation:extend
 				x = self.x+17, y = self.y+15, 
 				rotation = self.rotation,
 			}
-			the.app:add(footstep)
+			the.app.view.layers.ground:add(footstep)
 			the.footsteps[footstep] = true
 			self:makeStep()
 			end
@@ -343,7 +361,7 @@ Player = Animation:extend
 				target = { x = worldMouseX, y = worldMouseY },
 			}
 			
-			the.app:add(arrow)
+			the.app.view.layers.projectiles:add(arrow)
 			-- stores an arrow reference, arrows get stored in the key
 			the.arrows[arrow] = true
 		end
@@ -393,7 +411,7 @@ Arrow = Tile:extend
 	onCollide = function(self, other, horizOverlap, vertOverlap)
 		self:die()
 		-- not possible to revive them later
-		the.app:remove(self)
+		the.app.view.layers.projectiles:remove(self)
 		-- will remove the arrow reference from the map
 		the.arrows[self] = nil
 	end,	
@@ -405,7 +423,7 @@ Arrow = Tile:extend
 		if distFromStart >= totalDistance then
 			self:die()
 			-- not possible to revive them later
-			the.app:remove(self)
+			the.app.view.layers.projectiles:remove(self)
 			-- will remove the arrow reference from the map
 			the.arrows[self] = nil
 		end
@@ -451,18 +469,31 @@ PlayerDetails = Tile:extend
 
 GameView = View:extend
 {
+	layers = {
+		ground = Group:new(),
+		characters = Group:new(),
+		projectiles = Group:new(),
+		ui = Group:new(),
+	},
+
     onNew = function (self)
 		self:loadLayers('/assets/maps/desert/desert.lua')
 		
+		-- specifiy render order
+		self:add(self.layers.ground)
+		self:add(self.layers.characters)
+		self:add(self.layers.projectiles)
+		self:add(self.layers.ui)
+		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
-		self:add(the.player)
+		self.layers.characters:add(the.player)
 		-- set spawn position
 		the.player.x = the.spawnpoint.x
 		the.player.y = the.spawnpoint.y
 		
 		the.cursor = Cursor:new{ x = 0, y = 0 }
-		self:add(the.cursor)
+		self.layers.ui:add(the.cursor)
 		
 		-- object -> true map for easy remove, key contains arrow reference
 		the.arrows = {}
@@ -478,14 +509,14 @@ GameView = View:extend
 		
 		self.focus = the.focusSprite
 		
+		-- TODO obsolete? use self.layers instead?
 		the.ui = UiGroup:new()
 		self:add(the.ui)
 		
 		the.skillbar = SkillBar:new()
 		
 		the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
-		self:add(the.playerDetails)
-		
+		self.layers.ui:add(the.playerDetails)
     end,
     
     onUpdate = function (self, elapsed)
