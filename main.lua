@@ -180,6 +180,18 @@ Player = Animation:extend
 		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = config.animspeed },
 	},
 	
+	
+	lastFootstep = 0,
+	
+	footstepsPossible = function (self)
+		return love.timer.getTime() - self.lastFootstep >= .25
+	end,
+	
+	makeStep = function (self)
+		self.lastFootstep = love.timer.getTime()
+	end,
+	
+	
 	onNew = function (self)
 		self.skills[1] = Skill:new { timeout = 2, nr = 1, }
 		self.skills[2] = Skill:new { timeout = 0.1, nr = 2, }
@@ -275,6 +287,16 @@ Player = Animation:extend
 			if the.keys:pressed('right', 'd') then dirx = 1 end
 			if the.keys:pressed('up', 'w') then diry = -1 end
 			if the.keys:pressed('down', 's') then diry = 1 end
+			
+			if the.keys:pressed('left', 'a','right', 'd','up', 'w','down', 's') and self:footstepsPossible()  then 
+			local footstep = Footstep:new{ 
+				x = self.x+17, y = self.y+15, 
+				rotation = self.rotation,
+			}
+			the.app:add(footstep)
+			the.footsteps[footstep] = true
+			self:makeStep()
+			end
 
 			input.cursor.x = the.mouse.x
 			input.cursor.y = the.mouse.y
@@ -390,6 +412,13 @@ Arrow = Tile:extend
 	end,
 }
 
+Footstep = Tile:extend
+{
+	width = 32,
+	height = 32,
+	image = '/assets/graphics/footsteps.png',
+}
+
 UiGroup = Group:extend
 {
 	solid = false,
@@ -424,18 +453,6 @@ GameView = View:extend
 {
     onNew = function (self)
 		self:loadLayers('/assets/maps/desert/desert.lua')
-		--~ self.focus = the.focusSprite
-		
-		--~ for x=-1,1 do
-		--~ for y=-1,1 do
-			--~ self:add(Tile:new{
-				--~ width = 2239,
-				--~ height = 2235,
-				--~ x = 0 + x * 2239, y = 0 + y * 2235,
-				--~ image = '/assets/graphics/bg.png', -- source: http://opengameart.org/content/castle-tiles-for-rpgs
-			--~ })
-		--~ end
-		--~ end
 		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
@@ -449,6 +466,9 @@ GameView = View:extend
 		
 		-- object -> true map for easy remove, key contains arrow reference
 		the.arrows = {}
+		
+		-- object -> true map for easy remove, key contains footstep reference
+		the.footsteps = {}
 		
 		--~ self.debugpoint = DebugPoint:new{ x = 0, y = 0 }
 		--~ self:add(self.debugpoint)
@@ -500,9 +520,7 @@ the.app = App:new
 	end,
 
     onRun = function (self)
-		--the.app.width, the.app.height = 1680, 1050
-		--self:enterFullscreen()
-    
+		-- disable the hardware cursor
 		self:useSysCursor(false)
 		
 		the.app.console:watch("viewx", "the.view.translate.x")
