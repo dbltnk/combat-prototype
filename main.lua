@@ -472,6 +472,7 @@ GameView = View:extend
 		the.skillbar:onUpdate(elapsed)
 		
 		self.buildings:subdisplace(the.player)
+		self.water:subdisplace(the.player)
 		
 		for arrow,v in pairs(the.arrows) do
 			self.buildings:subcollide(arrow)
