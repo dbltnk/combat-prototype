@@ -184,7 +184,7 @@ Player = Animation:extend
 	lastFootstep = 0,
 	
 	footstepsPossible = function (self)
-		return love.timer.getTime() - self.lastFootstep >= 1
+		return love.timer.getTime() - self.lastFootstep >= .25
 	end,
 	
 	makeStep = function (self)
@@ -290,7 +290,7 @@ Player = Animation:extend
 			
 			if the.keys:pressed('left', 'a','right', 'd','up', 'w','down', 's') and self:footstepsPossible()  then 
 			local footstep = Footstep:new{ 
-				x = self.x, y = self.y, 
+				x = self.x+17, y = self.y+15, 
 				rotation = self.rotation,
 			}
 			the.app:add(footstep)
@@ -453,18 +453,6 @@ GameView = View:extend
 {
     onNew = function (self)
 		self:loadLayers('/assets/maps/desert/desert.lua')
-		--~ self.focus = the.focusSprite
-		
-		--~ for x=-1,1 do
-		--~ for y=-1,1 do
-			--~ self:add(Tile:new{
-				--~ width = 2239,
-				--~ height = 2235,
-				--~ x = 0 + x * 2239, y = 0 + y * 2235,
-				--~ image = '/assets/graphics/bg.png', -- source: http://opengameart.org/content/castle-tiles-for-rpgs
-			--~ })
-		--~ end
-		--~ end
 		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
@@ -531,9 +519,7 @@ the.app = App:new
 	end,
 
     onRun = function (self)
-		--the.app.width, the.app.height = 1680, 1050
-		--self:enterFullscreen()
-    
+		-- disable the hardware cursor
 		self:useSysCursor(false)
 		
 		the.app.console:watch("viewx", "the.view.translate.x")
