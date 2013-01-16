@@ -488,6 +488,7 @@ GameView = View:extend
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
 		self.layers.characters:add(the.player)
+		self.layers.projectiles:add(self.trees)		
 		-- set spawn position
 		the.player.x = the.spawnpoint.x
 		the.player.y = the.spawnpoint.y
@@ -522,11 +523,13 @@ GameView = View:extend
     onUpdate = function (self, elapsed)
 		the.skillbar:onUpdate(elapsed)
 		
+		self.collision:displace(the.player)
 		self.buildings:subdisplace(the.player)
 		self.water:subdisplace(the.player)
 		
 		for arrow,v in pairs(the.arrows) do
 			self.buildings:subcollide(arrow)
+			self.collision:collide(arrow)			
 		end
     end,
 }
