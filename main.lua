@@ -374,6 +374,8 @@ Player = Animation:extend
 			the.app.view.layers.projectiles:add(arrow)
 			-- stores an arrow reference, arrows get stored in the key
 			the.arrows[arrow] = true
+			
+			playSound('/assets/audio/bow.wav',1,short) -- source: http://opengameart.org/content/battle-sound-effects
 		end
 		
 		-- combat music fade in/out 		
