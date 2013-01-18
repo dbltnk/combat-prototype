@@ -23,6 +23,7 @@ Skill = Class:extend
 {
 	nr = 0,	
 	timeout = 0,
+	combatTimer = 10,
 	
 	lastUsed = 0,
 	
@@ -38,6 +39,10 @@ Skill = Class:extend
 		self.lastUsed = love.timer.getTime()
 		if self.onUse then self:onUse() end
 	end,
+	
+	isOutOfCombat = function (self)
+		return love.timer.getTime() - self.lastUsed >= self.combatTimer
+	end,	
 }
 
 SkillIcon = Animation:extend
@@ -364,8 +369,15 @@ Player = Animation:extend
 			the.app.view.layers.projectiles:add(arrow)
 			-- stores an arrow reference, arrows get stored in the key
 			the.arrows[arrow] = true
+			
+			the.peaceMusic:setVolume(0)	
+			the.combatMusic:setVolume(1)	
 		end
 		
+		if self.skills[activeSkillNr]:isOutOfCombat() then
+			the.peaceMusic:setVolume(1)	
+			the.combatMusic:setVolume(0)
+		end
 	end,
 }
 
@@ -518,6 +530,14 @@ GameView = View:extend
 		
 		the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
 		self.layers.ui:add(the.playerDetails)
+		
+		the.peaceMusic = playSound('/assets/audio/eots.ogg',1,long)
+		the.peaceMusic:setLooping(true)	
+
+		the.combatMusic = playSound('/assets/audio/dos.mp3',0,long)
+		the.combatMusic:setLooping(true)	
+
+		
     end,
     
     onUpdate = function (self, elapsed)
@@ -562,5 +582,6 @@ the.app = App:new
 		
 		-- setup background
 		self.view = GameView:new()
+		
     end
 }
