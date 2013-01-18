@@ -6,6 +6,8 @@ local vector = require 'vector'
 local utils = require 'utils'
 local config = require 'config'
 local input = require 'input'
+local tween = require 'tween'
+
 
 -- returns x,y
 function ScreenPosToWorldPos(x,y)
@@ -214,6 +216,7 @@ Player = Animation:extend
 		self.lastFootstep = love.timer.getTime()
 	end,
 	
+	loudness = {vol=1},	
 	
 	onNew = function (self)
 		self.skills[1] = Skill:new { timeout = 2, nr = 1, }
@@ -234,6 +237,8 @@ Player = Animation:extend
 		local dirx, diry = 0,0
 		
 		local doShoot = false
+		
+		tween.update(elapsed)
 		
 		if input.getMode() == input.MODE_GAMEPAD then
 			-- move player by axes 12
@@ -353,7 +358,7 @@ Player = Animation:extend
 		arrowvx, arrowvy = vector.normalizeToLen(arrowvx, arrowvy, config.arrowspeed)
 		
 		local activeSkillNr = 1
-		
+				
 		if doShoot and self.skills[activeSkillNr]:isPossibleToUse()  then
 			self.skills[activeSkillNr]:use()
 		
@@ -369,14 +374,23 @@ Player = Animation:extend
 			the.app.view.layers.projectiles:add(arrow)
 			-- stores an arrow reference, arrows get stored in the key
 			the.arrows[arrow] = true
-			
-			the.peaceMusic:setVolume(0)	
-			the.combatMusic:setVolume(1)	
 		end
 		
+		-- combat music fade in/out 		
+		local fadeTime = 3
+		
+--~ 		print("vol " .. Player.loudness["vol"])
+--~ 		print("peace " .. the.peaceMusic:getVolume())
+--~ 		print("combat " .. the.combatMusic:getVolume())
+		
+		the.peaceMusic:setVolume(Player.loudness["vol"])
+		the.combatMusic:setVolume(1-Player.loudness["vol"])
+		
 		if self.skills[activeSkillNr]:isOutOfCombat() then
-			the.peaceMusic:setVolume(1)	
-			the.combatMusic:setVolume(0)
+			-- usage: tween(time_in_s, target_table, target_value)
+			tween(fadeTime,Player.loudness, {vol=1})	
+		else
+			tween(fadeTime,Player.loudness, {vol=0})
 		end
 	end,
 }
@@ -531,10 +545,10 @@ GameView = View:extend
 		the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
 		self.layers.ui:add(the.playerDetails)
 		
-		the.peaceMusic = playSound('/assets/audio/eots.ogg',1,long)
+		the.peaceMusic = playSound('/assets/audio/eots.ogg',1,long) -- Shadowbane Soundtrack: Eye of the Storm
 		the.peaceMusic:setLooping(true)	
 
-		the.combatMusic = playSound('/assets/audio/dos.mp3',0,long)
+		the.combatMusic = playSound('/assets/audio/dos.ogg',0,long) -- Shadowbane Soundtrack: Dance of Steel
 		the.combatMusic:setLooping(true)	
 
 		
