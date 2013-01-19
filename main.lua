@@ -243,7 +243,7 @@ Player = Animation:extend
 			end
 			
 			-- move cursor by axes 34
-			local curx = the.gamepads[1].axes[3]
+			local curx = the.gamepads[1].axes[5]
 			local cury = the.gamepads[1].axes[4]
 			local cur = vector.len(curx, cury)
 			if cur < 0.2 then 
@@ -295,7 +295,7 @@ Player = Animation:extend
 			end
 			
 			-- shoot?
-			doShoot = the.gamepads[1].axes[5] > 0.2
+			doShoot = the.gamepads[1].axes[3] > 0.2
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
 			if the.mouse:pressed('l') then doShoot = true end
 		
