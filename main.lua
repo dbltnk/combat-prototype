@@ -305,8 +305,14 @@ Player = Animation:extend
 			if the.keys:pressed('right', 'd') then dirx = 1 end
 			if the.keys:pressed('up', 'w') then diry = -1 end
 			if the.keys:pressed('down', 's') then diry = 1 end
-			
-			if the.keys:pressed('left', 'a','right', 'd','up', 'w','down', 's') and self:footstepsPossible()  then 
+
+			input.cursor.x = the.mouse.x
+			input.cursor.y = the.mouse.y
+		elseif input.getMode() == input.MODE_TOUCH then
+			-- TODO
+		end
+		
+		if ((the.gamepads[1]:pressed('left','right','up','down') and input.getMode() == input.MODE_GAMEPAD) or (the.keys:pressed('left', 'a','right', 'd','up', 'w','down', 's') and input.getMode() == input.MODE_MOUSE_KEYBOARD)) and self:footstepsPossible() then 
 			local footstep = Footstep:new{ 
 				x = self.x+17, y = self.y+15, 
 				rotation = self.rotation,
@@ -314,12 +320,6 @@ Player = Animation:extend
 			the.app.view.layers.ground:add(footstep)
 			the.footsteps[footstep] = true
 			self:makeStep()
-			end
-
-			input.cursor.x = the.mouse.x
-			input.cursor.y = the.mouse.y
-		elseif input.getMode() == input.MODE_TOUCH then
-			-- TODO
 		end
 		
 		-- move into direction?
