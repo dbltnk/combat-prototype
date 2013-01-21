@@ -467,6 +467,7 @@ PlayerDetails = Tile:extend
 	--~ image = '/assets/graphics/debugpoint.png',
 --~ }
 
+
 GameView = View:extend
 {
 	layers = {
@@ -478,9 +479,9 @@ GameView = View:extend
 	},
 
     onNew = function (self)
-		self:loadLayers('/assets/maps/desert/desert.lua')
+		self:loadLayers('/assets/maps/desert/desert.lua', true)
 		
-		-- specifiy render order
+		-- specify render order
 		self:add(self.layers.ground)
 		self:add(self.layers.characters)
 		self:add(self.layers.projectiles)
