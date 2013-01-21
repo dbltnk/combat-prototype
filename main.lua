@@ -473,6 +473,7 @@ GameView = View:extend
 		ground = Group:new(),
 		characters = Group:new(),
 		projectiles = Group:new(),
+		above = Group:new(),
 		ui = Group:new(),
 	},
 
@@ -483,12 +484,13 @@ GameView = View:extend
 		self:add(self.layers.ground)
 		self:add(self.layers.characters)
 		self:add(self.layers.projectiles)
+		self:add(self.layers.above)
 		self:add(self.layers.ui)
 		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
 		self.layers.characters:add(the.player)
-		self.layers.projectiles:add(self.trees)		
+		self.layers.above:add(self.trees)		
 		-- set spawn position
 		the.player.x = the.spawnpoint.x
 		the.player.y = the.spawnpoint.y
