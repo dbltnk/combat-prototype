@@ -405,7 +405,7 @@ Arrow = Tile:extend
 {
 	width = 32,
 	height = 32,
-	image = '/assets/graphics/arrow.png',
+	image = '/assets/graphics/skill_projectiles/skill_1.png',
     -- target.x target.y start.x start.y
 
 	onCollide = function(self, other, horizOverlap, vertOverlap)
