@@ -1,7 +1,10 @@
 STRICT = true
 DEBUG = true
 
+local profiler = require 'profiler'
+profiler.start('profile.out')
 require 'zoetrope'
+
 local vector = require 'vector'
 local utils = require 'utils'
 local config = require 'config'
@@ -550,7 +553,10 @@ the.app = App:new
 		if the.keys:justPressed ("f10") then self:toggleFullscreen() end
 
 		-- easy exit
-		if the.keys:pressed('escape') then os.exit() end
+		if the.keys:pressed('escape') then 
+			profiler.stop()
+			os.exit() 
+		end
 	end,
 
     onRun = function (self)

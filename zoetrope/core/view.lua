@@ -175,7 +175,7 @@ View = Group:extend{
 
 						local spr
 
-						if _G[obj.name] then
+						if obj.name and string.len(obj.name) > 0 and _G[obj.name] then
 							obj.properties.x = obj.x
 							obj.properties.y = obj.y
 							obj.properties.width = obj.width
