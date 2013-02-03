@@ -6,6 +6,8 @@ local vector = require 'vector'
 local utils = require 'utils'
 local config = require 'config'
 local input = require 'input'
+local tween = require 'tween'
+local action_definitions = require 'action_definitions'
 
 -- returns x,y
 function ScreenPosToWorldPos(x,y)
@@ -23,60 +25,139 @@ Skill = Class:extend
 {
 	nr = 0,	
 	timeout = 0,
+	combatTimer = 10,
+	lastUsed = -100000,
 	
-	lastUsed = 0,
+	-- here starts the effect/application
+	source = {
+		x = 0,
+		y = 0,
+		rotation = 0,
+		player = nil,
+	},
 	
+	isCasting = function (self)
+		return love.timer.getTime() - self.lastUsed < self.cast_time
+	end,
+
 	isPossibleToUse = function (self)
 		return love.timer.getTime() - self.lastUsed >= self.timeout
+	end,
+	
+	timeTillCastFinished = function (self)
+		return math.max(0, self.lastUsed + self.cast_time - love.timer.getTime())
 	end,
 	
 	timeTillPossibleToUse = function (self)
 		return math.max(0, self.lastUsed + self.timeout - love.timer.getTime())
 	end,
 	
-	use = function (self)
+	use = function (self, x, y, rotation, player)
+		print("SKILL", self.nr, "START USING")
+		
+		self.source.x = x
+		self.source.y = y
+		self.source.rotation = rotation
+		self.source.player = player
+		
 		self.lastUsed = love.timer.getTime()
-		if self.onUse then self:onUse() end
+		if self.onUse then 
+			-- call use after casttime timeout
+			the.app.view.timer:after(self.cast_time, function() 
+				print("SKILL", self.nr, "REALLY USE")
+				self:onUse() 
+			end)
+		end
 	end,
+}
+
+SkillFromDefintion = Skill:extend
+{
+	-- required
+	id = nil,
+	-- ---------------
+	definition = nil,
+
+	onNew = function (self) 
+		self.definition = action_definitions[self.id]
+		
+		if not self.definition then print("ERROR there is no skill with id", self.id) return end
+		
+		self.timeout = self.definition.timeout
+		self.cast_time = self.definition.cast_time
+		self.lastUsed = -10000000
+	end,
+	
+	onUse = function (self)
+		-- TODO process application
+		
+		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
+		
+		local cx,cy = self.source.x, self.source.y
+		-- mouse -> player vector
+		local dx,dy = cx - (worldMouseX), cy - (worldMouseY)
+		
+		self.rotation = math.atan2(dy, dx) - math.pi / 2
+		
+		local arrowvx, arrowvy = -dx, -dy
+		local l = vector.len(arrowvx, arrowvy)
+		arrowvx, arrowvy = vector.normalizeToLen(arrowvx, arrowvy, config.arrowspeed)
+		
+		-- assert: arrow size == player size
+		local arrow = Arrow:new{ 
+			x = self.source.x, 
+			y = self.source.y, 
+			rotation = self.source.rotation,
+			velocity = { x = arrowvx, y = arrowvy },
+			start = { x = self.source.x, y = self.source.y },
+			target = { x = worldMouseX, y = worldMouseY },
+		}
+		
+		the.app.view.layers.projectiles:add(arrow)
+		-- stores an arrow reference, arrows get stored in the key
+		the.arrows[arrow] = true
+		
+		playSound('/assets/audio/bow.wav', 1, 'short') -- source: http://opengameart.org/content/battle-sound-effects
+	end,
+
+	isOutOfCombat = function (self)
+		return love.timer.getTime() - self.lastUsed >= self.combatTimer
+	end,	
 }
 
 SkillIcon = Animation:extend
 {
 	width = 32,
 	height = 32,
-	image = '/assets/graphics/skills.png', -- source: http://opengameart.org/content/powers-icons
+	image = "/assets/graphics/action_icons/unknown.png",
 	sequences = 
 	{
-		skill_1 = { frames = {1}, fps = 1 },
-		skill_2 = { frames = {2}, fps = 1 },
-		skill_3 = { frames = {3}, fps = 1 },
-		skill_4 = { frames = {4}, fps = 1 },
-		skill_5 = { frames = {6}, fps = 1 },
-		
-		skill_6 = { frames = {7}, fps = 1 },
-		skill_7 = { frames = {8}, fps = 1 },
-		skill_8 = { frames = {10}, fps = 1 },
-		skill_9 = { frames = {11}, fps = 1 },
-		
-		skill_10 = { frames = {12}, fps = 1 },
-		skill_11 = { frames = {14}, fps = 1 },
-		skill_12 = { frames = {15}, fps = 1 },
-		skill_13 = { frames = {16}, fps = 1 },
+		available = { frames = {1}, fps = 1 },
+		casting = { frames = {1}, fps = 1 },
+		disabled = { frames = {1}, fps = 1 },
 	},
 	
 	onNew = function (self)
-		self:setSkill(1)
+		
 	end,
 	
-	setSkill = function (self, skill_nr)
-		self:play("skill_" .. skill_nr)
+	setSkill = function (self, image)
+		self.image = image
 	end,
 }
 
 SkillBar = Class:extend
 {
 	-- skill nrs
-	skills = {1,2,3,4,5,6},
+	skills = {
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+	},
 	
 	-- contains references to SkillIcon
 	skillIcons = {},
@@ -90,7 +171,7 @@ SkillBar = Class:extend
 	y = 600 - SkillIcon.height,
 	
 	onNew = function (self)
-		for index, skillNr in pairs(self.skills) do
+		for index, skillImage in pairs(self.skills) do
 			local icon = SkillIcon:new { x = 0, y = 0 }
 			the.ui:add(icon)
 			
@@ -135,8 +216,8 @@ SkillBar = Class:extend
 	setSkills = function (self, skills)
 		self.skills = skills
 		
-		for index, skillNr in pairs(self.skills) do
-			self.skillIcons[index]:setSkill(skillNr)
+		for index, skillImage in pairs(self.skills) do
+			self.skillIcons[index]:setSkill(skillImage)
 		end
 	end,
 	
@@ -145,7 +226,7 @@ SkillBar = Class:extend
 		for index, overlay in pairs(self.skillInactiveIcons) do
 			if the.player and the.player.skills and the.player.skills[index] then
 				local skill = the.player.skills[index]
-				overlay.visible = skill:isPossibleToUse () == false
+				overlay.visible = skill:isCasting() == false and skill:isPossibleToUse() == false
 			end
 		end
 		
@@ -153,9 +234,13 @@ SkillBar = Class:extend
 		for index, timeout in pairs(self.skillTimerText) do
 			if the.player and the.player.skills and the.player.skills[index] then
 				local skill = the.player.skills[index]
-				timeout.visible = skill:isPossibleToUse () == false
+				timeout.visible = skill:isCasting() or skill:isPossibleToUse() == false
 				
+				local c = skill:timeTillCastFinished()
 				local t = skill:timeTillPossibleToUse()
+				
+				if c > 0 then t = c end
+				
 				if t >= 10 then
 					timeout.text = string.format("%0.0f", t)
 				else
@@ -187,7 +272,18 @@ TargetDummy = Tile:extend
 Player = Animation:extend
 {
 	-- list of Skill
-	skills = {},
+	skills = {
+		"bow_shot",
+		"scythe_attack",
+		"bandage",
+		"sprint",
+		"fireball",
+		"shield_bash",
+		"life_leech",
+	},
+	
+
+	activeSkillNr = 1,
 	
 	width = 64,
 	height = 64,
@@ -197,7 +293,6 @@ Player = Animation:extend
 	{
 		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = config.animspeed },
 	},
-	
 	
 	lastFootstep = 0,
 	
@@ -209,14 +304,13 @@ Player = Animation:extend
 		self.lastFootstep = love.timer.getTime()
 	end,
 	
+	loudness = 1,	
+	loudness_is_fading = false,
 	
 	onNew = function (self)
-		self.skills[1] = Skill:new { timeout = 2, nr = 1, }
-		self.skills[2] = Skill:new { timeout = 0.1, nr = 2, }
-		self.skills[3] = Skill:new { timeout = 0.1, nr = 3, }
-		self.skills[4] = Skill:new { timeout = 0.1, nr = 4, }
-		self.skills[5] = Skill:new { timeout = 0.1, nr = 5, }
-		self.skills[6] = Skill:new { timeout = 0.1, nr = 6, }
+		for k,v in pairs(self.skills) do
+			self.skills[k] = SkillFromDefintion:new { nr = k, id = v }
+		end
 	end,
 	
 	onUpdate = function (self, elapsed)
@@ -228,7 +322,10 @@ Player = Animation:extend
 		-- -1->1, -1->1
 		local dirx, diry = 0,0
 		
+		local shootSkillNr = self.activeSkillNr
 		local doShoot = false
+		
+		tween.update(elapsed)
 		
 		if input.getMode() == input.MODE_GAMEPAD then
 			-- move player by axes 12
@@ -297,10 +394,19 @@ Player = Animation:extend
 			-- shoot?
 			doShoot = the.gamepads[1].axes[3] > 0.2
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
-			if the.mouse:pressed('l') then doShoot = true end
+			if the.mouse:pressed('l') then shootSkillNr = 1 doShoot = true end
+			if the.mouse:pressed('r') then shootSkillNr = 2 doShoot = true end
 		
 			if the.keys:pressed('shift') then speed = 1 else speed = 0 end -- to-do: in eine fähigkeit umwandeln (hotbar)
 			
+			if the.keys:pressed('1') then shootSkillNr = 3 doShoot = true end
+			if the.keys:pressed('2') then shootSkillNr = 4 doShoot = true end
+			if the.keys:pressed('3') then shootSkillNr = 5 doShoot = true end
+			if the.keys:pressed('4') then shootSkillNr = 6 doShoot = true end
+			if the.keys:pressed('5') then shootSkillNr = 7 doShoot = true end
+			if the.keys:pressed('6') then shootSkillNr = 8 doShoot = true end
+			if the.keys:pressed('7') then shootSkillNr = 9 doShoot = true end
+
 			if the.keys:pressed('left', 'a') then dirx = -1 end
 			if the.keys:pressed('right', 'd') then dirx = 1 end
 			if the.keys:pressed('up', 'w') then diry = -1 end
@@ -334,36 +440,22 @@ Player = Animation:extend
 			self:freeze(5)
 		end
 		
-		
 		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
-		
 		local cx,cy = self.x + self.width / 2, self.y + self.height / 2
 		-- mouse -> player vector
 		local dx,dy = cx - (worldMouseX), cy - (worldMouseY)
 		
 		self.rotation = math.atan2(dy, dx) - math.pi / 2
 		
-		local arrowvx, arrowvy = -dx, -dy
-		local l = vector.len(arrowvx, arrowvy)
-		arrowvx, arrowvy = vector.normalizeToLen(arrowvx, arrowvy, config.arrowspeed)
+		local isCasting = false
+		for k,v in pairs(self.skills) do
+			isCasting = isCasting or v:isCasting()
+		end
 		
-		local activeSkillNr = 1
-		
-		if doShoot and self.skills[activeSkillNr]:isPossibleToUse()  then
-			self.skills[activeSkillNr]:use()
-		
-			-- assert: arrow size == player size
-			local arrow = Arrow:new{ 
-				x = self.x, y = self.y, 
-				rotation = self.rotation,
-				velocity = { x = arrowvx, y = arrowvy },
-				start = { x = self.x, y = self.y },
-				target = { x = worldMouseX, y = worldMouseY },
-			}
-			
-			the.app.view.layers.projectiles:add(arrow)
-			-- stores an arrow reference, arrows get stored in the key
-			the.arrows[arrow] = true
+		if isCasting == false and doShoot and self.skills[shootSkillNr] and 
+			self.skills[shootSkillNr]:isPossibleToUse()
+		then
+			self.skills[shootSkillNr]:use(cx, cy, self.rotation, self)
 		end
 		
 	end,
@@ -405,7 +497,7 @@ Arrow = Tile:extend
 {
 	width = 32,
 	height = 32,
-	image = '/assets/graphics/arrow.png',
+	image = '/assets/graphics/action_projectiles/bow_shot_projectile.png',
     -- target.x target.y start.x start.y
 
 	onCollide = function(self, other, horizOverlap, vertOverlap)
@@ -467,31 +559,34 @@ PlayerDetails = Tile:extend
 	--~ image = '/assets/graphics/debugpoint.png',
 --~ }
 
+
 GameView = View:extend
 {
 	layers = {
 		ground = Group:new(),
 		characters = Group:new(),
 		projectiles = Group:new(),
+		above = Group:new(),
 		ui = Group:new(),
 	},
 
     onNew = function (self)
-		self:loadLayers('/assets/maps/desert/desert.lua')
+		self:loadLayers('/assets/maps/desert/desert.lua', true)
 		
 		self.collision.visible = false
 		self.objects.visible = false
 		
-		-- specifiy render order
+		-- specify render order
 		self:add(self.layers.ground)
 		self:add(self.layers.characters)
 		self:add(self.layers.projectiles)
+		self:add(self.layers.above)
 		self:add(self.layers.ui)
 		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
 		self.layers.characters:add(the.player)
-		self.layers.projectiles:add(self.trees)		
+		self.layers.above:add(self.trees)		
 		-- set spawn position
 		the.player.x = the.spawnpoint.x
 		the.player.y = the.spawnpoint.y
@@ -518,9 +613,24 @@ GameView = View:extend
 		self:add(the.ui)
 		
 		the.skillbar = SkillBar:new()
+		-- set skillbar images
+		local skills = {}
+		for k,v in pairs(the.player.skills) do
+			print(k, v)
+			table.insert(skills, action_definitions[v.id].icon)
+		end
+		the.skillbar:setSkills(skills)
 		
 		the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
 		self.layers.ui:add(the.playerDetails)
+		
+		the.peaceMusic = playSound('/assets/audio/eots.ogg', 1, 'long') -- Shadowbane Soundtrack: Eye of the Storm
+		the.peaceMusic:setLooping(true)
+
+		the.combatMusic = playSound('/assets/audio/dos.ogg', 0, 'long') -- Shadowbane Soundtrack: Dance of Steel
+		the.combatMusic:setLooping(true)
+
+		
     end,
     
     onUpdate = function (self, elapsed)
