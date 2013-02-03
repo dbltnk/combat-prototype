@@ -6,6 +6,7 @@ local vector = require 'vector'
 local utils = require 'utils'
 local config = require 'config'
 local input = require 'input'
+local action_definitions = require 'action_definitions'
 
 -- returns x,y
 function ScreenPosToWorldPos(x,y)
@@ -23,20 +24,97 @@ Skill = Class:extend
 {
 	nr = 0,	
 	timeout = 0,
-	
+	cast_time = 0,
 	lastUsed = 0,
+
+	-- here starts the effect/application
+	source = {
+		x = 0,
+		y = 0,
+		rotation = 0,
+		player = nil,
+	},
+	
+	isCasting = function (self)
+		return love.timer.getTime() - self.lastUsed < self.cast_time
+	end,
 	
 	isPossibleToUse = function (self)
 		return love.timer.getTime() - self.lastUsed >= self.timeout
+	end,
+	
+	timeTillCastFinished = function (self)
+		return math.max(0, self.lastUsed + self.cast_time - love.timer.getTime())
 	end,
 	
 	timeTillPossibleToUse = function (self)
 		return math.max(0, self.lastUsed + self.timeout - love.timer.getTime())
 	end,
 	
-	use = function (self)
+	use = function (self, x, y, rotation, player)
+		print("SKILL", self.nr, "START USING")
+		
+		self.source.x = x
+		self.source.y = y
+		self.source.rotation = rotation
+		self.source.player = player
+		
 		self.lastUsed = love.timer.getTime()
-		if self.onUse then self:onUse() end
+		if self.onUse then 
+			-- call use after casttime timeout
+			the.app.view.timer:after(self.cast_time, function() 
+				print("SKILL", self.nr, "REALLY USE")
+				self:onUse() 
+			end)
+		end
+	end,
+}
+
+SkillFromDefintion = Skill:extend
+{
+	-- required
+	id = nil,
+	-- ---------------
+	definition = nil,
+
+	onNew = function (self) 
+		self.definition = action_definitions[self.id]
+		
+		if not self.definition then print("ERROR there is no skill with id", self.id) return end
+		
+		self.timeout = self.definition.timeout
+		self.cast_time = self.definition.cast_time
+		self.lastUsed = -10000000
+	end,
+	
+	onUse = function (self)
+		-- TODO process application
+		
+		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
+		
+		local cx,cy = self.source.x, self.source.y
+		-- mouse -> player vector
+		local dx,dy = cx - (worldMouseX), cy - (worldMouseY)
+		
+		self.rotation = math.atan2(dy, dx) - math.pi / 2
+		
+		local arrowvx, arrowvy = -dx, -dy
+		local l = vector.len(arrowvx, arrowvy)
+		arrowvx, arrowvy = vector.normalizeToLen(arrowvx, arrowvy, config.arrowspeed)
+		
+		-- assert: arrow size == player size
+		local arrow = Arrow:new{ 
+			x = self.source.x, 
+			y = self.source.y, 
+			rotation = self.source.rotation,
+			velocity = { x = arrowvx, y = arrowvy },
+			start = { x = self.source.x, y = self.source.y },
+			target = { x = worldMouseX, y = worldMouseY },
+		}
+		
+		the.app.view.layers.projectiles:add(arrow)
+		-- stores an arrow reference, arrows get stored in the key
+		the.arrows[arrow] = true
 	end,
 }
 
@@ -145,7 +223,7 @@ SkillBar = Class:extend
 		for index, overlay in pairs(self.skillInactiveIcons) do
 			if the.player and the.player.skills and the.player.skills[index] then
 				local skill = the.player.skills[index]
-				overlay.visible = skill:isPossibleToUse () == false
+				overlay.visible = skill:isCasting() == false and skill:isPossibleToUse() == false
 			end
 		end
 		
@@ -153,9 +231,13 @@ SkillBar = Class:extend
 		for index, timeout in pairs(self.skillTimerText) do
 			if the.player and the.player.skills and the.player.skills[index] then
 				local skill = the.player.skills[index]
-				timeout.visible = skill:isPossibleToUse () == false
+				timeout.visible = skill:isCasting() or skill:isPossibleToUse() == false
 				
+				local c = skill:timeTillCastFinished()
 				local t = skill:timeTillPossibleToUse()
+				
+				if c > 0 then t = c end
+				
 				if t >= 10 then
 					timeout.text = string.format("%0.0f", t)
 				else
@@ -187,7 +269,10 @@ TargetDummy = Tile:extend
 Player = Animation:extend
 {
 	-- list of Skill
-	skills = {},
+	skills = {
+		"heal_self",
+		"fireball",
+	},
 	
 	width = 64,
 	height = 64,
@@ -197,7 +282,6 @@ Player = Animation:extend
 	{
 		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = config.animspeed },
 	},
-	
 	
 	lastFootstep = 0,
 	
@@ -209,10 +293,9 @@ Player = Animation:extend
 		self.lastFootstep = love.timer.getTime()
 	end,
 	
-	
 	onNew = function (self)
-		self.skills[1] = Skill:new { timeout = 2, nr = 1, }
-		self.skills[2] = Skill:new { timeout = 0.1, nr = 2, }
+		self.skills[1] = SkillFromDefintion:new { nr = 1, id = "heal_self" }
+		self.skills[2] = SkillFromDefintion:new { nr = 2, id = "fireball" }
 		self.skills[3] = Skill:new { timeout = 0.1, nr = 3, }
 		self.skills[4] = Skill:new { timeout = 0.1, nr = 4, }
 		self.skills[5] = Skill:new { timeout = 0.1, nr = 5, }
@@ -334,36 +417,17 @@ Player = Animation:extend
 			self:freeze(5)
 		end
 		
-		
 		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
-		
 		local cx,cy = self.x + self.width / 2, self.y + self.height / 2
 		-- mouse -> player vector
 		local dx,dy = cx - (worldMouseX), cy - (worldMouseY)
 		
 		self.rotation = math.atan2(dy, dx) - math.pi / 2
 		
-		local arrowvx, arrowvy = -dx, -dy
-		local l = vector.len(arrowvx, arrowvy)
-		arrowvx, arrowvy = vector.normalizeToLen(arrowvx, arrowvy, config.arrowspeed)
-		
 		local activeSkillNr = 1
 		
 		if doShoot and self.skills[activeSkillNr]:isPossibleToUse()  then
-			self.skills[activeSkillNr]:use()
-		
-			-- assert: arrow size == player size
-			local arrow = Arrow:new{ 
-				x = self.x, y = self.y, 
-				rotation = self.rotation,
-				velocity = { x = arrowvx, y = arrowvy },
-				start = { x = self.x, y = self.y },
-				target = { x = worldMouseX, y = worldMouseY },
-			}
-			
-			the.app.view.layers.projectiles:add(arrow)
-			-- stores an arrow reference, arrows get stored in the key
-			the.arrows[arrow] = true
+			self.skills[activeSkillNr]:use(cx, cy, self.rotation, self)
 		end
 		
 	end,

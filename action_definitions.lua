@@ -15,7 +15,7 @@ action_definitions = {
 			effects = {
 				{effect_type = "heal", str = 60},
 			},
-		},	
+		},
 	},
 	-- -----------------------------------------------------------------------------------
 	fireball = {
@@ -43,3 +43,6 @@ action_definitions = {
 	
 	
 }
+
+
+return action_definitions
