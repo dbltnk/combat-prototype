@@ -27,7 +27,7 @@ Skill = Class:extend
 	timeout = 0,
 	combatTimer = 10,
 	
-	lastUsed = 0,
+	lastUsed = -100000,
 	
 	isPossibleToUse = function (self)
 		return love.timer.getTime() - self.lastUsed >= self.timeout
@@ -216,7 +216,8 @@ Player = Animation:extend
 		self.lastFootstep = love.timer.getTime()
 	end,
 	
-	loudness = {vol=1},	
+	loudness = 1,	
+	loudness_is_fading = false,
 	
 	onNew = function (self)
 		self.skills[1] = Skill:new { timeout = 2, nr = 1, }
@@ -381,19 +382,29 @@ Player = Animation:extend
 		-- combat music fade in/out 		
 		local fadeTime = 3
 		
---~ 		print("vol " .. Player.loudness["vol"])
---~ 		print("peace " .. the.peaceMusic:getVolume())
---~ 		print("combat " .. the.combatMusic:getVolume())
+		--~ print("vol " .. self.loudness)
+		--~ print("peace " .. the.peaceMusic:getVolume())
+		--~ print("combat " .. the.combatMusic:getVolume())
 		
-		the.peaceMusic:setVolume(Player.loudness["vol"])
-		the.combatMusic:setVolume(1-Player.loudness["vol"])
-		
-		if self.skills[activeSkillNr]:isOutOfCombat() then
-			-- usage: tween(time_in_s, target_table, target_value)
-			tween(fadeTime,Player.loudness, {vol=1})	
-		else
-			tween(fadeTime,Player.loudness, {vol=0})
+		-- music handling
+		local isInCombat = false
+		for k,v in pairs(self.skills) do
+			isInCombat = isInCombat or (v:isOutOfCombat() == false)
 		end
+		
+		local newLoundness = (isInCombat and 0) or 1
+		--~ local newLoundness = 1
+		--~ if isInCombat then newLoundness = 0 end
+		
+		-- not fading and wrong loudness?
+		if self.loudness_is_fading == false and math.abs(newLoundness - self.loudness) > 0.01 then
+			-- start fade
+			self.loudness_is_fading = true
+			tween(fadeTime, self, {loudness = newLoundness}, nil, function() self.loudness_is_fading = false end)
+		end
+
+		the.peaceMusic:setVolume(self.loudness)
+		the.combatMusic:setVolume(1 - self.loudness)
 	end,
 }
 
@@ -547,11 +558,11 @@ GameView = View:extend
 		the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
 		self.layers.ui:add(the.playerDetails)
 		
-		the.peaceMusic = playSound('/assets/audio/eots.ogg',1,long) -- Shadowbane Soundtrack: Eye of the Storm
-		the.peaceMusic:setLooping(true)	
+		the.peaceMusic = playSound('/assets/audio/eots.ogg', 1, 'long') -- Shadowbane Soundtrack: Eye of the Storm
+		the.peaceMusic:setLooping(true)
 
-		the.combatMusic = playSound('/assets/audio/dos.ogg',0,long) -- Shadowbane Soundtrack: Dance of Steel
-		the.combatMusic:setLooping(true)	
+		the.combatMusic = playSound('/assets/audio/dos.ogg', 0, 'long') -- Shadowbane Soundtrack: Dance of Steel
+		the.combatMusic:setLooping(true)
 
 		
     end,
@@ -565,7 +576,7 @@ GameView = View:extend
 		
 		for arrow,v in pairs(the.arrows) do
 			self.buildings:subcollide(arrow)
-			self.collision:collide(arrow)			
+			self.collision:collide(arrow)
 		end
     end,
 }
