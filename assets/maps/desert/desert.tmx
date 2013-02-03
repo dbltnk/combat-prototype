@@ -78,9 +78,6 @@
   </object>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
-  <object x="1742" y="2285">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
   <object x="1421" y="2157">
    <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
   </object>
@@ -94,12 +91,6 @@
    <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
   </object>
   <object x="1324" y="2861">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="1485" y="2957">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="1709" y="2700">
    <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
   </object>
   <object x="259" y="1487">
@@ -201,12 +192,6 @@
   <object x="1099" y="2907">
    <polygon points="0,0 0,-94 68,-153 131,-95 133,0"/>
   </object>
-  <object x="1676" y="2875">
-   <polygon points="0,0 0,-94 68,-153 131,-95 133,0"/>
-  </object>
-  <object x="1867" y="2587">
-   <polygon points="0,0 0,-94 68,-153 131,-95 133,0"/>
-  </object>
   <object x="2126" y="1308">
    <polygon points="0,0 0,-94 68,-153 131,-95 133,0"/>
   </object>
@@ -228,5 +213,13 @@
   <object x="2667" y="1307">
    <polygon points="0,0 0,-94 68,-153 131,-95 133,0"/>
   </object>
+  <object x="188" y="101" width="253" height="176"/>
+  <object x="314" y="163" width="316" height="272"/>
+  <object x="545" y="72" width="228" height="186"/>
+  <object x="1741" y="2276" width="31" height="26"/>
+  <object x="1870" y="2492" width="129" height="93"/>
+  <object x="1680" y="2775" width="128" height="95"/>
+  <object x="1713" y="2695" width="26" height="21"/>
+  <object x="1491" y="2953" width="25" height="20"/>
  </objectgroup>
 </map>

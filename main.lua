@@ -479,6 +479,9 @@ GameView = View:extend
     onNew = function (self)
 		self:loadLayers('/assets/maps/desert/desert.lua')
 		
+		self.collision.visible = false
+		self.objects.visible = false
+		
 		-- specifiy render order
 		self:add(self.layers.ground)
 		self:add(self.layers.characters)
@@ -529,7 +532,7 @@ GameView = View:extend
 		
 		for arrow,v in pairs(the.arrows) do
 			self.buildings:subcollide(arrow)
-			self.collision:collide(arrow)			
+			self.collision:collide(arrow)
 		end
     end,
 }
