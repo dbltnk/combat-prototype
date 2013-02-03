@@ -79,11 +79,13 @@ View = Group:extend{
 	--
 	-- Arguments:
 	--		file - filename to load
+	--		isSpritesBatched - true if all sprites should be batched into one spritebatch, 
+	--							it is not possible to address the tiles separately
 	--
 	-- Returns:
 	--		nothing
 
-	loadLayers = function (self, file)
+	loadLayers = function (self, file, isSpritesBatched)
 		local ok, data = pcall(loadstring(Cached:text(file)))
 		local _, _, directory = string.find(file, '^(.*[/\\])')
 		directory = directory or ''
@@ -125,7 +127,7 @@ View = Group:extend{
 					-- load tiles
 
 					for _, tiles in pairs(data.tilesets) do
-						map:loadTiles(directory .. tiles.image, Tile, tiles.firstgid)
+						map:loadTiles(directory .. tiles.image, spriteClass or Tile, tiles.firstgid)
 
 						-- and mix in properties where applicable
 
@@ -150,6 +152,8 @@ View = Group:extend{
 							y = y + 1
 						end
 					end
+
+					map:calculateSpriteBatches()
 
 					self[layer.name] = map
 					self:add(map)

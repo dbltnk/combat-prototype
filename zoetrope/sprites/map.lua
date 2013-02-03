@@ -262,6 +262,56 @@ Map = Sprite:extend{
 		end
 	end,
 
+	batches = nil,
+
+	calculateSpriteBatches = function (self)
+		local mapW, mapH = #self.map, #self.map[1]
+		local spritesByImageMap = {}
+		
+		-- kill existing batches
+		self.batches = {}
+		
+		-- collect images
+		for drawY = 1, mapW do
+			for drawX = 1, mapH do
+				local sprite = self.sprites[self.map[drawX][drawY]]
+
+				if sprite and sprite.visible then
+					if not spritesByImageMap[sprite.image] then 
+						spritesByImageMap[sprite.image] = {} 
+					end
+					
+					table.insert(spritesByImageMap[sprite.image], { 0 + (drawX - 1) * self.spriteWidth,
+												   0 + (drawY - 1) * self.spriteHeight, sprite })
+				end
+			end
+		end
+		
+		-- build batch
+		for image, batch in pairs(spritesByImageMap) do
+			local imgObj = Cached:image(image)
+			local imgW, imgH = imgObj:getWidth(), imgObj:getHeight()
+			local sb = love.graphics.newSpriteBatch( imgObj, #batch )
+			sb:bind()
+			for k, batchedSprite in pairs(batch) do
+				local spriteX, spriteY, sprite = unpack(batchedSprite)
+				local quad = love.graphics.newQuad(sprite.imageOffset.x, sprite.imageOffset.y,
+											   sprite.width, sprite.height,
+											   imgW, imgH)
+				sb:addq( quad, spriteX, spriteY, 0 )
+			end
+			sb:unbind()
+			
+			table.insert(self.batches, sb)
+		end
+	end,
+	
+	drawSpriteBatches = function (self, x, y)
+		for k, batch in pairs(self.batches) do
+			love.graphics.draw( batch, x, y, 0 )
+		end
+	end,
+
 	draw = function (self, x, y)
 		-- lock our x/y coordinates to integers
 		-- to avoid gaps in the tiles
@@ -271,6 +321,12 @@ Map = Sprite:extend{
 		if not self.visible or self.alpha <= 0 then return end
 		if not self.spriteWidth or not self.spriteHeight then return end
 		
+		if self.batches ~= nil then
+			self:drawSpriteBatches(x,y) 
+			Sprite.draw(self)
+			return
+		end
+
 		-- determine drawing bounds
 		-- we draw to fill the entire app windoow
 		
