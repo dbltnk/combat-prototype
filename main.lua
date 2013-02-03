@@ -122,39 +122,35 @@ SkillIcon = Animation:extend
 {
 	width = 32,
 	height = 32,
-	image = '/assets/graphics/skills.png', -- source: http://opengameart.org/content/powers-icons
+	image = "/assets/graphics/action_icons/unknown.png",
 	sequences = 
 	{
-		skill_1 = { frames = {1}, fps = 1 },
-		skill_2 = { frames = {2}, fps = 1 },
-		skill_3 = { frames = {3}, fps = 1 },
-		skill_4 = { frames = {4}, fps = 1 },
-		skill_5 = { frames = {6}, fps = 1 },
-		
-		skill_6 = { frames = {7}, fps = 1 },
-		skill_7 = { frames = {8}, fps = 1 },
-		skill_8 = { frames = {10}, fps = 1 },
-		skill_9 = { frames = {11}, fps = 1 },
-		
-		skill_10 = { frames = {12}, fps = 1 },
-		skill_11 = { frames = {14}, fps = 1 },
-		skill_12 = { frames = {15}, fps = 1 },
-		skill_13 = { frames = {16}, fps = 1 },
+		available = { frames = {1}, fps = 1 },
+		casting = { frames = {1}, fps = 1 },
+		disabled = { frames = {1}, fps = 1 },
 	},
 	
 	onNew = function (self)
-		self:setSkill(1)
+		
 	end,
 	
-	setSkill = function (self, skill_nr)
-		self:play("skill_" .. skill_nr)
+	setSkill = function (self, image)
+		self.image = image
 	end,
 }
 
 SkillBar = Class:extend
 {
 	-- skill nrs
-	skills = {1,2,3,4,5,6},
+	skills = {
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+	},
 	
 	-- contains references to SkillIcon
 	skillIcons = {},
@@ -168,7 +164,7 @@ SkillBar = Class:extend
 	y = 600 - SkillIcon.height,
 	
 	onNew = function (self)
-		for index, skillNr in pairs(self.skills) do
+		for index, skillImage in pairs(self.skills) do
 			local icon = SkillIcon:new { x = 0, y = 0 }
 			the.ui:add(icon)
 			
@@ -213,8 +209,8 @@ SkillBar = Class:extend
 	setSkills = function (self, skills)
 		self.skills = skills
 		
-		for index, skillNr in pairs(self.skills) do
-			self.skillIcons[index]:setSkill(skillNr)
+		for index, skillImage in pairs(self.skills) do
+			self.skillIcons[index]:setSkill(skillImage)
 		end
 	end,
 	
@@ -270,9 +266,17 @@ Player = Animation:extend
 {
 	-- list of Skill
 	skills = {
-		"heal_self",
+		"bow_shot",
+		"scythe_attack",
+		"bandage",
+		"sprint",
 		"fireball",
+		"shield_bash",
+		"life_leech",
 	},
+	
+
+	activeSkillNr = 1,
 	
 	width = 64,
 	height = 64,
@@ -294,12 +298,9 @@ Player = Animation:extend
 	end,
 	
 	onNew = function (self)
-		self.skills[1] = SkillFromDefintion:new { nr = 1, id = "heal_self" }
-		self.skills[2] = SkillFromDefintion:new { nr = 2, id = "fireball" }
-		self.skills[3] = Skill:new { timeout = 0.1, nr = 3, }
-		self.skills[4] = Skill:new { timeout = 0.1, nr = 4, }
-		self.skills[5] = Skill:new { timeout = 0.1, nr = 5, }
-		self.skills[6] = Skill:new { timeout = 0.1, nr = 6, }
+		for k,v in pairs(self.skills) do
+			self.skills[k] = SkillFromDefintion:new { nr = k, id = v }
+		end
 	end,
 	
 	onUpdate = function (self, elapsed)
@@ -311,6 +312,7 @@ Player = Animation:extend
 		-- -1->1, -1->1
 		local dirx, diry = 0,0
 		
+		local shootSkillNr = self.activeSkillNr
 		local doShoot = false
 		
 		if input.getMode() == input.MODE_GAMEPAD then
@@ -380,10 +382,19 @@ Player = Animation:extend
 			-- shoot?
 			doShoot = the.gamepads[1].axes[3] > 0.2
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
-			if the.mouse:pressed('l') then doShoot = true end
+			if the.mouse:pressed('l') then shootSkillNr = 1 doShoot = true end
+			if the.mouse:pressed('r') then shootSkillNr = 2 doShoot = true end
 		
 			if the.keys:pressed('shift') then speed = 1 else speed = 0 end -- to-do: in eine fähigkeit umwandeln (hotbar)
 			
+			if the.keys:pressed('1') then shootSkillNr = 3 doShoot = true end
+			if the.keys:pressed('2') then shootSkillNr = 4 doShoot = true end
+			if the.keys:pressed('3') then shootSkillNr = 5 doShoot = true end
+			if the.keys:pressed('4') then shootSkillNr = 6 doShoot = true end
+			if the.keys:pressed('5') then shootSkillNr = 7 doShoot = true end
+			if the.keys:pressed('6') then shootSkillNr = 8 doShoot = true end
+			if the.keys:pressed('7') then shootSkillNr = 9 doShoot = true end
+
 			if the.keys:pressed('left', 'a') then dirx = -1 end
 			if the.keys:pressed('right', 'd') then dirx = 1 end
 			if the.keys:pressed('up', 'w') then diry = -1 end
@@ -424,10 +435,15 @@ Player = Animation:extend
 		
 		self.rotation = math.atan2(dy, dx) - math.pi / 2
 		
-		local activeSkillNr = 1
+		local isCasting = false
+		for k,v in pairs(self.skills) do
+			isCasting = isCasting or v:isCasting()
+		end
 		
-		if doShoot and self.skills[activeSkillNr]:isPossibleToUse()  then
-			self.skills[activeSkillNr]:use(cx, cy, self.rotation, self)
+		if isCasting == false and doShoot and self.skills[shootSkillNr] and 
+			self.skills[shootSkillNr]:isPossibleToUse()
+		then
+			self.skills[shootSkillNr]:use(cx, cy, self.rotation, self)
 		end
 		
 	end,
@@ -469,7 +485,7 @@ Arrow = Tile:extend
 {
 	width = 32,
 	height = 32,
-	image = '/assets/graphics/skill_projectiles/skill_1.png',
+	image = '/assets/graphics/action_projectiles/bow_shot_projectile.png',
     -- target.x target.y start.x start.y
 
 	onCollide = function(self, other, horizOverlap, vertOverlap)
@@ -582,6 +598,13 @@ GameView = View:extend
 		self:add(the.ui)
 		
 		the.skillbar = SkillBar:new()
+		-- set skillbar images
+		local skills = {}
+		for k,v in pairs(the.player.skills) do
+			print(k, v)
+			table.insert(skills, action_definitions[v.id].icon)
+		end
+		the.skillbar:setSkills(skills)
 		
 		the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
 		self.layers.ui:add(the.playerDetails)
@@ -596,7 +619,7 @@ GameView = View:extend
 		
 		for arrow,v in pairs(the.arrows) do
 			self.buildings:subcollide(arrow)
-			self.collision:collide(arrow)			
+			self.collision:collide(arrow)
 		end
     end,
 }
