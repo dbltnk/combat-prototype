@@ -9,6 +9,8 @@ local input = require 'input'
 local tween = require 'tween'
 local action_definitions = require 'action_definitions'
 
+volume = 0.3
+
 -- returns x,y
 function ScreenPosToWorldPos(x,y)
 	local vx,vy = vector.mul(the.view.translate.x, the.view.translate.y, -1)
@@ -304,7 +306,7 @@ Player = Animation:extend
 		self.lastFootstep = love.timer.getTime()
 	end,
 	
-	loudness = 1,	
+	loudness = volume,	
 	loudness_is_fading = false,
 	
 	onNew = function (self)
@@ -586,7 +588,8 @@ GameView = View:extend
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
 		self.layers.characters:add(the.player)
-		self.layers.above:add(self.trees)		
+		self.layers.above:add(self.trees)	
+		self.layers.above:add(self.buildings)		
 		-- set spawn position
 		the.player.x = the.spawnpoint.x
 		the.player.y = the.spawnpoint.y
@@ -621,10 +624,10 @@ GameView = View:extend
 		end
 		the.skillbar:setSkills(skills)
 		
-		the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
-		self.layers.ui:add(the.playerDetails)
+		--the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
+		--self.layers.ui:add(the.playerDetails)
 		
-		the.peaceMusic = playSound('/assets/audio/eots.ogg', 1, 'long') -- Shadowbane Soundtrack: Eye of the Storm
+		the.peaceMusic = playSound('/assets/audio/eots.ogg', volume, 'long') -- Shadowbane Soundtrack: Eye of the Storm
 		the.peaceMusic:setLooping(true)
 
 		the.combatMusic = playSound('/assets/audio/dos.ogg', 0, 'long') -- Shadowbane Soundtrack: Dance of Steel
@@ -637,11 +640,11 @@ GameView = View:extend
 		the.skillbar:onUpdate(elapsed)
 		
 		self.collision:displace(the.player)
-		self.buildings:subdisplace(the.player)
+		self.landscape:subdisplace(the.player)
 		self.water:subdisplace(the.player)
 		
 		for arrow,v in pairs(the.arrows) do
-			self.buildings:subcollide(arrow)
+			self.landscape:subcollide(arrow)
 			self.collision:collide(arrow)
 		end
     end,
