@@ -397,7 +397,7 @@ Player = Animation:extend
 			-- shoot?
 			--doShoot = the.gamepads[1].axes[3] > 0.2
 			if the.gamepads[1].axes[3] > 0.2 then shootSkillNr = 1 doShoot = true end
-			--if the.gamepads[1]:pressed(3) then shootSkillNr = 2 doShoot = true end
+			--if the.gamepads[1].axes[6] > 0.2 then shootSkillNr = 2 doShoot = true end
 			if the.gamepads[1]:pressed(1) then shootSkillNr = 3 doShoot = true end
 			if the.gamepads[1]:pressed(2) then shootSkillNr = 4 doShoot = true end
 			if the.gamepads[1]:pressed(3) then shootSkillNr = 5 doShoot = true end
@@ -406,8 +406,13 @@ Player = Animation:extend
 --~ 			if the.gamepads[1]:pressed(6) then shootSkillNr = 8 doShoot = true end
 --~ 			if the.gamepads[1]:pressed(7) then shootSkillNr = 9 doShoot = true end
 			
-			
-			
+-- debugging code for gamepad's missing axis 6 aka shoulder button R			
+--~ 			if the.gamepads[1].axes[1] > 0.2 then print("axes 1:  " .. the.gamepads[1].axes[1]) end
+--~ 			if the.gamepads[1].axes[2] > 0.2 then print("axes 2:  " .. the.gamepads[1].axes[2]) end
+--~ 			if the.gamepads[1].axes[3] > 0.2 then print("axes 3:  " .. the.gamepads[1].axes[3]) end
+--~ 			if the.gamepads[1].axes[4] > 0.2 then print("axes 4:  " .. the.gamepads[1].axes[4]) end
+--~ 			if the.gamepads[1].axes[5] > 0.2 then print("axes 5:  " .. the.gamepads[1].axes[5]) end		
+		--	if the.gamepads[1].axes[6] > 0.2 then print("axes 6:  " .. the.gamepads[1].axes[6]) end
 			
 			
 			
@@ -447,7 +452,8 @@ Player = Animation:extend
 		
 		-- move into direction?
 		if vector.len(dirx, diry) > 0 then
-			local s = utils.mapIntoRange (speed, 0, 1, config.walkspeed, config.runspeed)
+			-- replace second 0 by a 1 to toggle runspeed to analog
+			local s = utils.mapIntoRange (speed, 0, 0, config.walkspeed, config.runspeed)
 			self.velocity.x, self.velocity.y = vector.normalizeToLen(dirx, diry, s)
 			
 			local animspeed = utils.mapIntoRange (speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
@@ -674,7 +680,7 @@ the.app = App:new
 	onUpdate = function (self, elapsed)
 		-- set input mode
 		if the.keys:justPressed ("f1") then print("input mode: mouse+keyboard") input.setMode (input.MODE_MOUSE_KEYBOARD) end
-		if the.keys:justPressed ("f2") then print("input mode: gamepad") input.setMode (input.MODE_GAMEPAD) end
+		if the.keys:justPressed ("f2") and the.gamepads[1].name ~= "NO DEVICE CONNECTED" then print("input mode: gamepad") input.setMode (input.MODE_GAMEPAD) end
 		if the.keys:justPressed ("f3") then print("input mode: touch") input.setMode (input.MODE_TOUCH) end	
 		
 		-- toggle fullscreen
