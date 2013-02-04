@@ -158,7 +158,7 @@ SkillBar = Class:extend
 		"/assets/graphics/action_icons/unknown.png",
 		"/assets/graphics/action_icons/unknown.png",
 		"/assets/graphics/action_icons/unknown.png",
-		"/assets/graphics/action_icons/unknown.png",
+--~ 		"/assets/graphics/action_icons/unknown.png",
 	},
 	
 	-- contains references to SkillIcon
@@ -281,7 +281,7 @@ Player = Animation:extend
 		"sprint",
 		"fireball",
 		"shield_bash",
-		"life_leech",
+--~ 		"life_leech",
 	},
 	
 
@@ -316,6 +316,7 @@ Player = Animation:extend
 	end,
 	
 	onUpdate = function (self, elapsed)
+	
 		self.velocity.x = 0
 		self.velocity.y = 0
 
@@ -394,25 +395,39 @@ Player = Animation:extend
 			end
 			
 			-- shoot?
-			doShoot = the.gamepads[1].axes[3] > 0.2
+			--doShoot = the.gamepads[1].axes[3] > 0.2
+			if the.gamepads[1].axes[3] > 0.2 then shootSkillNr = 1 doShoot = true end
+			--if the.gamepads[1]:pressed(3) then shootSkillNr = 2 doShoot = true end
+			if the.gamepads[1]:pressed(1) then shootSkillNr = 3 doShoot = true end
+			if the.gamepads[1]:pressed(2) then shootSkillNr = 4 doShoot = true end
+			if the.gamepads[1]:pressed(3) then shootSkillNr = 5 doShoot = true end
+			if the.gamepads[1]:pressed(4) then shootSkillNr = 6 doShoot = true end
+--~ 			if the.gamepads[1]:pressed(5) then shootSkillNr = 7 doShoot = true end
+--~ 			if the.gamepads[1]:pressed(6) then shootSkillNr = 8 doShoot = true end
+--~ 			if the.gamepads[1]:pressed(7) then shootSkillNr = 9 doShoot = true end
+			
+			
+			
+			
+			
+			
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
 			if the.mouse:pressed('l') then shootSkillNr = 1 doShoot = true end
 			if the.mouse:pressed('r') then shootSkillNr = 2 doShoot = true end
-		
-			if the.keys:pressed('shift') then speed = 1 else speed = 0 end -- to-do: in eine fähigkeit umwandeln (hotbar)
-			
 			if the.keys:pressed('1') then shootSkillNr = 3 doShoot = true end
 			if the.keys:pressed('2') then shootSkillNr = 4 doShoot = true end
 			if the.keys:pressed('3') then shootSkillNr = 5 doShoot = true end
 			if the.keys:pressed('4') then shootSkillNr = 6 doShoot = true end
-			if the.keys:pressed('5') then shootSkillNr = 7 doShoot = true end
-			if the.keys:pressed('6') then shootSkillNr = 8 doShoot = true end
-			if the.keys:pressed('7') then shootSkillNr = 9 doShoot = true end
+--~ 			if the.keys:pressed('5') then shootSkillNr = 7 doShoot = true end
+--~ 			if the.keys:pressed('6') then shootSkillNr = 8 doShoot = true end
+--~ 			if the.keys:pressed('7') then shootSkillNr = 9 doShoot = true end
 
 			if the.keys:pressed('left', 'a') then dirx = -1 end
 			if the.keys:pressed('right', 'd') then dirx = 1 end
 			if the.keys:pressed('up', 'w') then diry = -1 end
 			if the.keys:pressed('down', 's') then diry = 1 end
+			
+			-- if the.keys:pressed('shift') then speed = 1 else speed = 0 end -- to-do: in eine fähigkeit umwandeln (hotbar)
 
 			input.cursor.x = the.mouse.x
 			input.cursor.y = the.mouse.y
