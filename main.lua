@@ -95,7 +95,7 @@ SkillFromDefintion = Skill:extend
 		
 		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 		
-		local cx,cy = self.source.x, self.source.y
+		local cx,cy = the.player.x, the.player.y
 		-- mouse -> player vector
 		local dx,dy = cx - (worldMouseX), cy - (worldMouseY)
 		
@@ -107,8 +107,8 @@ SkillFromDefintion = Skill:extend
 		
 		-- assert: arrow size == player size
 		local arrow = Arrow:new{ 
-			x = self.source.x, 
-			y = self.source.y, 
+			x = the.player.x, 
+			y = the.player.y, 
 			rotation = self.source.rotation,
 			velocity = { x = arrowvx, y = arrowvy },
 			start = { x = self.source.x, y = self.source.y },
