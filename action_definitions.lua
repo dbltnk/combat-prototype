@@ -65,7 +65,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/sprint_particle.png"},
 			effects = {
-				{effect_type = "runspeed", str = 100, duration = 10},
+				{effect_type = "runspeed", str = 200, duration = 10},
 			},
 		},	
 	},

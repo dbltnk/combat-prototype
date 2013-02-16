@@ -134,6 +134,8 @@ Sprite = Class:extend{
 		self.active = false
 		self.visible = false
 		self.solid = false
+		
+		if self.onDie then self:onDie() end
 	end,
 
 	-- Method: revive

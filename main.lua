@@ -290,6 +290,12 @@ Player = Animation:extend
 		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = config.animspeed },
 	},
 	
+	-- if > 0 the player is not allowed to move
+	freezeMovementCounter = 0,
+	
+	-- if > 0 then player use this speed other than the normal one
+	speedOverride = 0,
+	
 	lastFootstep = 0,
 	
 	footstepsPossible = function (self)
@@ -320,6 +326,10 @@ Player = Animation:extend
 		elseif message_name == "runspeed" then
 			local str, duration = ...
 			print("SPEED", str, duration)
+			self.speedOverride = str
+			the.app.view.timer:after(duration, function()
+				self.speedOverride = 0
+			end)
 		end
 	end,
 	
@@ -461,7 +471,11 @@ Player = Animation:extend
 		-- move into direction?
 		if vector.len(dirx, diry) > 0 then
 			-- replace second 0 by a 1 to toggle runspeed to analog
-			local s = utils.mapIntoRange (speed, 0, 0, config.walkspeed, config.runspeed)
+			local s = config.walkspeed -- utils.mapIntoRange (speed, 0, 0, config.walkspeed, config.runspeed)
+			
+			-- patched speed?
+			if self.speedOverride and self.speedOverride > 0 then s = self.speedOverride end
+			
 			self.velocity.x, self.velocity.y = vector.normalizeToLen(dirx, diry, s)
 			
 			local animspeed = utils.mapIntoRange (speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
