@@ -9,19 +9,15 @@ local input = require 'input'
 local tween = require 'tween'
 local action_definitions = require 'action_definitions'
 
+local object_manager = require 'object_manager'
+local action_handling = require 'action_handling'
+local tools = require 'tools'
+
+require 'actions'
+
 volume = 0.3
 
--- returns x,y
-function ScreenPosToWorldPos(x,y)
-	local vx,vy = vector.mul(the.view.translate.x, the.view.translate.y, -1)
-	return vector.add(vx,vy, x,y)
-end
 
--- returns x,y
-function WorldPosToScreenPos(x,y)
-	local vx,vy = vector.mul(the.view.translate.x, the.view.translate.y, 1)
-	return vector.add(vx,vy, x,y)
-end
 
 Skill = Class:extend
 {
@@ -78,6 +74,7 @@ SkillFromDefintion = Skill:extend
 	-- required
 	id = nil,
 	-- ---------------
+	-- see action_definitions.lua
 	definition = nil,
 
 	onNew = function (self) 
@@ -91,35 +88,8 @@ SkillFromDefintion = Skill:extend
 	end,
 	
 	onUse = function (self)
-		-- TODO process application
-		
-		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
-		
-		local cx,cy = the.player.x, the.player.y
-		-- mouse -> player vector
-		local dx,dy = cx - (worldMouseX), cy - (worldMouseY)
-		
-		self.rotation = math.atan2(dy, dx) - math.pi / 2
-		
-		local arrowvx, arrowvy = -dx, -dy
-		local l = vector.len(arrowvx, arrowvy)
-		arrowvx, arrowvy = vector.normalizeToLen(arrowvx, arrowvy, config.arrowspeed)
-		
-		-- assert: arrow size == player size
-		local arrow = Arrow:new{ 
-			x = the.player.x, 
-			y = the.player.y, 
-			rotation = self.source.rotation,
-			velocity = { x = arrowvx, y = arrowvy },
-			start = { x = self.source.x, y = self.source.y },
-			target = { x = worldMouseX, y = worldMouseY },
-		}
-		
-		the.app.view.layers.projectiles:add(arrow)
-		-- stores an arrow reference, arrows get stored in the key
-		the.arrows[arrow] = true
-		
-		playSound('/assets/audio/bow.wav', 1, 'short') -- source: http://opengameart.org/content/battle-sound-effects
+		local startTarget = { oid = the.player.oid, x = the.player.x, y = the.player.y }
+		action_handling.start(self.definition.application, startTarget)
 	end,
 
 	isOutOfCombat = function (self)
@@ -351,7 +321,7 @@ Player = Animation:extend
 			else
 				-- adjust speed depending on cursor-player-distance
 				local speed = 0
-				local len = vector.lenFromTo (self.x, self.y, ScreenPosToWorldPos(input.cursor.x, input.cursor.y))
+				local len = vector.lenFromTo (self.x, self.y, tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y))
 				
 				if len < config.gamepad_cursor_near_distance - config.gamepad_cursor_near_border / 2 then
 					-- near
@@ -373,7 +343,7 @@ Player = Animation:extend
 			input.cursor.x, input.cursor.y = vector.add(input.cursor.x, input.cursor.y, curx, cury)
 
 			-- clamp cursor distance
-			local dx,dy = vector.fromTo (self.x, self.y, ScreenPosToWorldPos(input.cursor.x, input.cursor.y))
+			local dx,dy = vector.fromTo (self.x, self.y, tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y))
 			
 			if vector.len(dx, dy) > 0 then
 				local f = 4/5
@@ -391,7 +361,7 @@ Player = Animation:extend
 					dx, dy = vector.normalizeToLen (dx, dy, newL)
 				end
 
-				input.cursor.x, input.cursor.y = WorldPosToScreenPos(vector.add(self.x, self.y, dx,dy))
+				input.cursor.x, input.cursor.y = tools.WorldPosToScreenPos(vector.add(self.x, self.y, dx,dy))
 			end
 			
 			-- shoot?
@@ -463,7 +433,7 @@ Player = Animation:extend
 			self:freeze(5)
 		end
 		
-		local worldMouseX, worldMouseY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
+		local worldMouseX, worldMouseY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 		local cx,cy = self.x + self.width / 2, self.y + self.height / 2
 		-- mouse -> player vector
 		local dx,dy = cx - (worldMouseX), cy - (worldMouseY)
@@ -512,7 +482,7 @@ FocusSprite = Sprite:extend
 	height = 1,
 	
 	onUpdate = function (self)
-		local worldCursorX, worldCursorY = ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
+		local worldCursorX, worldCursorY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 		local x,y = 0,0
 		-- weighted average
 		x,y = vector.add(x,y, vector.mul(worldCursorX, worldCursorY, 0.45))
@@ -534,11 +504,11 @@ Cursor = Tile:extend
 	onUpdate = function (self)
 		self.x = input.cursor.x - self.width / 2
 		self.y = input.cursor.y - self.height / 2
-		self.x, self.y = ScreenPosToWorldPos(self.x, self.y)
+		self.x, self.y = tools.ScreenPosToWorldPos(self.x, self.y)
 	end
 }
 
-Arrow = Tile:extend
+Projectile = Tile:extend
 {
 	width = 32,
 	height = 32,
@@ -549,8 +519,8 @@ Arrow = Tile:extend
 		self:die()
 		-- not possible to revive them later
 		the.app.view.layers.projectiles:remove(self)
-		-- will remove the arrow reference from the map
-		the.arrows[self] = nil
+		-- will remove the projectile reference from the map
+		the.projectiles[self] = nil
 	end,	
 	
 	onUpdate = function (self)
@@ -561,8 +531,8 @@ Arrow = Tile:extend
 			self:die()
 			-- not possible to revive them later
 			the.app.view.layers.projectiles:remove(self)
-			-- will remove the arrow reference from the map
-			the.arrows[self] = nil
+			-- will remove the projectile reference from the map
+			the.projectiles[self] = nil
 		end
 	end,
 }
@@ -579,7 +549,7 @@ UiGroup = Group:extend
 	solid = false,
 
 	onUpdate = function(self)
-		local x,y = ScreenPosToWorldPos(0,0)
+		local x,y = tools.ScreenPosToWorldPos(0,0)
 		self.translate.x = x
 		self.translate.y = y
 	end,
@@ -630,6 +600,7 @@ GameView = View:extend
 		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
+		object_manager.create(the.player)
 		self.layers.characters:add(the.player)
 		self.layers.above:add(self.trees)	
 		self.layers.above:add(self.buildings)		
@@ -640,8 +611,8 @@ GameView = View:extend
 		the.cursor = Cursor:new{ x = 0, y = 0 }
 		self.layers.ui:add(the.cursor)
 		
-		-- object -> true map for easy remove, key contains arrow reference
-		the.arrows = {}
+		-- object -> true map for easy remove, key contains projectile reference
+		the.projectiles = {}
 		
 		-- object -> true map for easy remove, key contains footstep reference
 		the.footsteps = {}
@@ -686,9 +657,9 @@ GameView = View:extend
 		self.landscape:subdisplace(the.player)
 		self.water:subdisplace(the.player)
 		
-		for arrow,v in pairs(the.arrows) do
-			self.landscape:subcollide(arrow)
-			self.collision:collide(arrow)
+		for projectile,v in pairs(the.projectiles) do
+			self.landscape:subcollide(projectile)
+			self.collision:collide(projectile)
 		end
     end,
 }
