@@ -99,6 +99,13 @@ action_handling.register_target_selection("projectile", function (start_target, 
 end)
 
 
+-- effect: spawn ----------------------------------------------------------
+-- eg. {effect_type = "spawn", application = ...},
+-- has: application
+action_handling.register_effect("spawn", function (target, effect)
+	action_handling.start(effect.application, target)
+end)
+
 -- effect: heal ----------------------------------------------------------
 -- eg. {effect_type = "heal", str = 60},
 -- has: str

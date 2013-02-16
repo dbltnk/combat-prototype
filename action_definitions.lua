@@ -83,7 +83,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "projectile", range = 150, speed = 100, stray = 0, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/fireball_projectile.png"},
 			effects = {
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", ae_size = 50, ae_targets = 20, gfx = "/assets/graphics/action_particles/fireball_particle.png"},
+					target_selection = {target_selection_type = "ae", range = 500, piercing_number = 20, gfx = "/assets/graphics/action_particles/fireball_particle.png"},
 					effects = {
 						{effect_type = "damage", str = 60, },
 					},

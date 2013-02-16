@@ -1,4 +1,6 @@
 
+local object_manager = require 'object_manager'
+
 local action_handling = {}
 
 -- target_selection_type -> { ... }
@@ -25,7 +27,7 @@ function action_handling.get_target_position (target)
 	if target.x and target.y then 
 		return target.x, target.y
 	elseif target.oid then
-		local o = object_manager.get(o.oid)
+		local o = object_manager.get(target.oid)
 		return o.x, o.y
 	else
 		print("ACTION could not determine position of target", action_handling.to_string_target(target))
