@@ -44,8 +44,8 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	-- assert: projectile size == player size
 	local projectile = Projectile:new{ 
 		image = target_selection.gfx,
-		x = the.player.x, 
-		y = the.player.y, 
+		x = cx, 
+		y = cy, 
 		rotation = rotation,
 		velocity = { x = projectilevx, y = projectilevy },
 		start = { x = cx, y = cy },
