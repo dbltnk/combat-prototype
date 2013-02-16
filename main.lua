@@ -481,6 +481,28 @@ Player = Animation:extend
 			self.skills[shootSkillNr]:use(cx, cy, self.rotation, self)
 		end
 		
+		-- combat music fade in/out 		
+		local fadeTime = 3
+		
+		-- music handling
+		local isInCombat = false
+		for k,v in pairs(self.skills) do
+			isInCombat = isInCombat or (v:isOutOfCombat() == false)
+		end
+		
+		local newLoundness = (isInCombat and 0) or 1
+		--~ local newLoundness = 1
+		--~ if isInCombat then newLoundness = 0 end
+		
+		-- not fading and wrong loudness?
+		if self.loudness_is_fading == false and math.abs(newLoundness - self.loudness) > 0.01 then
+			-- start fade
+			self.loudness_is_fading = true
+			tween(fadeTime, self, {loudness = newLoundness}, nil, function() self.loudness_is_fading = false end)
+		end
+
+		the.peaceMusic:setVolume(self.loudness)
+		the.combatMusic:setVolume(1 - self.loudness)
 	end,
 }
 
