@@ -109,7 +109,7 @@ SkillFromDefintion = Skill:extend
 		local arrow = Arrow:new{ 
 			x = the.player.x, 
 			y = the.player.y, 
-			rotation = self.source.rotation,
+			rotation = the.player.rotation,
 			velocity = { x = arrowvx, y = arrowvy },
 			start = { x = self.source.x, y = self.source.y },
 			target = { x = worldMouseX, y = worldMouseY },
