@@ -50,7 +50,12 @@ Skill = Class:extend
 		return math.max(0, self.lastUsed + self.timeout - love.timer.getTime())
 	end,
 	
+	freezeMovementDuringCasting = function (self)
+		return true
+	end,
+	
 	use = function (self, x, y, rotation, player)
+		if self:freezeMovementDuringCasting() then player:freezeMovement() end
 		print("SKILL", self.nr, "START USING")
 		
 		self.source.x = x
@@ -62,6 +67,7 @@ Skill = Class:extend
 		if self.onUse then 
 			-- call use after casttime timeout
 			the.app.view.timer:after(self.cast_time, function() 
+				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
 				print("SKILL", self.nr, "REALLY USE")
 				self:onUse() 
 			end)
@@ -85,6 +91,10 @@ SkillFromDefintion = Skill:extend
 		self.timeout = self.definition.timeout
 		self.cast_time = self.definition.cast_time
 		self.lastUsed = -10000000
+	end,
+	
+	freezeMovementDuringCasting = function (self)
+		return self.definition.on_the_run == false
 	end,
 	
 	onUse = function (self)
@@ -339,6 +349,16 @@ Player = Animation:extend
 		end
 	end,
 	
+	freezeMovement = function (self)
+		print("FREEEZ")
+		self.freezeMovementCounter = self.freezeMovementCounter + 1
+	end,
+	
+	unfreezeMovement = function (self)
+		print("UNFREEEZ")
+		self.freezeMovementCounter = self.freezeMovementCounter - 1
+	end,
+	
 	receive = function (self, message_name, ...)
 		print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
@@ -493,7 +513,7 @@ Player = Animation:extend
 		end
 		
 		-- move into direction?
-		if vector.len(dirx, diry) > 0 then
+		if self.freezeMovementCounter == 0 and vector.len(dirx, diry) > 0 then
 			-- replace second 0 by a 1 to toggle runspeed to analog
 			local s = config.walkspeed -- utils.mapIntoRange (speed, 0, 0, config.walkspeed, config.runspeed)
 			
