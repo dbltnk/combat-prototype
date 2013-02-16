@@ -226,6 +226,7 @@ SkillBar = Class:extend
 TargetDummy = Tile:extend
 {
 	image = '/assets/graphics/dummy.png',
+	pain = 0,
 	
 	onNew = function (self)
 		self.width = 32
@@ -244,6 +245,8 @@ TargetDummy = Tile:extend
 		elseif message_name == "damage" then
 			local str = ...
 			print("DUMMY DAMANGE", str)
+			self.pain = self.pain + str
+			if self.pain > 100 then self:die() end
 		elseif message_name == "runspeed" then
 			local str, duration = ...
 			print("DUMMY SPEED", str, duration)
