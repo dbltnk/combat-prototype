@@ -225,9 +225,16 @@ SkillBar = Class:extend
 
 TargetDummy = Tile:extend
 {
-	width = 32,
-	height = 64,
 	image = '/assets/graphics/dummy.png',
+	
+	onNew = function (self)
+		self.width = 32
+		self.height = 64
+		self:updateQuad()
+		object_manager.create(self)
+		print("XXXX DUMMY", self.x, self.y, self.width, self.height)
+		the.view.layers.characters:add(self)
+	end,
 	
 	receive = function (self, message_name, ...)
 		print(self.oid, "receives message", message_name, "with", ...)
@@ -628,11 +635,11 @@ GameView = View:extend
 		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
-		the.dummy = TargetDummy:new{ x = the.app.width / 2, y = the.app.height / 2 }
+		--~ the.dummy = TargetDummy:new{ x = the.app.width / 2, y = the.app.height / 2 }
 		object_manager.create(the.player)
-		object_manager.create(the.dummy)		
+		--~ object_manager.create(the.dummy)		
 		self.layers.characters:add(the.player)
-		self.layers.characters:add(the.dummy)		
+		--~ self.layers.characters:add(the.dummy)		
 		self.layers.above:add(self.trees)	
 		self.layers.above:add(self.buildings)		
 		-- set spawn position
@@ -640,8 +647,8 @@ GameView = View:extend
 		the.player.y = the.spawnpoint.y
 		
 
-		the.dummy.x = the.dummySpawnpoint.x
-		the.dummy.y = the.dummySpawnpoint.y
+		--~ the.dummy.x = the.dummySpawnpoint.x
+		--~ the.dummy.y = the.dummySpawnpoint.y
 		
 		the.cursor = Cursor:new{ x = 0, y = 0 }
 		self.layers.ui:add(the.cursor)
@@ -689,14 +696,14 @@ GameView = View:extend
 		the.skillbar:onUpdate(elapsed)
 		
 		self.collision:displace(the.player)
-		the.dummy:displace(the.player)
+		self.layers.characters:displace(the.player)
 		self.landscape:subdisplace(the.player)
 		self.water:subdisplace(the.player)
 		
 		for projectile,v in pairs(the.projectiles) do
 			self.landscape:subcollide(projectile)
 			self.collision:collide(projectile)
-			the.dummy:collide(projectile)
+			self.layers.characters:collide(projectile)
 		end
     end,
 }

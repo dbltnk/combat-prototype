@@ -169,7 +169,7 @@ View = Group:extend{
 							obj.name = tile.properties.name
 							obj.width = tile.width
 							obj.height = tile.height
-
+							
 							for key, value in pairs(tile.properties) do
 								obj.properties[key] = tovalue(value)
 							end
