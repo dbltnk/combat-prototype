@@ -229,6 +229,20 @@ TargetDummy = Tile:extend
 	height = 64,
 	image = '/assets/graphics/dummy.png',
 	
+	receive = function (self, message_name, ...)
+		print(self.oid, "receives message", message_name, "with", ...)
+		if message_name == "heal" then
+			local str = ...
+			print("DUMMY HEAL", str)
+		elseif message_name == "damage" then
+			local str = ...
+			print("DUMMY DAMANGE", str)
+		elseif message_name == "runspeed" then
+			local str, duration = ...
+			print("DUMMY SPEED", str, duration)
+		end
+	end,
+	
 --~ 	onNew = function (self)
 --~ 		self.width = 32
 --~ 		self.height = 32
