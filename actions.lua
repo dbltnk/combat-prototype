@@ -63,6 +63,7 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	
 	-- assert: projectile size == player size
 	local projectile = Projectile:new{ 
+		origin_oid = start_target.oid,
 		image = target_selection.gfx,
 		x = cx, 
 		y = cy, 
@@ -75,10 +76,19 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	-- decorate onCollide
 	local oldOnCollide = projectile.onCollide
 	projectile.onCollide = function(self, other, horizOverlap, vertOverlap)
-		-- call effect on collision target
-		targets_selected_callback({action_handling.object_to_target(other)})
+		local doCollide = true
 		
-		oldOnCollide(self, other, horizOverlap, vertOverlap)
+		-- ignore self check
+		if other.oid and self.origin_oid and other.oid == self.origin_oid then
+			doCollide = false
+		end
+		
+		if doCollide then
+			-- call effect on collision target
+			targets_selected_callback({action_handling.object_to_target(other)})
+			
+			oldOnCollide(self, other, horizOverlap, vertOverlap)
+		end
 	end,
 	
 	the.app.view.layers.projectiles:add(projectile)
