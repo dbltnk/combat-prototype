@@ -254,17 +254,24 @@ TargetDummy = Tile:extend
 			local str = ...
 			print("DUMMY DAMANGE", str)
 			self.currentPain = self.currentPain + str
-			if self.currentPain > self.maxPain then 
-				self:die()
-				self.pb:die()
-				self.pbb:die()
-			else
-				self.pb.width = self.currentPain * self.wFactor
-			end	
+			self:updatePain()
 		elseif message_name == "runspeed" then
 			local str, duration = ...
 			print("DUMMY SPEED", str, duration)
 		end
+	end,
+	
+	updatePain = function (self)
+		if self.currentPain > self.maxPain then 
+			self:die()
+		else
+			self.pb.width = self.currentPain * self.wFactor
+		end	
+	end,
+	
+	onDie = function (self)
+		self.pb:die()
+		self.pbb:die()		
 	end,
 }
 
