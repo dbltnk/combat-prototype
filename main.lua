@@ -250,8 +250,8 @@ Player = Animation:extend
 		"bandage",
 		"sprint",
 		"fireball",
-		"shield_bash",
---~ 		"life_leech",
+		--~ "shield_bash",
+		--~ "life_leech",
 	},
 	
 

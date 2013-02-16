@@ -5,6 +5,7 @@ local tools = require 'tools'
 local vector = require 'vector'
 local input = require 'input'
 local config = require 'config'
+local utils = require 'utils'
 
 require 'zoetrope'
 
@@ -23,6 +24,20 @@ require 'zoetrope'
 action_handling.register_target_selection("self", function (start_target, target_selection, targets_selected_callback)
 	targets_selected_callback({start_target})
 end)
+
+-- target_selection: ae ----------------------------------------------------------
+-- eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/graphics/action_projectiles/shield_bash_projectile.png"},
+-- has: range
+-- todo: range, cone, piercing_number, gfx
+action_handling.register_target_selection("ae", function (start_target, target_selection, targets_selected_callback)
+	local x,y = action_handling.get_target_position(start_target)
+	
+	local l = object_manager.find_in_sphere(x,y, target_selection.range)
+	targets_selected_callback(utils.map1(l, function (o) 
+		return action_handling.object_to_target(o)
+	end))
+end)
+
 
 -- target_selection: projectile ----------------------------------------------------------
 -- eg. {target_selection_type = "projectile", range = 200, speed = 150, stray = 5, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/action_projectiles/bow_shot_projectile.png"},

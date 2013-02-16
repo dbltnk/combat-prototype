@@ -6,6 +6,8 @@ y
 receive = function(name, a, b, c, ...)
 ]]
 
+local vector = require 'vector'
+
 local object_manager = {}
 
 object_manager.objects = {}
@@ -46,6 +48,27 @@ function object_manager.delete (o)
 		end
 	end
 end
+
+-- returns {oid0=o0, oid1=o1, ...}
+function object_manager.find_in_sphere (x,y,r)
+	return object_manager.find_where(function (oid, o)
+		return vector.lenFromTo(x,y, o.x,o.y) <= r
+	end)
+end
+
+-- returns {oid0=o0, oid1=o1, ...}
+-- function filter(oid,o) -> bool (true is contained in result)
+function object_manager.find_where (filter)
+	local l = {}
+	
+	for oid,o in pairs(object_manager.objects) do
+		if filter(oid,o) then
+			l[oid] = o
+		end
+	end
+	
+	return l
+end 
 
 -- oids: oid or list or oids
 function object_manager.send (oids, message_name, ...)

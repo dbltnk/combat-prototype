@@ -33,6 +33,13 @@ function action_handling.get_target_position (target)
 	end
 end
 
+-- o : object_mangers object
+-- returns {oid=} or {x=,y=}
+function action_handling.object_to_target (o)
+	return {oid=o.oid}
+end
+
+
 -- function targets_selected_callback({t0,t1,t2,...})
 -- target_selection: eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/action_projectiles/shield_bash_projectile.png"},
 -- start_target: {oid=} or {x=,y=}

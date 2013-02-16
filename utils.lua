@@ -62,4 +62,32 @@ function utils.sign (x)
 	return 0
 end
 
+-- function fun(key, value) -> key, value
+function utils.filter2 (l, fun)
+	local r = {}
+	for k,v in pairs(l) do
+		if fun(k,v) then r[kk] = vv end
+	end
+	return r
+end
+
+-- function fun(key, value) -> key, value
+function utils.map2 (l, fun)
+	local r = {}
+	for k,v in pairs(l) do
+		local kk,vv = fun(k,v)
+		r[kk] = vv
+	end
+	return r
+end
+
+-- function fun(value) -> value
+function utils.map1 (l, fun)
+	local r = {}
+	for k,v in pairs(l) do
+		r[k] = fun(v)
+	end
+	return r
+end
+
 return utils
