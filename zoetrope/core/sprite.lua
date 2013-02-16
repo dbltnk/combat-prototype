@@ -152,6 +152,8 @@ Sprite = Class:extend{
 		self.active = true
 		self.visible = true
 		self.solid = true
+		
+		if self.onRevive then self:onRevive() end
 	end,
 
 	-- Method: collide
