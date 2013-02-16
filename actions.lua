@@ -41,14 +41,19 @@ end)
 
 -- target_selection: projectile ----------------------------------------------------------
 -- eg. {target_selection_type = "projectile", range = 200, speed = 150, stray = 5, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/action_projectiles/bow_shot_projectile.png"},
--- has: speed, gfx
--- todo: range, stray, ae_size, ae_targets, piercing_number
+-- has: speed, gfx, range
+-- todo: stray, ae_size, ae_targets, piercing_number
 action_handling.register_target_selection("projectile", function (start_target, target_selection, targets_selected_callback)
 	local worldMouseX, worldMouseY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 	
 	local cx,cy = action_handling.get_target_position(start_target)
 	-- mouse -> player vector
 	local dx,dy = cx - (worldMouseX), cy - (worldMouseY)
+	
+	-- cap target by range
+	local dist = math.min(target_selection.range, vector.lenFromTo(cx,cy, worldMouseX, worldMouseY))
+	local rx,ry = vector.fromToWithLen(cx,cy, worldMouseX, worldMouseY, dist)
+	local tx,ty = vector.add(cx,cy, rx,ry)
 	
 	local rotation = math.atan2(dy, dx) - math.pi / 2
 	
@@ -64,7 +69,7 @@ action_handling.register_target_selection("projectile", function (start_target, 
 		rotation = rotation,
 		velocity = { x = projectilevx, y = projectilevy },
 		start = { x = cx, y = cy },
-		target = { x = worldMouseX, y = worldMouseY },
+		target = { x = tx, y = ty },
 	}
 	
 	-- decorate onCollide
