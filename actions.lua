@@ -25,6 +25,9 @@ action_handling.register_target_selection("self", function (start_target, target
 end)
 
 -- target_selection: projectile ----------------------------------------------------------
+-- eg. {target_selection_type = "projectile", range = 200, speed = 150, stray = 5, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/action_projectiles/bow_shot_projectile.png"},
+-- has: speed, gfx
+-- todo: range, stray, ae_size, ae_targets, piercing_number
 action_handling.register_target_selection("projectile", function (start_target, target_selection, targets_selected_callback)
 	local worldMouseX, worldMouseY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 	
@@ -36,10 +39,11 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	
 	local projectilevx, projectilevy = -dx, -dy
 	local l = vector.len(projectilevx, projectilevy)
-	projectilevx, projectilevy = vector.normalizeToLen(projectilevx, projectilevy, config.projectilespeed)
+	projectilevx, projectilevy = vector.normalizeToLen(projectilevx, projectilevy, target_selection.speed)
 	
 	-- assert: projectile size == player size
 	local projectile = Projectile:new{ 
+		image = target_selection.gfx,
 		x = the.player.x, 
 		y = the.player.y, 
 		rotation = rotation,
@@ -53,4 +57,26 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	the.projectiles[projectile] = true
 	
 	playSound('/assets/audio/bow.wav', 1, 'short') -- source: http://opengameart.org/content/battle-sound-effects
+end)
+
+
+-- effect: heal ----------------------------------------------------------
+-- eg. {effect_type = "heal", str = 60},
+-- has: str
+action_handling.register_effect("heal", function (target, effect)
+	object_manager.send(target.oid, "heal", effect.str)
+end)
+
+-- effect: damage ----------------------------------------------------------
+-- eg. {effect_type = "damage", str = 60},
+-- has: str
+action_handling.register_effect("damage", function (target, effect)
+	object_manager.send(target.oid, "damage", effect.str)
+end)
+
+-- effect: runspeed ----------------------------------------------------------
+-- eg. {effect_type = "runspeed", str = 100, duration = 10},
+-- has: str, duration
+action_handling.register_effect("runspeed", function (target, effect)
+	object_manager.send(target.oid, "runspeed", effect.str, effect.duration)
 end)

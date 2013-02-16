@@ -3,6 +3,7 @@ common object parameters:
 oid
 x
 y
+receive = function(name, a, b, c, ...)
 ]]
 
 local object_manager = {}
@@ -42,6 +43,20 @@ function object_manager.delete (o)
 			if oo == o then
 				object_manager.objects[oid] = nil
 			end
+		end
+	end
+end
+
+-- oids: oid or list or oids
+function object_manager.send (oids, message_name, ...)
+	if type(oids) ~= "table" then
+		oids = {oids}
+	end
+	
+	for k,oid in pairs(oids) do
+		local o = object_manager.get(oid)
+		if o and o.receive then
+			o:receive(message_name, ...)
 		end
 	end
 end

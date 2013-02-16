@@ -12,7 +12,7 @@ action_definitions = {
 		on_the_run =  true,
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 200, speed = 150, stray = 5, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/action_projectiles/bow_shot_projectile.png"},
+			target_selection = {target_selection_type = "projectile", range = 200, speed = 150, stray = 5, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_shot_projectile.png"},
 			effects = {
 				{effect_type = "damage", str = 30},
 			},
@@ -29,7 +29,7 @@ action_definitions = {
 		on_the_run =  true,
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 20, cone = 180, piercing_number = 6, gfx = "/assets/action_projectiles/scythe_attack_projectile.png"},
+			target_selection = {target_selection_type = "ae", range = 20, cone = 180, piercing_number = 6, gfx = "/assets/graphics/action_projectiles/scythe_attack_projectile.png"},
 			effects = {
 				{effect_type = "damage", str = 50},
 			},
@@ -65,7 +65,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/sprint_particle.png"},
 			effects = {
-				{effect_type = "runspeed", str = 100},
+				{effect_type = "runspeed", str = 100, duration = 10},
 			},
 		},	
 	},
@@ -80,7 +80,7 @@ action_definitions = {
 		on_the_run =  false,
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 150, speed = 100, stray = 0, piercing_number = 1, gfx = "/assets/action_projectiles/fireball_attack_projectile.png"},
+			target_selection = {target_selection_type = "projectile", range = 150, speed = 100, stray = 0, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/fireball_projectile.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", ae_size = 50, ae_targets = 20, gfx = "/assets/graphics/action_particles/fireball_particle.png"},
@@ -102,7 +102,7 @@ action_definitions = {
 		on_the_run =  true,
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/action_projectiles/shield_bash_projectile.png"},
+			target_selection = {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/graphics/action_projectiles/shield_bash_projectile.png"},
 			effects = {
 				{effect_type = "damage", str = 15},
 				{effect_type = "stun", duration = 3},
@@ -120,7 +120,7 @@ action_definitions = {
 		on_the_run =  false,
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 150, speed = 100, stray = 10, piercing_number = 1, ae_size = 20, ae_targets = 1, gfx = "/assets/action_projectiles/life_leech_projectile.png"},
+			target_selection = {target_selection_type = "projectile", range = 150, speed = 100, stray = 10, piercing_number = 1, ae_size = 20, ae_targets = 1, gfx = "/assets/graphics/action_projectiles/life_leech_projectile.png"},
 			effects = {
 				{effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
 			},
@@ -137,7 +137,7 @@ action_definitions = {
 		on_the_run =  true,
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 20, cone = 360, piercing_number = 12, gfx = "/assets/action_projectiles/scythe_pirouette_projectile.png"},
+			target_selection = {target_selection_type = "ae", range = 20, cone = 360, piercing_number = 12, gfx = "/assets/graphics/action_projectiles/scythe_pirouette_projectile.png"},
 			effects = {
 				{effect_type = "damage", str = 40},
 			},
@@ -154,7 +154,7 @@ action_definitions = {
 		on_the_run =  false,
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 180, speed = 300, stray = 15, ae_size = 0, ae_targets = 0, piercing_number = 5,  gfx = "/assets/action_projectiles/xbow_piercing_shot_projectile.png"},
+			target_selection = {target_selection_type = "projectile", range = 180, speed = 300, stray = 15, ae_size = 0, ae_targets = 0, piercing_number = 5,  gfx = "/assets/graphics/action_projectiles/xbow_piercing_shot_projectile.png"},
 			effects = {
 				{effect_type = "damage", str = 60},
 				{effect_type = "damage_over_time", ticks = 5, duration = 20, str = 5},	

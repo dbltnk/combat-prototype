@@ -285,6 +285,20 @@ Player = Animation:extend
 		end
 	end,
 	
+	receive = function (self, message_name, ...)
+		print(self.oid, "receives message", message_name, "with", ...)
+		if message_name == "heal" then
+			local str = ...
+			print("HEAL", str)
+		elseif message_name == "damage" then
+			local str = ...
+			print("DAMANGE", str)
+		elseif message_name == "runspeed" then
+			local str, duration = ...
+			print("SPEED", str, duration)
+		end
+	end,
+	
 	onUpdate = function (self, elapsed)
 	
 		self.velocity.x = 0
