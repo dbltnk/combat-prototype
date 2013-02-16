@@ -67,6 +67,15 @@ action_handling.register_target_selection("projectile", function (start_target, 
 		target = { x = worldMouseX, y = worldMouseY },
 	}
 	
+	-- decorate onCollide
+	local oldOnCollide = projectile.onCollide
+	projectile.onCollide = function(self, other, horizOverlap, vertOverlap)
+		-- call effect on collision target
+		targets_selected_callback({action_handling.object_to_target(other)})
+		
+		oldOnCollide(self, other, horizOverlap, vertOverlap)
+	end,
+	
 	the.app.view.layers.projectiles:add(projectile)
 	-- stores an projectile reference, projectiles get stored in the key
 	the.projectiles[projectile] = true

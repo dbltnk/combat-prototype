@@ -549,7 +549,7 @@ Projectile = Tile:extend
 		the.app.view.layers.projectiles:remove(self)
 		-- will remove the projectile reference from the map
 		the.projectiles[self] = nil
-	end,	
+	end,
 	
 	onUpdate = function (self)
 		local totalDistance = vector.lenFromTo(self.start.x, self.start.y, self.target.x, self.target.y)
