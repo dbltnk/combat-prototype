@@ -226,7 +226,11 @@ SkillBar = Class:extend
 TargetDummy = Tile:extend
 {
 	image = '/assets/graphics/dummy.png',
-	pain = 0,
+	currentPain = 0,
+	maxPain = 100,
+	pb = nil,
+	pbb = nil,
+	wFactor = 0.30,
 	
 	onNew = function (self)
 		self.width = 32
@@ -235,6 +239,10 @@ TargetDummy = Tile:extend
 		object_manager.create(self)
 		print("XXXX DUMMY", self.x, self.y, self.width, self.height)
 		the.view.layers.characters:add(self)
+		self.pb = PainBar:new{x = self.x, y = self.y + 64, width = self.currentPain * self.wFactor}
+		self.pbb= PainBarBG:new{x = self.x, y = self.y + 64, width = self.maxPain * self.wFactor}
+		the.view.layers.ui:add(self.pbb)
+		the.view.layers.ui:add(self.pb)
 	end,
 	
 	receive = function (self, message_name, ...)
@@ -245,24 +253,33 @@ TargetDummy = Tile:extend
 		elseif message_name == "damage" then
 			local str = ...
 			print("DUMMY DAMANGE", str)
-			self.pain = self.pain + str
-			if self.pain > 100 then self:die() end
+			self.currentPain = self.currentPain + str
+			if self.currentPain > self.maxPain then 
+				self:die()
+				self.pb:die()
+				self.pbb:die()
+			else
+				self.pb.width = self.currentPain * self.wFactor
+			end	
 		elseif message_name == "runspeed" then
 			local str, duration = ...
 			print("DUMMY SPEED", str, duration)
 		end
 	end,
-	
---~ 	onNew = function (self)
---~ 		self.width = 32
---~ 		self.height = 32
---~ 		
---~ 		print(self)
---~ 	end,
---~ 	
---~ 	__tostring = function (self)
---~ 		return Tile.__tostring(self)
---~ 	end,
+}
+
+PainBar = Fill:extend
+{
+	width = 0,
+	height = 5,
+	fill = {255,0,0,255},
+}
+
+PainBarBG = Fill:extend
+{
+	width = 0,
+	height = 5,
+	fill = {0,255,0,255},
 }
 
 Player = Animation:extend
