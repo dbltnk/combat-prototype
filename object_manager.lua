@@ -6,6 +6,7 @@ y
 receive = function(name, a, b, c, ...)
 ]]
 
+local list = require 'list'
 local vector = require 'vector'
 
 local object_manager = {}

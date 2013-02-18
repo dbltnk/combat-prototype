@@ -90,4 +90,26 @@ function utils.map1 (l, fun)
 	return r
 end
 
+-- returns {key0, key1, ...}
+function utils.keys (l)
+	r = {}
+	
+	for k,v in pairs(l) do
+		table.insert(k)
+	end
+	
+	return r
+end
+
+-- returns {value0, value1, ...}
+function utils.values (l)
+	r = {}
+	
+	for k,v in pairs(l) do
+		table.insert(v)
+	end
+	
+	return r
+end
+
 return utils

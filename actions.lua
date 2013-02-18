@@ -6,6 +6,7 @@ local vector = require 'vector'
 local input = require 'input'
 local config = require 'config'
 local utils = require 'utils'
+local list = require 'list'
 
 require 'zoetrope'
 
@@ -28,11 +29,28 @@ end)
 -- target_selection: ae ----------------------------------------------------------
 -- eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/graphics/action_projectiles/shield_bash_projectile.png"},
 -- has: range
--- todo: range, cone, piercing_number, gfx
+-- todo: cone, piercing_number, gfx
 action_handling.register_target_selection("ae", function (start_target, target_selection, targets_selected_callback)
 	local x,y = action_handling.get_target_position(start_target)
 	
 	local l = object_manager.find_in_sphere(x,y, target_selection.range)
+	
+	-- limited amount of targets? -> order and only use the nearest ones
+	if target_selection.piercing_number then
+		print(target_selection.piercing_number, #l)
+		l = list.process_values(l)
+			:select(function(t) 
+				local xx,yy = action_handling.get_target_position(t)
+				return {
+					target=t, 
+					dist=vector.lenFromTo(x,y, xx,yy) 
+				} end)
+			:order_by(function(a,b) return a.dist < b.dist end)
+			:take(target_selection.piercing_number)
+			:select(function(a) return a.target end)
+			:done()
+	end
+	
 	targets_selected_callback(utils.map1(l, function (o) 
 		return action_handling.object_to_target(o)
 	end))
