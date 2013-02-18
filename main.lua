@@ -320,10 +320,12 @@ Player = Animation:extend
 	-- list of Skill
 	skills = {
 		"bow_shot",
-		"scythe_attack",
+--~ 		"scythe_attack",
+		"scythe_pirouette",
 		"bandage",
 		"sprint",
 		"fireball",
+		"xbow_piercing_shot",
 		--~ "shield_bash",
 		--~ "life_leech",
 	},
