@@ -241,6 +241,7 @@ TargetDummy = Tile:extend
 	pb = nil,
 	pbb = nil,
 	wFactor = 0.30,
+	movable = false,
 	
 	onNew = function (self)
 		self.width = 32
@@ -253,6 +254,7 @@ TargetDummy = Tile:extend
 		self.pbb= PainBarBG:new{x = self.x, y = self.y + 64, width = self.maxPain * self.wFactor}
 		the.view.layers.ui:add(self.pbb)
 		the.view.layers.ui:add(self.pb)
+		if (math.random(-1, 1) > 0) then self.movable = true end
 	end,
 	
 	receive = function (self, message_name, ...)
@@ -283,6 +285,20 @@ TargetDummy = Tile:extend
 		self.pb:die()
 		self.pbb:die()		
 	end,
+	
+	onUpdate = function (self)
+		if ((math.random(-1, 1) > 0) and self.movable == true) then
+			self.dx = math.random(-10, 10)
+			self.dy = math.random(-10, 10)
+			self.x = self.x + self.dx
+			self.y = self.y + self.dy
+			self.pb.x = self.pb.x + self.dx
+			self.pb.y = self.pb.y + self.dy
+			self.pbb.x = self.pbb.x + self.dx
+			self.pbb.y = self.pbb.y + self.dy
+		end
+		
+	end,	
 }
 
 PainBar = Fill:extend
