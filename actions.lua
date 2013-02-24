@@ -45,7 +45,7 @@ action_handling.register_target_selection("ae", function (start_target, target_s
 					target=t, 
 					dist=vector.lenFromTo(x,y, xx,yy) 
 				} end)
-			:order_by(function(a,b) return a.dist < b.dist end)
+			:orderby(function(a,b) return a.dist < b.dist end)
 			:take(target_selection.piercing_number)
 			:select(function(a) return a.target end)
 			:done()
