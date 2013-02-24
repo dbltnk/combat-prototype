@@ -32,6 +32,8 @@
 -- this event occurs for both sprites. The sprite is passed three arguments: the other sprite, the
 -- horizontal overlap, and the vertical overlap between the other sprite, in pixels.
 
+local profile = require 'profile'
+
 Sprite = Class:extend{
 	-- Property: active
 	-- If false, the sprite will not receive an update-related events.
@@ -363,6 +365,8 @@ Sprite = Class:extend{
 	end,
 
 	update = function (self, elapsed)
+		profile.start("sprite.update")
+		
 		local vel = self.velocity
 		local acc = self.acceleration
 		local drag = self.drag
@@ -439,6 +443,8 @@ Sprite = Class:extend{
 		if maxVel.rotation and vel.rotation > maxVel.rotation then vel.rotation = maxVel.rotation end
 		
 		if self.onUpdate then self:onUpdate(elapsed) end
+		
+		profile.stop()
 	end,
 
 	endFrame = function (self, elapsed)

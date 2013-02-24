@@ -6,6 +6,8 @@
 -- Extends:
 --		<Sprite>
 
+local profile = require 'profile'
+
 Tile = Sprite:extend
 {
 	-- Property: image
@@ -68,6 +70,8 @@ Tile = Sprite:extend
 
 		if not self.image then return end
 		
+		profile.start("tile.draw")
+		
 		-- set color if needed
 
 		local colored = self.alpha ~= 1 or self.tint[1] ~= 1 or self.tint[2] ~= 1 or self.tint[3] ~= 1
@@ -101,6 +105,8 @@ Tile = Sprite:extend
 		end
 			
 		Sprite.draw(self, x, y)
+		
+		profile.stop()
 	end,
 
 	__tostring = function (self)

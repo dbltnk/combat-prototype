@@ -12,6 +12,8 @@
 -- Extends:
 --		<Sprite>
 
+local profile = require 'profile'
+
 Map = Sprite:extend{
 	-- Constant: NO_SPRITE
 	-- Represents a map entry with no sprite.
@@ -25,6 +27,8 @@ Map = Sprite:extend{
 	-- A two-dimensional table of values, each corresponding to an entry in the sprites property.
 	-- nb. The tile at (0, 0) visually is stored in [1, 1].
 	map = {},
+	
+	isCallUpdateAndFrameMarksOnTiles = false,
 
 	-- Method: empty
 	-- Creates an empty map.
@@ -322,8 +326,10 @@ Map = Sprite:extend{
 		if not self.spriteWidth or not self.spriteHeight then return end
 		
 		if self.batches ~= nil then
+			profile.start("map.drawBatch")
 			self:drawSpriteBatches(x,y) 
 			Sprite.draw(self)
+			profile.stop()
 			return
 		end
 
@@ -397,6 +403,8 @@ Map = Sprite:extend{
 	-- makes sure all sprites receive startFrame messages
 
 	startFrame = function (self, elapsed)
+		if not self.isCallUpdateAndFrameMarksOnTiles then return end
+		
 		for _, spr in pairs(self.sprites) do
 			spr:startFrame(elapsed)
 		end
@@ -407,6 +415,8 @@ Map = Sprite:extend{
 	-- makes sure all sprites receive update messages
 
 	update = function (self, elapsed)
+		if not self.isCallUpdateAndFrameMarksOnTiles then return end
+	
 		for _, spr in pairs(self.sprites) do
 			spr:update(elapsed)
 		end
@@ -417,6 +427,8 @@ Map = Sprite:extend{
 	-- makes sure all sprites receive endFrame messages
 
 	endFrame = function (self, elapsed)
+		if not self.isCallUpdateAndFrameMarksOnTiles then return end
+	
 		for _, spr in pairs(self.sprites) do
 			spr:endFrame(elapsed)
 		end

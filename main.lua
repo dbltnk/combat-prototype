@@ -2,7 +2,7 @@ STRICT = true
 DEBUG = true
 
 local profiler = require 'profiler'
-profiler.start('profile.out')
+--~ profiler.start('profile.out')
 require 'zoetrope'
 
 local vector = require 'vector'
@@ -15,6 +15,7 @@ local action_definitions = require 'action_definitions'
 local object_manager = require 'object_manager'
 local action_handling = require 'action_handling'
 local tools = require 'tools'
+local profile = require 'profile'
 
 require 'actions'
 
@@ -628,10 +629,10 @@ Cursor = Tile:extend
 }
 
 drawDebugWrapper = function (sprite)
-	if not config.draw_debug_info then return end
-
 	local oldDraw = sprite.draw
 	sprite.draw = function(self,x,y)
+		if not config.draw_debug_info then oldDraw(self,x,y) return end
+	
 		x = math.floor(x or self.x)
 		y = math.floor(y or self.y)
 		local w = self.width or 1
@@ -807,18 +808,27 @@ GameView = View:extend
     end,
     
     onUpdate = function (self, elapsed)
+		profile.start("update.skillbar")
 		the.skillbar:onUpdate(elapsed)
+		profile.stop()
 		
+		profile.start("update.displace")
 		self.collision:displace(the.player)
 		self.layers.characters:displace(the.player)
 		self.landscape:subdisplace(the.player)
 		self.water:subdisplace(the.player)
+		profile.stop()
 		
+		profile.start("update.projectile")
 		for projectile,v in pairs(the.projectiles) do
 			self.landscape:subcollide(projectile)
 			self.collision:collide(projectile)
 			self.layers.characters:collide(projectile)
 		end
+		profile.stop()
+		
+		if config.show_profile_info then profile.print() end
+		profile.clear()
     end,
 }
 
@@ -836,10 +846,15 @@ the.app = App:new
 		
 		-- toggle fullscreen
 		if the.keys:justPressed ("f10") then self:toggleFullscreen() end
+		
+		-- toggle profile
+		if the.keys:justPressed ("f11") then config.show_profile_info = not config.show_profile_info end
+		-- toggle debug draw
+		if the.keys:justPressed ("f12") then config.draw_debug_info = not config.draw_debug_info end
 
 		-- easy exit
 		if the.keys:pressed('escape') then 
-			profiler.stop()
+			--~ profiler.stop()
 			os.exit() 
 		end
 	end,
