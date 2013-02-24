@@ -134,6 +134,8 @@ Sprite = Class:extend{
 		self.active = false
 		self.visible = false
 		self.solid = false
+		
+		if self.onDie then self:onDie() end
 	end,
 
 	-- Method: revive
@@ -150,6 +152,8 @@ Sprite = Class:extend{
 		self.active = true
 		self.visible = true
 		self.solid = true
+		
+		if self.onRevive then self:onRevive() end
 	end,
 
 	-- Method: collide

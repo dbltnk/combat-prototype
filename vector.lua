@@ -10,6 +10,11 @@ vector.fromTo = function(x0,y0, x1,y1)
 	return x1-x0, y1-y0
 end
 
+-- returns dx,dy with given len (starting at x0/y0)
+vector.fromToWithLen = function(x0,y0, x1,y1, len)
+	return vector.normalizeToLen(x1-x0, y1-y0, len)
+end
+
 vector.lenFromTo = function(x0,y0, x1,y1)
 	return vector.len(vector.fromTo(x0,y0, x1,y1))
 end

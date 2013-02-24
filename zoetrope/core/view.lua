@@ -79,11 +79,13 @@ View = Group:extend{
 	--
 	-- Arguments:
 	--		file - filename to load
+	--		isSpritesBatched - true if all sprites should be batched into one spritebatch, 
+	--							it is not possible to address the tiles separately
 	--
 	-- Returns:
 	--		nothing
 
-	loadLayers = function (self, file)
+	loadLayers = function (self, file, isSpritesBatched)
 		local ok, data = pcall(loadstring(Cached:text(file)))
 		local _, _, directory = string.find(file, '^(.*[/\\])')
 		directory = directory or ''
@@ -151,6 +153,10 @@ View = Group:extend{
 						end
 					end
 
+					if isSpritesBatched then
+						map:calculateSpriteBatches()
+					end
+
 					self[layer.name] = map
 					self:add(map)
 				elseif layer.type == 'objectgroup' then
@@ -165,7 +171,7 @@ View = Group:extend{
 							obj.name = tile.properties.name
 							obj.width = tile.width
 							obj.height = tile.height
-
+							
 							for key, value in pairs(tile.properties) do
 								obj.properties[key] = tovalue(value)
 							end
@@ -175,7 +181,7 @@ View = Group:extend{
 
 						local spr
 
-						if obj.name and string.len(obj.name) > 0 and _G[obj.name] then
+						if obj.name and rawget(_G, obj.name) then
 							obj.properties.x = obj.x
 							obj.properties.y = obj.y
 							obj.properties.width = obj.width
