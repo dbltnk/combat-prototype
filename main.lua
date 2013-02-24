@@ -251,18 +251,28 @@ TargetDummy = Tile:extend
 	movable = false,
 	
 	onNew = function (self)
+		the.targetDummies[self] = true
+		
 		self.width = 32
 		self.height = 64
 		self:updateQuad()
 		object_manager.create(self)
 		--print("NEW DUMMY", self.x, self.y, self.width, self.height)
 		the.view.layers.characters:add(self)
-		self.pb = PainBar:new{x = self.x, y = self.y + 64, width = self.currentPain * self.wFactor}
-		self.pbb= PainBarBG:new{x = self.x, y = self.y + 64, width = self.maxPain * self.wFactor}
+		self.pb = PainBar:new{x = self.x, y = self.y, width = self.currentPain * self.wFactor}
+		self.pbb = PainBarBG:new{x = self.x, y = self.y, width = self.maxPain * self.wFactor}
 		the.view.layers.ui:add(self.pbb)
 		the.view.layers.ui:add(self.pb)
+		self:updateBarPositions()
 		drawDebugWrapper(self)
 		if (math.random(-1, 1) > 0) then self.movable = true end
+	end,
+	
+	updateBarPositions = function (self)
+		self.pb.x = self.x
+		self.pb.y = self.y + 64
+		self.pbb.x = self.x
+		self.pbb.y = self.y + 64
 	end,
 	
 	receive = function (self, message_name, ...)
@@ -292,6 +302,8 @@ TargetDummy = Tile:extend
 	onDie = function (self)
 		self.pb:die()
 		self.pbb:die()		
+		
+		the.targetDummies[self] = nil
 	end,
 	
 	onUpdate = function (self)
@@ -300,12 +312,9 @@ TargetDummy = Tile:extend
 			self.dy = math.random(-10, 10)
 			self.x = self.x + self.dx
 			self.y = self.y + self.dy
-			self.pb.x = self.pb.x + self.dx
-			self.pb.y = self.pb.y + self.dy
-			self.pbb.x = self.pbb.x + self.dx
-			self.pbb.y = self.pbb.y + self.dy
 		end
 		
+		self:updateBarPositions()
 	end,	
 }
 
@@ -666,10 +675,6 @@ Projectile = Tile:extend
 
 	onCollide = function(self, other, horizOverlap, vertOverlap)
 		self:die()
-		-- not possible to revive them later
-		the.app.view.layers.projectiles:remove(self)
-		-- will remove the projectile reference from the map
-		the.projectiles[self] = nil
 	end,
 	
 	onUpdate = function (self)
@@ -678,14 +683,21 @@ Projectile = Tile:extend
 		
 		if distFromStart >= totalDistance then
 			self:die()
-			-- not possible to revive them later
-			the.app.view.layers.projectiles:remove(self)
-			-- will remove the projectile reference from the map
-			the.projectiles[self] = nil
 		end
 	end,
 	
+	onDie = function (self)
+		-- not possible to revive them later
+		the.app.view.layers.projectiles:remove(self)
+		-- will remove the projectile reference from the map
+		the.projectiles[self] = nil	
+	end,
+	
 	onNew = function (self)
+		the.app.view.layers.projectiles:add(self)
+		-- stores an projectile reference, projectiles get stored in the key
+		the.projectiles[self] = true
+		
 		drawDebugWrapper(self)
 	end,
 }
@@ -739,6 +751,15 @@ GameView = View:extend
 	},
 
     onNew = function (self)
+		-- object -> true map for easy remove, key contains projectile reference
+		the.projectiles = {}
+		
+		-- object -> true map for easy remove, key contains projectile reference
+		the.targetDummies = {}
+		
+		-- object -> true map for easy remove, key contains footstep reference
+		the.footsteps = {}
+		
 		self:loadLayers('/assets/maps/desert/desert.lua', true)
 		
 		self.collision.visible = false
@@ -770,12 +791,6 @@ GameView = View:extend
 		
 		the.cursor = Cursor:new{ x = 0, y = 0 }
 		self.layers.ui:add(the.cursor)
-		
-		-- object -> true map for easy remove, key contains projectile reference
-		the.projectiles = {}
-		
-		-- object -> true map for easy remove, key contains footstep reference
-		the.footsteps = {}
 		
 		--~ self.debugpoint = DebugPoint:new{ x = 0, y = 0 }
 		--~ self:add(self.debugpoint)
@@ -816,10 +831,19 @@ GameView = View:extend
 		profile.stop()
 		
 		profile.start("update.displace")
+		
+		for dummy,v in pairs(the.targetDummies) do
+			self.collision:displace(dummy)
+			self.layers.characters:displace(dummy)
+			self.landscape:subdisplace(dummy)
+			self.water:subdisplace(dummy)		
+		end
+		
 		self.collision:displace(the.player)
 		self.layers.characters:displace(the.player)
 		self.landscape:subdisplace(the.player)
 		self.water:subdisplace(the.player)
+		
 		profile.stop()
 		
 		profile.start("update.projectile")
