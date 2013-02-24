@@ -59,8 +59,8 @@ end)
 
 -- target_selection: projectile ----------------------------------------------------------
 -- eg. {target_selection_type = "projectile", range = 200, speed = 150, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/action_projectiles/bow_shot_projectile.png"},
--- has: speed, gfx, range
--- todo: ae_size, ae_targets, piercing_number
+-- has: speed, gfx, range, piercing_number
+-- todo: ae_size, ae_targets
 action_handling.register_target_selection("projectile", function (start_target, target_selection, targets_selected_callback)
 	local worldMouseX, worldMouseY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 	
@@ -81,6 +81,7 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	
 	-- number of targets
 	local target_left = target_selection.piercing_number or 1
+	local last_target_oid = nil
 		
 	local imgObj = Cached:image(target_selection.gfx)
 	local w,h = imgObj:getWidth(), imgObj:getHeight()
@@ -106,13 +107,23 @@ action_handling.register_target_selection("projectile", function (start_target, 
 			doCollide = false
 		end
 		
+		-- ignore multiple hits to one object in sequence
+		if other.oid and last_target_oid == other.oid then
+			doCollide = false
+		end
+		
 		if doCollide and target_left > 0 then
+			last_target_oid = other.oid
+		
 			-- call effect on collision target
 			targets_selected_callback({action_handling.object_to_target(other)})
 			
+			-- TODO ignore last target
 			target_left = target_left - 1
 			
-			if oldOnCollide then oldOnCollide(self, other, horizOverlap, vertOverlap) end
+			if target_left <= 0 and oldOnCollide then 
+				oldOnCollide(self, other, horizOverlap, vertOverlap) 
+			end
 		end
 	end
 	
