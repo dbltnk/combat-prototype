@@ -79,12 +79,14 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	local l = vector.len(projectilevx, projectilevy)
 	projectilevx, projectilevy = vector.normalizeToLen(projectilevx, projectilevy, target_selection.speed)
 	
+	local imgObj = Cached:image(target_selection.gfx)
+	local w,h = imgObj:getWidth(), imgObj:getHeight()
 	-- assert: projectile size == player size
 	local projectile = Projectile:new{ 
 		origin_oid = start_target.oid,
 		image = target_selection.gfx,
-		x = cx, 
-		y = cy, 
+		x = cx-w/2, 
+		y = cy-h/2, 
 		rotation = rotation,
 		velocity = { x = projectilevx, y = projectilevy },
 		start = { x = cx, y = cy },

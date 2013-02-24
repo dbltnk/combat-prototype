@@ -98,7 +98,7 @@ SkillFromDefintion = Skill:extend
 	end,
 	
 	onUse = function (self)
-		local startTarget = { oid = the.player.oid, x = the.player.x, y = the.player.y }
+		local startTarget = { oid = the.player.oid }
 		action_handling.start(self.definition.application, startTarget)
 	end,
 
@@ -254,6 +254,7 @@ TargetDummy = Tile:extend
 		self.pbb= PainBarBG:new{x = self.x, y = self.y + 64, width = self.maxPain * self.wFactor}
 		the.view.layers.ui:add(self.pbb)
 		the.view.layers.ui:add(self.pb)
+		drawDebugWrapper(self)
 		if (math.random(-1, 1) > 0) then self.movable = true end
 	end,
 	
@@ -365,6 +366,7 @@ Player = Animation:extend
 		for k,v in pairs(self.skills) do
 			self.skills[k] = SkillFromDefintion:new { nr = k, id = v }
 		end
+		drawDebugWrapper(self)
 	end,
 	
 	freezeMovement = function (self)
@@ -622,11 +624,37 @@ Cursor = Tile:extend
 	end
 }
 
+drawDebugWrapper = function (sprite)
+	if not config.draw_debug_info then return end
+
+	local oldDraw = sprite.draw
+	sprite.draw = function(self,x,y)
+		x = math.floor(x or self.x)
+		y = math.floor(y or self.y)
+		local w = self.width or 1
+		local h = self.height or 1
+		oldDraw(self,x,y)
+		
+		local c = {love.graphics.getColor()}
+		
+		love.graphics.setColor(255, 0, 0)
+		love.graphics.circle("fill", x, y, 3, 10)
+		
+		love.graphics.setColor(0, 255, 0)
+		love.graphics.circle("fill", x+w/2, y+h/2, 3, 10)
+
+		love.graphics.setColor(0, 0, 255)
+		love.graphics.rectangle("line", x, y, w, h )
+		 
+		love.graphics.setColor(c)
+	end
+end
+
 Projectile = Tile:extend
 {
 	width = 32,
 	height = 32,
-	image = '/assets/graphics/action_projectiles/bow_shot_projectile.png',
+	--~ image = '/assets/graphics/action_projectiles/bow_shot_projectile.png',
     -- target.x target.y start.x start.y
 
 	onCollide = function(self, other, horizOverlap, vertOverlap)
@@ -648,6 +676,10 @@ Projectile = Tile:extend
 			-- will remove the projectile reference from the map
 			the.projectiles[self] = nil
 		end
+	end,
+	
+	onNew = function (self)
+		drawDebugWrapper(self)
 	end,
 }
 

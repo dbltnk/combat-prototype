@@ -21,14 +21,18 @@ application = {
 		},	
 ]]
 
--- target: {oid=} or {x=,y=}
--- returns x,y
+-- target: {oid=} or {x=,y=} (x,y is center)
+-- returns x,y (id oid it returns its center)
 function action_handling.get_target_position (target)
 	if target.x and target.y then 
 		return target.x, target.y
 	elseif target.oid then
 		local o = object_manager.get(target.oid)
-		return o.x, o.y
+		
+		local w = o.width or 1
+		local h = o.height or 1
+		
+		return o.x + w/2, o.y + h/2
 	else
 		print("ACTION could not determine position of target", action_handling.to_string_target(target))
 		return 0,0
@@ -44,20 +48,20 @@ end
 
 -- function targets_selected_callback({t0,t1,t2,...})
 -- target_selection: eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/action_projectiles/shield_bash_projectile.png"},
--- start_target: {oid=} or {x=,y=}
+-- start_target: {oid=} or {x=,y=} (x,y is center)
 -- function target_selection_callback(start_target, target_selection, targets_selected_callback)
 function action_handling.register_target_selection(name, target_selection_callback)
 	action_handling.registered_target_selections[name] = target_selection_callback
 end
 
 -- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
--- target: {oid=} or {x=,y=}
+-- target: {oid=} or {x=,y=} (x,y is center)
 -- function effect_callback(target, effect)
 function action_handling.register_effect(name, effect_callback)
 	action_handling.registered_effects[name] = effect_callback
 end
 
--- target: {oid=} or {x=,y=}
+-- target: {oid=} or {x=,y=} (x,y is center)
 function action_handling.to_string_target(target)
 	return "oid=" .. (target.oid or "nil") .. " x=" .. (target.x or "nil") .. " y=" .. (target.y or "nil")
 end
@@ -79,7 +83,7 @@ function action_handling.start_target_selection (start_target, target_selection,
 end
 
 -- application: see action_definitions.lua
--- target: {oid=} or {x=,y=}
+-- target: {oid=} or {x=,y=} (x,y is center)
 function action_handling.start (application, target)
 	action_handling.start_target_selection(target, application.target_selection, function (targets)
 		-- target selection finished
@@ -94,7 +98,7 @@ function action_handling.start (application, target)
 end
 
 -- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
--- target: {oid=} or {x=,y=}
+-- target: {oid=} or {x=,y=} (x,y is center)
 function action_handling.start_effect (effect, target)
 	local t = effect.effect_type
 	
