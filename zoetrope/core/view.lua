@@ -127,7 +127,7 @@ View = Group:extend{
 					-- load tiles
 
 					for _, tiles in pairs(data.tilesets) do
-						map:loadTiles(directory .. tiles.image, spriteClass or Tile, tiles.firstgid)
+						map:loadTiles(directory .. tiles.image, Tile, tiles.firstgid)
 
 						-- and mix in properties where applicable
 
@@ -153,7 +153,9 @@ View = Group:extend{
 						end
 					end
 
-					map:calculateSpriteBatches()
+					if isSpritesBatched then
+						map:calculateSpriteBatches()
+					end
 
 					self[layer.name] = map
 					self:add(map)
@@ -179,7 +181,7 @@ View = Group:extend{
 
 						local spr
 
-						if _G[obj.name] then
+						if rawget(_G, obj.name) then
 							obj.properties.x = obj.x
 							obj.properties.y = obj.y
 							obj.properties.width = obj.width

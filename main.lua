@@ -248,7 +248,7 @@ TargetDummy = Tile:extend
 		self.height = 64
 		self:updateQuad()
 		object_manager.create(self)
-		print("XXXX DUMMY", self.x, self.y, self.width, self.height)
+		print("NEW DUMMY", self.x, self.y, self.width, self.height)
 		the.view.layers.characters:add(self)
 		self.pb = PainBar:new{x = self.x, y = self.y + 64, width = self.currentPain * self.wFactor}
 		self.pbb= PainBarBG:new{x = self.x, y = self.y + 64, width = self.maxPain * self.wFactor}
