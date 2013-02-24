@@ -188,7 +188,10 @@ SkillBar = Class:extend
 		self.y = y
 		
 		for index, skillIcon in pairs(self.skillIcons) do
-			skillIcon.x = (index - 1) * 32 + self.x
+			local space = 0
+			if index >=3 then space = 10 end
+			
+			skillIcon.x = (index - 1) * 32 + self.x + space
 			skillIcon.y = self.y
 			
 			self.skillInactiveIcons[index].x = skillIcon.x
