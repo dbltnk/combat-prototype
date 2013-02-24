@@ -79,6 +79,9 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	local l = vector.len(projectilevx, projectilevy)
 	projectilevx, projectilevy = vector.normalizeToLen(projectilevx, projectilevy, target_selection.speed)
 	
+	-- number of targets
+	local target_left = target_selection.piercing_number or 1
+		
 	local imgObj = Cached:image(target_selection.gfx)
 	local w,h = imgObj:getWidth(), imgObj:getHeight()
 	-- assert: projectile size == player size
@@ -103,13 +106,27 @@ action_handling.register_target_selection("projectile", function (start_target, 
 			doCollide = false
 		end
 		
-		if doCollide then
+		if doCollide and target_left > 0 then
 			-- call effect on collision target
 			targets_selected_callback({action_handling.object_to_target(other)})
 			
-			oldOnCollide(self, other, horizOverlap, vertOverlap)
+			target_left = target_left - 1
+			
+			if oldOnCollide then oldOnCollide(self, other, horizOverlap, vertOverlap) end
 		end
-	end,
+	end
+	
+	-- decorate onDie
+	local oldOnDie = projectile.onDie
+	projectile.onDie = function(self)
+		-- target left? so trigger at location
+		if target_left > 0 then
+			local target = {x = self.x, y = self.y}
+			targets_selected_callback({target})
+		end
+
+		if oldOnDie then oldOnDie(self) end
+	end
 	
 	the.app.view.layers.projectiles:add(projectile)
 	-- stores an projectile reference, projectiles get stored in the key
