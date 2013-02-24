@@ -58,9 +58,9 @@ end)
 
 
 -- target_selection: projectile ----------------------------------------------------------
--- eg. {target_selection_type = "projectile", range = 200, speed = 150, stray = 5, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/action_projectiles/bow_shot_projectile.png"},
+-- eg. {target_selection_type = "projectile", range = 200, speed = 150, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/action_projectiles/bow_shot_projectile.png"},
 -- has: speed, gfx, range
--- todo: stray, ae_size, ae_targets, piercing_number
+-- todo: ae_size, ae_targets, piercing_number
 action_handling.register_target_selection("projectile", function (start_target, target_selection, targets_selected_callback)
 	local worldMouseX, worldMouseY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 	
