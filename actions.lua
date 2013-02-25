@@ -82,6 +82,7 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	-- number of targets
 	local target_left = target_selection.piercing_number or 1
 	local last_target_oid = nil
+	local targets_hit = {}
 		
 	local imgObj = Cached:image(target_selection.gfx)
 	local w,h = imgObj:getWidth(), imgObj:getHeight()
@@ -108,13 +109,14 @@ action_handling.register_target_selection("projectile", function (start_target, 
 		end
 		
 		-- ignore multiple hits to one object in sequence
-		if other.oid and last_target_oid == other.oid then
+		if other.oid and targets_hit[other.oid] then
 			doCollide = false
 		end
 		
 		if doCollide and target_left > 0 then
 			last_target_oid = other.oid
-		
+			targets_hit[other.oid] = true
+						
 			-- call effect on collision target
 			targets_selected_callback({action_handling.object_to_target(other)})
 			
