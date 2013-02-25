@@ -1,7 +1,7 @@
 STRICT = true
 DEBUG = true
 
-local profiler = require 'profiler'
+-- local profiler = require 'profiler'
 --~ profiler.start('profile.out')
 require 'zoetrope'
 
