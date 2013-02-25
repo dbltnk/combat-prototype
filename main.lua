@@ -275,6 +275,12 @@ TargetDummy = Tile:extend
 		self.pbb.y = self.y + 64
 	end,
 	
+	gainPain = function (self, str)
+		print(self.oid, "gain pain", str)
+		self.currentPain = self.currentPain + str
+		self:updatePain()
+	end,
+	
 	receive = function (self, message_name, ...)
 		print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
@@ -283,8 +289,15 @@ TargetDummy = Tile:extend
 		elseif message_name == "damage" then
 			local str = ...
 			print("DUMMY DAMANGE", str)
-			self.currentPain = self.currentPain + str
-			self:updatePain()
+			self:gainPain(str)
+		elseif message_name == "damage_over_time" then
+			local str, duration, ticks = ...
+			print("DAMAGE_OVER_TIME", str, duration, ticks)
+			for i=1,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					self:gainPain(str)
+				end)
+			end
 		elseif message_name == "runspeed" then
 			local str, duration = ...
 			print("DUMMY SPEED", str, duration)
@@ -293,6 +306,7 @@ TargetDummy = Tile:extend
 	
 	updatePain = function (self)
 		if self.currentPain > self.maxPain then 
+			self.currentPain = self.maxPain
 			self:die()
 		else
 			self.pb.width = self.currentPain * self.wFactor
@@ -403,6 +417,13 @@ Player = Animation:extend
 		elseif message_name == "damage" then
 			local str = ...
 			print("DAMANGE", str)
+		elseif message_name == "stun" then
+			local duration = ...
+			print("STUN", duration)
+			self:freezeMovement()
+			the.app.view.timer:after(duration, function()
+				self:unfreezeMovement()
+			end)
 		elseif message_name == "runspeed" then
 			local str, duration = ...
 			print("SPEED", str, duration)

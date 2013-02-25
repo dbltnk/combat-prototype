@@ -28,8 +28,8 @@ end)
 
 -- target_selection: ae ----------------------------------------------------------
 -- eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/graphics/action_projectiles/shield_bash_projectile.png"},
--- has: range
--- todo: cone, piercing_number, gfx
+-- has: range, piercing_number
+-- todo: cone, gfx
 action_handling.register_target_selection("ae", function (start_target, target_selection, targets_selected_callback)
 	local x,y = action_handling.get_target_position(start_target)
 	
@@ -166,9 +166,30 @@ action_handling.register_effect("damage", function (target, effect)
 	object_manager.send(target.oid, "damage", effect.str)
 end)
 
+-- effect: damage_over_time ----------------------------------------------------------
+-- eg. {effect_type = "damage_over_time", ticks = 5, duration = 20, str = 5},
+-- has: str
+action_handling.register_effect("damage_over_time", function (target, effect)
+	object_manager.send(target.oid, "damage_over_time", effect.str, effect.duration, effect.ticks)
+end)
+
 -- effect: runspeed ----------------------------------------------------------
 -- eg. {effect_type = "runspeed", str = 100, duration = 10},
 -- has: str, duration
 action_handling.register_effect("runspeed", function (target, effect)
 	object_manager.send(target.oid, "runspeed", effect.str, effect.duration)
+end)
+
+-- effect: stun ----------------------------------------------------------
+-- eg. {effect_type = "stun", duration = 10},
+-- has: duration
+action_handling.register_effect("stun", function (target, effect)
+	object_manager.send(target.oid, "stun", effect.duration)
+end)
+
+-- effect: transfer ----------------------------------------------------------
+-- eg. {effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
+-- todo: duration, from, to, eff, attribute, ticks, duration, str
+action_handling.register_effect("stun", function (target, effect)
+	--~ object_manager.send(target.oid, "stun", effect.duration)
 end)
