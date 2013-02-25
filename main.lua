@@ -159,7 +159,7 @@ SkillBar = Class:extend
 	onNew = function (self)
 		for index, skillImage in pairs(self.skills) do
 			local icon = SkillIcon:new { x = 0, y = 0 }
-			the.ui:add(icon)
+			the.hud:add(icon)
 			
 			self.skillIcons[index] = icon
 			
@@ -168,7 +168,7 @@ SkillBar = Class:extend
 				width = 32, height = 32, image = "/assets/graphics/skills_inactive_overlay.png",
 			}
 			self.skillInactiveIcons[index] = overlay
-			the.ui:add(overlay)
+			the.hud:add(overlay)
 
 			-- timeout text
 			local t = Text:new{
@@ -176,7 +176,7 @@ SkillBar = Class:extend
 				text = "X",
 			}
 			self.skillTimerText[index] = t
-			the.ui:add(t)
+			the.hud:add(t)
 		end
 		
 		self:setPosition (self.x, self.y)
@@ -739,6 +739,24 @@ PlayerDetails = Tile:extend
 	--~ image = '/assets/graphics/debugpoint.png',
 --~ }
 
+ControlUI = Tile:extend
+{
+	width = 212,
+	height = 54,
+	image = '/assets/graphics/controls_mouse.png',
+    
+	onUpdate = function (self)
+		self.x = love.graphics.getWidth() / 2 - self.width / 2  -- the.app.height
+		self.y = love.graphics.getHeight() - self.height  -- the.app.height
+		print(self.x, self.y)
+		if input.getMode() == 2 then
+			self.image = '/assets/graphics/controls_gamepad.png'
+			elseif input.getMode() == 1 then
+			self.image = '/assets/graphics/controls_mouse.png'
+		end
+	end
+}
+
 
 GameView = View:extend
 {
@@ -801,8 +819,8 @@ GameView = View:extend
 		self.focus = the.focusSprite
 		
 		-- TODO obsolete? use self.layers instead?
-		the.ui = UiGroup:new()
-		self:add(the.ui)
+		the.hud = UiGroup:new()
+		self:add(the.hud)
 		
 		the.skillbar = SkillBar:new()
 		-- set skillbar images
@@ -815,6 +833,9 @@ GameView = View:extend
 		
 		--the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
 		--self.layers.ui:add(the.playerDetails)
+		
+		the.controlUI = ControlUI:new{}
+		the.hud:add(the.controlUI)
 		
 		the.peaceMusic = playSound('/assets/audio/eots.ogg', volume, 'long') -- Shadowbane Soundtrack: Eye of the Storm
 		the.peaceMusic:setLooping(true)
