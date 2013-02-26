@@ -43,7 +43,7 @@ Skill = Class:extend
 	end,
 
 	isPossibleToUse = function (self)
-		return love.timer.getTime() - self.lastUsed >= self.timeout
+		return love.timer.getTime() - self.lastUsed >= self.timeout and the.player.currentEnergy >= self.energyCosts 
 	end,
 	
 	timeTillCastFinished = function (self)
