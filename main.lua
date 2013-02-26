@@ -352,10 +352,10 @@ PainBarBG = Fill:extend
 
 Player = Animation:extend
 {
-	maxPain = 200, -- TODO: read from config
+	maxPain = config.maxPain, 
 	currentPain = 0,
-	maxEnergy = 300, -- TODO: read from config
-	currentEnergy = 300, -- TODO: read from config
+	maxEnergy = config.maxEnergy, 
+	currentEnergy = config.maxEnergy, 
 
 	-- list of Skill
 	skills = {
