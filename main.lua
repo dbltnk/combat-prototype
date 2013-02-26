@@ -106,6 +106,7 @@ SkillFromDefintion = Skill:extend
 	onUse = function (self)
 		local startTarget = { oid = the.player.oid }
 		action_handling.start(self.definition.application, startTarget)
+		print("out of combat:", self:isOutOfCombat())
 	end,
 
 	isOutOfCombat = function (self)
@@ -613,13 +614,21 @@ Player = Animation:extend
 		then
 			self.skills[shootSkillNr]:use(cx, cy, self.rotation, self)
 		end
-		
+
+		-- energy regeneration
 		if self.currentEnergy < 0 then self.currentEnergy = 0 end
 		if isCasting == false then self.currentEnergy = self.currentEnergy + config.energyreg end
 		if self.currentEnergy > self.maxEnergy then self.currentEnergy = self.maxEnergy end
 		
+		-- health regeneration
 		if self.currentPain < 0 then self.currentPain = 0 end
-		self.currentPain = self.currentPain + 0.1 -- TODO: turn this into healh regeneration and combine it with inCombat
+		local regenerating = true		
+		for k,v in pairs(self.skills) do
+			if (v:isOutOfCombat() == false) then
+				regenerating = false
+			end
+		end
+		if regenerating == true then self.currentPain = self.currentPain - config.healthreg end
 		if self.currentPain > self.maxPain then self.currentPain = self.maxPain end
 
 		-- combat music fade in/out 		
