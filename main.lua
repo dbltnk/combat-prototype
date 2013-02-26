@@ -445,10 +445,6 @@ Player = Animation:extend
 	
 	onUpdate = function (self, elapsed)
 	
-		if self.currentEnergy < 0 then self.currentEnergy = 0 end
-		self.currentEnergy = self.currentEnergy + config.energyreg
-		if self.currentEnergy > self.maxEnergy then self.currentEnergy = self.maxEnergy end
-	
 		self.velocity.x = 0
 		self.velocity.y = 0
 
@@ -616,6 +612,10 @@ Player = Animation:extend
 		then
 			self.skills[shootSkillNr]:use(cx, cy, self.rotation, self)
 		end
+		
+		if self.currentEnergy < 0 then self.currentEnergy = 0 end
+		if isCasting == false then self.currentEnergy = self.currentEnergy + config.energyreg end
+		if self.currentEnergy > self.maxEnergy then self.currentEnergy = self.maxEnergy end
 		
 		-- combat music fade in/out 		
 		local fadeTime = 3
