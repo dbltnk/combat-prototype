@@ -73,7 +73,8 @@ Skill = Class:extend
 			the.app.view.timer:after(self.cast_time, function() 
 				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
 				print("SKILL", self.nr, "REALLY USE")
-				self:onUse() 
+				self:onUse()
+				the.player.currentEnergy = the.player.currentEnergy - self.energyCosts
 			end)
 		end
 	end,
@@ -95,6 +96,7 @@ SkillFromDefintion = Skill:extend
 		self.timeout = self.definition.timeout
 		self.cast_time = self.definition.cast_time
 		self.lastUsed = -10000000
+		self.energyCosts = self.definition.energy   
 	end,
 	
 	freezeMovementDuringCasting = function (self)
@@ -545,7 +547,7 @@ Player = Animation:extend
 			
 			
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
-			if the.mouse:pressed('l') then shootSkillNr = 1 doShoot = true self.currentEnergy = self.currentEnergy - 5 end
+			if the.mouse:pressed('l') then shootSkillNr = 1 doShoot = true end
 			if the.mouse:pressed('r') then shootSkillNr = 2 doShoot = true end
 			if the.keys:pressed('1') then shootSkillNr = 3 doShoot = true end
 			if the.keys:pressed('2') then shootSkillNr = 4 doShoot = true end
