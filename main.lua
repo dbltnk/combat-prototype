@@ -423,6 +423,7 @@ Player = Animation:extend
 		if message_name == "heal" then
 			local str = ...
 			print("HEAL", str)
+			self.currentPain = self.currentPain - str
 		elseif message_name == "damage" then
 			local str = ...
 			print("DAMANGE", str)
@@ -616,8 +617,11 @@ Player = Animation:extend
 		if self.currentEnergy < 0 then self.currentEnergy = 0 end
 		if isCasting == false then self.currentEnergy = self.currentEnergy + config.energyreg end
 		if self.currentEnergy > self.maxEnergy then self.currentEnergy = self.maxEnergy end
-		self.currentPain = self.currentPain + 0.1 -- TODO: remove
 		
+		if self.currentPain < 0 then self.currentPain = 0 end
+		self.currentPain = self.currentPain + 0.1 -- TODO: turn this into healh regeneration and combine it with inCombat
+		if self.currentPain > self.maxPain then self.currentPain = self.maxPain end
+
 		-- combat music fade in/out 		
 		local fadeTime = 3
 		
