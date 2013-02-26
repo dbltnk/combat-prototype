@@ -115,7 +115,7 @@ action_handling.register_target_selection("projectile", function (start_target, 
 		
 		if doCollide and target_left > 0 then
 			last_target_oid = other.oid
-			targets_hit[other.oid] = true
+			if other.oid then targets_hit[other.oid] = true end
 						
 			-- call effect on collision target
 			targets_selected_callback({action_handling.object_to_target(other)})
