@@ -337,6 +337,7 @@ PainBar = Fill:extend
 	width = 0,
 	height = 5,
 	fill = {255,0,0,255},
+	border = {0,0,0,255}	
 }
 
 PainBarBG = Fill:extend
@@ -344,20 +345,26 @@ PainBarBG = Fill:extend
 	width = 0,
 	height = 5,
 	fill = {0,255,0,255},
+	border = {0,0,0,255}
 }
 
 Player = Animation:extend
 {
+	maxPain = 200,
+	currentPain = 0,
+	maxEnergy = 300,
+	currentEnergy = 300,
+
 	-- list of Skill
 	skills = {
 		"bow_shot",
+		"shield_bash",		
 --~ 		"scythe_attack",
-		"scythe_pirouette",
+		-- "scythe_pirouette",
 		"bandage",
 		"sprint",
 		"fireball",
 		"xbow_piercing_shot",
-		--~ "shield_bash",
 		--~ "life_leech",
 	},
 	
@@ -435,6 +442,8 @@ Player = Animation:extend
 	end,
 	
 	onUpdate = function (self, elapsed)
+	
+		if self.currentEnergy < 0 then self.currentEnergy = 0 end
 	
 		self.velocity.x = 0
 		self.velocity.y = 0
@@ -536,7 +545,7 @@ Player = Animation:extend
 			
 			
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
-			if the.mouse:pressed('l') then shootSkillNr = 1 doShoot = true end
+			if the.mouse:pressed('l') then shootSkillNr = 1 doShoot = true self.currentEnergy = self.currentEnergy - 5 end
 			if the.mouse:pressed('r') then shootSkillNr = 2 doShoot = true end
 			if the.keys:pressed('1') then shootSkillNr = 3 doShoot = true end
 			if the.keys:pressed('2') then shootSkillNr = 4 doShoot = true end
@@ -769,7 +778,6 @@ ControlUI = Tile:extend
 	onUpdate = function (self)
 		self.x = love.graphics.getWidth() / 2 - self.width / 2  -- the.app.height
 		self.y = love.graphics.getHeight() - self.height  -- the.app.height
-		print(self.x, self.y)
 		if input.getMode() == 2 then
 			self.image = '/assets/graphics/controls_gamepad.png'
 			elseif input.getMode() == 1 then
@@ -778,6 +786,34 @@ ControlUI = Tile:extend
 	end
 }
 
+EnergyUIBG = Fill:extend
+{
+	width = 1,
+	height = 20,
+	fill = {0,0,128,255},	
+	border = {0,0,0,255},
+    
+	onUpdate = function (self)
+		self.x = love.graphics.getWidth() / 2 - self.width / 2 + 4
+		self.y = love.graphics.getHeight() - self.height - 64
+		self.width = the.player.maxEnergy
+	end
+}
+
+EnergyUI = Fill:extend
+{
+	width = 1,
+	height = 20,
+	fill = {0,0,255,255},	
+	border = {0,0,0,255},
+	
+	onUpdate = function (self)
+		self.x = love.graphics.getWidth() / 2 - the.energyUIBG.width / 2
+		self.y = love.graphics.getHeight() - self.height - 64
+		self.width = the.player.currentEnergy
+		if self.width <= 2 then self.width = 2 end
+	end
+}
 
 GameView = View:extend
 {
@@ -857,6 +893,12 @@ GameView = View:extend
 		
 		the.controlUI = ControlUI:new{}
 		the.hud:add(the.controlUI)
+		
+		the.energyUIBG = EnergyUIBG:new{}
+		the.hud:add(the.energyUIBG)		
+		
+		the.energyUI = EnergyUI:new{}
+		the.hud:add(the.energyUI)		
 		
 		the.peaceMusic = playSound('/assets/audio/eots.ogg', volume, 'long') -- Shadowbane Soundtrack: Eye of the Storm
 		the.peaceMusic:setLooping(true)
