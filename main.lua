@@ -616,6 +616,7 @@ Player = Animation:extend
 		if self.currentEnergy < 0 then self.currentEnergy = 0 end
 		if isCasting == false then self.currentEnergy = self.currentEnergy + config.energyreg end
 		if self.currentEnergy > self.maxEnergy then self.currentEnergy = self.maxEnergy end
+		self.currentPain = self.currentPain + 0.1 -- TODO: remove
 		
 		-- combat music fade in/out 		
 		local fadeTime = 3
@@ -800,7 +801,7 @@ EnergyUIBG = Fill:extend
 	onUpdate = function (self)
 		self.x = love.graphics.getWidth() / 2 - self.width / 2 + 4
 		self.y = love.graphics.getHeight() - self.height - 64
-		self.width = the.player.maxEnergy
+		self.width = the.player.maxEnergy / the.player.maxEnergy * the.controlUI.width
 	end
 }
 
@@ -814,7 +815,36 @@ EnergyUI = Fill:extend
 	onUpdate = function (self)
 		self.x = love.graphics.getWidth() / 2 - the.energyUIBG.width / 2
 		self.y = love.graphics.getHeight() - self.height - 64
-		self.width = the.player.currentEnergy
+		self.width = the.player.currentEnergy / the.player.maxEnergy * the.controlUI.width
+		if self.width <= 2 then self.width = 2 end
+	end
+}
+
+PainUIBG = Fill:extend
+{
+	width = 1,
+	height = 20,
+	fill = {0,255,0,255},	
+	border = {0,0,0,255},
+    
+	onUpdate = function (self)
+		self.x = love.graphics.getWidth() / 2 - self.width / 2 + 4
+		self.y = love.graphics.getHeight() - self.height - 64 - self.height
+		self.width = the.player.maxPain / the.player.maxPain * the.controlUI.width
+	end
+}
+
+PainUI = Fill:extend
+{
+	width = 1,
+	height = 20,
+	fill = {255,0,0,255},	
+	border = {0,0,0,255},
+	
+	onUpdate = function (self)
+		self.x = love.graphics.getWidth() / 2 - the.painUIBG.width / 2
+		self.y = love.graphics.getHeight() - self.height - 64 - self.height
+		self.width = the.player.currentPain / the.player.maxPain * the.controlUI.width
 		if self.width <= 2 then self.width = 2 end
 	end
 }
@@ -900,9 +930,13 @@ GameView = View:extend
 		
 		the.energyUIBG = EnergyUIBG:new{}
 		the.hud:add(the.energyUIBG)		
-		
 		the.energyUI = EnergyUI:new{}
-		the.hud:add(the.energyUI)		
+		the.hud:add(the.energyUI)
+		
+		the.painUIBG = PainUIBG:new{}
+		the.hud:add(the.painUIBG)		
+		the.painUI = PainUI:new{}
+		the.hud:add(the.painUI)					
 		
 		the.peaceMusic = playSound('/assets/audio/eots.ogg', volume, 'long') -- Shadowbane Soundtrack: Eye of the Storm
 		the.peaceMusic:setLooping(true)
