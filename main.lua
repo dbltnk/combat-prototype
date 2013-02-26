@@ -352,10 +352,10 @@ PainBarBG = Fill:extend
 
 Player = Animation:extend
 {
-	maxPain = 200,
+	maxPain = 200, -- TODO: read from config
 	currentPain = 0,
-	maxEnergy = 300,
-	currentEnergy = 300,
+	maxEnergy = 300, -- TODO: read from config
+	currentEnergy = 300, -- TODO: read from config
 
 	-- list of Skill
 	skills = {
@@ -446,6 +446,8 @@ Player = Animation:extend
 	onUpdate = function (self, elapsed)
 	
 		if self.currentEnergy < 0 then self.currentEnergy = 0 end
+		self.currentEnergy = self.currentEnergy + config.energyreg
+		if self.currentEnergy > self.maxEnergy then self.currentEnergy = self.maxEnergy end
 	
 		self.velocity.x = 0
 		self.velocity.y = 0
