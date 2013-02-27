@@ -825,7 +825,7 @@ EnergyUIBG = Fill:extend
 		self.x = love.graphics.getWidth() - self.width 
 		self.y = love.graphics.getHeight() - self.height
 		self.width = the.player.maxEnergy / the.player.maxEnergy * (love.graphics.getWidth() - the.controlUI.width) / 2
-		self.t.text = "Fatigue: " .. the.player.currentEnergy .. " / " .. the.player.maxEnergy
+		self.t.text = "Fatigue: " .. math.floor(the.player.currentEnergy) .. " / " .. math.floor(the.player.maxEnergy)
 		self.t.x = love.graphics.getWidth() / 4 * 3 - self.t.width / 2
 		self.t.y = love.graphics.getHeight() - self.height
 		self.t.width = 150
@@ -883,7 +883,7 @@ PainUI = Fill:extend
 		self.y = love.graphics.getHeight() - self.height
 		self.width = the.player.currentPain / the.player.maxPain * (love.graphics.getWidth() - the.controlUI.width) / 2
 		if self.width <= 2 then self.width = 2 end
-		self.t.text = "Pain: " .. the.player.currentPain .. " / " .. the.player.maxPain
+		self.t.text = "Pain: " .. math.floor(the.player.currentPain) .. " / " .. math.floor(the.player.maxPain)
 		self.t.x = love.graphics.getWidth() / 4 - self.t.width / 2
 		self.t.y = love.graphics.getHeight() - self.height
 		self.t.width = 150
