@@ -156,7 +156,7 @@ SkillBar = Class:extend
 	skillTimerText = {},
 	
 	-- position
-	x = love.graphics.getWidth() / 2 - SkillIcon.width / 2 * 6, -- to-do: 6 ersetzen durch table.getn(skills) oder ähnliche zählmethode
+	x = love.graphics.getWidth() / 2 - SkillIcon.width / 2 * 6 - 6, -- to-do: erste 6 ersetzen durch table.getn(skills) oder ähnliche zählmethode
 	y = love.graphics.getHeight()  - SkillIcon.height,
 	
 	onNew = function (self)
@@ -794,8 +794,8 @@ ControlUI = Tile:extend
 	image = '/assets/graphics/controls_mouse.png',
     
 	onUpdate = function (self)
-		self.x = love.graphics.getWidth() / 2 - self.width / 2  -- the.app.height
-		self.y = love.graphics.getHeight() - self.height  -- the.app.height
+		self.x = love.graphics.getWidth() / 2 - self.width / 2 - 6 --TODO: dummen hack (-7) entfernen
+		self.y = love.graphics.getHeight() - self.height 
 		if input.getMode() == 2 then
 			self.image = '/assets/graphics/controls_gamepad.png'
 			elseif input.getMode() == 1 then
