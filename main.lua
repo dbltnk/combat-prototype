@@ -107,7 +107,7 @@ SkillFromDefintion = Skill:extend
 		local startTarget = { oid = the.player.oid }
 		action_handling.start(self.definition.application, startTarget)
 		print("out of combat:", self:isOutOfCombat())
-	end,
+		end,
 
 	isOutOfCombat = function (self)
 		return love.timer.getTime() - self.lastUsed >= self.combatTimer
@@ -614,6 +614,15 @@ Player = Animation:extend
 		then
 			self.skills[shootSkillNr]:use(cx, cy, self.rotation, self)
 		end
+		
+		if isCasting then 
+			-- create a new particle effect on the player	
+			local xPlayer = 0
+			local yPlayer = 0
+			xPlayer, yPlayer = tools.WorldPosToScreenPos(the.player.x,the.player.y)
+			the.particles = the.view.factory:create(Particles, { x = xPlayer, y = yPlayer })
+			the.hud:add(the.particles)	
+		end
 
 		-- energy regeneration
 		if self.currentEnergy < 0 then self.currentEnergy = 0 end
@@ -862,6 +871,41 @@ PainUI = Fill:extend
 	end
 }
 
+Particles = Emitter:extend
+{
+    width = 0,
+    height = 0,
+ 
+    onNew = function (self)
+        self:loadParticles(Fill:extend
+        {
+            width = 3,
+            height = 3,
+            fill = {255, 255, 255},
+            onEmit = function (self)
+                self.fill = {255, 255, 255}
+                self.alpha = 1
+                the.view.tween:start(self, 'fill', {0, 0, 255}, math.random())
+                :andThen(bind(the.view.tween, 'start', self, 'alpha', 0, math.random() / 2))
+            end
+        },
+        50)
+        self.width = the.player.width / 2
+        self.height = the.player.height / 2
+        self:launch()
+    end,
+ 
+    onReset = function (self)
+        self:launch()
+    end,
+ 
+    launch = function (self)
+        self:emit()
+        -- 1.5 seconds is the maximum lifetime of our particles
+        the.view.timer:after(.01, bind(the.view.factory, 'recycle', self))
+    end
+}
+
 GameView = View:extend
 {
 	layers = {
@@ -873,6 +917,8 @@ GameView = View:extend
 	},
 
     onNew = function (self)
+    
+    
 		-- object -> true map for easy remove, key contains projectile reference
 		the.projectiles = {}
 		
@@ -949,7 +995,7 @@ GameView = View:extend
 		the.painUIBG = PainUIBG:new{}
 		the.hud:add(the.painUIBG)		
 		the.painUI = PainUI:new{}
-		the.hud:add(the.painUI)					
+		the.hud:add(the.painUI)			
 		
 		the.peaceMusic = playSound('/assets/audio/eots.ogg', volume, 'long') -- Shadowbane Soundtrack: Eye of the Storm
 		the.peaceMusic:setLooping(true)
