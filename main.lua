@@ -616,12 +616,11 @@ Player = Animation:extend
 		end
 
 		-- energy regeneration
-		if self.currentEnergy < 0 then self.currentEnergy = 0 end
 		if isCasting == false then self.currentEnergy = self.currentEnergy + config.energyreg end
+		if self.currentEnergy < 0 then self.currentEnergy = 0 end
 		if self.currentEnergy > self.maxEnergy then self.currentEnergy = self.maxEnergy end
 		
 		-- health regeneration
-		if self.currentPain < 0 then self.currentPain = 0 end
 		local regenerating = true		
 		for k,v in pairs(self.skills) do
 			if (v:isOutOfCombat() == false) then
@@ -629,6 +628,7 @@ Player = Animation:extend
 			end
 		end
 		if regenerating == true then self.currentPain = self.currentPain - config.healthreg end
+		if self.currentPain <= 0 then self.currentPain = 0 end
 		if self.currentPain > self.maxPain then self.currentPain = self.maxPain end
 
 		-- combat music fade in/out 		
