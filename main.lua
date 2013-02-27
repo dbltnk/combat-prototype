@@ -617,11 +617,8 @@ Player = Animation:extend
 		
 		if isCasting then 
 			-- create a new particle effect on the player	
-			local xPlayer = 0
-			local yPlayer = 0
-			xPlayer, yPlayer = tools.WorldPosToScreenPos(the.player.x,the.player.y)
-			the.particles = the.view.factory:create(Particles, { x = xPlayer, y = yPlayer })
-			the.hud:add(the.particles)	
+			the.particles = the.view.factory:create(Particles, { x = the.player.x, y = the.player.y })
+			the.app.view.layers.particles:add(the.particles)
 		end
 
 		-- energy regeneration
@@ -910,6 +907,7 @@ GameView = View:extend
 {
 	layers = {
 		ground = Group:new(),
+		particles = Group:new(),
 		characters = Group:new(),
 		projectiles = Group:new(),
 		above = Group:new(),
@@ -935,6 +933,7 @@ GameView = View:extend
 		
 		-- specify render order
 		self:add(self.layers.ground)
+		self:add(self.layers.particles)		
 		self:add(self.layers.characters)
 		self:add(self.layers.projectiles)
 		self:add(self.layers.above)
