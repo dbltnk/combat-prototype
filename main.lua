@@ -808,13 +808,26 @@ EnergyUIBG = Fill:extend
 {
 	width = 1,
 	height = 20,
-	fill = {0,0,128,255},	
+	fill = {0,128,128,255},	
 	border = {0,0,0,255},
+	t = Text:new{
+				font = 14,
+				text = "xxx",
+				x = 0,
+				y = 0, 
+			},
+	
+	onNew = function(self)
+		the.hud:add(self.t)	
+	end,	
     
 	onUpdate = function (self)
-		self.x = love.graphics.getWidth() / 2 - self.width / 2 + 4
-		self.y = love.graphics.getHeight() - self.height - 64
-		self.width = the.player.maxEnergy / the.player.maxEnergy * the.controlUI.width
+		self.x = love.graphics.getWidth() - self.width 
+		self.y = love.graphics.getHeight() - self.height
+		self.width = the.player.maxEnergy / the.player.maxEnergy * (love.graphics.getWidth() - the.controlUI.width) / 2
+		self.t.text = "Fatigue: " .. the.player.currentEnergy .. " / " .. the.player.maxEnergy
+		self.t.x = love.graphics.getWidth() / 4 * 3 - self.t.width / 2
+		self.t.y = love.graphics.getHeight() - self.height
 	end
 }
 
@@ -824,11 +837,11 @@ EnergyUI = Fill:extend
 	height = 20,
 	fill = {0,0,255,255},	
 	border = {0,0,0,255},
-	
+		
 	onUpdate = function (self)
-		self.x = love.graphics.getWidth() / 2 - the.energyUIBG.width / 2
-		self.y = love.graphics.getHeight() - self.height - 64
-		self.width = the.player.currentEnergy / the.player.maxEnergy * the.controlUI.width
+		self.x = love.graphics.getWidth() - self.width 
+		self.y = love.graphics.getHeight() - self.height
+		self.width = the.player.currentEnergy / the.player.maxEnergy * (love.graphics.getWidth() - the.controlUI.width) / 2
 		if self.width <= 2 then self.width = 2 end
 	end
 }
@@ -841,9 +854,9 @@ PainUIBG = Fill:extend
 	border = {0,0,0,255},
     
 	onUpdate = function (self)
-		self.x = love.graphics.getWidth() / 2 - self.width / 2 + 4
-		self.y = love.graphics.getHeight() - self.height - 64 - self.height
-		self.width = the.player.maxPain / the.player.maxPain * the.controlUI.width
+		self.x = 0
+		self.y = love.graphics.getHeight() - self.height
+		self.width = the.player.maxPain / the.player.maxPain * (love.graphics.getWidth() - the.controlUI.width) / 2
 	end
 }
 
@@ -853,12 +866,25 @@ PainUI = Fill:extend
 	height = 20,
 	fill = {255,0,0,255},	
 	border = {0,0,0,255},
+	t = Text:new{
+				font = 14,
+				text = "xxx",
+				x = 0,
+				y = 0, 
+			},
+	
+	onNew = function(self)
+		the.hud:add(self.t)	
+	end,
 	
 	onUpdate = function (self)
-		self.x = love.graphics.getWidth() / 2 - the.painUIBG.width / 2
-		self.y = love.graphics.getHeight() - self.height - 64 - self.height
+		self.x = 0
+		self.y = love.graphics.getHeight() - self.height
 		self.width = the.player.currentPain / the.player.maxPain * the.controlUI.width
 		if self.width <= 2 then self.width = 2 end
+		self.t.text = "Pain: " .. the.player.currentPain .. " / " .. the.player.maxPain
+		self.t.x = love.graphics.getWidth() / 4 - self.t.width / 2
+		self.t.y = love.graphics.getHeight() - self.height
 	end
 }
 
@@ -1006,6 +1032,9 @@ the.app = App:new
 		if the.keys:justPressed ("f2") and the.gamepads[1].name ~= "NO DEVICE CONNECTED" then print("input mode: gamepad") input.setMode (input.MODE_GAMEPAD) end
 		if the.keys:justPressed ("f3") then print("input mode: touch") input.setMode (input.MODE_TOUCH) end	
 		
+		-- debug cheats
+		if the.keys:justPressed ("f5") then the.player.currentPain = the.player.currentPain + 20 end	
+					
 		-- toggle fullscreen
 		if the.keys:justPressed ("f10") then self:toggleFullscreen() end
 		
