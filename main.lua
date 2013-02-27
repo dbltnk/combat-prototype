@@ -617,7 +617,7 @@ Player = Animation:extend
 		
 		if isCasting then 
 			-- create a new particle effect on the player	
-			the.particles = the.view.factory:create(Particles, { x = the.player.x, y = the.player.y })
+			the.particles = the.view.factory:create(Particles, { x = the.player.x + the.player.width / 4, y = the.player.y + the.player.height / 4})
 			the.app.view.layers.particles:add(the.particles)
 		end
 
