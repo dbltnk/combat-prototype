@@ -817,16 +817,16 @@ EnergyUIBG = Fill:extend
 				y = 0, 
 			},
 	
-	onNew = function(self)
-		the.hud:add(self.t)	 --TODO: in der render-reihenfolge nach oben, aktuell nicht sichtbar
+	onDraw = function(self)
+		if the.hud:contains(self.t) == false then the.hud:add(self.t) end	
 	end,	
     
 	onUpdate = function (self)
 		self.x = love.graphics.getWidth() - self.width 
 		self.y = love.graphics.getHeight() - self.height
 		self.width = the.player.maxEnergy / the.player.maxEnergy * (love.graphics.getWidth() - the.controlUI.width) / 2
-		self.t.text = "Fatigue: " .. math.floor(the.player.currentEnergy) .. " / " .. math.floor(the.player.maxEnergy)
-		self.t.x = love.graphics.getWidth() / 4 * 3 - self.t.width / 2
+		self.t.text = "Fatigue: " .. math.floor(300 - the.player.currentEnergy) .. " / " .. math.floor(the.player.maxEnergy)
+		self.t.x = love.graphics.getWidth() / 4 * 3 
 		self.t.y = love.graphics.getHeight() - self.height
 		self.t.width = 150
 	end
@@ -874,8 +874,8 @@ PainUI = Fill:extend
 				y = 0, 
 			},
 	
-	onNew = function(self)
-		the.hud:add(self.t)	-- TODO: über die rote pain bar in der rendereihenfolge
+	onDraw = function(self)
+		if the.hud:contains(self.t) == false then the.hud:add(self.t) end
 	end,
 	
 	onUpdate = function (self)
