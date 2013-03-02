@@ -5,9 +5,10 @@ TargetDummy = Tile:extend
 	image = '/assets/graphics/dummy.png',
 	currentPain = 0,
 	maxPain = 100,
-	pb = nil,
-	pbb = nil,
-	wFactor = 0.30,
+	
+	-- UiBar
+	painBar = nil,
+	
 	movable = false,
 	
 	onNew = function (self)
@@ -19,20 +20,15 @@ TargetDummy = Tile:extend
 		object_manager.create(self)
 		--print("NEW DUMMY", self.x, self.y, self.width, self.height)
 		the.view.layers.characters:add(self)
-		self.pb = PainBar:new{x = self.x, y = self.y, width = self.currentPain * self.wFactor}
-		self.pbb = PainBarBG:new{x = self.x, y = self.y, width = self.maxPain * self.wFactor}
-		the.view.layers.ui:add(self.pbb)
-		the.view.layers.ui:add(self.pb)
-		self:updateBarPositions()
+		
+		self.painBar = UiBar:new{
+			x = self.x, y = self.y, 
+			dx = 0, dy = self.height,
+			currentValue = self.currentPain, maxValue = self.maxPain, 
+		}
+		
 		drawDebugWrapper(self)
 		if (math.random(-1, 1) > 0) then self.movable = true end
-	end,
-	
-	updateBarPositions = function (self)
-		self.pb.x = self.x
-		self.pb.y = self.y + 64
-		self.pbb.x = self.x
-		self.pbb.y = self.y + 64
 	end,
 	
 	gainPain = function (self, str)
@@ -68,15 +64,11 @@ TargetDummy = Tile:extend
 		if self.currentPain > self.maxPain then 
 			self.currentPain = self.maxPain
 			self:die()
-		else
-			self.pb.width = self.currentPain * self.wFactor
 		end	
 	end,
 	
 	onDie = function (self)
-		self.pb:die()
-		self.pbb:die()		
-		
+		self.painBar:die()
 		the.targetDummies[self] = nil
 	end,
 	
@@ -88,6 +80,9 @@ TargetDummy = Tile:extend
 			self.y = self.y + self.dy
 		end
 		
-		self:updateBarPositions()
+		self.painBar.currentValue = self.currentPain
+		self.painBar:updateBar()
+		self.painBar.x = self.x
+		self.painBar.y = self.y
 	end,	
 }

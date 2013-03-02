@@ -76,24 +76,6 @@ PainUI = Fill:extend
 	end
 }
 
-
-PainBar = Fill:extend
-{
-	width = 0,
-	height = 5,
-	fill = {255,0,0,255},
-	border = {0,0,0,255}	
-}
-
-PainBarBG = Fill:extend
-{
-	width = 0,
-	height = 5,
-	fill = {0,255,0,255},
-	border = {0,0,0,255}
-}
-
-
 Cursor = Tile:extend
 {
 	width = 32,
@@ -107,6 +89,61 @@ Cursor = Tile:extend
 	end
 }
 
+UiBar = Sprite:extend
+{
+	pb = nil,
+	pbb = nil,
+	wFactor = 0.30,
+	dx = 0,
+	dy = 0,
+	
+	currentValue = 0,
+	maxValue = 100,
+
+	onNew = function (self)
+		self.bar = Fill:new{
+			x = self.x, y = self.y, 
+			width = self.currentValue * self.wFactor,
+			height = 5,
+			fill = {255,0,0,255},
+			border = {0,0,0,255}	
+		}
+		self.background = Fill:new{
+			x = self.x, y = self.y, 
+			width = self.maxValue * self.wFactor,
+			height = 5,
+			fill = {0,255,0,255},
+			border = {0,0,0,255},
+		}
+		the.view.layers.ui:add(self)
+		the.view.layers.ui:add(self.background)
+		the.view.layers.ui:add(self.bar)
+	end,
+	
+	onUpdate = function (self, elapsed)
+		self.bar.x = self.x + self.dx
+		self.bar.y = self.y + self.dy
+		self.background.x = self.x + self.dx
+		self.background.y = self.y + self.dy
+	end,
+	
+	updateBar = function (self)
+		if self.currentValue > self.maxValue then 
+			self.currentValue = self.maxValue
+		else
+			self.bar.width = self.currentValue * self.wFactor
+		end	
+	end,
+	
+	onDie = function (self)
+		self.bar:die()
+		self.background:die()		
+
+		the.view.layers.ui:remove(self)
+		the.view.layers.ui:remove(self.background)
+		the.view.layers.ui:remove(self.bar)
+	end,
+}
 
 UiGroup = Group:extend
 {

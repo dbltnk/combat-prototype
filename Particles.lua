@@ -12,6 +12,8 @@ Particles = Emitter:extend
     particle_color = {255, 255, 255},
  
     onNew = function (self)
+		the.app.view.layers.particles:add(self)
+		
 		local emitter = self
 		
         self.emitting = true
