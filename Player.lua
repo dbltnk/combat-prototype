@@ -108,8 +108,6 @@ Player = Animation:extend
 		local shootSkillNr = self.activeSkillNr
 		local doShoot = false
 		
-		tween.update(elapsed)
-		
 		if input.getMode() == input.MODE_GAMEPAD then
 			-- move player by axes 12
 			dirx = the.gamepads[1].axes[1]
@@ -265,12 +263,6 @@ Player = Animation:extend
 			self.skills[shootSkillNr]:use(cx, cy, self.rotation, self)
 		end
 		
-		if isCasting then 
-			-- create a new particle effect on the player	
-			--~ the.particles = the.view.factory:create(Particles, { x = the.player.x + the.player.width / 4, y = the.player.y + the.player.height / 4})
-			--~ the.app.view.layers.particles:add(the.particles)
-		end
-
 		-- energy regeneration
 		if self.currentEnergy < 0 then self.currentEnergy = 0 end
 		if isCasting == false then self.currentEnergy = self.currentEnergy + config.energyreg end
@@ -297,14 +289,13 @@ Player = Animation:extend
 		end
 		
 		local newLoundness = (isInCombat and 0) or 1
-		--~ local newLoundness = 1
-		--~ if isInCombat then newLoundness = 0 end
 		
 		-- not fading and wrong loudness?
 		if self.loudness_is_fading == false and math.abs(newLoundness - self.loudness) > 0.01 then
 			-- start fade
 			self.loudness_is_fading = true
-			tween(fadeTime, self, {loudness = newLoundness}, nil, function() self.loudness_is_fading = false end)
+			the.view.tween:start(self, "loudness", newLoundness, fadeTime)
+				:andThen(function() self.loudness_is_fading = false end)
 		end
 
 		the.peaceMusic:setVolume(self.loudness)

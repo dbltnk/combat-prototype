@@ -9,7 +9,6 @@ vector = require 'vector'
 utils = require 'utils'
 config = require 'config'
 input = require 'input'
-tween = require 'tween'
 profile = require 'profile'
 
 action_definitions = require 'action_definitions'

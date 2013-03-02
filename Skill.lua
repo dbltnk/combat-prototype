@@ -47,9 +47,16 @@ Skill = Class:extend
 		self.source.player = player
 		
 		self.lastUsed = love.timer.getTime()
+		
+		-- start particle
+		the.particles = the.view.factory:create(Particles, { x = x, y = y})
+		the.app.view.layers.particles:add(the.particles)
+
 		if self.onUse then 
 			-- call use after casttime timeout
 			the.app.view.timer:after(self.cast_time, function() 
+				-- finished casting and stop particle
+				
 				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
 				print("SKILL", self.nr, "REALLY USE")
 				self:onUse()
