@@ -17,6 +17,10 @@ Fill = Sprite:extend{
 	-- between 0 and 255. The fill sprite draws the border in this color
 	-- after filling in a color (if any).
 	border = nil,
+	
+	-- Property: shape
+	-- Is either "rectangle" or "circle" (uses max width or height to determine radius)
+	shape = "rectangle",
 
 	draw = function (self, x, y)
 		x = math.floor(x or self.x)
@@ -54,7 +58,12 @@ Fill = Sprite:extend{
 								   self.fill[3] * self.tint[3],
 								   fillAlpha * self.alpha)
 			
-			love.graphics.rectangle('fill', x, y, self.width, self.height)
+			if self.shape == "rectangle" then
+				love.graphics.rectangle('fill', x, y, self.width, self.height)
+			else
+				local r = math.max(self.width, self.height) / 2
+				love.graphics.circle('fill', x + r, y + r, r, math.floor(r+5))
+			end
 		end
 		
 		if self.border then
@@ -65,7 +74,12 @@ Fill = Sprite:extend{
 								   self.border[3] * self.tint[3],
 								   borderAlpha * self.alpha)
 			
-			love.graphics.rectangle('line', x, y, self.width, self.height)
+			if self.shape == "rectangle" then
+				love.graphics.rectangle('line', x, y, self.width, self.height)
+			else
+				local r = math.max(self.width, self.height) / 2
+				love.graphics.circle('line', x + r, y + r, r, math.floor(r+5))
+			end
 		end
 		
 		-- reset color and rotation
@@ -82,6 +96,12 @@ Fill = Sprite:extend{
 	__tostring = function (self)
 		local result = 'Fill (x: ' .. self.x .. ', y: ' .. self.y ..
 					   ', w: ' .. self.width .. ', h: ' .. self.height .. ', '
+
+		if self.shape then
+			result = result .. 'shape {' .. table.concat(self.shape, ', ') .. '}, '
+		else
+			result = result .. 'no shape, '
+		end
 
 		if self.fill then
 			result = result .. 'fill {' .. table.concat(self.fill, ', ') .. '}, '

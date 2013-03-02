@@ -40,6 +40,7 @@ SkillBar = Class:extend
 
 			-- timeout text
 			local t = Text:new{
+				tint = {1,1,0},
 				font = 14,
 				text = "X",
 			}
