@@ -1,7 +1,6 @@
--- Player
+-- Character
 
-
-Player = Animation:extend
+Character = Animation:extend
 {
 	maxPain = config.maxPain, 
 	currentPain = 0,
@@ -45,12 +44,9 @@ Player = Animation:extend
 		return love.timer.getTime() - self.lastFootstep >= .25
 	end,
 	
-	makeStep = function (self)
+	makeFootstep = function (self)
 		self.lastFootstep = love.timer.getTime()
 	end,
-	
-	loudness = config.volume,	
-	loudness_is_fading = false,
 	
 	onNew = function (self)
 		for k,v in pairs(self.skills) do
@@ -95,25 +91,27 @@ Player = Animation:extend
 		end
 	end,
 	
-	readInput = function (self, activeSkillNr)
+	onUpdate = function (self, elapsed)
+	
+		self.velocity.x = 0
+		self.velocity.y = 0
+
 		-- 0 slowest -> 1 fastest
 		local speed = 0
-		-- [-1,1], [-1,1]
-		local movex, movey = 0,0
-		-- has an arbitrary length
-		local viewx, viewy = 0,0
+		-- -1->1, -1->1
+		local dirx, diry = 0,0
 		
-		local shootSkillNr = activeSkillNr
-		local doShoot = false	
+		local shootSkillNr = self.activeSkillNr
+		local doShoot = false
 		
 		if input.getMode() == input.MODE_GAMEPAD then
 			-- move player by axes 12
-			movex = the.gamepads[1].axes[1]
-			movey = the.gamepads[1].axes[2]
-			local l = vector.len(movex, movey)
+			dirx = the.gamepads[1].axes[1]
+			diry = the.gamepads[1].axes[2]
+			local l = vector.len(dirx, diry)
 			if l < 0.2 then 
 				speed = 0
-				movex, movey = 0,0 
+				dirx, diry = 0,0 
 			else
 				speed = utils.mapIntoRange (l, 0, 1, 0,1)
 			end
@@ -203,10 +201,10 @@ Player = Animation:extend
 --~ 			if the.keys:pressed('6') then shootSkillNr = 8 doShoot = true end
 --~ 			if the.keys:pressed('7') then shootSkillNr = 9 doShoot = true end
 
-			if the.keys:pressed('left', 'a') then movex = -1 end
-			if the.keys:pressed('right', 'd') then movex = 1 end
-			if the.keys:pressed('up', 'w') then movey = -1 end
-			if the.keys:pressed('down', 's') then movey = 1 end
+			if the.keys:pressed('left', 'a') then dirx = -1 end
+			if the.keys:pressed('right', 'd') then dirx = 1 end
+			if the.keys:pressed('up', 'w') then diry = -1 end
+			if the.keys:pressed('down', 's') then diry = 1 end
 			
 			-- if the.keys:pressed('shift') then speed = 1 else speed = 0 end -- to-do: in eine fähigkeit umwandeln (hotbar)
 
@@ -216,29 +214,57 @@ Player = Animation:extend
 			-- TODO
 		end
 		
+		local isMoving = self.freezeMovementCounter == 0 and vector.len(dirx, diry) > 0
+		
+		if isMoving and self:footstepsPossible() then 
+			local rot = vector.toVisualRotation(dirx, diry)
+			local footstep = Footstep:new{ 
+				x = self.x+17, y = self.y+15, 
+				rotation = rot,
+			}
+			the.app.view.layers.ground:add(footstep)
+			the.footsteps[footstep] = true
+			self:makeFootstep()
+		end
+		
+		-- move into direction?
+		if isMoving then
+			-- replace second 0 by a 1 to toggle runspeed to analog
+			local s = config.walkspeed -- utils.mapIntoRange (speed, 0, 0, config.walkspeed, config.runspeed)
+			
+			-- patched speed?
+			if self.speedOverride and self.speedOverride > 0 then s = self.speedOverride end
+			
+			self.velocity.x, self.velocity.y = vector.normalizeToLen(dirx, diry, s)
+			
+			local animspeed = utils.mapIntoRange (speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
+			
+			self:play('walk')
+		else
+			self:freeze(5)
+		end
+		
 		local worldMouseX, worldMouseY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 		local cx,cy = self.x + self.width / 2, self.y + self.height / 2
 		-- mouse -> player vector
-		viewx, viewy = cx - (worldMouseX), cy - (worldMouseY)
-
-		return { speed = speed, 
-			movex = movex, movey = movey, 
-			viewx = viewx, viewy = viewy, 
-			doShoot = doShoot, shootSkillNr = shootSkillNr, }
-	end,
-	
-	isCasting = function (self)
-		local c = false
-		for k,v in pairs(self.skills) do
-			c = c or v:isCasting()
-		end
-		return c
-	end,
+		local dx,dy = cx - (worldMouseX), cy - (worldMouseY)
 		
-	onUpdateRegeneration = function (self, elapsed)
+		self.rotation = math.atan2(dy, dx) - math.pi / 2
+		
+		local isCasting = false
+		for k,v in pairs(self.skills) do
+			isCasting = isCasting or v:isCasting()
+		end
+		
+		if isCasting == false and doShoot and self.skills[shootSkillNr] and 
+			self.skills[shootSkillNr]:isPossibleToUse()
+		then
+			self.skills[shootSkillNr]:use(cx, cy, self.rotation, self)
+		end
+		
 		-- energy regeneration
 		if self.currentEnergy < 0 then self.currentEnergy = 0 end
-		if self:isCasting() == false then self.currentEnergy = self.currentEnergy + config.energyreg end
+		if isCasting == false then self.currentEnergy = self.currentEnergy + config.energyreg end
 		if self.currentEnergy > self.maxEnergy then self.currentEnergy = self.maxEnergy end
 		
 		-- health regeneration
@@ -250,58 +276,8 @@ Player = Animation:extend
 			end
 		end
 		if regenerating == true then self.currentPain = self.currentPain - config.healthreg end
-		if self.currentPain > self.maxPain then self.currentPain = self.maxPain end		
-	end,
-	
-	onUpdate = function (self, elapsed)
-		self:onUpdateRegeneration(elapsed)
-		
-		self.velocity.x = 0
-		self.velocity.y = 0
+		if self.currentPain > self.maxPain then self.currentPain = self.maxPain end
 
-		local ipt = self:readInput(self.activeSkillNr)
-		
-		local isMoving = self.freezeMovementCounter == 0 and vector.len(ipt.movex, ipt.movey) > 0
-		
-		if isMoving and self:footstepsPossible() then 
-			local rot = vector.toVisualRotation(ipt.movex, ipt.movey)
-			local footstep = Footstep:new{ 
-				x = self.x+17, y = self.y+15, 
-				rotation = rot,
-			}
-			the.app.view.layers.ground:add(footstep)
-			the.footsteps[footstep] = true
-			self:makeStep()
-		end
-		
-		-- move into direction?
-		if self.freezeMovementCounter == 0 and vector.len(ipt.movex, ipt.movey) > 0 then
-			-- replace second 0 by a 1 to toggle runspeed to analog
-			local s = config.walkspeed -- utils.mapIntoRange (speed, 0, 0, config.walkspeed, config.runspeed)
-			
-			-- patched speed?
-			if self.speedOverride and self.speedOverride > 0 then s = self.speedOverride end
-			
-			self.velocity.x, self.velocity.y = vector.normalizeToLen(ipt.movex, ipt.movey, s)
-			
-			local animspeed = utils.mapIntoRange (ipt.speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
-			
-			self:play('walk')
-		else
-			self:freeze(5)
-		end
-		
-		local dx,dy = ipt.viewx, ipt.viewy
-		
-		self.rotation = math.atan2(dy, dx) - math.pi / 2
-		
-		if self:isCasting() == false and ipt.doShoot and self.skills[ipt.shootSkillNr] and 
-			self.skills[ipt.shootSkillNr]:isPossibleToUse()
-		then
-			local rot = vector.fromVisualRotation(ipt.viewx, ipt.viewy)
-			self.skills[ipt.shootSkillNr]:use(cx, cy, rot, self)
-		end
-		
 		-- combat music?
 		local isInCombat = false
 		for k,v in pairs(self.skills) do
@@ -311,4 +287,3 @@ Player = Animation:extend
 		audio.isInCombat = isInCombat
 	end,
 }
-

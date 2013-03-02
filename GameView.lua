@@ -93,11 +93,7 @@ GameView = View:extend
 		the.painUI = PainUI:new{}
 		the.hud:add(the.painUI)			
 		
-		the.peaceMusic = playSound('/assets/audio/eots.ogg', config.volume, 'long') -- Shadowbane Soundtrack: Eye of the Storm
-		the.peaceMusic:setLooping(true)
-
-		the.combatMusic = playSound('/assets/audio/dos.ogg', 0, 'long') -- Shadowbane Soundtrack: Dance of Steel
-		the.combatMusic:setLooping(true)
+		audio.init()
     end,
     
     onUpdate = function (self, elapsed)
@@ -134,5 +130,7 @@ GameView = View:extend
 		
 		if config.show_profile_info then profile.print() end
 		profile.clear()
+		
+		audio.update()
     end,
 }

@@ -17,6 +17,7 @@ object_manager = require 'object_manager'
 action_handling = require 'action_handling'
 tools = require 'tools'
 require 'actions'
+require 'audio'
 
 require 'debug_utils'
 
@@ -30,6 +31,7 @@ require 'Projectile'
 require 'Particles'
 require 'GameView'
 require 'Footstep'
+require 'Character'
 
 require 'ui'
 

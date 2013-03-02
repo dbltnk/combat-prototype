@@ -22,7 +22,7 @@ config.gamepad_cursor_speed_far = 800
 config.gamepad_cursor_near_distance = 400
 config.gamepad_cursor_near_border = 200
 
-config.draw_debug_info = false
+config.draw_debug_info = true
 config.show_profile_info = false
 
 return config
