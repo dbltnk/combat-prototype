@@ -49,9 +49,9 @@ Skill = Class:extend
 		self.lastUsed = love.timer.getTime()
 		
 		-- start particle
-		the.particles = the.view.factory:create(Particles, { x = x, y = y})
-		the.app.view.layers.particles:add(the.particles)
-
+		local particles = the.view.factory:create(Particles, { x = x, y = y})
+		the.app.view.layers.particles:add(particles)
+		
 		if self.onUse then 
 			-- call use after casttime timeout
 			the.app.view.timer:after(self.cast_time, function() 

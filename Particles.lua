@@ -21,8 +21,15 @@ Particles = Emitter:extend
                 :andThen(bind(the.view.tween, 'start', self, 'alpha', 0, math.random() / 2))
             end
         },
-        50)
+        500)
         -- TODO use attached_to_object
+		self.emitting = true
+		self.period = 0
+		self.emitCount = 10
+		self.min = 0
+		self.max = 500
+		
+		
         self.width = the.player.width / 2
         self.height = the.player.height / 2
         self:launch()
@@ -33,8 +40,8 @@ Particles = Emitter:extend
     end,
  
     launch = function (self)
-        self:emit()
+        --~ self:emit()
         -- 1.5 seconds is the maximum lifetime of our particles
-        the.view.timer:after(.01, bind(the.view.factory, 'recycle', self))
+        the.view.timer:after(10, bind(the.view.factory, 'recycle', self))
     end
 }
