@@ -11,6 +11,11 @@ config.healthreg = 0.05
 config.maxPain = 200
 config.maxEnergy = 300
 
+
+-- audio
+config.volume = 0.3
+
+
 -- gamepad
 config.gamepad_cursor_speed_near = 300
 config.gamepad_cursor_speed_far = 800

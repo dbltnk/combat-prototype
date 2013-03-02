@@ -10,6 +10,7 @@ action_definitions = {
 		timeout = 1,
 		energy = 10,
 		on_the_run =  false,
+		cast_particle_color = { 255,0,0 },
 		
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 800, speed = 400, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_shot_projectile.png"},
