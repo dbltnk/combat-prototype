@@ -21,6 +21,13 @@ application = {
 		},	
 ]]
 
+-- any: contains x,y or oid
+-- returns {oid=} or {x=,y=} (x,y is center)
+function action_handling.get_target (any)
+	if any.oid then return { oid = any.oid }
+	else return { x = any.x or 0, y = any.y or 0 } end
+end
+
 -- target: {oid=} or {x=,y=} (x,y is center)
 -- returns x,y (id oid it returns its center)
 function action_handling.get_target_position (target)
