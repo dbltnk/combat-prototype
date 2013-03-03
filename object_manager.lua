@@ -3,6 +3,7 @@ common object parameters:
 oid
 x
 y
+rotation
 receive = function(name, a, b, c, ...)
 ]]
 

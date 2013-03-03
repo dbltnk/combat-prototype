@@ -81,6 +81,9 @@
   <object name="TargetDummy" x="453" y="2644" width="23" height="20"/>
   <object name="TargetDummy" x="382" y="2678" width="23" height="20"/>
   <object name="TargetDummy" x="220" y="2414" width="23" height="20"/>
+  <object name="Npc" x="256" y="2528" width="64" height="64"/>
+  <object name="Npc" x="566" y="2689" width="64" height="64"/>
+  <object name="Npc" x="551" y="2356" width="64" height="64"/>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
   <object x="1421" y="2157">

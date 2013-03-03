@@ -21,26 +21,47 @@ application = {
 		},	
 ]]
 
--- target: {oid=} or {x=,y=} (x,y is center)
+-- any: contains x,y,rotation or oid
+-- returns {oid=} or {x=,y=,rotation=} (x,y is center)
+function action_handling.get_target (any)
+	if any.oid then return { oid = any.oid }
+	else return { x = any.x or 0, y = any.y or 0, rotation = any.rotation or 0 } end
+end
+
+-- target: {oid=} or {x=,y=,rotation=} (x,y is center)
 -- returns x,y (id oid it returns its center)
 function action_handling.get_target_position (target)
-	if target.x and target.y then 
-		return target.x, target.y
+	local x,y = target.x, target.y
+	local w,h = 0,0
+	
+	if target.oid then
+		local o = object_manager.get(target.oid)
+		x = o.x or x
+		y = o.y or y
+		
+		w = o.width or w
+		h = o.height or h
+	end
+	
+	return x + w/2, y + h/2
+end
+
+-- target: {oid=} or {x=,y=,rotation=} (x,y is center)
+-- returns rotation
+function action_handling.get_target_rotation (target)
+	if target.rotation then 
+		return target.rotation
 	elseif target.oid then
 		local o = object_manager.get(target.oid)
-		
-		local w = o.width or 1
-		local h = o.height or 1
-		
-		return o.x + w/2, o.y + h/2
+		return o.rotation
 	else
-		print("ACTION could not determine position of target", action_handling.to_string_target(target))
-		return 0,0
+		print("ACTION could not determine rotation of target", action_handling.to_string_target(target))
+		return 0
 	end
 end
 
 -- o : object_mangers object
--- returns {oid=} or {x=,y=}
+-- returns {oid=} or {x=,y=,rotation=}
 function action_handling.object_to_target (o)
 	return {oid=o.oid}
 end
@@ -48,22 +69,22 @@ end
 
 -- function targets_selected_callback({t0,t1,t2,...})
 -- target_selection: eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/action_projectiles/shield_bash_projectile.png"},
--- start_target: {oid=} or {x=,y=} (x,y is center)
+-- start_target: {oid=} or {x=,y=,rotation=} (x,y is center)
 -- function target_selection_callback(start_target, target_selection, targets_selected_callback)
 function action_handling.register_target_selection(name, target_selection_callback)
 	action_handling.registered_target_selections[name] = target_selection_callback
 end
 
 -- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
--- target: {oid=} or {x=,y=} (x,y is center)
+-- target: {oid=} or {x=,y=,rotation=} (x,y is center)
 -- function effect_callback(target, effect)
 function action_handling.register_effect(name, effect_callback)
 	action_handling.registered_effects[name] = effect_callback
 end
 
--- target: {oid=} or {x=,y=} (x,y is center)
+-- target: {oid=} or {x=,y=,rotation=} (x,y is center)
 function action_handling.to_string_target(target)
-	return "oid=" .. (target.oid or "nil") .. " x=" .. (target.x or "nil") .. " y=" .. (target.y or "nil")
+	return "oid=" .. (target.oid or "nil") .. " x=" .. (target.x or "nil") .. " y=" .. (target.y or "nil") .. " rotation=" .. (target.rotation or "nil")
 end
 
 -- target_selection: eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/action_projectiles/shield_bash_projectile.png"},
@@ -83,7 +104,7 @@ function action_handling.start_target_selection (start_target, target_selection,
 end
 
 -- application: see action_definitions.lua
--- target: {oid=} or {x=,y=} (x,y is center)
+-- target: {oid=} or {x=,y=,rotation=} (x,y is center)
 function action_handling.start (application, target)
 	action_handling.start_target_selection(target, application.target_selection, function (targets)
 		-- target selection finished
@@ -97,8 +118,27 @@ function action_handling.start (application, target)
 	end)
 end
 
+-- returns list of ( {oid=} or {x=,y=,rotation=} (x,y is center) )
+function action_handling.find_ae_targets (x,y, range, maxTargetCount)
+	local l = object_manager.find_in_sphere(x,y, range)
+	
+	l = list.process_values(l)
+		:select(function(t) 
+			local xx,yy = action_handling.get_target_position(t)
+			return {
+				target=t, 
+				dist=vector.lenFromTo(x,y, xx,yy) 
+			} end)
+		:orderby(function(a,b) return a.dist < b.dist end)
+		:take(maxTargetCount)
+		:select(function(a) return a.target end)
+		:done()
+		
+	return l
+end
+
 -- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
--- target: {oid=} or {x=,y=} (x,y is center)
+-- target: {oid=} or {x=,y=,rotation=} (x,y is center)
 function action_handling.start_effect (effect, target)
 	local t = effect.effect_type
 	

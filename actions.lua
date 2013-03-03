@@ -12,12 +12,12 @@ require 'zoetrope'
 
 -- function targets_selected_callback({t0,t1,t2,...})
 -- target_selection: eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/action_projectiles/shield_bash_projectile.png"},
--- start_target: {oid=} or {x=,y=}
+-- start_target: {oid=} or {x=,y=,rotation=}
 -- function target_selection_callback(start_target, target_selection, targets_selected_callback)
 -- -- function action_handling.register_target_selection(name, target_selection_callback)
 
 -- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
--- target: {oid=} or {x=,y=}
+-- target: {oid=} or {x=,y=,rotation=}
 -- function effect_callback(target, effect)
 -- -- function action_handling.register_effect(name, effect_callback)
 
@@ -33,23 +33,10 @@ end)
 action_handling.register_target_selection("ae", function (start_target, target_selection, targets_selected_callback)
 	local x,y = action_handling.get_target_position(start_target)
 	
-	local l = object_manager.find_in_sphere(x,y, target_selection.range)
+	spawnDebugCircle(x,y,target_selection.range)
 	
-	-- limited amount of targets? -> order and only use the nearest ones
-	if target_selection.piercing_number then
-		print(target_selection.piercing_number, #l)
-		l = list.process_values(l)
-			:select(function(t) 
-				local xx,yy = action_handling.get_target_position(t)
-				return {
-					target=t, 
-					dist=vector.lenFromTo(x,y, xx,yy) 
-				} end)
-			:orderby(function(a,b) return a.dist < b.dist end)
-			:take(target_selection.piercing_number)
-			:select(function(a) return a.target end)
-			:done()
-	end
+	local l = action_handling.find_ae_targets(x,y, target_selection.range, 
+		target_selection.piercing_number or 1000000)
 	
 	targets_selected_callback(utils.map1(l, function (o) 
 		return action_handling.object_to_target(o)
@@ -59,8 +46,7 @@ end)
 
 -- target_selection: projectile ----------------------------------------------------------
 -- eg. {target_selection_type = "projectile", range = 200, speed = 150, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/action_projectiles/bow_shot_projectile.png"},
--- has: speed, gfx, range, piercing_number
--- todo: ae_size, ae_targets
+-- has: speed, gfx, range, piercing_number, ae_size, ae_targets
 action_handling.register_target_selection("projectile", function (start_target, target_selection, targets_selected_callback)
 	local worldMouseX, worldMouseY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 	
@@ -118,7 +104,7 @@ action_handling.register_target_selection("projectile", function (start_target, 
 			if other.oid then targets_hit[other.oid] = true end
 						
 			-- call effect on collision target
-			targets_selected_callback({action_handling.object_to_target(other)})
+			targets_selected_callback({action_handling.get_target(other)})
 			
 			-- TODO ignore last target
 			target_left = target_left - 1
@@ -136,6 +122,18 @@ action_handling.register_target_selection("projectile", function (start_target, 
 		if target_left > 0 then
 			local target = {x = self.x, y = self.y}
 			targets_selected_callback({target})
+		end
+		-- ae effect at the end?
+		if target_selection.ae_targets and target_selection.ae_size and 
+			target_selection.ae_targets > 0 and target_selection.ae_size > 0 
+		then
+			print("PIERCING AE", target_selection.ae_targets, target_selection.ae_size)
+			local x,y = action_handling.get_target_position(self)
+			spawnDebugCircle(x,y,target_selection.ae_size)
+			local l = action_handling.find_ae_targets(x,y, target_selection.ae_size, 
+				target_selection.piercing_number or 1000000)
+
+			targets_selected_callback(l)
 		end
 
 		if oldOnDie then oldOnDie(self) end
