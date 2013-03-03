@@ -135,63 +135,10 @@ Player = Character:extend
 			doShoot = doShoot, shootSkillNr = shootSkillNr, }
 	end,
 	
-	onUpdate = function (self, elapsed)
-		self:onUpdateRegeneration(elapsed)
-		
-		self.velocity.x = 0
-		self.velocity.y = 0
-
-		local ipt = self:readInput(self.activeSkillNr)
-		
-		local isMoving = self.freezeMovementCounter == 0 and vector.len(ipt.movex, ipt.movey) > 0
-		
-		if isMoving and self:footstepsPossible() then 
-			local rot = vector.toVisualRotation(ipt.movex, ipt.movey)
-			local footstep = Footstep:new{ 
-				x = self.x+17, y = self.y+15, 
-				rotation = rot,
-			}
-			the.app.view.layers.ground:add(footstep)
-			the.footsteps[footstep] = true
-			self:makeFootstep()
-		end
-		
-		-- move into direction?
-		if self.freezeMovementCounter == 0 and vector.len(ipt.movex, ipt.movey) > 0 then
-			-- replace second 0 by a 1 to toggle runspeed to analog
-			local s = config.walkspeed -- utils.mapIntoRange (speed, 0, 0, config.walkspeed, config.runspeed)
-			
-			-- patched speed?
-			if self.speedOverride and self.speedOverride > 0 then s = self.speedOverride end
-			
-			self.velocity.x, self.velocity.y = vector.normalizeToLen(ipt.movex, ipt.movey, s)
-			
-			local animspeed = utils.mapIntoRange (ipt.speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
-			
-			self:play('walk')
-		else
-			self:freeze(5)
-		end
-		
-		local dx,dy = ipt.viewx, ipt.viewy
-		
-		self.rotation = math.atan2(dy, dx) - math.pi / 2
-		
-		if self:isCasting() == false and ipt.doShoot and self.skills[ipt.shootSkillNr] and 
-			self.skills[ipt.shootSkillNr]:isPossibleToUse()
-		then
-			local rot = vector.fromVisualRotation(ipt.viewx, ipt.viewy)
-			local cx,cy = self.x + self.width / 2, self.y + self.height / 2
-			self.skills[ipt.shootSkillNr]:use(cx, cy, rot, self)
-		end
-		
-		-- combat music?
-		local isInCombat = false
-		for k,v in pairs(self.skills) do
-			isInCombat = isInCombat or (v:isOutOfCombat() == false)
-		end
-		
-		audio.isInCombat = isInCombat
-	end,
+	--~ onUpdate = function (self, elapsed)
+		--~ self.prototype.prototype.onUpdate(self, elapsed)
+		--~ print(self, self.prototype, self.parent, self.lala)
+		--~ print(json.encode({x = self.x, y = self.y}))
+	--~ end,
 }
 

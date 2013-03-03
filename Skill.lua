@@ -4,6 +4,9 @@ Skill = Class:extend
 {
 	-- required
 	id = nil,
+	-- Character
+	character = nil,
+	
 	-- ---------------
 	-- see action_definitions.lua
 	definition = nil,
@@ -26,7 +29,7 @@ Skill = Class:extend
 	end,
 
 	isPossibleToUse = function (self)
-		return love.timer.getTime() - self.lastUsed >= self.timeout and the.player.currentEnergy >= self.energyCosts 
+		return love.timer.getTime() - self.lastUsed >= self.timeout and self.character.currentEnergy >= self.energyCosts 
 	end,
 	
 	timeTillCastFinished = function (self)
@@ -62,7 +65,7 @@ Skill = Class:extend
 				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
 				print("SKILL", self.nr, "REALLY USE")
 				self:onUse()
-				the.player.currentEnergy = the.player.currentEnergy - self.energyCosts
+				self.character.currentEnergy = self.character.currentEnergy - self.energyCosts
 			end)
 		end
 	end,
@@ -83,7 +86,7 @@ Skill = Class:extend
 	end,
 	
 	onUse = function (self)
-		local startTarget = { oid = the.player.oid }
+		local startTarget = { oid = self.character.oid }
 		action_handling.start(self.definition.application, startTarget)
 		print("out of combat:", self:isOutOfCombat())
 		end,

@@ -41,11 +41,7 @@ GameView = View:extend
 		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
-		--~ the.dummy = TargetDummy:new{ x = the.app.width / 2, y = the.app.height / 2 }
-		object_manager.create(the.player)
-		--~ object_manager.create(the.dummy)		
-		self.layers.characters:add(the.player)
-		--~ self.layers.characters:add(the.dummy)		
+		
 		self.layers.above:add(self.trees)	
 		self.layers.above:add(self.buildings)		
 		-- set spawn position

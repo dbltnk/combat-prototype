@@ -1,5 +1,7 @@
 -- Character
 
+characterMap = {}
+
 Character = Animation:extend
 {
 	maxPain = config.maxPain, 
@@ -52,8 +54,11 @@ Character = Animation:extend
 	end,
 	
 	onNew = function (self)
+		object_manager.create(self)
+		the.view.layers.characters:add(self)
+		
 		for k,v in pairs(self.skills) do
-			self.skills[k] = Skill:new { nr = k, id = v }
+			self.skills[k] = Skill:new { nr = k, id = v, character = self }
 		end
 		drawDebugWrapper(self)
 		
@@ -65,6 +70,8 @@ Character = Animation:extend
 	end,
 	
 	onDie = function (self)
+		the.view.layers.characters:remove(self)
+	
 		self.painBar:die()
 	end,
 	
@@ -134,5 +141,86 @@ Character = Animation:extend
 		self.painBar:updateBar()
 		self.painBar.x = self.x
 		self.painBar.y = self.y
+	end,
+
+	readInput = function (self, activeSkillNr)
+		-- 0 slowest -> 1 fastest
+		local speed = 0
+		-- [-1,1], [-1,1]
+		local movex, movey = 0,0
+		-- has an arbitrary length
+		local viewx, viewy = 0,0
+		
+		local shootSkillNr = activeSkillNr
+		local doShoot = false	
+		
+		return { speed = speed, 
+			movex = movex, movey = movey, 
+			viewx = viewx, viewy = viewy, 
+			doShoot = doShoot, shootSkillNr = shootSkillNr, }
+	end,
+	
+	-- ips : result from readInput
+	applyMovement = function (self, elapsed, ipt)
+		self.velocity.x = 0
+		self.velocity.y = 0
+
+		local isMoving = self.freezeMovementCounter == 0 and vector.len(ipt.movex, ipt.movey) > 0
+		
+		if isMoving and self:footstepsPossible() then 
+			local rot = vector.toVisualRotation(ipt.movex, ipt.movey)
+			local footstep = Footstep:new{ 
+				x = self.x+17, y = self.y+15, 
+				rotation = rot,
+			}
+			the.app.view.layers.ground:add(footstep)
+			the.footsteps[footstep] = true
+			self:makeFootstep()
+		end
+		
+		-- move into direction?
+		if self.freezeMovementCounter == 0 and vector.len(ipt.movex, ipt.movey) > 0 then
+			-- replace second 0 by a 1 to toggle runspeed to analog
+			local s = config.walkspeed -- utils.mapIntoRange (speed, 0, 0, config.walkspeed, config.runspeed)
+			
+			-- patched speed?
+			if self.speedOverride and self.speedOverride > 0 then s = self.speedOverride end
+			
+			self.velocity.x, self.velocity.y = vector.normalizeToLen(ipt.movex, ipt.movey, s)
+			
+			local animspeed = utils.mapIntoRange (ipt.speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
+			
+			self:play('walk')
+		else
+			self:freeze(5)
+		end
+		
+		local dx,dy = ipt.viewx, ipt.viewy
+		
+		self.rotation = math.atan2(dy, dx) - math.pi / 2
+		
+		if self:isCasting() == false and ipt.doShoot and self.skills[ipt.shootSkillNr] and 
+			self.skills[ipt.shootSkillNr]:isPossibleToUse()
+		then
+			local rot = vector.fromVisualRotation(ipt.viewx, ipt.viewy)
+			local cx,cy = self.x + self.width / 2, self.y + self.height / 2
+			self.skills[ipt.shootSkillNr]:use(cx, cy, rot, self)
+		end
+		
+		-- combat music?
+		local isInCombat = false
+		for k,v in pairs(self.skills) do
+			isInCombat = isInCombat or (v:isOutOfCombat() == false)
+		end
+		
+		audio.isInCombat = isInCombat
+	end,
+	
+	onUpdate = function (self, elapsed)
+		self:onUpdateRegeneration(elapsed)
+		
+		local ipt = self:readInput(self.activeSkillNr)
+		
+		self:applyMovement(elapsed, ipt)
 	end,
 }
