@@ -211,16 +211,11 @@ Character = Animation:extend
 			self:freeze(5)
 		end
 		
-		local dx,dy = ipt.viewx, ipt.viewy
-		
-		self.rotation = math.atan2(dy, dx) - math.pi / 2
-		
 		if self:isCasting() == false and ipt.doShoot and self.skills[ipt.shootSkillNr] and 
 			self.skills[ipt.shootSkillNr]:isPossibleToUse()
 		then
-			local rot = vector.fromVisualRotation(ipt.viewx, ipt.viewy)
 			local cx,cy = self.x + self.width / 2, self.y + self.height / 2
-			self.skills[ipt.shootSkillNr]:use(cx, cy, rot, self)
+			self.skills[ipt.shootSkillNr]:use(cx, cy, ipt.viewx, ipt.viewy, self)
 		end
 		
 		-- combat music?

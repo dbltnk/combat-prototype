@@ -12,12 +12,12 @@ require 'zoetrope'
 
 -- function targets_selected_callback({t0,t1,t2,...})
 -- target_selection: eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/action_projectiles/shield_bash_projectile.png"},
--- start_target: {oid=} or {x=,y=,rotation=}
+-- start_target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=}
 -- function target_selection_callback(start_target, target_selection, targets_selected_callback)
 -- -- function action_handling.register_target_selection(name, target_selection_callback)
 
 -- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
--- target: {oid=} or {x=,y=,rotation=}
+-- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=}
 -- function effect_callback(target, effect)
 -- -- function action_handling.register_effect(name, effect_callback)
 
@@ -39,7 +39,9 @@ action_handling.register_target_selection("ae", function (start_target, target_s
 		target_selection.piercing_number or 1000000)
 	
 	targets_selected_callback(utils.map1(l, function (o) 
-		return action_handling.object_to_target(o)
+		local t = action_handling.object_to_target(o)
+		action_handling.add_view_on_demand(t, start_target)
+		return t
 	end))
 end)
 
@@ -48,18 +50,22 @@ end)
 -- eg. {target_selection_type = "projectile", range = 200, speed = 150, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/action_projectiles/bow_shot_projectile.png"},
 -- has: speed, gfx, range, piercing_number, ae_size, ae_targets
 action_handling.register_target_selection("projectile", function (start_target, target_selection, targets_selected_callback)
-	local worldMouseX, worldMouseY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
-	
 	local cx,cy = action_handling.get_target_position(start_target)
-	-- mouse -> player vector
-	local dx,dy = cx - (worldMouseX), cy - (worldMouseY)
+	
+	local vx,vy = action_handling.get_view(start_target)
+	local dx,dy = cx - vx, cy - vy
+	
+	if vector.len(dx,dy) == 0 then
+		print("ERROR it is not possible to shoot a projectile without a view/destination position")
+		return
+	end
 	
 	-- cap target by range
-	local dist = math.min(target_selection.range, vector.lenFromTo(cx,cy, worldMouseX, worldMouseY))
-	local rx,ry = vector.fromToWithLen(cx,cy, worldMouseX, worldMouseY, dist)
+	local dist = math.min(target_selection.range, vector.lenFromTo(cx,cy, vx, vy))
+	local rx,ry = vector.fromToWithLen(cx,cy, vx, vy, dist)
 	local tx,ty = vector.add(cx,cy, rx,ry)
 	
-	local rotation = math.atan2(dy, dx) - math.pi / 2
+	local rotation = vector.toVisualRotation(dx,dy)
 	
 	local projectilevx, projectilevy = -dx, -dy
 	local l = vector.len(projectilevx, projectilevy)
@@ -104,7 +110,9 @@ action_handling.register_target_selection("projectile", function (start_target, 
 			if other.oid then targets_hit[other.oid] = true end
 						
 			-- call effect on collision target
-			targets_selected_callback({action_handling.get_target(other)})
+			local t = action_handling.get_target(other)
+			action_handling.add_view_on_demand(t, start_target)
+			targets_selected_callback({t})
 			
 			-- TODO ignore last target
 			target_left = target_left - 1
@@ -121,6 +129,7 @@ action_handling.register_target_selection("projectile", function (start_target, 
 		-- target left? so trigger at location
 		if target_left > 0 then
 			local target = {x = self.x, y = self.y}
+			action_handling.add_view_on_demand(target, start_target)
 			targets_selected_callback({target})
 		end
 		-- ae effect at the end?
@@ -132,8 +141,11 @@ action_handling.register_target_selection("projectile", function (start_target, 
 			spawnDebugCircle(x,y,target_selection.ae_size)
 			local l = action_handling.find_ae_targets(x,y, target_selection.ae_size, 
 				target_selection.piercing_number or 1000000)
-
-			targets_selected_callback(l)
+			
+			targets_selected_callback(utils.map1(l, function (t) 
+				action_handling.add_view_on_demand(t, start_target)
+				return t
+			end))
 		end
 
 		if oldOnDie then oldOnDie(self) end

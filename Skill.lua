@@ -20,7 +20,8 @@ Skill = Class:extend
 	source = {
 		x = 0,
 		y = 0,
-		rotation = 0,
+		viewx = 0,
+		viewy = 0,
 		player = nil,
 	},
 	
@@ -40,13 +41,14 @@ Skill = Class:extend
 		return math.max(0, self.lastUsed + self.timeout - love.timer.getTime())
 	end,
 	
-	use = function (self, x, y, rotation, player)
+	use = function (self, x, y, viewx, viewy, player)
 		if self:freezeMovementDuringCasting() then player:freezeMovement() end
 		print("SKILL", self.nr, "START USING")
 		
 		self.source.x = x
 		self.source.y = y
-		self.source.rotation = rotation
+		self.source.viewx = viewx
+		self.source.viewy = viewy
 		self.source.player = player
 		
 		self.lastUsed = love.timer.getTime()
@@ -86,7 +88,8 @@ Skill = Class:extend
 	end,
 	
 	onUse = function (self)
-		local startTarget = { oid = self.character.oid }
+		local startTarget = { oid = self.character.oid, 
+			viewx = self.source.viewx, viewy = self.source.viewy }
 		action_handling.start(self.definition.application, startTarget)
 		print("out of combat:", self:isOutOfCombat())
 		end,

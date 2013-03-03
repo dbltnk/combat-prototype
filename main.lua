@@ -72,8 +72,8 @@ the.app = App:new
 		-- disable the hardware cursor
 		self:useSysCursor(false)
 		
-		the.app.console:watch("viewx", "the.view.translate.x")
-		the.app.console:watch("viewy", "the.view.translate.y")
+		--~ the.app.console:watch("viewx", "the.view.translate.x")
+		--~ the.app.console:watch("viewy", "the.view.translate.y")
 		
 		-- setup background
 		self.view = GameView:new()

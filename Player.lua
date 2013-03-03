@@ -8,7 +8,7 @@ Player = Character:extend
 		local speed = 0
 		-- [-1,1], [-1,1]
 		local movex, movey = 0,0
-		-- has an arbitrary length
+		-- view (mouse cursor) position
 		local viewx, viewy = 0,0
 		
 		local shootSkillNr = activeSkillNr
@@ -127,7 +127,7 @@ Player = Character:extend
 		local worldMouseX, worldMouseY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 		local cx,cy = self.x + self.width / 2, self.y + self.height / 2
 		-- mouse -> player vector
-		viewx, viewy = cx - (worldMouseX), cy - (worldMouseY)
+		viewx, viewy = worldMouseX, worldMouseY
 
 		return { speed = speed, 
 			movex = movex, movey = movey, 

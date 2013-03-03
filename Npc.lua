@@ -33,8 +33,8 @@ Npc = Character:extend
 		
 		-- TODO
 		doShoot = true
-		viewx = 100
-		viewy = 100
+		viewx = self.x + 100
+		viewy = self.y + 100
 
 		return { speed = speed, 
 			movex = movex, movey = movey, 

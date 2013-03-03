@@ -22,13 +22,20 @@ application = {
 ]]
 
 -- any: contains x,y,rotation or oid
--- returns {oid=} or {x=,y=,rotation=} (x,y is center)
+-- returns {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 function action_handling.get_target (any)
 	if any.oid then return { oid = any.oid }
 	else return { x = any.x or 0, y = any.y or 0, rotation = any.rotation or 0 } end
 end
 
--- target: {oid=} or {x=,y=,rotation=} (x,y is center)
+-- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
+-- returns x,y or view
+function action_handling.get_view (target)
+	local x,y = action_handling.get_target_position(target)
+	return target.viewx or x, target.viewy or y
+end
+
+-- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 -- returns x,y (id oid it returns its center)
 function action_handling.get_target_position (target)
 	local x,y = target.x, target.y
@@ -46,7 +53,7 @@ function action_handling.get_target_position (target)
 	return x + w/2, y + h/2
 end
 
--- target: {oid=} or {x=,y=,rotation=} (x,y is center)
+-- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 -- returns rotation
 function action_handling.get_target_rotation (target)
 	if target.rotation then 
@@ -61,28 +68,36 @@ function action_handling.get_target_rotation (target)
 end
 
 -- o : object_mangers object
--- returns {oid=} or {x=,y=,rotation=}
+-- returns {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=}
 function action_handling.object_to_target (o)
 	return {oid=o.oid}
 end
 
+-- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (INOUT)
+-- target_with_view: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=}
+-- returns target with added view necessary
+function action_handling.add_view_on_demand (target, target_with_view)
+	target.viewx = target.viewx or target_with_view.viewx
+	target.viewy = target.viewy or target_with_view.viewy
+	return target
+end
 
 -- function targets_selected_callback({t0,t1,t2,...})
 -- target_selection: eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/action_projectiles/shield_bash_projectile.png"},
--- start_target: {oid=} or {x=,y=,rotation=} (x,y is center)
+-- start_target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 -- function target_selection_callback(start_target, target_selection, targets_selected_callback)
 function action_handling.register_target_selection(name, target_selection_callback)
 	action_handling.registered_target_selections[name] = target_selection_callback
 end
 
 -- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
--- target: {oid=} or {x=,y=,rotation=} (x,y is center)
+-- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 -- function effect_callback(target, effect)
 function action_handling.register_effect(name, effect_callback)
 	action_handling.registered_effects[name] = effect_callback
 end
 
--- target: {oid=} or {x=,y=,rotation=} (x,y is center)
+-- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 function action_handling.to_string_target(target)
 	return "oid=" .. (target.oid or "nil") .. " x=" .. (target.x or "nil") .. " y=" .. (target.y or "nil") .. " rotation=" .. (target.rotation or "nil")
 end
@@ -104,7 +119,7 @@ function action_handling.start_target_selection (start_target, target_selection,
 end
 
 -- application: see action_definitions.lua
--- target: {oid=} or {x=,y=,rotation=} (x,y is center)
+-- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 function action_handling.start (application, target)
 	action_handling.start_target_selection(target, application.target_selection, function (targets)
 		-- target selection finished
@@ -118,7 +133,7 @@ function action_handling.start (application, target)
 	end)
 end
 
--- returns list of ( {oid=} or {x=,y=,rotation=} (x,y is center) )
+-- returns list of ( {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center) )
 function action_handling.find_ae_targets (x,y, range, maxTargetCount)
 	local l = object_manager.find_in_sphere(x,y, range)
 	
@@ -138,7 +153,7 @@ function action_handling.find_ae_targets (x,y, range, maxTargetCount)
 end
 
 -- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
--- target: {oid=} or {x=,y=,rotation=} (x,y is center)
+-- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 function action_handling.start_effect (effect, target)
 	local t = effect.effect_type
 	
