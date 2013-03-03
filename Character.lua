@@ -85,15 +85,30 @@ Character = Animation:extend
 		self.freezeMovementCounter = self.freezeMovementCounter - 1
 	end,
 	
+	gainPain = function (self, str)
+		print(self.oid, "gain pain", str)
+		self.currentPain = self.currentPain + str
+		self:updatePain()
+	end,
+	
+	updatePain = function (self)
+		if self.currentPain < 0 then self.currentPain = 0 end
+		if self.currentPain > self.maxPain then 
+			self.currentPain = self.maxPain
+			self:die()
+		end	
+	end,
+	
 	receive = function (self, message_name, ...)
 		print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
 			local str = ...
 			print("HEAL", str)
-			self.currentPain = self.currentPain - str
+			self:gainPain(-str)
 		elseif message_name == "damage" then
 			local str = ...
 			print("DAMANGE", str)
+			self:gainPain(str)
 		elseif message_name == "stun" then
 			local duration = ...
 			print("STUN", duration)
