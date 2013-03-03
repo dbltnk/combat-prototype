@@ -10,7 +10,7 @@ action_definitions = {
 		timeout = 1,
 		energy = 10,
 		on_the_run =  false,
-		cast_particle_color = { 255,0,0 },
+		cast_particle_color = { 127,21,0 },
 		
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 800, speed = 400, ae_size = 100, ae_targets = 3, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_shot_projectile.png"},
@@ -45,6 +45,7 @@ action_definitions = {
 		timeout = 5,
 		energy = 20,
 		on_the_run =  false,
+		cast_particle_color = { 0,0,255 },		
 		
 		application = {
 			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/bandage_particle.png"},
@@ -79,6 +80,7 @@ action_definitions = {
 		timeout = 9,
 		energy = 60,
 		on_the_run =  false,
+		cast_particle_color = { 255,57,17 },		
 		
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 400, speed = 200, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/fireball_projectile.png"},
@@ -119,6 +121,7 @@ action_definitions = {
 		timeout = 15,
 		energy = 36,
 		on_the_run =  false,
+		cast_particle_color = { 0,255,0 },		
 		
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, piercing_number = 1, ae_size = 50, ae_targets = 1, gfx = "/assets/graphics/action_projectiles/life_leech_projectile.png"},
@@ -153,6 +156,7 @@ action_definitions = {
 		timeout = 12,
 		energy = 30,
 		on_the_run =  false,
+		cast_particle_color = { 127,21,0 },		
 		
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 5,  gfx = "/assets/graphics/action_projectiles/xbow_piercing_shot_projectile.png"},

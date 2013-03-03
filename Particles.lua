@@ -17,7 +17,7 @@ Particles = Emitter:extend
 		local emitter = self
 		
         self.emitting = true
-		self.period = 0.5
+		self.period = 0.1
 		self.emitCount = 10
 		
 		if self.attached_to_object then
@@ -27,8 +27,8 @@ Particles = Emitter:extend
         
         self:loadParticles(Fill:extend
         {
-            width = 3,
-            height = 3,
+            width = 5,
+            height = 5,
             fill = {255, 255, 255},
             onEmit = function (self)
                 self.fill = {255, 255, 255}
@@ -57,8 +57,6 @@ Particles = Emitter:extend
     end,
  
     launch = function (self)
-        --~ self:emit()
-        -- 1.5 seconds is the maximum lifetime of our particles
         the.view.timer:after(self.duration, bind(the.view.factory, 'recycle', self))
     end
 }
