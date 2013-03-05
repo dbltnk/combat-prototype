@@ -5,6 +5,7 @@ Particles = Emitter:extend
 {
     width = 0,
     height = 0,
+	particleSpeed = 30,
     
     -- gameobject
     attached_to_object = nil,
@@ -24,8 +25,10 @@ Particles = Emitter:extend
 			self.x, self.y = tools.object_center(self.attached_to_object)
 			self.width, self.height = tools.object_size(self.attached_to_object)
 		end
+		
+		local outerSelf = self
         
-        self:loadParticles(Fill:extend
+		self:loadParticles(Fill:extend
         {
             width = 5,
             height = 5,
@@ -35,6 +38,9 @@ Particles = Emitter:extend
                 self.alpha = 1
                 the.view.tween:start(self, 'fill', emitter.particle_color, math.random())
                 :andThen(bind(the.view.tween, 'start', self, 'alpha', 0, math.random() / 2))
+                local cx, cy = tools.object_center(outerSelf.attached_to_object)
+                if cx > self.x then self.velocity.x = outerSelf.particleSpeed else self.velocity.x = - outerSelf.particleSpeed end
+                if cy > self.y then self.velocity.y = outerSelf.particleSpeed else self.velocity.y = - outerSelf.particleSpeed end
             end
         },
         25)
