@@ -10,7 +10,7 @@ config.energyreg = 1
 config.healthreg = 1
 config.maxPain = 200
 config.maxEnergy = 300
-
+config.barrierHealth = 10000
 
 -- audio
 config.volume = 0.3
