@@ -19,6 +19,7 @@ action_handling = require 'action_handling'
 tools = require 'tools'
 require 'actions'
 require 'audio'
+require 'network'
 
 require 'debug_utils'
 
@@ -45,6 +46,8 @@ the.app = App:new
 	icon = '/graphics/icon.png',
 
 	onUpdate = function (self, elapsed)
+		network.update()
+		
 		-- set input mode
 		if the.keys:justPressed ("f1") then print("input mode: mouse+keyboard") input.setMode (input.MODE_MOUSE_KEYBOARD) end
 		if the.keys:justPressed ("f2") and the.gamepads[1].name ~= "NO DEVICE CONNECTED" then print("input mode: gamepad") input.setMode (input.MODE_GAMEPAD) end
@@ -77,5 +80,10 @@ the.app = App:new
 		
 		-- setup background
 		self.view = GameView:new()
+		
+		network.connect("localhost", 9999)
+		table.insert(network.on_message, function(m) 
+			print ("RECEIVED", json.encode(m))
+		end)
     end
 }
