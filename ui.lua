@@ -196,3 +196,25 @@ PlayerDetails = Tile:extend
 		self.y = the.player.y - the.player.height / 1.5
 	end
 }
+
+TimerDisplay = Text:extend
+{
+	font = 20,
+	text = "xxx",
+	x = 0,
+	y = 0, 
+	time = 0,
+	width = 200,
+	
+	onUpdate = function (self)
+		self.x = (love.graphics.getWidth() - self.width) / 2
+		self.time = config.roundTime - (math.floor(love.timer.getTime()))
+		local minutes = math.floor(self.time / 60)
+		local seconds = (self.time - minutes * 60)
+		if seconds >= 10 then 
+			self.text = minutes .. ":" .. seconds .. " remaining"
+		elseif seconds < 10 then
+			self.text = minutes .. ":0" .. seconds .. " remaining"
+		end
+	end
+}
