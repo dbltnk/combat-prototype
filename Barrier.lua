@@ -70,6 +70,7 @@ Barrier = Tile:extend
 	
 	onDie = function (self)
 		self.painBar:die()
+		os.exit()
 		print("THE GAME JUST ENDED") -- TODO: call end screen
 	end,
 	

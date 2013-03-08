@@ -67,6 +67,7 @@ the.app = App:new
 			--~ profiler.stop()
 			os.exit() 
 		end
+		if love.timer.getTime() >= 3600 then print("THE GAME IS OVER") os.exit() end -- TODO: switch to end screen
 	end,
 
     onRun = function (self)
