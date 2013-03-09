@@ -233,5 +233,9 @@ Character = Animation:extend
 		local ipt = self:readInput(self.activeSkillNr)
 		
 		self:applyMovement(elapsed, ipt)
+		
+		network.send_request ({ oid = self.oid, x = self.x, y = self.y, fin = true }, function(fin,reply) 
+			print("REPLY", fin, reply)
+		end)
 	end,
 }
