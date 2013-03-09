@@ -35,6 +35,7 @@ require 'Projectile'
 require 'Particles'
 require 'GameView'
 require 'Footstep'
+require 'Barrier'
 
 require 'ui'
 
@@ -69,6 +70,7 @@ the.app = App:new
 			--~ profiler.stop()
 			os.exit() 
 		end
+		if love.timer.getTime() >= config.roundTime then print("THE GAME IS OVER") os.exit() end -- TODO: switch to end screen
 	end,
 
     onRun = function (self)

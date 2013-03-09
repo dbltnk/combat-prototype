@@ -22,6 +22,9 @@ GameView = View:extend
 		-- object -> true map for easy remove, key contains projectile reference
 		the.targetDummies = {}
 		
+		the.barrier = Barrier:new{}
+		self:add(the.barrier)
+		
 		-- object -> true map for easy remove, key contains footstep reference
 		the.footsteps = {}
 		
@@ -51,6 +54,7 @@ GameView = View:extend
 
 		--~ the.dummy.x = the.dummySpawnpoint.x
 		--~ the.dummy.y = the.dummySpawnpoint.y
+			
 		
 		the.cursor = Cursor:new{ x = 0, y = 0 }
 		self.layers.ui:add(the.cursor)
@@ -63,6 +67,9 @@ GameView = View:extend
 		-- TODO obsolete? use self.layers instead?
 		the.hud = UiGroup:new()
 		self:add(the.hud)
+		
+		the.timerDisplay = TimerDisplay:new{ x = 0, y = 0 }
+		the.hud:add(the.timerDisplay)	
 		
 		the.skillbar = SkillBar:new()
 		-- set skillbar images

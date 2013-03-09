@@ -10,7 +10,8 @@ config.energyreg = 1
 config.healthreg = 1
 config.maxPain = 200
 config.maxEnergy = 300
-
+config.barrierHealth = 10000
+config.roundTime = 3600 -- in seconds
 
 -- audio
 config.volume = 0.3
