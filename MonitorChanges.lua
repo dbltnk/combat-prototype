@@ -23,7 +23,6 @@ MonitorChanges = Class:extend
 		local c = false
 		
 		for _,key in pairs(keys) do
-			print(key, last[key], obj[key])
 			if last[key] ~= obj[key] then c = true last[key] = obj[key] end
 		end
 

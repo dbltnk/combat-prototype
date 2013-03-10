@@ -3,6 +3,7 @@ common object parameters:
 oid
 x
 y
+owner
 rotation
 receive = function(name, a, b, c, ...)
 ]]
@@ -29,12 +30,20 @@ function object_manager.get (oid)
 	end
 end
 
--- writes property oid into o (o.oid) and returns the changed object
+function object_manager.create_remote (o, oid, owner)
+	o.oid = oid
+	o.owner = owner
+	object_manager.objects[oid] = o
+	return o
+end
+
+-- writes property oid, owner into o (o.oid) and returns the changed object
 function object_manager.create (o)
 	local oid = object_manager.nextFreeId
 	object_manager.nextFreeId = object_manager.nextFreeId + 1
 	
 	o.oid = oid
+	o.owner = network.client_id
 	object_manager.objects[oid] = o
 	return o
 end
@@ -49,6 +58,13 @@ function object_manager.delete (o)
 			end
 		end
 	end
+end
+
+-- returns {oid0=o0, oid1=o1, ...}
+function object_manager.find_by_owner (owner)
+	return object_manager.find_where(function (oid, o)
+		return o.owner == owner
+	end)
 end
 
 -- returns {oid0=o0, oid1=o1, ...}

@@ -6,6 +6,7 @@ S>C {channel = "server", cmd = "id", id = client.id}
 S>C {channel = "server", cmd = "left", id = client.id}
 C>S {channel = "server", cmd = "who", seq = } -> { ids }
 C>S {channel = "server", cmd = "ping", time = seq = } -> { time }
+C>C {channel = "game", cmd = "sync", oid = , owner = , ...}
 
 ]]
 
@@ -20,6 +21,8 @@ local next_seq = 1
 -- this method will not deliver request replies
 network.on_message = {}
 
+network.client_id = nil
+
 local open_requests = {}
 
 function network.update ()
@@ -28,7 +31,9 @@ function network.update ()
 		if (not plain) then break end
 
 		print("NET IN", plain)
-		m = json.decode (plain);
+		local m = json.decode (plain);
+		
+		if not m then break end
 		
 		-- is this a reply?
 		local seq = m.seq or nil
@@ -43,6 +48,12 @@ function network.update ()
 				print("ERROR", "missing callback for", m)
 			end
 		else
+			-- id message?
+			if m.channel == "server" and m.cmd == "id" then
+				network.client_id = m.id
+				object_manager.nextFreeId = (m.id - 1) * 100000
+			end
+			
 			-- normal message
 			for k,fun in pairs(network.on_message) do
 				fun(m)

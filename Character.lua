@@ -238,7 +238,7 @@ Character = Animation:extend
 		self:applyMovement(elapsed, ipt)
 		
 		if changeMonitor:changed() then
-			network.send ({ oid = self.oid, x = self.x, y = self.y, 
+			network.send ({ channel = "game", cmd = "sync", oid = self.oid, x = self.x, y = self.y, owner = self.owner, 
 				currentPain = self.currentPain, currentEnergy = self.currentEnergy, rotation = self.rotation })
 		end
 	end,

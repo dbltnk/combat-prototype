@@ -1,8 +1,7 @@
 local net = require 'net'
 local json = require 'json'
+local string = require 'string'
 local list = require 'list'
-
-local next_client_id = 1
 
 local clients = {}
 
@@ -48,30 +47,55 @@ function disconnect(client, clients)
 	end	
 end
 
+-- returns part, new_buffer
+function pop_part_from_buffer (buffer)
+	local p = string.find(buffer, "\n", 1, true)
+	if p then
+		local part = string.sub(buffer, 1, p)
+		local rest = string.sub(buffer, p + 1)
+		return part, rest
+	else
+		return nil, buffer
+	end
+end
+
 local server
 server = net.createServer(function (client)
-	local client_id = next_client_id
-	next_client_id = next_client_id + 1
+	-- find first free id
+	local client_id = 1
+	while list.count(list.process_keys(clients):where(function(c) return c.id == client_id end):done()) > 0 do
+		client_id = client_id + 1
+	end
+	
 	client.id = client_id
+	client.unprocessed = ""
 	clients[client] = true
-
+	
 	send_to_other({channel = "server", cmd = "join", id = client.id}, client, clients)
 	send_to_one({channel = "server", cmd = "id", id = client.id}, client)
 	client:on("data", function(data, ...)
-		local message = json.parse(data)
-		print("data", client, data, ...)
-		
-		if (message.channel == "server") then
-			if (message.cmd == "who") then
-				print("WHO")
-				local ids = list.process_keys(clients):print():select(function(c) return c.id end):done()
-				send_to_one({seq = message.seq, ids = ids, fin = true}, client)
-			elseif message.cmd == "ping" then
-				print("PING")
-				send_to_one({seq = message.seq, time = message.time, fin = true}, client)			
+		client.unprocessed = client.unprocessed .. data
+
+		while true do
+			local part, rest = pop_part_from_buffer(client.unprocessed)
+			client.unprocessed = rest
+			if not part then break end
+			
+			local message = json.parse(data)
+			print("data", client, data, ...)
+			
+			if (message.channel == "server") then
+				if (message.cmd == "who") then
+					print("WHO")
+					local ids = list.process_keys(clients):select(function(c) return c.id end):done()
+					send_to_one({seq = message.seq, ids = ids, fin = true}, client)
+				elseif message.cmd == "ping" then
+					print("PING")
+					send_to_one({seq = message.seq, time = message.time, fin = true}, client)			
+				end
+			else
+				send_to_other_raw(data, client, clients)
 			end
-		else
-			send_to_other_raw(data, client, clients)
 		end
 	end)
 	
