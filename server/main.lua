@@ -1,5 +1,6 @@
-local net = require('net')
+local net = require 'net'
 local json = require 'json'
+local list = require 'list'
 
 local next_client_id = 1
 
@@ -12,23 +13,23 @@ end
 
 function send_to_all_raw(data, clients)
 	for k,v in pairs(clients) do
-		k:write(data)
+		k:write(data .. "\n")
 	end
 end
 
 function send_to_other_raw(data, client, clients)
 	for k,v in pairs(clients) do
-		if k ~= client then k:write(data) end
+		if k ~= client then k:write(data .. "\n") end
 	end
 end
 
 function send_to_one_raw(data, client)
-	client:write(data)
+	client:write(data .. "\n")
 end
 
 function send_to_one(message, client)
 	local json = json.stringify(message)
-	client:write(json)
+	send_to_one_raw(json, client)
 end
 
 function send_to_other(message, client, clients)
@@ -43,7 +44,7 @@ function disconnect(client, clients)
 	-- send leave message
 	local leaveMessage = json.stringify({channel = "server", cmd = "left", id = client.id})
 	for k,v in pairs(clients) do
-		k:write(leaveMessage)
+		k:write(leaveMessage .. "\n")
 	end	
 end
 
@@ -57,8 +58,21 @@ server = net.createServer(function (client)
 	send_to_other({channel = "server", cmd = "join", id = client.id}, client, clients)
 	send_to_one({channel = "server", cmd = "id", id = client.id}, client)
 	client:on("data", function(data, ...)
+		local message = json.parse(data)
 		print("data", client, data, ...)
-		send_to_other_raw(data, client, clients)
+		
+		if (message.channel == "server") then
+			if (message.cmd == "who") then
+				print("WHO")
+				local ids = list.process_keys(clients):print():select(function(c) return c.id end):done()
+				send_to_one({seq = message.seq, ids = ids, fin = true}, client)
+			elseif message.cmd == "ping" then
+				print("PING")
+				send_to_one({seq = message.seq, time = message.time, fin = true}, client)			
+			end
+		else
+			send_to_other_raw(data, client, clients)
+		end
 	end)
 	
 	client:on("end", function(...) 

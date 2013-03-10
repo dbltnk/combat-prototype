@@ -1,10 +1,19 @@
 -- network
 
+--[[
+S>C {channel = "server", cmd = "join", id = client.id}
+S>C {channel = "server", cmd = "id", id = client.id}
+S>C {channel = "server", cmd = "left", id = client.id}
+C>S {channel = "server", cmd = "who", seq = } -> { ids }
+C>S {channel = "server", cmd = "ping", time = seq = } -> { time }
+
+]]
+
 local socket = require 'socket'
 
 network = {}
 
-local c = nil
+local client = nil
 local next_seq = 1
 
 -- contains callbacks function(message)
@@ -14,8 +23,8 @@ network.on_message = {}
 local open_requests = {}
 
 function network.update ()
-	while c do
-		local plain = c:receive()
+	while client do
+		local plain = client:receive()
 		if (not plain) then break end
 
 		print("NET IN", plain)
@@ -45,6 +54,7 @@ end
 -- seq gets added to the message, fin terminates the message
 -- response_callback(finished, reply)
 function network.send_request (message, response_callback)
+	if not client then return end
 	local seq = next_seq
 	message.seq = seq
 	next_seq = next_seq + 1
@@ -53,15 +63,16 @@ function network.send_request (message, response_callback)
 end
 
 function network.send (message)
+	if not client then return end
 	local m = json.encode(message)
 	print("NET OUT", m)
-	c:send(m .. "\n")
+	client:send(m .. "\n")
 end
 
 function network.connect (host, port)
-	if c then c:close() end
+	if client then client:close() end
 	
-	c = socket.connect(host, port)
-	if c then c:settimeout(0, "t") end
+	client = socket.connect(host, port)
+	if client then client:settimeout(0, "t") end
 end
 

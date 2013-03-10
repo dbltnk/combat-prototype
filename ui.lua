@@ -218,3 +218,42 @@ TimerDisplay = Text:extend
 		end
 	end
 }
+
+NetworkDisplay = Text:extend
+{
+	pingTime = 0,
+	playerOnline = 0,
+	font = 12,
+	text = "xxx",
+	x = 0,
+	y = 0, 
+	time = 0,
+	width = 200,
+	
+	requestPing = function (self)
+		local t = love.timer.getTime()
+		network.send_request({channel = "server", cmd = "ping", time = t}, function(fin, result)
+			self.pingTime = love.timer.getTime() - t
+		end)
+	end,
+	
+	requestOnline = function (self)
+		network.send_request({channel = "server", cmd = "who"}, function(fin, result)
+			self.playerOnline = #result.ids
+		end)
+	end,
+	
+	onNew = function (self)
+		the.view.timer:every(5, function()
+			self:requestOnline()
+			self:requestPing()
+		end)
+	end,
+	
+	onUpdate = function (self)
+		self.y = 5
+		self.x = 10
+		    
+		self.text = "ping: " .. math.floor(self.pingTime * 1000) .. " ms online: " .. self.playerOnline
+	end
+}

@@ -8,6 +8,7 @@ Character = Animation:extend
 	currentPain = 0,
 	maxEnergy = config.maxEnergy, 
 	currentEnergy = config.maxEnergy, 
+	changeMonitor = nil,
 
 	-- list of Skill
 	skills = {
@@ -54,6 +55,8 @@ Character = Animation:extend
 	end,
 	
 	onNew = function (self)
+		changeMonitor = MonitorChanges:new{ obj = self, keys = {"x", "y", 
+			"currentEnergy", "currentPain", "rotation",  } }
 		object_manager.create(self)
 		the.view.layers.characters:add(self)
 		
@@ -234,8 +237,9 @@ Character = Animation:extend
 		
 		self:applyMovement(elapsed, ipt)
 		
-		network.send_request ({ oid = self.oid, x = self.x, y = self.y, fin = true }, function(fin,reply) 
-			print("REPLY", fin, reply)
-		end)
+		if changeMonitor:changed() then
+			network.send ({ oid = self.oid, x = self.x, y = self.y, 
+				currentPain = self.currentPain, currentEnergy = self.currentEnergy, rotation = self.rotation })
+		end
 	end,
 }

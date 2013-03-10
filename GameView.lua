@@ -1,6 +1,5 @@
 -- GameView
 
-
 GameView = View:extend
 {
 	layers = {
@@ -71,6 +70,9 @@ GameView = View:extend
 		the.timerDisplay = TimerDisplay:new{ x = 0, y = 0 }
 		the.hud:add(the.timerDisplay)	
 		
+		the.networkDisplay = NetworkDisplay:new{ x = 0, y = 0 }
+		the.hud:add(the.networkDisplay)	
+		
 		the.skillbar = SkillBar:new()
 		-- set skillbar images
 		local skills = {}
@@ -136,4 +138,6 @@ GameView = View:extend
 		
 		audio.update()
     end,
+
+
 }

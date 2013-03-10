@@ -23,6 +23,7 @@ require 'network'
 
 require 'debug_utils'
 
+require 'MonitorChanges'
 require 'Skill'
 require 'SkillIcon'
 require 'SkillBar'
@@ -38,7 +39,7 @@ require 'Footstep'
 require 'Barrier'
 
 require 'ui'
-
+    
 
 the.app = App:new
 {
@@ -77,15 +78,15 @@ the.app = App:new
 		-- disable the hardware cursor
 		self:useSysCursor(false)
 		
+		network.connect("localhost", 9999)
+		table.insert(network.on_message, function(m) 
+			print ("RECEIVED", json.encode(m))
+		end)
+
 		--~ the.app.console:watch("viewx", "the.view.translate.x")
 		--~ the.app.console:watch("viewy", "the.view.translate.y")
 		
 		-- setup background
 		self.view = GameView:new()
-		
-		network.connect("localhost", 9999)
-		table.insert(network.on_message, function(m) 
-			print ("RECEIVED", json.encode(m))
-		end)
     end
 }
