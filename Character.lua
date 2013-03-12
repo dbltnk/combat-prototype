@@ -89,6 +89,8 @@ Character = Animation:extend
 		print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
 		self:updatePain()
+		self.damageUI = DamageUI:new{x = self.x + self.width / 2, y = self.y, text = str}
+		GameView.layers.ui:add(self.damageUI)	
 	end,
 	
 	updatePain = function (self)

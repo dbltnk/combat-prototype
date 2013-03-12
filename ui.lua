@@ -218,3 +218,22 @@ TimerDisplay = Text:extend
 		end
 	end
 }
+
+DamageUI = Text:extend
+{
+	font = 20,
+	text = "xxx",
+	x = 0,
+	y = 0, 
+	width = 6,
+	
+	onNew = function (self)
+		self.x = self.x - self.width / 2
+	end,
+	
+	onUpdate = function (self)
+		self.y = self.y - 1
+		self.font = self.font - 0.1
+		if self.font <= 10 then self:die() end
+	end
+}

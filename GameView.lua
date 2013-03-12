@@ -69,7 +69,7 @@ GameView = View:extend
 		self:add(the.hud)
 		
 		the.timerDisplay = TimerDisplay:new{ x = 0, y = 0 }
-		the.hud:add(the.timerDisplay)	
+		the.hud:add(the.timerDisplay)		
 		
 		the.skillbar = SkillBar:new()
 		-- set skillbar images
