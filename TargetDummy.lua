@@ -48,8 +48,8 @@ TargetDummy = Tile:extend
 			local str = ...
 		--	print("DUMMY HEAL", str)
 		elseif message_name == "damage" then
-			local str = ...
-		--	print("DUMMY DAMANGE", str)
+			local str, id = ...
+			print("DUMMY DAMANGE", str)
 			self:gainPain(str)
 			-- damage handling for xp distribution
 			local damagerTable = {}
@@ -73,7 +73,7 @@ TargetDummy = Tile:extend
 					end
 				end
 			end
-		elseif message_name == "damage_over_time" then
+		elseif message_name == "damage_over_time" then -- TODO: add xp gain here, too
 			local str, duration, ticks = ...
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=1,ticks do

@@ -180,14 +180,14 @@ end)
 -- eg. {effect_type = "damage", str = 60},
 -- has: str
 action_handling.register_effect("damage", function (target, effect)
-	object_manager.send(target.oid, "damage", effect.str)
+	object_manager.send(target.oid, "damage", effect.str) -- TODO: also transmit self.oid to be used for xp gains
 end)
 
 -- effect: damage_over_time ----------------------------------------------------------
 -- eg. {effect_type = "damage_over_time", ticks = 5, duration = 20, str = 5},
 -- has: str
 action_handling.register_effect("damage_over_time", function (target, effect)
-	object_manager.send(target.oid, "damage_over_time", effect.str, effect.duration, effect.ticks)
+	object_manager.send(target.oid, "damage_over_time", effect.str, effect.duration, effect.ticks)-- TODO: also transmit self.oid to be used for xp gains
 end)
 
 -- effect: runspeed ----------------------------------------------------------
