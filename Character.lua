@@ -8,6 +8,7 @@ Character = Animation:extend
 	currentPain = 0,
 	maxEnergy = config.maxEnergy, 
 	currentEnergy = config.maxEnergy, 
+	xp = 122,
 
 	-- list of Skill
 	skills = {
@@ -76,17 +77,17 @@ Character = Animation:extend
 	end,
 	
 	freezeMovement = function (self)
-		print("FREEEZ")
+		--print("FREEEZ")
 		self.freezeMovementCounter = self.freezeMovementCounter + 1
 	end,
 	
 	unfreezeMovement = function (self)
-		print("UNFREEEZ")
+		--print("UNFREEEZ")
 		self.freezeMovementCounter = self.freezeMovementCounter - 1
 	end,
 	
 	gainPain = function (self, str)
-		print(self.oid, "gain pain", str)
+		--print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
 		self:updatePain()
 		self.damageUI = DamageUI:new{x = self.x + self.width / 2, y = self.y, text = str}
@@ -101,6 +102,13 @@ Character = Animation:extend
 		end	
 	end,
 	
+	gainXP = function (self, str)
+		print(self.oid, "gain xp", str)
+		self.xp = self.xp + str
+		--self:updatePain()
+		print(self.xp)
+	end,	
+	
 	receive = function (self, message_name, ...)
 		print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
@@ -109,22 +117,26 @@ Character = Animation:extend
 			self:gainPain(-str)
 		elseif message_name == "damage" then
 			local str = ...
-			print("DAMANGE", str)
+		--	print("DAMANGE", str)
 			self:gainPain(str)
 		elseif message_name == "stun" then
 			local duration = ...
-			print("STUN", duration)
+		--	print("STUN", duration)
 			self:freezeMovement()
 			the.app.view.timer:after(duration, function()
 				self:unfreezeMovement()
 			end)
 		elseif message_name == "runspeed" then
 			local str, duration = ...
-			print("SPEED", str, duration)
+			--print("SPEED", str, duration)
 			self.speedOverride = str
 			the.app.view.timer:after(duration, function()
 				self.speedOverride = 0
 			end)
+		elseif message_name == "xp" then
+			local str = ...
+			--print("XP", str)
+			self:gainXP(str)
 		end
 	end,
 	

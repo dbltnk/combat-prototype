@@ -107,14 +107,14 @@ end
 function action_handling.start_target_selection (start_target, target_selection, targets_selected_callback)
 	local t = target_selection.target_selection_type
 	
-	print("ACTION start_target_selection", t, action_handling.to_string_target(start_target))
+	--print("ACTION start_target_selection", t, action_handling.to_string_target(start_target))
 	
 	local ts = action_handling.registered_target_selections[t]
 	
 	if ts then
 		ts(start_target, target_selection, targets_selected_callback)
 	else
-		print("ACTION start_target_selection", "unknown type")
+		--print("ACTION start_target_selection", "unknown type")
 	end
 end
 
@@ -157,14 +157,14 @@ end
 function action_handling.start_effect (effect, target)
 	local t = effect.effect_type
 	
-	print("ACTION start_effect", t, action_handling.to_string_target(target))
+	--print("ACTION start_effect", t, action_handling.to_string_target(target))
 	
 	local e = action_handling.registered_effects[t]
 	
 	if e then
 		e(target, effect)
 	else
-		print("ACTION start_effect", "unknown type")
+		--print("ACTION start_effect", "unknown type")
 	end
 end
 

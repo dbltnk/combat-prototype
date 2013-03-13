@@ -162,6 +162,13 @@ action_handling.register_effect("spawn", function (target, effect)
 	action_handling.start(effect.application, target)
 end)
 
+-- effect: xp (gain) ----------------------------------------------------------
+-- eg. {effect_type = "xp", str = 60},
+-- has: str
+action_handling.register_effect("xp", function (target, effect)
+	object_manager.send(target.oid, "xp", effect.str)
+end)
+
 -- effect: heal ----------------------------------------------------------
 -- eg. {effect_type = "heal", str = 60},
 -- has: str
