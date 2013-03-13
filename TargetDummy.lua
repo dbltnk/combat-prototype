@@ -45,6 +45,7 @@ TargetDummy = Tile:extend
 	
 	receive = function (self, message_name, ...)
 		--print(self.oid, "receives message", message_name, "with", ...)
+		local damagerTable = {}
 		if message_name == "heal" then
 			local str = ...
 		--	print("DUMMY HEAL", str)
@@ -52,8 +53,7 @@ TargetDummy = Tile:extend
 			local str, id = ...
 			print("DUMMY DAMANGE", str)
 			self:gainPain(str)
-			-- damage handling for xp distribution
-			local damagerTable = {}
+			-- damage handling for xp distribution	
 			if self.dmgReceived[self.oid] then
 				for k,v in pairs(self.dmgReceived) do
 					print("existing oid dummy = " .. k .. " with ", v)				
@@ -74,13 +74,34 @@ TargetDummy = Tile:extend
 					end
 				end
 			end
-		elseif message_name == "damage_over_time" then -- TODO: add xp gain here, too
+		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks = ...
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=1,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					self:gainPain(str)
 				end)
+				-- damage handling for xp distribution	
+			if self.dmgReceived[self.oid] then
+				for k,v in pairs(self.dmgReceived) do
+					print("existing oid dummy = " .. k .. " with ", v)				
+					v[self.hardCodedTarget] = v[self.hardCodedTarget] + str
+					print("damage = " .. v[self.hardCodedTarget])
+					for key, value in pairs(v) do
+						print("damager oid = " .. key,value)
+					end
+				end
+			else 
+				self.dmgReceived[self.oid] = damagerTable
+				for k,v in pairs(self.dmgReceived) do
+					--print("new oid dummy = " .. k .. " with ", v)
+					v[self.hardCodedTarget] = str
+					--print("damage = " .. v[self.hardCodedTarget])
+					for key, value in pairs(v) do
+						--print("damager oid = " .. key,value)
+					end
+				end
+			end
 			end
 		elseif message_name == "runspeed" then
 			local str, duration = ...
