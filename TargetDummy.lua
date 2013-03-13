@@ -8,6 +8,7 @@ TargetDummy = Tile:extend
 	hardCodedTarget = 23,  --TODO: exchange hardCodedTarget for damager (target.oid?)
 	xpWorth = 130,
 	dmgReceived = {},
+	alive = true,
 	
 	-- UiBar
 	painBar = nil,
@@ -88,9 +89,11 @@ TargetDummy = Tile:extend
 	end,
 	
 	updatePain = function (self)
-		if self.currentPain > self.maxPain then 
+		if ((self.currentPain > self.maxPain) and self.alive == true) then 
 			self.currentPain = self.maxPain
+			self.alive = false					
 			self:die()
+
 		end	
 	end,
 	
