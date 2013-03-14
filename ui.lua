@@ -104,6 +104,63 @@ PainUI = Fill:extend
 	end
 }
 
+ExperienceUIBG = Fill:extend
+{
+	width = 1,
+	height = 20,
+	fill = {128,128,128,255},	
+	border = {0,0,0,255},
+    
+	onUpdate = function (self)
+		self.x = 0
+		self.y = love.graphics.getHeight() - self.height * 2 - 10
+		self.width = the.player.xpCap / the.player.xpCap * (love.graphics.getWidth() - the.controlUI.width) / 2
+	end
+}
+
+ExperienceUI = Fill:extend
+{
+	width = 1,
+	height = 20,
+	fill = {255,255,0,255},	
+	border = {0,0,0,255},
+	t = Text:new{
+				font = 14,
+				text = "xxx",
+				x = 0,
+				y = 0, 
+			},
+	
+	onDraw = function(self)
+		if the.hud:contains(self.t) == false then the.hud:add(self.t) end
+	end,
+	
+	onUpdate = function (self)
+		self.x = 0
+		self.y = love.graphics.getHeight() - self.height * 2 - 10
+		self.width = the.player.xp / the.player.xpCap * (love.graphics.getWidth() - the.controlUI.width) / 2
+		if self.width <= 2 then self.width = 2 end
+		self.t.text = "Current level xp: " .. math.floor(the.player.xp) .. " / " .. math.floor(the.player.xpCap)
+		self.t.x = love.graphics.getWidth() / 4 - self.t.width / 2
+		self.t.y = love.graphics.getHeight() - self.height * 2 - 10
+		self.t.width = 300
+	end
+}
+
+LevelUI = Fill:extend
+{
+	width = 1,
+	height = 20,
+	fill = {128,128,128,255},	
+	border = {0,0,0,255},
+    
+	onUpdate = function (self)
+		--self.x = (love.graphics.getWidth() + the.controlUI.width) / 2
+		self.y = love.graphics.getHeight() - self.height * 2 - 10
+		--self.width = (love.graphics.getWidth() + the.controlUI.width) / 3.5 / 10
+	end
+}
+
 Cursor = Tile:extend
 {
 	width = 32,

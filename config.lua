@@ -12,6 +12,9 @@ config.maxPain = 200
 config.maxEnergy = 300
 config.barrierHealth = 10000
 config.roundTime = 3600 -- in seconds
+config.xpCap = 1000
+config.levelCap = 10
+config.dummyXPWorth = 330
 
 -- audio
 config.volume = 0.3

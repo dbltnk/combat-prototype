@@ -8,7 +8,10 @@ Character = Animation:extend
 	currentPain = 0,
 	maxEnergy = config.maxEnergy, 
 	currentEnergy = config.maxEnergy, 
-	xp = 122,
+	xp = 0,
+	xpCap = config.xpCap,
+	level = 0,
+	levelCap = config.levelCap,
 
 	-- list of Skill
 	skills = {
@@ -91,7 +94,7 @@ Character = Animation:extend
 		self.currentPain = self.currentPain + str
 		self:updatePain()
 		self.damageUI = DamageUI:new{x = self.x + self.width / 2, y = self.y, text = str}
-		GameView.layers.ui:add(self.damageUI)	
+		GameView.layers.ui:add(self.damageUI)
 	end,
 	
 	updatePain = function (self)
@@ -103,17 +106,23 @@ Character = Animation:extend
 	end,
 	
 	gainXP = function (self, str)
-		print(self.oid, "gain xp", str)
+		--print(self.oid, "gain xp", str)
 		self.xp = self.xp + str
 		--self:updatePain()
-		print(self.xp)
+		--print(self.xp)
+		if self.xp >= 1000 then 
+			self.level = self.level +1
+			self.xp = self.xp - 1000
+			print("leveled" .. self.level)
+			GameView.updateLevel()
+		end		
 	end,	
 	
 	receive = function (self, message_name, ...)
-		print(self.oid, "receives message", message_name, "with", ...)
+	--	print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
 			local str = ...
-			print("HEAL", str)
+		--	print("HEAL", str)
 			self:gainPain(-str)
 		elseif message_name == "damage" then
 			local str = ...

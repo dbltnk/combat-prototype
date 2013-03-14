@@ -6,7 +6,7 @@ TargetDummy = Tile:extend
 	currentPain = 0,
 	maxPain = 100,
 	hardCodedTarget = 23,  --TODO: exchange hardCodedTarget for damager (target.oid?)
-	xpWorth = 130,
+	xpWorth = config.dummyXPWorth,
 	dmgReceived = {},
 	alive = true,
 	
@@ -50,17 +50,18 @@ TargetDummy = Tile:extend
 			local str = ...
 		--	print("DUMMY HEAL", str)
 		elseif message_name == "damage" then
-			local str, id = ...
-			print("DUMMY DAMANGE", str)
+			local str, id, start_target = ...
+			--print("DUMMY DAMANGE", str)
 			self:gainPain(str)
+		--	print("start ", start_target)
 			-- damage handling for xp distribution	
 			if self.dmgReceived[self.oid] then
 				for k,v in pairs(self.dmgReceived) do
-					print("existing oid dummy = " .. k .. " with ", v)				
+				--	print("existing oid dummy = " .. k .. " with ", v)				
 					v[self.hardCodedTarget] = v[self.hardCodedTarget] + str
-					print("damage = " .. v[self.hardCodedTarget])
+				--	print("damage = " .. v[self.hardCodedTarget])
 					for key, value in pairs(v) do
-						print("damager oid = " .. key,value)
+				--		print("damager oid = " .. key,value)
 					end
 				end
 			else 
@@ -84,11 +85,11 @@ TargetDummy = Tile:extend
 				-- damage handling for xp distribution	
 			if self.dmgReceived[self.oid] then
 				for k,v in pairs(self.dmgReceived) do
-					print("existing oid dummy = " .. k .. " with ", v)				
+					--print("existing oid dummy = " .. k .. " with ", v)				
 					v[self.hardCodedTarget] = v[self.hardCodedTarget] + str
-					print("damage = " .. v[self.hardCodedTarget])
+				--	print("damage = " .. v[self.hardCodedTarget])
 					for key, value in pairs(v) do
-						print("damager oid = " .. key,value)
+					--	print("damager oid = " .. key,value)
 					end
 				end
 			else 
