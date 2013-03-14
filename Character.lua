@@ -117,13 +117,10 @@ Character = Animation:extend
 			self.level = self.level +1
 			self.xp = 1000
 			self.tempMaxxed = true
-			print("leveled", self.level, self.oid)
-		--	for k,v in pairs(the.levelUI) do
-		--		print(k,v)
-		--		border = {255,255,0,255}
-		--	end
+		--	print("leveled", self.level, self.oid)
 			-- TODO: add particle-fx here
 		end		
+		self:updateLevel()
 	end,	
 	
 	resetXP = function (self)
@@ -132,6 +129,17 @@ Character = Animation:extend
 			self.xp = 0
 			self.tempMaxxed = false
 			--print("reset to ", self.tempMaxxed)
+		end
+	end,
+	
+	updateLevel = function (self, elapsed)
+	--	print("update reveived! character level = ",  self.level)
+		for i = 0, config.levelCap - 1 do
+			local width = (love.graphics.getWidth() + the.controlUI.width) / 3.5 / 10
+			if self.level > i then  -- TODO: fix it so that the.character.level gets recognized
+				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
+				the.hud:add(the.levelUI)			
+			end							
 		end
 	end,
 	

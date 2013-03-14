@@ -151,17 +151,5 @@ GameView = View:extend
 		profile.clear()
 		
 		audio.update()
-    end,
-    
-    updateLevel = function (self, elapsed)
- 		the.character = Character:new{}   
-		print("update reveived! character level = ",  the.character.level)
-		for i = 0, config.levelCap - 1 do
-			local width = (love.graphics.getWidth() + the.controlUI.width) / 3.5 / 10
-			if the.character.level > i then  -- TODO: fix it so that the.character.level gets recognized
-				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
-				the.hud:add(the.levelUI)			
-			end							
-		end
-	end,	
+    end,	
 }
