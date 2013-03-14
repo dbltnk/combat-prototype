@@ -106,10 +106,10 @@ GameView = View:extend
 			local width = (love.graphics.getWidth() + the.controlUI.width) / 3.5 / 10
 			if i >= the.character.level then 
 				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i} 
-				--the.hud:add(the.levelUI)	
+				the.hud:add(the.levelUI)	
 			else
 				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
-			--	the.hud:add(the.levelUI)			
+				the.hud:add(the.levelUI)			
 			end							
 		end
 		audio.init()

@@ -12,6 +12,7 @@ Character = Animation:extend
 	xpCap = config.xpCap,
 	level = 0,
 	levelCap = config.levelCap,
+	tempMaxxed = false,
 
 	-- list of Skill
 	skills = {
@@ -107,16 +108,32 @@ Character = Animation:extend
 	
 	gainXP = function (self, str)
 		--print(self.oid, "gain xp", str)
-		self.xp = self.xp + str
+		if self.tempMaxxed == false then
+			self.xp = self.xp + str
+		end
 		--self:updatePain()
 		--print(self.xp)
-		if self.xp >= 1000 then 
+		if self.tempMaxxed == false and self.xp >= 1000 then 
 			self.level = self.level +1
-			self.xp = self.xp - 1000
-			print("leveled" .. self.level)
-			GameView.updateLevel()
+			self.xp = 1000
+			self.tempMaxxed = true
+			print("leveled", self.level, self.oid)
+		--	for k,v in pairs(the.levelUI) do
+		--		print(k,v)
+		--		border = {255,255,0,255}
+		--	end
+			-- TODO: add particle-fx here
 		end		
 	end,	
+	
+	resetXP = function (self)
+	--	print("xp: ", self.xp)
+		if self.xp == 1000 then
+			self.xp = 0
+			self.tempMaxxed = false
+			--print("reset to ", self.tempMaxxed)
+		end
+	end,
 	
 	receive = function (self, message_name, ...)
 	--	print(self.oid, "receives message", message_name, "with", ...)
@@ -256,5 +273,13 @@ Character = Animation:extend
 		local ipt = self:readInput(self.activeSkillNr)
 		
 		self:applyMovement(elapsed, ipt)
+		
+		local done = {}
+		for i = 1, 10 do 
+			if (math.floor(love.timer.getTime()) == config.xpCapTimer * i) and done[i] == nil then
+				self:resetXP()
+				done[i] = true
+			end
+		end
 	end,
 }
