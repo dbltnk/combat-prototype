@@ -90,7 +90,7 @@ Skill = Class:extend
 	onUse = function (self)
 		local startTarget = { oid = self.character.oid, 
 			viewx = self.source.viewx, viewy = self.source.viewy }
-		action_handling.start(self.definition.application, startTarget)
+		action_handling.start(self.definition.application, startTarget, self.character.oid)
 	--	print("out of combat:", self:isOutOfCombat())
 		end,
 

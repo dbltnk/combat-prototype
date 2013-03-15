@@ -5,7 +5,6 @@ TargetDummy = Tile:extend
 	image = '/assets/graphics/dummy.png',
 	currentPain = 0,
 	maxPain = 100,
-	hardCodedTarget = 23,  --TODO: exchange hardCodedTarget for damager (target.oid?)
 	xpWorth = config.dummyXPWorth,
 	dmgReceived = {},
 	alive = true,
@@ -50,7 +49,7 @@ TargetDummy = Tile:extend
 			local str = ...
 		--	print("DUMMY HEAL", str)
 		elseif message_name == "damage" then
-			local str, id, start_target = ...
+			local str, source_oid  = ...
 			--print("DUMMY DAMANGE", str)
 			self:gainPain(str)
 		--	print("start ", start_target)
@@ -58,8 +57,8 @@ TargetDummy = Tile:extend
 			if self.dmgReceived[self.oid] then
 				for k,v in pairs(self.dmgReceived) do
 				--	print("existing oid dummy = " .. k .. " with ", v)				
-					v[self.hardCodedTarget] = v[self.hardCodedTarget] + str
-				--	print("damage = " .. v[self.hardCodedTarget])
+					v[source_oid] = v[source_oid] + str
+				--	print("damage = " .. v[source_oid])
 					for key, value in pairs(v) do
 				--		print("damager oid = " .. key,value)
 					end
@@ -68,15 +67,15 @@ TargetDummy = Tile:extend
 				self.dmgReceived[self.oid] = damagerTable
 				for k,v in pairs(self.dmgReceived) do
 					--print("new oid dummy = " .. k .. " with ", v)
-					v[self.hardCodedTarget] = str
-					--print("damage = " .. v[self.hardCodedTarget])
+					v[source_oid] = str
+					--print("damage = " .. v[source_oid])
 					for key, value in pairs(v) do
 						--print("damager oid = " .. key,value)
 					end
 				end
 			end
 		elseif message_name == "damage_over_time" then 
-			local str, duration, ticks = ...
+			local str, duration, ticks, source_oid = ...
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=1,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
@@ -86,8 +85,8 @@ TargetDummy = Tile:extend
 			if self.dmgReceived[self.oid] then
 				for k,v in pairs(self.dmgReceived) do
 					--print("existing oid dummy = " .. k .. " with ", v)				
-					v[self.hardCodedTarget] = v[self.hardCodedTarget] + str
-				--	print("damage = " .. v[self.hardCodedTarget])
+					v[source_oid] = v[source_oid] + str
+				--	print("damage = " .. v[source_oid])
 					for key, value in pairs(v) do
 					--	print("damager oid = " .. key,value)
 					end
@@ -96,8 +95,8 @@ TargetDummy = Tile:extend
 				self.dmgReceived[self.oid] = damagerTable
 				for k,v in pairs(self.dmgReceived) do
 					--print("new oid dummy = " .. k .. " with ", v)
-					v[self.hardCodedTarget] = str
-					--print("damage = " .. v[self.hardCodedTarget])
+					v[source_oid] = str
+					--print("damage = " .. v[source_oid])
 					for key, value in pairs(v) do
 						--print("damager oid = " .. key,value)
 					end

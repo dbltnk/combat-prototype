@@ -85,14 +85,14 @@ end
 -- function targets_selected_callback({t0,t1,t2,...})
 -- target_selection: eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/action_projectiles/shield_bash_projectile.png"},
 -- start_target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
--- function target_selection_callback(start_target, target_selection, targets_selected_callback)
+-- function target_selection_callback(start_target, target_selection, source_oid, targets_selected_callback)
 function action_handling.register_target_selection(name, target_selection_callback)
 	action_handling.registered_target_selections[name] = target_selection_callback
 end
 
 -- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
 -- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
--- function effect_callback(target, effect)
+-- function effect_callback(target, effect, source_oid)
 function action_handling.register_effect(name, effect_callback)
 	action_handling.registered_effects[name] = effect_callback
 end
@@ -104,15 +104,15 @@ end
 
 -- target_selection: eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/action_projectiles/shield_bash_projectile.png"},
 -- function targets_selected_callback({t0,t1,t2,...})
-function action_handling.start_target_selection (start_target, target_selection, targets_selected_callback)
+function action_handling.start_target_selection (start_target, target_selection, source_oid, targets_selected_callback)
 	local t = target_selection.target_selection_type
 	
-	--print("ACTION start_target_selection", t, action_handling.to_string_target(start_target))
+	--~ print("ACTION start_target_selection", t, action_handling.to_string_target(start_target), source_oid)
 	
 	local ts = action_handling.registered_target_selections[t]
 	
 	if ts then
-		ts(start_target, target_selection, targets_selected_callback)
+		ts(start_target, target_selection, source_oid, targets_selected_callback)
 	else
 		--print("ACTION start_target_selection", "unknown type")
 	end
@@ -120,14 +120,15 @@ end
 
 -- application: see action_definitions.lua
 -- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
-function action_handling.start (application, target)
-	action_handling.start_target_selection(target, application.target_selection, function (targets)
+-- source_oid
+function action_handling.start (application, target, source_oid)
+	action_handling.start_target_selection(target, application.target_selection, source_oid, function (targets)
 		-- target selection finished
 		
 		-- start each effect on each target
 		for ke,effect in pairs(application.effects) do
 			for kt,target in pairs(targets) do
-				action_handling.start_effect(effect, target)
+				action_handling.start_effect(effect, target, source_oid)
 			end
 		end
 	end)
@@ -154,15 +155,16 @@ end
 
 -- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
 -- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
-function action_handling.start_effect (effect, target)
+-- source_oid
+function action_handling.start_effect (effect, target, source_oid)
 	local t = effect.effect_type
 	
-	--print("ACTION start_effect", t, action_handling.to_string_target(target))
+	--~ print("ACTION start_effect", t, action_handling.to_string_target(target), source_oid)
 	
 	local e = action_handling.registered_effects[t]
 	
 	if e then
-		e(target, effect)
+		e(target, effect, source_oid)
 	else
 		--print("ACTION start_effect", "unknown type")
 	end

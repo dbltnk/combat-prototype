@@ -22,7 +22,7 @@ require 'zoetrope'
 -- -- function action_handling.register_effect(name, effect_callback)
 
 -- target_selection: self ----------------------------------------------------------
-action_handling.register_target_selection("self", function (start_target, target_selection, targets_selected_callback)
+action_handling.register_target_selection("self", function (start_target, target_selection, source_oid, targets_selected_callback)
 	targets_selected_callback({start_target})
 end)
 
@@ -30,7 +30,7 @@ end)
 -- eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/graphics/action_projectiles/shield_bash_projectile.png"},
 -- has: range, piercing_number
 -- todo: cone, gfx
-action_handling.register_target_selection("ae", function (start_target, target_selection, targets_selected_callback)
+action_handling.register_target_selection("ae", function (start_target, target_selection, source_oid, targets_selected_callback)
 	local x,y = action_handling.get_target_position(start_target)
 	
 	spawnDebugCircle(x,y,target_selection.range)
@@ -49,7 +49,7 @@ end)
 -- target_selection: projectile ----------------------------------------------------------
 -- eg. {target_selection_type = "projectile", range = 200, speed = 150, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/action_projectiles/bow_shot_projectile.png"},
 -- has: speed, gfx, range, piercing_number, ae_size, ae_targets
-action_handling.register_target_selection("projectile", function (start_target, target_selection, targets_selected_callback)
+action_handling.register_target_selection("projectile", function (start_target, target_selection, source_oid, targets_selected_callback)
 	local cx,cy = action_handling.get_target_position(start_target)
 	
 	local vx,vy = action_handling.get_view(start_target)
@@ -158,55 +158,55 @@ end)
 -- effect: spawn ----------------------------------------------------------
 -- eg. {effect_type = "spawn", application = ...},
 -- has: application
-action_handling.register_effect("spawn", function (target, effect)
-	action_handling.start(effect.application, target)
+action_handling.register_effect("spawn", function (target, effect, source_oid)
+	action_handling.start(effect.application, target, source_oid, source_oid)
 end)
 
 -- effect: xp (gain) ----------------------------------------------------------
 -- eg. {effect_type = "xp", str = 60},
 -- has: str
-action_handling.register_effect("xp", function (target, effect)
-	object_manager.send(target.oid, "xp", effect.str)
+action_handling.register_effect("xp", function (target, effect, source_oid)
+	object_manager.send(target.oid, "xp", effect.str, source_oid)
 end)
 
 -- effect: heal ----------------------------------------------------------
 -- eg. {effect_type = "heal", str = 60},
 -- has: str
-action_handling.register_effect("heal", function (target, effect)
-	object_manager.send(target.oid, "heal", effect.str)
+action_handling.register_effect("heal", function (target, effect, source_oid)
+	object_manager.send(target.oid, "heal", effect.str, source_oid)
 end)
 
 -- effect: damage ----------------------------------------------------------
 -- eg. {effect_type = "damage", str = 60},
 -- has: str
-action_handling.register_effect("damage", function (target, effect)
-	object_manager.send(target.oid, "damage", effect.str) -- TODO: also transmit self.oid to be used for xp gains
+action_handling.register_effect("damage", function (target, effect, source_oid)
+	object_manager.send(target.oid, "damage", effect.str, source_oid)
 end)
 
 -- effect: damage_over_time ----------------------------------------------------------
 -- eg. {effect_type = "damage_over_time", ticks = 5, duration = 20, str = 5},
 -- has: str
-action_handling.register_effect("damage_over_time", function (target, effect)
-	object_manager.send(target.oid, "damage_over_time", effect.str, effect.duration, effect.ticks)-- TODO: also transmit self.oid to be used for xp gains
+action_handling.register_effect("damage_over_time", function (target, effect, source_oid)
+	object_manager.send(target.oid, "damage_over_time", effect.str, effect.duration, effect.ticks, source_oid)
 end)
 
 -- effect: runspeed ----------------------------------------------------------
 -- eg. {effect_type = "runspeed", str = 100, duration = 10},
 -- has: str, duration
-action_handling.register_effect("runspeed", function (target, effect)
-	object_manager.send(target.oid, "runspeed", effect.str, effect.duration)
+action_handling.register_effect("runspeed", function (target, effect, source_oid)
+	object_manager.send(target.oid, "runspeed", effect.str, effect.duration, source_oid)
 end)
 
 -- effect: stun ----------------------------------------------------------
 -- eg. {effect_type = "stun", duration = 10},
 -- has: duration
-action_handling.register_effect("stun", function (target, effect)
-	object_manager.send(target.oid, "stun", effect.duration)
+action_handling.register_effect("stun", function (target, effect, source_oid)
+	object_manager.send(target.oid, "stun", effect.duration, source_oid)
 end)
 
 -- effect: transfer ----------------------------------------------------------
 -- eg. {effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
 -- todo: duration, from, to, eff, attribute, ticks, duration, str
-action_handling.register_effect("stun", function (target, effect)
-	--~ object_manager.send(target.oid, "stun", effect.duration)
+action_handling.register_effect("stun", function (target, effect, source_oid)
+	--~ object_manager.send(target.oid, "stun", effect.duration, source_oid)
 end)
