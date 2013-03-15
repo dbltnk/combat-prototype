@@ -303,6 +303,8 @@ Character = Animation:extend
 			isInCombat = isInCombat or (v:isOutOfCombat() == false)
 		end
 		
+		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))
+		
 		audio.isInCombat = isInCombat
 	end,
 	

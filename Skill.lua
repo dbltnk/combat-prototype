@@ -47,6 +47,7 @@ Skill = Class:extend
 		
 		self.source.x = x
 		self.source.y = y
+		-- read input can overwrite view later
 		self.source.viewx = viewx
 		self.source.viewy = viewy
 		self.source.player = player
@@ -66,6 +67,12 @@ Skill = Class:extend
 				-- finished casting				
 				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
 				--print("SKILL", self.nr, "REALLY USE")
+				-- update view pos
+				if player.readInput then
+					local ipt = player:readInput()
+					self.source.viewx = ipt.viewx
+					self.source.viewy = ipt.viewy
+				end
 				self:onUse()
 				self.character.currentEnergy = self.character.currentEnergy - self.energyCosts
 			end)
