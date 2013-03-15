@@ -100,13 +100,15 @@ Character = Animation:extend
 		if self.currentPain >= self.maxPain then 
 			self.currentPain = self.maxPain
 			self.incapacitated = true
+			self:freezeMovement()
 		end	
 	end,
 		
 	respawn = function (self)
 		self.x, self.y = the.spawnpoint.x, the.spawnpoint.y
 		self.currentPain = 0
-		self.incapacitated = false		
+		self.incapacitated = false	
+		self:unFreezeMovement()	
 	end,	
 	
 	receive = function (self, message_name, ...)
@@ -179,6 +181,7 @@ Character = Animation:extend
 		
 		if (self.incapacitated and self.currentPain <= self.maxPain * config.getUpPain) then
 			self.incapacitated = false
+			self:unFreezeMovement()	
 		end
 	end,
 
