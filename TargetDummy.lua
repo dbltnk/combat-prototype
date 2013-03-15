@@ -84,7 +84,9 @@ TargetDummy = Tile:extend
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=1,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					self:gainPain(str)
+					if self.alive then 
+						self:gainPain(str)
+					end
 				end)
 				-- damage handling for xp distribution	
 			if self.dmgReceived[self.oid] then
@@ -119,7 +121,6 @@ TargetDummy = Tile:extend
 			self.currentPain = self.maxPain
 			self.alive = false					
 			self:die()
-
 		end	
 	end,
 	

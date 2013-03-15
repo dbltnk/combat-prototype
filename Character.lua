@@ -170,6 +170,15 @@ Character = Animation:extend
 			local str = ...
 		--	print("DAMANGE", str)
 			self:gainPain(str)
+		elseif message_name == "damage_over_time" then
+			local str, duration, ticks = ...
+			for i=1,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					if self.incapacitated == false then 
+						self:gainPain(str)
+					end
+				end)
+			end			
 		elseif message_name == "stun" then
 			local duration = ...
 		--	print("STUN", duration)
