@@ -124,6 +124,7 @@ UiBar = Sprite:extend
 	wFactor = 0.30,
 	dx = 0,
 	dy = 0,
+	inc = false,
 	
 	currentValue = 0,
 	maxValue = 100,
@@ -152,7 +153,14 @@ UiBar = Sprite:extend
 		self.bar.x = self.x + self.dx
 		self.bar.y = self.y + self.dy
 		self.background.x = self.x + self.dx
-		self.background.y = self.y + self.dy
+		self.background.y = self.y + self.dy	
+		if self.inc then
+			self.background.fill = {127,127,127,255}
+			self.bar.fill = {255,40,244,255}			
+		else
+			self.background.fill = {0,255,0,255}
+			self.bar.fill = {255,0,0,255}
+		end
 	end,
 	
 	updateBar = function (self)

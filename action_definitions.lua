@@ -166,6 +166,24 @@ action_definitions = {
 			},
 		},	
 	},	
+-- -----------------------------------------------------------------------------------
+	gank = {
+		name = "Gank",
+		description = "End the suffering of an unconcious player.",
+		icon = "/assets/graphics/action_icons/gank.png",
+		cast_time = 5,
+		timeout = 0,
+		energy = 50,
+		on_the_run = false,
+		cast_particle_color = {0,0,0 },			
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 100, speed = 100, ae_size = 50, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/shield_bash_projectile.png"},
+			effects = {
+				{effect_type = "gank"},
+			},
+		},	
+	},		
 }
 
 

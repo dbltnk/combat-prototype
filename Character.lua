@@ -8,6 +8,7 @@ Character = Animation:extend
 	currentPain = 0,
 	maxEnergy = config.maxEnergy, 
 	currentEnergy = config.maxEnergy, 
+	incapacitated = false,
 
 	-- list of Skill
 	skills = {
@@ -19,7 +20,8 @@ Character = Animation:extend
 		"sprint",		
 		"bandage",
 		"fireball",
-		"life_leech",
+		--"life_leech",
+		"gank",
 	},
 	
 
@@ -65,18 +67,13 @@ Character = Animation:extend
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
 			dx = 0, dy = self.height,
-			currentValue = self.currentPain, maxValue = self.maxPain, 
+			currentValue = self.currentPain, maxValue = self.maxPain, inc = false
 		}
 	end,
 	
 	onDie = function (self)
 		the.view.layers.characters:remove(self)
 		self.painBar:die()
-	end,
-	
-	respawn = function (self)
-		self.x, self.y = the.spawnpoint.x, the.spawnpoint.y
-		self.currentPain = 0
 	end,
 	
 	freezeMovement = function (self)
@@ -98,13 +95,19 @@ Character = Animation:extend
 	end,
 	
 	updatePain = function (self)
+	print("Player ", self.oid, " is incapacitated:", self.incapacitated)
 		if self.currentPain < 0 then self.currentPain = 0 end
-		if self.currentPain > self.maxPain then 
+		if self.currentPain >= self.maxPain then 
 			self.currentPain = self.maxPain
-			--self:die()
-			self:respawn()
+			self.incapacitated = true
 		end	
 	end,
+		
+	respawn = function (self)
+		self.x, self.y = the.spawnpoint.x, the.spawnpoint.y
+		self.currentPain = 0
+		self.incapacitated = false		
+	end,	
 	
 	receive = function (self, message_name, ...)
 		print(self.oid, "receives message", message_name, "with", ...)
@@ -130,6 +133,10 @@ Character = Animation:extend
 			the.app.view.timer:after(duration, function()
 				self.speedOverride = 0
 			end)
+		elseif message_name == "gank" then
+			if self.incapacitated == true then 
+				self:respawn() 
+			end
 		end
 	end,
 	
@@ -164,6 +171,15 @@ Character = Animation:extend
 		self.painBar:updateBar()
 		self.painBar.x = self.x
 		self.painBar.y = self.y
+		if self.incapacitated then 
+			self.painBar.inc = true 
+		else
+			self.painBar.inc = false
+		end 
+		
+		if (self.incapacitated and self.currentPain <= self.maxPain * config.getUpPain) then
+			self.incapacitated = false
+		end
 	end,
 
 	readInput = function (self, activeSkillNr)

@@ -162,6 +162,13 @@ action_handling.register_effect("spawn", function (target, effect)
 	action_handling.start(effect.application, target)
 end)
 
+-- effect: gank ----------------------------------------------------------
+-- eg. {effect_type = "gank"},
+-- has: n/a
+action_handling.register_effect("gank", function (target, effect)
+	object_manager.send(target.oid, "gank")
+end)
+
 -- effect: heal ----------------------------------------------------------
 -- eg. {effect_type = "heal", str = 60},
 -- has: str
