@@ -32,7 +32,7 @@ Npc = Character:extend
 		local doShoot = false	
 		
 		-- TODO
-		doShoot = false
+		doShoot = true
 		viewx = self.x + 100
 		viewy = self.y + 100
 

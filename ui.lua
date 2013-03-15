@@ -129,6 +129,7 @@ ExperienceUI = Fill:extend
 				text = "xxx",
 				x = 0,
 				y = 0, 
+				tint = {0,0,0},
 			},
 	
 	onDraw = function(self)
@@ -249,19 +250,6 @@ UiGroup = Group:extend
 	end,
 }
 
-
-PlayerDetails = Tile:extend
-{
-	width = 128,
-	height = 128,
-	image = '/assets/graphics/player_details.png',
-    
-	onUpdate = function (self)
-		self.x = the.player.x - the.player.width / 1.5
-		self.y = the.player.y - the.player.height / 1.5
-	end
-}
-
 TimerDisplay = Text:extend
 {
 	font = 20,
@@ -270,6 +258,7 @@ TimerDisplay = Text:extend
 	y = 0, 
 	time = 0,
 	width = 200,
+	tint = {0.1,0.1,0.1},
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
@@ -284,13 +273,14 @@ TimerDisplay = Text:extend
 	end
 }
 
-DamageUI = Text:extend
+ScrollingText = Text:extend
 {
 	font = 20,
 	text = "xxx",
 	x = 0,
 	y = 0, 
 	width = 6,
+	tint = {1,1,1},
 	
 	onNew = function (self)
 		self.x = self.x - self.width / 2
