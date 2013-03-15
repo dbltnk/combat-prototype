@@ -50,7 +50,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/bandage_particle.png"},
 			effects = {
-				{effect_type = "heal", str = 100},
+				{effect_type = "xp", str = 100},
 			},
 		},
 	},

@@ -8,6 +8,11 @@ Character = Animation:extend
 	currentPain = 0,
 	maxEnergy = config.maxEnergy, 
 	currentEnergy = config.maxEnergy, 
+	xp = 0,
+	xpCap = config.xpCap,
+	level = 0,
+	levelCap = config.levelCap,
+	tempMaxxed = false,
 	incapacitated = false,
 
 	-- list of Skill
@@ -77,25 +82,25 @@ Character = Animation:extend
 	end,
 	
 	freezeMovement = function (self)
-		print("FREEEZ")
+		--print("FREEEZ")
 		self.freezeMovementCounter = self.freezeMovementCounter + 1
 	end,
 	
 	unfreezeMovement = function (self)
-		print("UNFREEEZ")
+		--print("UNFREEEZ")
 		self.freezeMovementCounter = self.freezeMovementCounter - 1
 	end,
 	
 	gainPain = function (self, str)
-		print(self.oid, "gain pain", str)
+		--print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
 		self:updatePain()
 		self.damageUI = DamageUI:new{x = self.x + self.width / 2, y = self.y, text = str}
-		GameView.layers.ui:add(self.damageUI)	
+		GameView.layers.ui:add(self.damageUI)
 	end,
 	
 	updatePain = function (self)
-	print("Player ", self.oid, " is incapacitated:", self.incapacitated)
+	--print("Player ", self.oid, " is incapacitated:", self.incapacitated)
 		if self.currentPain < 0 then self.currentPain = 0 end
 		if self.currentPain >= self.maxPain then 
 			self.currentPain = self.maxPain
@@ -108,33 +113,74 @@ Character = Animation:extend
 		self.x, self.y = the.spawnpoint.x, the.spawnpoint.y
 		self.currentPain = 0
 		self.incapacitated = false	
-		self:unFreezeMovement()	
+		self:unfreezeMovement()	
 	end,	
 	
+	gainXP = function (self, str)
+		--print(self.oid, "gain xp", str)
+		if self.tempMaxxed == false then
+			self.xp = self.xp + str
+		end
+		--self:updatePain()
+		--print(self.xp)
+		if self.tempMaxxed == false and self.xp >= 1000 then 
+			self.level = self.level +1
+			self.xp = 1000
+			self.tempMaxxed = true
+		--	print("leveled", self.level, self.oid)
+			-- TODO: add particle-fx here
+		end		
+		self:updateLevel()
+	end,	
+	
+	resetXP = function (self)
+	--	print("xp: ", self.xp)
+		if self.xp == 1000 then
+			self.xp = 0
+			self.tempMaxxed = false
+			--print("reset to ", self.tempMaxxed)
+		end
+	end,
+	
+	updateLevel = function (self, elapsed)
+	--	print("update reveived! character level = ",  self.level)
+		for i = 0, config.levelCap - 1 do
+			local width = (love.graphics.getWidth() + the.controlUI.width) / 3.5 / 10
+			if self.level > i then  -- TODO: fix it so that the.character.level gets recognized
+				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
+				the.hud:add(the.levelUI)			
+			end							
+		end
+	end,
+	
 	receive = function (self, message_name, ...)
-		print(self.oid, "receives message", message_name, "with", ...)
+	--	print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
 			local str = ...
-			print("HEAL", str)
+		--	print("HEAL", str)
 			self:gainPain(-str)
 		elseif message_name == "damage" then
 			local str = ...
-			print("DAMANGE", str)
+		--	print("DAMANGE", str)
 			self:gainPain(str)
 		elseif message_name == "stun" then
 			local duration = ...
-			print("STUN", duration)
+		--	print("STUN", duration)
 			self:freezeMovement()
 			the.app.view.timer:after(duration, function()
 				self:unfreezeMovement()
 			end)
 		elseif message_name == "runspeed" then
 			local str, duration = ...
-			print("SPEED", str, duration)
+			--print("SPEED", str, duration)
 			self.speedOverride = str
 			the.app.view.timer:after(duration, function()
 				self.speedOverride = 0
 			end)
+		elseif message_name == "xp" then
+			local str = ...
+			--print("XP", str)
+			self:gainXP(str)
 		elseif message_name == "gank" then
 			if self.incapacitated == true then 
 				self:respawn() 
@@ -181,7 +227,7 @@ Character = Animation:extend
 		
 		if (self.incapacitated and self.currentPain <= self.maxPain * config.getUpPain) then
 			self.incapacitated = false
-			self:unFreezeMovement()	
+			self:unfreezeMovement()	
 		end
 	end,
 
@@ -259,6 +305,14 @@ Character = Animation:extend
 		local ipt = self:readInput(self.activeSkillNr)
 		
 		self:applyMovement(elapsed, ipt)
+		
+		local done = {}
+		for i = 1, 10 do 
+			if (math.floor(love.timer.getTime()) == config.xpCapTimer * i) and done[i] == nil then
+				self:resetXP()
+				done[i] = true
+			end
+		end
 		
 		if self.incapacitated then
 			self.tint = {0.5,0.5,0.5}
