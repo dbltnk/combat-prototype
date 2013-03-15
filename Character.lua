@@ -256,5 +256,11 @@ Character = Animation:extend
 		local ipt = self:readInput(self.activeSkillNr)
 		
 		self:applyMovement(elapsed, ipt)
+		
+		if self.incapacitated then
+			self.tint = {0.5,0.5,0.5}
+		else 
+			self.tint = {1,1,1}
+		end
 	end,
 }
