@@ -71,8 +71,12 @@ Character = Animation:extend
 	
 	onDie = function (self)
 		the.view.layers.characters:remove(self)
-	
 		self.painBar:die()
+	end,
+	
+	respawn = function (self)
+		self.x, self.y = the.spawnpoint.x, the.spawnpoint.y
+		self.currentPain = 0
 	end,
 	
 	freezeMovement = function (self)
@@ -97,7 +101,8 @@ Character = Animation:extend
 		if self.currentPain < 0 then self.currentPain = 0 end
 		if self.currentPain > self.maxPain then 
 			self.currentPain = self.maxPain
-			self:die()
+			--self:die()
+			self:respawn()
 		end	
 	end,
 	
