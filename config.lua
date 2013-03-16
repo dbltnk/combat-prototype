@@ -2,11 +2,11 @@
 local config = {}
 
 -- balancing variables
-config.walkspeed = 100
-config.runspeed = 200
-config.animspeed = 16
+config.walkspeed = 150
+config.runspeed = 300
+config.animspeed = 16 * config.walkspeed / 50
 config.projectilespeed = 500
-config.energyreg = 1
+config.energyreg = 3
 config.healthreg = 1
 config.maxPain = 200
 config.maxEnergy = 300
@@ -18,7 +18,7 @@ config.dummyXPWorth = 50
 config.dummyRespawn = 10
 config.xpCapTimer = config.roundTime / config.levelCap
 config.getUpPain = 0.5 -- in percent
-config.ressourceHealth = 100
+config.ressourceHealth = 300
 config.xpGainsEachNSeconds = 10
 config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds
 
@@ -32,7 +32,7 @@ config.gamepad_cursor_speed_far = 800
 config.gamepad_cursor_near_distance = 400
 config.gamepad_cursor_near_border = 200
 
-config.draw_debug_info = true
+config.draw_debug_info = false
 config.show_profile_info = false
 
 return config
