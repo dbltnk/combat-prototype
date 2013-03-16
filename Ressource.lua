@@ -40,7 +40,6 @@ Ressource = Tile:extend
 			currentValue = self.currentPain, maxValue = self.maxPain, 
 			wFactor = self.wFactor,
 		}
-		
 		drawDebugWrapper(self)
 	end,
 	
@@ -94,7 +93,15 @@ Ressource = Tile:extend
 	changeOwner = function(self)
 		self.owner = self.nextOwner
 		self.currentPain = 0
+		self:giveXP()
 	end,
+	
+	giveXP = function(self)
+		the.app.view.timer:after(config.xpGainsEachNSeconds, function()
+			if self.owner ~= 0 then object_manager.send(self.owner, "xp", config.xpPerRessourceTick) end
+			self:giveXP()
+		end)
+	end,	
 	
 	onUpdate = function (self)	
 		self.painBar.currentValue = self.currentPain
@@ -105,14 +112,6 @@ Ressource = Tile:extend
 		if self.owner == 0 then self.t.text = "Owned by: none" else self.t.text = "Owned by: " .. self.owner end
 		self.t.x = self.x - self.width /4
 		self.t.y = self.y - self.t.height
-		self.t.width = 120		
-	
-		local done = {}		
-		for i = 1, config.roundTime / config.xpGainsEachNSeconds do 
-			if (math.floor(love.timer.getTime()) == config.xpGainsEachNSeconds * i) and done[i] ~= true and self.owner ~= 0 then
-				object_manager.send(self.owner, "xp", config.xpPerRessourceTick)	-- TODO: fix that this gets called every frame instead of once
-				done[i] = true	
-			end
-		end		
+		self.t.width = 120			
 	end,	
 }
