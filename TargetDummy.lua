@@ -8,6 +8,7 @@ TargetDummy = Tile:extend
 	xpWorth = config.dummyXPWorth,
 	dmgReceived = {},
 	alive = true,
+	wFactor = 0,		
 	
 	-- UiBar
 	painBar = nil,
@@ -23,11 +24,11 @@ TargetDummy = Tile:extend
 		object_manager.create(self)
 		--print("NEW DUMMY", self.x, self.y, self.width, self.height)
 		the.view.layers.characters:add(self)
-		
+		self.wFactor = self.width / self.maxPain			
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
 			dx = 0, dy = self.height,
-			currentValue = self.currentPain, maxValue = self.maxPain, 
+			currentValue = self.currentPain, maxValue = self.maxPain, wFactor = self.wFactor
 		}
 		
 		drawDebugWrapper(self)

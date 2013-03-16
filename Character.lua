@@ -14,6 +14,7 @@ Character = Animation:extend
 	levelCap = config.levelCap,
 	tempMaxxed = false,
 	incapacitated = false,
+	wFactor = 0,	
 
 	-- list of Skill
 	skills = {
@@ -63,6 +64,7 @@ Character = Animation:extend
 	onNew = function (self)
 		object_manager.create(self)
 		the.view.layers.characters:add(self)
+		self.wFactor = self.width / self.maxPain		
 		
 		for k,v in pairs(self.skills) do
 			self.skills[k] = Skill:new { nr = k, id = v, character = self }
@@ -72,7 +74,7 @@ Character = Animation:extend
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
 			dx = 0, dy = self.height,
-			currentValue = self.currentPain, maxValue = self.maxPain, inc = false
+			currentValue = self.currentPain, maxValue = self.maxPain, inc = false, wFactor = self.wFactor
 		}
 	end,
 	
