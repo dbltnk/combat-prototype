@@ -8,6 +8,7 @@ TargetDummy = Tile:extend
 	xpWorth = config.dummyXPWorth,
 	dmgReceived = {},
 	damagerTable = {},	
+	finalDamage = 0,
 	alive = true,
 	wFactor = 0,	
 	timeOfDeath = 0,	
@@ -132,7 +133,7 @@ TargetDummy = Tile:extend
 		-- find out how much xp which player gets and tell him
 		for k,v in pairs(self.dmgReceived) do 
 			for damager, value in pairs(v) do
-				if self.finalDamage then 
+				if self.finalDamage ~= 0 then 
 					self.finalDamage = self.finalDamage + value				
 				else 	
 					self.finalDamage = value
@@ -162,6 +163,7 @@ TargetDummy = Tile:extend
 		self.currentPain = 0
 		self.alive = true
 		self.timeOfDeath = 0
+		self.finalDamage = 0
 		self.painBar:revive()	
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
