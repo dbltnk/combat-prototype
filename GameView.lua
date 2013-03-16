@@ -263,7 +263,14 @@ GameView = View:extend
 						end
 					end
 				elseif m.cmd == "left" then
-					
+					-- player left so kill all objects from the player
+					for oid,obj in pairs(object_manager.objects) do
+						print("LEFT", oid, obj.owner, m.id)
+						if obj.owner == m.id then
+							obj:die()
+							object_manager.delete(obj)
+						end
+					end
 				end
 			end
 		end)	
