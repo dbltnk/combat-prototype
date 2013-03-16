@@ -117,7 +117,7 @@ Character = Animation:extend
 	end,
 		
 	respawn = function (self)
-		self.x, self.y = the.spawnpoint.x, the.spawnpoint.y
+		self.x, self.y = the.respawnpoint.x, the.respawnpoint.y
 		self.currentPain = 0
 		self.incapacitated = false	
 		self:unfreezeMovement()	

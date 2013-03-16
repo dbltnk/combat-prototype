@@ -59,36 +59,72 @@
   </data>
  </layer>
  <objectgroup name="objects" width="100" height="100">
-  <object name="spawnpoint" x="196" y="2482">
+  <object name="spawnpoint" x="1998" y="2036">
    <properties>
     <property name="_the" value="spawnpoint"/>
    </properties>
   </object>
   <object name="TargetDummy" x="458" y="2491" width="23" height="20"/>
   <object name="TargetDummy" x="510" y="2546" width="23" height="20"/>
-  <object name="TargetDummy" x="340" y="2591" width="23" height="20"/>
-  <object name="TargetDummy" x="249" y="2616" width="23" height="20"/>
-  <object name="TargetDummy" x="286" y="2713" width="23" height="20"/>
-  <object name="TargetDummy" x="323" y="2439" width="23" height="20"/>
-  <object name="TargetDummy" x="281" y="2343" width="23" height="20"/>
-  <object name="TargetDummy" x="250" y="2243" width="23" height="20"/>
-  <object name="TargetDummy" x="397" y="2293" width="23" height="20"/>
-  <object name="TargetDummy" x="456" y="2373" width="23" height="20"/>
-  <object name="TargetDummy" x="542" y="2279" width="23" height="20"/>
-  <object name="TargetDummy" x="421" y="2199" width="23" height="20"/>
-  <object name="TargetDummy" x="421" y="2236" width="23" height="20"/>
   <object name="TargetDummy" x="642" y="2400" width="23" height="20"/>
   <object name="TargetDummy" x="453" y="2644" width="23" height="20"/>
-  <object name="TargetDummy" x="382" y="2678" width="23" height="20"/>
-  <object name="TargetDummy" x="220" y="2414" width="23" height="20"/>
-  <object name="Npc" x="256" y="2528" width="64" height="64"/>
   <object name="Npc" x="566" y="2689" width="64" height="64"/>
-  <object name="Npc" x="551" y="2356" width="64" height="64"/>
+  <object name="Npc" x="1003" y="144" width="64" height="64"/>
   <object name="Barrier" x="3" y="2369" width="90" height="188"/>
   <object name="Ressource" x="1280" y="2528" width="64" height="64"/>
   <object name="Ressource" x="2814" y="2654" width="64" height="64"/>
   <object name="Ressource" x="2381" y="569" width="64" height="64"/>
   <object name="Ressource" x="1228" y="78" width="64" height="64"/>
+  <object name="Npc" x="1195" y="474" width="64" height="64"/>
+  <object name="Npc" x="2153" y="504" width="64" height="64"/>
+  <object name="Npc" x="2513" y="820" width="64" height="64"/>
+  <object name="Npc" x="2132" y="2859" width="64" height="64"/>
+  <object name="Npc" x="2547" y="2783" width="64" height="64"/>
+  <object name="Npc" x="2826" y="2435" width="64" height="64"/>
+  <object name="Npc" x="1916" y="2320" width="64" height="64"/>
+  <object name="Npc" x="150" y="2077" width="64" height="64"/>
+  <object name="Npc" x="195" y="2995" width="64" height="64"/>
+  <object name="respawnpoint" x="1476" y="1384">
+   <properties>
+    <property name="_the" value="respawnpoint"/>
+   </properties>
+  </object>
+  <object name="TargetDummy" x="577" y="751" width="23" height="20"/>
+  <object name="TargetDummy" x="631" y="629" width="23" height="20"/>
+  <object name="TargetDummy" x="540" y="654" width="23" height="20"/>
+  <object name="TargetDummy" x="673" y="716" width="23" height="20"/>
+  <object name="TargetDummy" x="2567" y="1098" width="23" height="20"/>
+  <object name="TargetDummy" x="2446" y="1018" width="23" height="20"/>
+  <object name="TargetDummy" x="2446" y="1055" width="23" height="20"/>
+  <object name="TargetDummy" x="2422" y="1112" width="23" height="20"/>
+  <object name="TargetDummy" x="2481" y="1192" width="23" height="20"/>
+  <object name="TargetDummy" x="1882" y="3015" width="23" height="20"/>
+  <object name="TargetDummy" x="1985" y="3040" width="23" height="20"/>
+  <object name="TargetDummy" x="1943" y="2944" width="23" height="20"/>
+  <object name="TargetDummy" x="1912" y="2844" width="23" height="20"/>
+  <object name="TargetDummy" x="482" y="2126" width="23" height="20"/>
+  <object name="TargetDummy" x="389" y="1896" width="23" height="20"/>
+  <object name="TargetDummy" x="785" y="1899" width="23" height="20"/>
+  <object name="TargetDummy" x="879" y="2035" width="23" height="20"/>
+  <object name="TargetDummy" x="1249" y="1796" width="23" height="20"/>
+  <object name="TargetDummy" x="1943" y="1796" width="23" height="20"/>
+  <object name="TargetDummy" x="2204" y="1742" width="23" height="20"/>
+  <object name="TargetDummy" x="2398" y="2057" width="23" height="20"/>
+  <object name="TargetDummy" x="2867" y="2078" width="23" height="20"/>
+  <object name="TargetDummy" x="2767" y="2032" width="23" height="20"/>
+  <object name="TargetDummy" x="2861" y="1826" width="23" height="20"/>
+  <object name="TargetDummy" x="2592" y="514" width="23" height="20"/>
+  <object name="TargetDummy" x="173" y="272" width="23" height="20"/>
+  <object name="TargetDummy" x="210" y="472" width="23" height="20"/>
+  <object name="TargetDummy" x="616" y="369" width="23" height="20"/>
+  <object name="TargetDummy" x="767" y="917" width="23" height="20"/>
+  <object name="TargetDummy" x="804" y="1460" width="23" height="20"/>
+  <object name="TargetDummy" x="1222" y="1414" width="23" height="20"/>
+  <object name="TargetDummy" x="1285" y="1102" width="23" height="20"/>
+  <object name="TargetDummy" x="1413" y="1026" width="23" height="20"/>
+  <object name="TargetDummy" x="1822" y="1699" width="23" height="20"/>
+  <object name="TargetDummy" x="2046" y="1672" width="23" height="20"/>
+  <object name="TargetDummy" x="1713" y="1869" width="23" height="20"/>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
   <object x="1421" y="2157">

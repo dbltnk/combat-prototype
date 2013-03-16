@@ -32,7 +32,7 @@ TargetDummy = Tile:extend
 		}
 		
 		drawDebugWrapper(self)
-		if (math.random(-1, 1) > 0) then self.movable = true end
+		--if (math.random(-1, 1) > 0) then self.movable = true end
 	end,
 	
 	gainPain = function (self, str)
