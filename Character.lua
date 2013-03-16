@@ -138,8 +138,8 @@ Character = Animation:extend
 			-- TODO: add particle-fx here
 		end		
 		self:updateLevel()
-		self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = math.floor(str), tint = {1,1,0}}
-		GameView.layers.ui:add(self.scrollingText)	
+		if math.floor(str) > 0 then self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = math.floor(str), tint = {1,1,0}}
+		GameView.layers.ui:add(self.scrollingText) end	
 	end,	
 	
 	resetXP = function (self)
