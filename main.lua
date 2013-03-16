@@ -37,6 +37,7 @@ require 'Particles'
 require 'GameView'
 require 'Footstep'
 require 'Barrier'
+require 'Ressource'
 require 'SyncedObject'
 require 'ConnectView'
 

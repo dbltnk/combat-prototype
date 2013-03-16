@@ -43,10 +43,11 @@ Skill = Class:extend
 	
 	use = function (self, x, y, viewx, viewy, player)
 		if self:freezeMovementDuringCasting() then player:freezeMovement() end
-		print("SKILL", self.nr, "START USING")
+		--print("SKILL", self.nr, "START USING")
 		
 		self.source.x = x
 		self.source.y = y
+		-- read input can overwrite view later
 		self.source.viewx = viewx
 		self.source.viewy = viewy
 		self.source.player = player
@@ -65,7 +66,13 @@ Skill = Class:extend
 			the.app.view.timer:after(self.cast_time, function() 
 				-- finished casting				
 				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
-				print("SKILL", self.nr, "REALLY USE")
+				--print("SKILL", self.nr, "REALLY USE")
+				-- update view pos
+				if player.readInput then
+					local ipt = player:readInput()
+					self.source.viewx = ipt.viewx
+					self.source.viewy = ipt.viewy
+				end
 				self:onUse()
 				self.character.currentEnergy = self.character.currentEnergy - self.energyCosts
 			end)
@@ -90,8 +97,8 @@ Skill = Class:extend
 	onUse = function (self)
 		local startTarget = { oid = self.character.oid, 
 			viewx = self.source.viewx, viewy = self.source.viewy }
-		action_handling.start(self.definition.application, startTarget)
-		print("out of combat:", self:isOutOfCombat())
+		action_handling.start(self.definition.application, startTarget, self.character.oid)
+	--	print("out of combat:", self:isOutOfCombat())
 		end,
 
 	isOutOfCombat = function (self)

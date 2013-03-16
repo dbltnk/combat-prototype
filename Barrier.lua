@@ -19,7 +19,7 @@ Barrier = Tile:extend
 		object_manager.create(self)
 		--print("NEW BARRIER", self.x, self.y, self.width, self.height)
 		the.view.layers.characters:add(self)
-		self.wFactor = 0.1 / self.maxPain * 1000
+		self.wFactor = self.width / self.maxPain
 		
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
@@ -29,13 +29,19 @@ Barrier = Tile:extend
 		}
 		
 		drawDebugWrapper(self)
-		if (math.random(-1, 1) > 0) then self.movable = true end
 	end,
 	
 	gainPain = function (self, str)
 		print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
 		self:updatePain()
+		if str >= 0 then
+			self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
+			GameView.layers.ui:add(self.scrollingText)	
+		else
+			self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
+			GameView.layers.ui:add(self.scrollingText)	
+		end
 	end,
 	
 	receive = function (self, message_name, ...)
@@ -55,9 +61,6 @@ Barrier = Tile:extend
 					self:gainPain(str)
 				end)
 			end
-		elseif message_name == "runspeed" then
-			local str, duration = ...
-			--print("BARRIER SPEED", str, duration)
 		end
 	end,
 	

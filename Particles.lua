@@ -43,7 +43,7 @@ Particles = Emitter:extend
                 if cy > self.y then self.velocity.y = outerSelf.particleSpeed else self.velocity.y = - outerSelf.particleSpeed end
             end
         },
-        25)
+        30)
         
         self:launch()
     end,
