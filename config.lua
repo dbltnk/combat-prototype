@@ -15,6 +15,7 @@ config.roundTime = 3600 -- in seconds
 config.xpCap = 1000
 config.levelCap = 10
 config.dummyXPWorth = 50
+config.dummyRespawn = 10
 config.xpCapTimer = config.roundTime / config.levelCap
 config.getUpPain = 0.5 -- in percent
 config.ressourceHealth = 100
