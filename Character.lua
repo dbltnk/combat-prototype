@@ -165,32 +165,37 @@ Character = Animation:extend
 	receive = function (self, message_name, ...)
 	--	print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
-			local str = ...
+			local str, source_oid = ...
 		--	print("HEAL", str)
 			self:gainPain(-str)
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str/100) end
 		elseif message_name == "damage" then
-			local str = ...
+			local str, source_oid = ...
 		--	print("DAMANGE", str)
 			self:gainPain(str)
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str/100) end
 		elseif message_name == "damage_over_time" then
-			local str, duration, ticks = ...
+			local str, duration, ticks, source_oid = ...
 			for i=1,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.incapacitated == false then 
 						self:gainPain(str)
+						if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str/100) end
 					end
 				end)
 			end			
 		elseif message_name == "stun" then
-			local duration = ...
+			local duration, source_oid = ...
 		--	print("STUN", duration)
 			self:freezeMovement()
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration) end
 			the.app.view.timer:after(duration, function()
 				self:unfreezeMovement()
 			end)
 		elseif message_name == "runspeed" then
-			local str, duration = ...
+			local str, duration, source_oid = ...
 			--print("SPEED", str, duration)
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration) end
 			self.speedOverride = str
 			the.app.view.timer:after(duration, function()
 				self.speedOverride = 0
