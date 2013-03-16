@@ -81,11 +81,12 @@ View = Group:extend{
 	--		file - filename to load
 	--		isSpritesBatched - true if all sprites should be batched into one spritebatch, 
 	--							it is not possible to address the tiles separately
+	--		layersToIgnore - a map of layernames that should not get loaded (eg. {"objects" => true, })
 	--
 	-- Returns:
 	--		nothing
 
-	loadLayers = function (self, file, isSpritesBatched)
+	loadLayers = function (self, file, isSpritesBatched, layersToIgnore)
 		local ok, data = pcall(loadstring(Cached:text(file)))
 		local _, _, directory = string.find(file, '^(.*[/\\])')
 		directory = directory or ''
@@ -110,99 +111,102 @@ View = Group:extend{
 			end
 
 			for _, layer in pairs(data.layers) do
-				if View[layer.name] then
-					error('the View class reserves the ' .. layer.name .. ' property for its own use; you cannot load a layer with that name')
-				end
-
-				if STRICT and self[layer.name] then
-					local info = debug.getinfo(2, 'Sl')
-					print('Warning: a property named ' .. layer.name .. ' already exists in the current view (' ..
-						  info.short_src .. ', line ' .. info.currentline .. ')')
-				end
-
-				if layer.type == 'tilelayer' then
-					local map = Map:new{ spriteWidth = data.tilewidth, spriteHeight = data.tileheight }
-					map:empty(layer.width, layer.height)
-
-					-- load tiles
-
-					for _, tiles in pairs(data.tilesets) do
-						map:loadTiles(directory .. tiles.image, Tile, tiles.firstgid)
-
-						-- and mix in properties where applicable
-
-						for i, tile in ipairs(tileProtos) do
-							if map.sprites[i] then
-								map.sprites[i]:mixin(tile.properties)
-							end
-						end
+				if not layersToIgnore or not layersToIgnore[layer.name]  then
+				
+					if View[layer.name] then
+						error('the View class reserves the ' .. layer.name .. ' property for its own use; you cannot load a layer with that name')
 					end
 
-					-- load tile data
-
-					local x = 1
-					local y = 1
-
-					for _, val in ipairs(layer.data) do
-						map.map[x][y] = val
-						x = x + 1
-
-						if x > layer.width then
-							x = 1
-							y = y + 1
-						end
+					if STRICT and self[layer.name] then
+						local info = debug.getinfo(2, 'Sl')
+						print('Warning: a property named ' .. layer.name .. ' already exists in the current view (' ..
+							  info.short_src .. ', line ' .. info.currentline .. ')')
 					end
 
-					if isSpritesBatched then
-						map:calculateSpriteBatches()
-					end
+					if layer.type == 'tilelayer' then
+						local map = Map:new{ spriteWidth = data.tilewidth, spriteHeight = data.tileheight }
+						map:empty(layer.width, layer.height)
 
-					self[layer.name] = map
-					self:add(map)
-				elseif layer.type == 'objectgroup' then
-					local group = Group:new()
+						-- load tiles
 
-					for _, obj in pairs(layer.objects) do
-						-- roll in tile properties if based on a tile
+						for _, tiles in pairs(data.tilesets) do
+							map:loadTiles(directory .. tiles.image, Tile, tiles.firstgid)
 
-						if obj.gid and tileProtos[obj.gid] then
-							local tile = tileProtos[obj.gid]
+							-- and mix in properties where applicable
 
-							obj.name = tile.properties.name
-							obj.width = tile.width
-							obj.height = tile.height
-							
-							for key, value in pairs(tile.properties) do
-								obj.properties[key] = tovalue(value)
+							for i, tile in ipairs(tileProtos) do
+								if map.sprites[i] then
+									map.sprites[i]:mixin(tile.properties)
+								end
 							end
 						end
 
-						-- create a new object if the class does exist
+						-- load tile data
 
-						local spr
+						local x = 1
+						local y = 1
 
-						if obj.name and rawget(_G, obj.name) then
-							obj.properties.x = obj.x
-							obj.properties.y = obj.y
-							obj.properties.width = obj.width
-							obj.properties.height = obj.height
+						for _, val in ipairs(layer.data) do
+							map.map[x][y] = val
+							x = x + 1
 
-							spr = _G[obj.name]:new(obj.properties)
-						else
-							spr = Fill:new{ x = obj.x, y = obj.y, width = obj.width, height = obj.height, fill = { 128, 128, 128 } }
+							if x > layer.width then
+								x = 1
+								y = y + 1
+							end
 						end
 
-						if obj.properties._the then
-							the[obj.properties._the] = spr
+						if isSpritesBatched then
+							map:calculateSpriteBatches()
 						end
 
-						group:add(spr)
+						self[layer.name] = map
+						self:add(map)
+					elseif layer.type == 'objectgroup' then
+						local group = Group:new()
+
+						for _, obj in pairs(layer.objects) do
+							-- roll in tile properties if based on a tile
+
+							if obj.gid and tileProtos[obj.gid] then
+								local tile = tileProtos[obj.gid]
+
+								obj.name = tile.properties.name
+								obj.width = tile.width
+								obj.height = tile.height
+								
+								for key, value in pairs(tile.properties) do
+									obj.properties[key] = tovalue(value)
+								end
+							end
+
+							-- create a new object if the class does exist
+
+							local spr
+
+							if obj.name and rawget(_G, obj.name) then
+								obj.properties.x = obj.x
+								obj.properties.y = obj.y
+								obj.properties.width = obj.width
+								obj.properties.height = obj.height
+
+								spr = _G[obj.name]:new(obj.properties)
+							else
+								spr = Fill:new{ x = obj.x, y = obj.y, width = obj.width, height = obj.height, fill = { 128, 128, 128 } }
+							end
+
+							if obj.properties._the then
+								the[obj.properties._the] = spr
+							end
+
+							group:add(spr)
+						end
+
+						self[layer.name] = group
+						self:add(group)
+					else
+						error("don't know how to create a " .. layer.type .. " layer from file data")
 					end
-
-					self[layer.name] = group
-					self:add(group)
-				else
-					error("don't know how to create a " .. layer.type .. " layer from file data")
 				end
 			end
 		else

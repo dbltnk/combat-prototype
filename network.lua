@@ -2,11 +2,14 @@
 
 --[[
 S>C {channel = "server", cmd = "join", id = client.id}
-S>C {channel = "server", cmd = "id", id = client.id}
+S>C {channel = "server", cmd = "id", id = client.id, first = , }
 S>C {channel = "server", cmd = "left", id = client.id}
 C>S {channel = "server", cmd = "who", seq = } -> { ids }
 C>S {channel = "server", cmd = "ping", time = seq = } -> { time }
 C>C {channel = "game", cmd = "sync", oid = , owner = , ...}
+C>C {channel = "game", cmd = "create", class = , oid = , owner = , ...}
+C>C {channel = "game", cmd = "request", oid = }
+C>C {channel = "game", cmd = "delete", oid = }
 
 ]]
 
@@ -22,6 +25,7 @@ local next_seq = 1
 network.on_message = {}
 
 network.client_id = nil
+network.is_first = false
 
 local open_requests = {}
 
@@ -33,7 +37,7 @@ function network.update ()
 		print("NET IN", plain)
 		local m = json.decode (plain);
 		
-		if not m then break end
+		if not m or type(m) ~= "table" then break end
 		
 		-- is this a reply?
 		local seq = m.seq or nil
@@ -51,6 +55,7 @@ function network.update ()
 			-- id message?
 			if m.channel == "server" and m.cmd == "id" then
 				network.client_id = m.id
+				network.is_first = m.first
 				object_manager.nextFreeId = (m.id - 1) * 100000
 			end
 			

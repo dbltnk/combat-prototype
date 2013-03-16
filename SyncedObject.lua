@@ -9,7 +9,7 @@ SyncedObject = Tile:extend
 	owner = nil,
     	
 	onUpdate = function (self)
-	
+		
 	end,
 	
 	onDie = function (self)

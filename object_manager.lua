@@ -27,6 +27,7 @@ function object_manager.get (oid)
 		return object_manager.objects[oid]
 	else
 		print("OBJECTMANAGER", "there is no object with oid", oid)
+		return nil
 	end
 end
 

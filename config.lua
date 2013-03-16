@@ -34,4 +34,8 @@ config.gamepad_cursor_near_border = 200
 config.draw_debug_info = true
 config.show_profile_info = false
 
+-- network
+config.server_hostname = "192.168.2.103"
+config.server_port = 9999
+
 return config

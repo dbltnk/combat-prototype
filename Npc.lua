@@ -20,6 +20,8 @@ Npc = Character:extend
 	height = 64,
 	image = '/assets/graphics/npc.png', -- source: http://www.synapsegaming.com/forums/t/1711.aspx
 	
+	changeMonitor = nil,
+	
 	readInput = function (self, activeSkillNr)
 		-- 0 slowest -> 1 fastest
 		local speed = 0

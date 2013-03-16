@@ -4,6 +4,7 @@ local string = require 'string'
 local list = require 'list'
 
 local clients = {}
+local clients_count = 0
 
 function send_to_all(message, clients)
 	local json = json.stringify(message)
@@ -39,6 +40,7 @@ end
 function disconnect(client, clients)
 	if not clients[client] then return end
 	
+	clients_count = clients_count - 1
 	clients[client] = nil
 	-- send leave message
 	local leaveMessage = json.stringify({channel = "server", cmd = "left", id = client.id})
@@ -49,10 +51,12 @@ end
 
 -- returns part, new_buffer
 function pop_part_from_buffer (buffer)
+	if buffer == nil or string.len(buffer) == 0 then return nil, buffer end
 	local p = string.find(buffer, "\n", 1, true)
 	if p then
 		local part = string.sub(buffer, 1, p)
 		local rest = string.sub(buffer, p + 1)
+		if string.len(rest) == 0 then rest = nil end
 		return part, rest
 	else
 		return nil, buffer
@@ -67,22 +71,27 @@ server = net.createServer(function (client)
 		client_id = client_id + 1
 	end
 	
+	clients_count = clients_count + 1
+	
 	client.id = client_id
 	client.unprocessed = ""
 	clients[client] = true
 	
 	send_to_other({channel = "server", cmd = "join", id = client.id}, client, clients)
-	send_to_one({channel = "server", cmd = "id", id = client.id}, client)
+	send_to_one({channel = "server", cmd = "id", id = client.id, first = clients_count == 1, }, client)
 	client:on("data", function(data, ...)
-		client.unprocessed = client.unprocessed .. data
+		--~ print("data", client, data, ...)
 
+		client.unprocessed = (client.unprocessed or "") .. data
+		--~ print("DATA", data)
 		while true do
 			local part, rest = pop_part_from_buffer(client.unprocessed)
+			--~ print("BUFFER", part, rest)
 			client.unprocessed = rest
 			if not part then break end
 			
-			local message = json.parse(data)
-			print("data", client, data, ...)
+			print("TOPARSE", part)
+			local message = json.parse(part)
 			
 			if (message.channel == "server") then
 				if (message.cmd == "who") then

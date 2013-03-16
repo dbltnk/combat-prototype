@@ -82,32 +82,8 @@ the.app = App:new
 		-- disable the hardware cursor
 		self:useSysCursor(false)
 		
-		network.connect("localhost", 9999)
-		table.insert(network.on_message, function(m) 
-			print ("RECEIVED", json.encode(m))
-			if m.channel == "game" then
-				if m.cmd == "sync" then
-					local o = object_manager.get(m.oid)
-					
-					if not o then
-						-- request detail infos
-						-- TODO
-						-- create
-						o = object_manager.create_remote(SyncedObject:new(), m.oid, m.owner)
-						print("NEW REMOTE OBJECT", o.oid)
-					end
-					
-					-- sync
-					o.x = m.x or o.x
-					o.y = m.y or o.y
-					o.rotation = m.rotation or o.rotation
-					o.currentEnergy = m.currentEnergy or o.currentEnergy
-					o.currentPain = m.currentPain or o.currentPain
-					print("SYNC REMOTE OBEJCT", o.oid)
-				end
-			end
-		end)
-
+		network.connect(config.server_hostname, config.server_port)
+		
 		--~ the.app.console:watch("viewx", "the.view.translate.x")
 		--~ the.app.console:watch("viewy", "the.view.translate.y")
 		

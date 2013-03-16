@@ -12,29 +12,87 @@ GameView = View:extend
 		debug = Group:new(),
 	},
 
+	loadMap = function (self, file, objectNamesToIgnore)
+		local ok, data = pcall(loadstring(Cached:text(file)))
+
+		if ok then
+			for _, layer in pairs(data.layers) do
+				if layer.name == "objects" and layer.type == 'objectgroup' then
+
+					for _, obj in pairs(layer.objects) do
+						-- roll in tile properties if based on a tile
+
+						if obj.gid and tileProtos[obj.gid] then
+							local tile = tileProtos[obj.gid]
+
+							obj.name = tile.properties.name
+							obj.width = tile.width
+							obj.height = tile.height
+							
+							for key, value in pairs(tile.properties) do
+								obj.properties[key] = tovalue(value)
+							end
+						end
+
+						-- create a new object if the class does exist
+
+						local spr
+						
+						if not objectNamesToIgnore or not objectNamesToIgnore[obj.name]  then
+							
+							if obj.name and rawget(_G, obj.name) then
+								obj.properties.x = obj.x
+								obj.properties.y = obj.y
+								obj.properties.width = obj.width
+								obj.properties.height = obj.height
+
+								spr = _G[obj.name]:new(obj.properties)
+							else
+								spr = Class:new{ x = obj.x, y = obj.y, width = obj.width, height = obj.height, fill = { 128, 128, 128 } }
+							end
+
+							if obj.properties._the then
+								the[obj.properties._the] = spr
+							end
+							
+						end
+					end
+				end
+			end
+		else
+			error('could not load view data from file: ' .. data)
+		end
+	end,
+
     onNew = function (self)
     
     
-		-- object -> true map for easy remove, key contains projectile reference
+		-- object -> true map for easy remove, key contains projectile references
 		the.projectiles = {}
 		
-		-- object -> true map for easy remove, key contains projectile reference
+		-- object -> true map for easy remove, key contains targetDummy references
 		the.targetDummies = {}
 		
 		the.barrier = Barrier:new{}
 		self:add(the.barrier)
 		
-		-- object -> true map for easy remove, key contains footstep reference
+		-- object -> true map for easy remove, key contains footstep references
 		the.footsteps = {}
 		
-		self:loadLayers('/assets/maps/desert/desert.lua', true)
+		local mapFile = '/assets/maps/desert/desert.lua'
+		self:loadLayers(mapFile, true, {objects = true, })
+		
+		local networkSyncedObjects = {
+			TargetDummy = true,
+			Npc = true,
+		}
+		self:loadMap(mapFile, not network.is_first and networkSyncedObjects or nil)
 		
 		self.collision.visible = false
-		self.objects.visible = false
 		
 		-- specify render order
 		self:add(self.layers.ground)
-		self:add(self.layers.particles)		
+		self:add(self.layers.particles)
 		self:add(self.layers.characters)
 		self:add(self.layers.projectiles)
 		self:add(self.layers.above)
@@ -115,6 +173,8 @@ GameView = View:extend
 			end							
 		end
 		audio.init()
+		
+		self:setupNetworkHandler()
     end,
     
     onUpdate = function (self, elapsed)
@@ -155,5 +215,57 @@ GameView = View:extend
 		audio.update()
     end,	
 
-
+	setupNetworkHandler = function ()
+		table.insert(network.on_message, function(m) 
+			print ("RECEIVED", json.encode(m))
+			if m.channel == "game" then
+				if m.cmd == "create" then
+					local o = object_manager.get(m.oid)
+					
+					if not o then
+						print("NEW REMOTE OBJECT", m.oid, m.owner, m.class)
+						o = object_manager.create_remote(SyncedObject:new(m), m.oid, m.owner)
+					end
+				elseif m.cmd == "delete" then
+					print("DELETE OBJ REQUEST", m.oid)
+					local o = object_manager.get(m.oid)
+					
+					if o then
+						o:die()
+						object_manager.delete(o)
+					end
+					
+				elseif m.cmd == "request" then
+					local o = object_manager.get(m.oid)
+					if o and o.netCreate then
+						print("NEW OBJECT REQUESTED")
+						local msg = o:netCreate()
+						network.send (msg)
+					end
+				elseif m.cmd == "sync" then
+					local o = object_manager.get(m.oid)
+					if o then
+						-- sync
+						for k,v in pairs(m) do o[k] = v end
+						print("SYNC REMOTE OBEJECT", o.oid)
+					else
+						print("SYNC REQUEST REMOTE OBEJECT", m.oid)
+						network.send ({ channel = "game", cmd = "request", oid = m.oid })
+					end
+				end
+			elseif m.channel == "server" then
+				if m.cmd == "join" then
+					-- new player so send obj create messages
+					for oid,obj in pairs(object_manager.objects) do
+						if obj.netCreate then
+							local msg = obj:netCreate()
+							network.send (msg)
+						end
+					end
+				elseif m.cmd == "left" then
+					
+				end
+			end
+		end)	
+	end,
 }

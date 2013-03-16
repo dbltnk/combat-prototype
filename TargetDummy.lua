@@ -14,9 +14,14 @@ TargetDummy = Tile:extend
 	painBar = nil,
 	
 	movable = false,
+
+	changeMonitor = nil,
 	
 	onNew = function (self)
 		the.targetDummies[self] = true
+		
+		self.changeMonitor = MonitorChanges:new{ obj = self, keys = {"x", "y", 
+			"currentEnergy", "currentPain", "rotation", "alive" } }
 		
 		self.width = 32
 		self.height = 64
@@ -33,6 +38,8 @@ TargetDummy = Tile:extend
 		
 		drawDebugWrapper(self)
 		--if (math.random(-1, 1) > 0) then self.movable = true end
+		
+		network.send(self:netCreate())
 	end,
 	
 	gainPain = function (self, str)
@@ -139,6 +146,8 @@ TargetDummy = Tile:extend
 				object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
 			end
 		end
+		
+		network.send({channel = "game", cmd = "delete", oid = self.oid, })
 	end,
 	
 	onUpdate = function (self)
@@ -153,5 +162,16 @@ TargetDummy = Tile:extend
 		self.painBar:updateBar()
 		self.painBar.x = self.x
 		self.painBar.y = self.y
+		
+		self.changeMonitor:checkAndSend()
 	end,	
+	
+	netCreate = function (self)
+		return { 
+			channel = "game", cmd = "create", class = "TargetDummy", oid = self.oid, 
+			x = self.x, y = self.y, owner = self.owner, 
+			currentPain = self.currentPain, currentEnergy = self.currentEnergy, rotation = self.rotation,
+			image = self.image, width = self.width, height = self.height, 
+		}
+	end,
 }

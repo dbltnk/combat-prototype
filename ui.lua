@@ -301,6 +301,7 @@ NetworkDisplay = Text:extend
 	text = "xxx",
 	x = 0,
 	y = 0, 
+	tint = {0,0,0},
 	time = 0,
 	width = 200,
 	

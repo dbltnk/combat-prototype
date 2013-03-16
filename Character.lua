@@ -63,7 +63,7 @@ Character = Animation:extend
 	end,
 	
 	onNew = function (self)
-		changeMonitor = MonitorChanges:new{ obj = self, keys = {"x", "y", 
+		self.changeMonitor = MonitorChanges:new{ obj = self, keys = {"x", "y", 
 			"currentEnergy", "currentPain", "rotation",  } }
 		object_manager.create(self)
 		the.view.layers.characters:add(self)
@@ -79,11 +79,15 @@ Character = Animation:extend
 			dx = 0, dy = self.height,
 			currentValue = self.currentPain, maxValue = self.maxPain, inc = false, wFactor = self.wFactor
 		}
+		
+		network.send(self:netCreate())
 	end,
 	
 	onDie = function (self)
 		the.view.layers.characters:remove(self)
 		self.painBar:die()
+		
+		network.send({channel = "game", cmd = "delete", oid = self.oid, })
 	end,
 	
 	freezeMovement = function (self)
@@ -343,9 +347,17 @@ Character = Animation:extend
 			self.tint = {1,1,1}
 		end
 
-		if changeMonitor:changed() then
-			network.send ({ channel = "game", cmd = "sync", oid = self.oid, x = self.x, y = self.y, owner = self.owner, 
-				currentPain = self.currentPain, currentEnergy = self.currentEnergy, rotation = self.rotation })
-		end
+		self.changeMonitor:checkAndSend()
+	end,
+	
+	netCreate = function (self)
+		return { 
+			channel = "game", cmd = "create", class = "Character", oid = self.oid, 
+			x = self.x, y = self.y, owner = self.owner, 
+			currentPain = self.currentPain, currentEnergy = self.currentEnergy, rotation = self.rotation,
+			image = self.image, width = self.width, height = self.height, 
+			maxEnergy = self.maxEnergy, xp = self.xp, xpCap = self.xpCap,
+			level = self.level, levelCap = self.levelCap, 
+		}
 	end,
 }
