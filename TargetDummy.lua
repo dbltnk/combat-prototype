@@ -7,8 +7,11 @@ TargetDummy = Tile:extend
 	maxPain = 100,
 	xpWorth = config.dummyXPWorth,
 	dmgReceived = {},
+	damagerTable = {},	
+	finalDamage = 0,
 	alive = true,
-	wFactor = 0,		
+	wFactor = 0,	
+	timeOfDeath = 0,	
 	
 	-- UiBar
 	painBar = nil,
@@ -57,7 +60,6 @@ TargetDummy = Tile:extend
 	
 	receive = function (self, message_name, ...)
 		--print(self.oid, "receives message", message_name, "with", ...)
-		local damagerTable = {}
 		if message_name == "heal" then
 			local str = ...
 		--	print("DUMMY HEAL", str)
@@ -77,7 +79,7 @@ TargetDummy = Tile:extend
 					end
 				end
 			else 
-				self.dmgReceived[self.oid] = damagerTable
+				self.dmgReceived[self.oid] = self.damagerTable
 				for k,v in pairs(self.dmgReceived) do
 					--print("new oid dummy = " .. k .. " with ", v)
 					v[source_oid] = str
@@ -107,7 +109,7 @@ TargetDummy = Tile:extend
 					end
 				end
 			else 
-				self.dmgReceived[self.oid] = damagerTable
+				self.dmgReceived[self.oid] = self.damagerTable
 				for k,v in pairs(self.dmgReceived) do
 					--print("new oid dummy = " .. k .. " with ", v)
 					v[source_oid] = str
@@ -138,7 +140,7 @@ TargetDummy = Tile:extend
 		-- find out how much xp which player gets and tell him
 		for k,v in pairs(self.dmgReceived) do 
 			for damager, value in pairs(v) do
-				if self.finalDamage then 
+				if self.finalDamage ~= 0 then 
 					self.finalDamage = self.finalDamage + value				
 				else 	
 					self.finalDamage = value
@@ -146,7 +148,9 @@ TargetDummy = Tile:extend
 				object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
 			end
 		end
-		
+		self.timeOfDeath = love.timer.getTime()
+		the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
+
 		network.send({channel = "game", cmd = "delete", oid = self.oid, })
 	end,
 	
@@ -161,11 +165,26 @@ TargetDummy = Tile:extend
 		self.painBar.currentValue = self.currentPain
 		self.painBar:updateBar()
 		self.painBar.x = self.x
-		self.painBar.y = self.y
+		self.painBar.y = self.y	
 		
 		self.changeMonitor:checkAndSend()
 	end,	
 	
+	respawn = function (self)
+		self.currentPain = 0
+		self.alive = true
+		self.timeOfDeath = 0
+		self.finalDamage = 0
+		self.painBar:revive()	
+		self.painBar = UiBar:new{
+			x = self.x, y = self.y, 
+			dx = 0, dy = self.height,
+			currentValue = self.currentPain, maxValue = self.maxPain, wFactor = self.wFactor
+		}			
+		for k,v in pairs(self.dmgReceived) do k = nil v = nil end
+		for k,v in pairs(self.damagerTable) do  k = nil v = nil end		
+	end,
+
 	netCreate = function (self)
 		return { 
 			channel = "game", cmd = "create", class = "TargetDummy", oid = self.oid, 
