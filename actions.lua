@@ -172,7 +172,7 @@ end)
 -- effect: gank ----------------------------------------------------------
 -- eg. {effect_type = "gank"},
 -- has: n/a
-action_handling.register_effect("gank", function (target, effect)
+action_handling.register_effect("gank", function (target, effect, source_oid)
 	object_manager.send(target.oid, "gank")
 end)
 
