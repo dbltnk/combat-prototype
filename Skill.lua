@@ -30,7 +30,9 @@ Skill = Class:extend
 	end,
 
 	isPossibleToUse = function (self)
-		return love.timer.getTime() - self.lastUsed >= self.timeout and self.character.currentEnergy >= self.energyCosts 
+		return self.character.freezeCastingCounter <= 0 and 
+			love.timer.getTime() - self.lastUsed >= self.timeout and 
+			self.character.currentEnergy >= self.energyCosts 
 	end,
 	
 	timeTillCastFinished = function (self)
@@ -55,11 +57,11 @@ Skill = Class:extend
 		self.lastUsed = love.timer.getTime()
 		
 		-- start particle
-		local p = the.view.factory:create(Particles, { 
-			duration = self.cast_time, 
-			attached_to_object = player,
-			particle_color = self.definition.cast_particle_color or {255,255,255}
-		})
+		--~ local p = the.view.factory:create(Particles, { 
+			--~ duration = self.cast_time, 
+			--~ attached_to_object = player,
+			--~ particle_color = self.definition.cast_particle_color or {255,255,255}
+		--~ })
 		
 		if self.onUse then 
 			-- call use after casttime timeout
@@ -73,7 +75,7 @@ Skill = Class:extend
 					self.source.viewx = ipt.viewx
 					self.source.viewy = ipt.viewy
 				end
-				self:onUse()
+				if self.character.freezeCastingCounter <= 0 then self:onUse() end
 				self.character.currentEnergy = self.character.currentEnergy - self.energyCosts
 			end)
 		end

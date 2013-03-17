@@ -47,6 +47,8 @@ Character = Animation:extend
 	
 	-- if > 0 the player is not allowed to move
 	freezeMovementCounter = 0,
+	-- if > 0 the player is not allowed to cast actions
+	freezeCastingCounter = 0,
 	
 	-- if > 0 then player use this speed other than the normal one
 	speedOverride = 0,
@@ -83,13 +85,23 @@ Character = Animation:extend
 		self.painBar:die()
 	end,
 	
+	freezeCasting = function (self)
+		--print("FREEEZ CAST")
+		self.freezeCastingCounter = self.freezeCastingCounter + 1
+	end,
+	
+	unfreezeCasting = function (self)
+		--print("UNFREEEZ CAST")
+		self.freezeCastingCounter = self.freezeCastingCounter - 1
+	end,
+	
 	freezeMovement = function (self)
-		--print("FREEEZ")
+		--print("FREEEZ MOVE")
 		self.freezeMovementCounter = self.freezeMovementCounter + 1
 	end,
 	
 	unfreezeMovement = function (self)
-		--print("UNFREEEZ")
+		--print("UNFREEEZ MOVE")
 		self.freezeMovementCounter = self.freezeMovementCounter - 1
 	end,
 	
@@ -106,21 +118,33 @@ Character = Animation:extend
 		end
 	end,
 	
+	setIncapacitation = function (self, incapState)
+		if incapState == self.incapacitated then return end
+		
+		if incapState then
+			self.incapacitated = true
+			self:freezeCasting()
+			self:freezeMovement()
+		else
+			self.incapacitated = false
+			self:unfreezeCasting()
+			self:unfreezeMovement()
+		end
+	end,
+	
 	updatePain = function (self)
 	--print("Player ", self.oid, " is incapacitated:", self.incapacitated)
-		if self.currentPain < 0 then self.currentPain = 0 end
 		if self.currentPain >= self.maxPain then 
-			self.currentPain = self.maxPain
-			self.incapacitated = true
-			self:freezeMovement()
-		end	
+			self:setIncapacitation(true) 
+		end
+		
+		self.currentPain = utils.clamp(self.currentPain, 0, self.maxPain)
 	end,
 		
 	respawn = function (self)
 		self.x, self.y = the.respawnpoint.x, the.respawnpoint.y
 		self.currentPain = 0
-		self.incapacitated = false	
-		self:unfreezeMovement()	
+		self:setIncapacitation(false)
 	end,	
 	
 	gainXP = function (self, str)
@@ -188,9 +212,11 @@ Character = Animation:extend
 			local duration, source_oid = ...
 		--	print("STUN", duration)
 			self:freezeMovement()
+			self:freezeCasting()
 			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration) end
 			the.app.view.timer:after(duration, function()
 				self:unfreezeMovement()
+				self:unfreezeCasting()
 			end)
 		elseif message_name == "runspeed" then
 			local str, duration, source_oid = ...
@@ -248,10 +274,7 @@ Character = Animation:extend
 			self.painBar.inc = false
 		end 
 		
-		if (self.incapacitated and self.currentPain <= self.maxPain * config.getUpPain) then
-			self.incapacitated = false
-			self:unfreezeMovement()	
-		end
+		if self.currentPain <= self.maxPain * config.getUpPain then self:setIncapacitation(false) end
 	end,
 
 	readInput = function (self, activeSkillNr)
