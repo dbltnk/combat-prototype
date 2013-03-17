@@ -132,6 +132,7 @@ TargetDummy = Tile:extend
 	end,	
 	
 	respawn = function (self)
+		the.targetDummies[self] = true	
 		self.currentPain = 0
 		self.alive = true
 		self.timeOfDeath = 0
