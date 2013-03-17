@@ -51,6 +51,16 @@ TargetDummy = Tile:extend
 		end
 	end,
 	
+	trackDamage = function (self, source_oid, str)
+		-- zero values
+		if not self.dmgReceived[self.oid] then self.dmgReceived[self.oid] = {} end
+		local myDmgReceived = self.dmgReceived[self.oid]
+		if not myDmgReceived[source_oid] then myDmgReceived[source_oid] = 0 end
+		
+		-- interesting case
+		myDmgReceived[source_oid] = myDmgReceived[source_oid] + str
+	end,
+	
 	receive = function (self, message_name, ...)
 		--print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
@@ -62,26 +72,8 @@ TargetDummy = Tile:extend
 			self:gainPain(str)
 		--	print("start ", start_target)
 			-- damage handling for xp distribution	
-			if self.dmgReceived[self.oid] then
-				for k,v in pairs(self.dmgReceived) do
-				--	print("existing oid dummy = " .. k .. " with ", v)				
-					v[source_oid] = v[source_oid] + str
-				--	print("damage = " .. v[source_oid])
-					for key, value in pairs(v) do
-				--		print("damager oid = " .. key,value)
-					end
-				end
-			else 
-				self.dmgReceived[self.oid] = self.damagerTable
-				for k,v in pairs(self.dmgReceived) do
-					--print("new oid dummy = " .. k .. " with ", v)
-					v[source_oid] = str
-					--print("damage = " .. v[source_oid])
-					for key, value in pairs(v) do
-						--print("damager oid = " .. key,value)
-					end
-				end
-			end
+			self:trackDamage(source_oid, str)
+
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
@@ -89,29 +81,9 @@ TargetDummy = Tile:extend
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.alive then 
 						self:gainPain(str)
+						self:trackDamage(source_oid, str)
 					end
 				end)
-				-- damage handling for xp distribution	
-			if self.dmgReceived[self.oid] then
-				for k,v in pairs(self.dmgReceived) do
-					--print("existing oid dummy = " .. k .. " with ", v)				
-					v[source_oid] = v[source_oid] + str
-				--	print("damage = " .. v[source_oid])
-					for key, value in pairs(v) do
-					--	print("damager oid = " .. key,value)
-					end
-				end
-			else 
-				self.dmgReceived[self.oid] = self.damagerTable
-				for k,v in pairs(self.dmgReceived) do
-					--print("new oid dummy = " .. k .. " with ", v)
-					v[source_oid] = str
-					--print("damage = " .. v[source_oid])
-					for key, value in pairs(v) do
-						--print("damager oid = " .. key,value)
-					end
-				end
-			end
 			end
 		elseif message_name == "runspeed" then
 			local str, duration = ...
@@ -131,16 +103,16 @@ TargetDummy = Tile:extend
 		self.painBar:die()
 		the.targetDummies[self] = nil
 		-- find out how much xp which player gets and tell him
-		for k,v in pairs(self.dmgReceived) do 
-			for damager, value in pairs(v) do
-				if self.finalDamage ~= 0 then 
-					self.finalDamage = self.finalDamage + value				
-				else 	
-					self.finalDamage = value
-				end
-				object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
-			end
+		local myDmgReceived = self.dmgReceived[self.oid]
+		
+		for damager, value in pairs(myDmgReceived) do
+			self.finalDamage = self.finalDamage + value
 		end
+		
+		for damager, value in pairs(myDmgReceived) do
+			object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
+		end
+		
 		self.timeOfDeath = love.timer.getTime()
 		the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
 	end,
