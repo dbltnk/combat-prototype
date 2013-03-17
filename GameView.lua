@@ -186,16 +186,18 @@ GameView = View:extend
 				local isVis = dist < limit
 				local alpha = utils.mapIntoRange(dist, config.sightDistanceNear, limit, 1, 0)
 				
-				obj.visible = isVis
-				obj.alpha = alpha
-				if obj.painBar then 
-					obj.painBar.visible = isVis 
-					obj.painBar.alpha = alpha
-					obj.painBar.bar.visible = isVis 
-					obj.painBar.bar.alpha = alpha
-					obj.painBar.background.visible = isVis 
-					obj.painBar.background.alpha = alpha
-				end
+				if obj.alive then
+					obj.visible = isVis
+					obj.alpha = alpha
+					if obj.painBar then 
+						obj.painBar.visible = isVis 
+						obj.painBar.alpha = alpha
+						obj.painBar.bar.visible = isVis 
+						obj.painBar.bar.alpha = alpha
+						obj.painBar.background.visible = isVis 
+						obj.painBar.background.alpha = alpha
+					end
+				end	
 			end)
 		end
 		
