@@ -21,8 +21,8 @@ config.getUpPain = 0.5 -- in percent
 config.ressourceHealth = 300
 config.xpGainsEachNSeconds = 10
 config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds
-config.sightDistanceFar = 400
-config.sightDistanceNear = 200
+config.sightDistanceFar = 600
+config.sightDistanceNear = 300
 
 -- audio
 config.volume = 0.3
@@ -36,5 +36,6 @@ config.gamepad_cursor_near_border = 200
 
 config.draw_debug_info = false
 config.show_profile_info = false
+config.show_fog_of_war = false
 
 return config

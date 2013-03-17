@@ -12,8 +12,12 @@ GameView = View:extend
 		ui = Group:new(),
 		debug = Group:new(),
 	},
+	
+	cover = nil,
+	on = false,
 
     onNew = function (self)
+    
     
     
 		-- object -> true map for easy remove, key contains projectile reference
@@ -113,8 +117,27 @@ GameView = View:extend
 			end							
 		end
 		audio.init()
+	
+		self.cover = Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war.png', width = 2048, height = 2048,
+			onUpdate = function (self)
+				local pX, pY = action_handling.get_target_position (the.player)
+				self.x = pX - self.width / 2
+					self.y = pY - self.height / 2
+			end	
+		}
+	
+		if config.show_fog_of_war then	
+			self:fogOn()
+		end
     end,
     
+    fogOn = function(self)
+		if self.on == false then
+			the.view.layers.ui:add(self.cover)
+			self.on = true
+		end
+	end,
+
     onUpdate = function (self, elapsed)
 		-- show debug geometry?
 		self.layers.debug.visible = config.draw_debug_info
@@ -155,24 +178,26 @@ GameView = View:extend
 		profile.clear()
 		
 		-- fog of war
-		object_manager.visit(function(oid,obj) 
-			local dist = vector.lenFromTo(obj.x, obj.y, the.player.x, the.player.y)
+		if config.show_fog_of_war then		
+			object_manager.visit(function(oid,obj) 
+				local dist = vector.lenFromTo(obj.x, obj.y, the.player.x, the.player.y)
 
-			local limit = config.sightDistanceFar
-			local isVis = dist < limit
-			local alpha = utils.mapIntoRange(dist, config.sightDistanceNear, limit, 1, 0)
-			
-			obj.visible = isVis
-			obj.alpha = alpha
-			if obj.painBar then 
-				obj.painBar.visible = isVis 
-				obj.painBar.alpha = alpha
-				obj.painBar.bar.visible = isVis 
-				obj.painBar.bar.alpha = alpha
-				obj.painBar.background.visible = isVis 
-				obj.painBar.background.alpha = alpha
-			end
-		end)
+				local limit = config.sightDistanceFar
+				local isVis = dist < limit
+				local alpha = utils.mapIntoRange(dist, config.sightDistanceNear, limit, 1, 0)
+				
+				obj.visible = isVis
+				obj.alpha = alpha
+				if obj.painBar then 
+					obj.painBar.visible = isVis 
+					obj.painBar.alpha = alpha
+					obj.painBar.bar.visible = isVis 
+					obj.painBar.bar.alpha = alpha
+					obj.painBar.background.visible = isVis 
+					obj.painBar.background.alpha = alpha
+				end
+			end)
+		end
 		
 		audio.update()
     end,	

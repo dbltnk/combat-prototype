@@ -54,10 +54,11 @@ the.app = App:new
 		
 		-- debug cheats
 		if the.keys:justPressed ("f5") then the.player.currentPain = the.player.currentPain + 20 end	
-					
+
+		-- show Fog of War
+		if the.keys:justPressed ("f9") then config.show_fog_of_war = true the.view:fogOn() end					
 		-- toggle fullscreen
 		if the.keys:justPressed ("f10") then self:toggleFullscreen() end
-		
 		-- toggle profile
 		if the.keys:justPressed ("f11") then config.show_profile_info = not config.show_profile_info end
 		-- toggle debug draw
