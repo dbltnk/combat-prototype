@@ -291,7 +291,6 @@ Character = Animation:extend
 				x = self.x+17, y = self.y+15, 
 				rotation = rot,
 			}
-			the.app.view.layers.ground:add(footstep)
 			the.footsteps[footstep] = true
 			self:makeFootstep()
 		end

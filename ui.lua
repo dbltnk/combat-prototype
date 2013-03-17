@@ -314,7 +314,7 @@ NetworkDisplay = Text:extend
 	
 	requestOnline = function (self)
 		network.send_request({channel = "server", cmd = "who"}, function(fin, result)
-			self.playerOnline = #result.ids
+			self.playerOnline = result.ids and #result.ids or 0
 		end)
 	end,
 	

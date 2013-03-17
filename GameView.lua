@@ -242,6 +242,8 @@ GameView = View:extend
 						local msg = o:netCreate()
 						network.send (msg)
 					end
+				elseif m.cmd == "msg" then
+					object_manager.send(m.oid, m.name, unpack(m.params or {}))
 				elseif m.cmd == "sync" then
 					local o = object_manager.get(m.oid)
 					if o then
@@ -265,7 +267,7 @@ GameView = View:extend
 				elseif m.cmd == "left" then
 					-- player left so kill all objects from the player
 					for oid,obj in pairs(object_manager.objects) do
-						print("LEFT", oid, obj.owner, m.id)
+						--~ print("LEFT", oid, obj.owner, m.id)
 						if obj.owner == m.id then
 							obj:die()
 							object_manager.delete(obj)

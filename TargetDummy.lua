@@ -72,11 +72,11 @@ TargetDummy = Tile:extend
 			if self.dmgReceived[self.oid] then
 				for k,v in pairs(self.dmgReceived) do
 				--	print("existing oid dummy = " .. k .. " with ", v)				
-					v[source_oid] = v[source_oid] + str
+					v[source_oid] = (v[source_oid] or 0) + str
 				--	print("damage = " .. v[source_oid])
-					for key, value in pairs(v) do
+					--~ for key, value in pairs(v) do
 				--		print("damager oid = " .. key,value)
-					end
+					--~ end
 				end
 			else 
 				self.dmgReceived[self.oid] = self.damagerTable
@@ -84,9 +84,9 @@ TargetDummy = Tile:extend
 					--print("new oid dummy = " .. k .. " with ", v)
 					v[source_oid] = str
 					--print("damage = " .. v[source_oid])
-					for key, value in pairs(v) do
+					--~ for key, value in pairs(v) do
 						--print("damager oid = " .. key,value)
-					end
+					--~ end
 				end
 			end
 		elseif message_name == "damage_over_time" then 

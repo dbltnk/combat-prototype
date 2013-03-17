@@ -10,7 +10,7 @@ C>C {channel = "game", cmd = "sync", oid = , owner = , ...}
 C>C {channel = "game", cmd = "create", class = , oid = , owner = , ...}
 C>C {channel = "game", cmd = "request", oid = }
 C>C {channel = "game", cmd = "delete", oid = }
-
+C>C {channel = "game", cmd = "msg", oid = , name =, params = [...]}
 ]]
 
 local socket = require 'socket'

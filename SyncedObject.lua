@@ -21,4 +21,10 @@ SyncedObject = Tile:extend
 		the.app.view.layers.characters:add(self)
 		drawDebugWrapper(self)
 	end,
+	
+	receive = function (self, message_name, ...)
+		local params = {...}
+		network.send({channel = "game", cmd = "msg", oid = self.oid, 
+			name = message_name, params = params})
+	end,
 }
