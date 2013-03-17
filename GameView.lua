@@ -154,6 +154,26 @@ GameView = View:extend
 		if config.show_profile_info then profile.print() end
 		profile.clear()
 		
+		-- fog of war
+		object_manager.visit(function(oid,obj) 
+			local dist = vector.lenFromTo(obj.x, obj.y, the.player.x, the.player.y)
+
+			local limit = config.sightDistanceFar
+			local isVis = dist < limit
+			local alpha = utils.mapIntoRange(dist, config.sightDistanceNear, limit, 1, 0)
+			
+			obj.visible = isVis
+			obj.alpha = alpha
+			if obj.painBar then 
+				obj.painBar.visible = isVis 
+				obj.painBar.alpha = alpha
+				obj.painBar.bar.visible = isVis 
+				obj.painBar.bar.alpha = alpha
+				obj.painBar.background.visible = isVis 
+				obj.painBar.background.alpha = alpha
+			end
+		end)
+		
 		audio.update()
     end,	
 }

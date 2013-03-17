@@ -21,6 +21,8 @@ config.getUpPain = 0.5 -- in percent
 config.ressourceHealth = 300
 config.xpGainsEachNSeconds = 10
 config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds
+config.sightDistanceFar = 400
+config.sightDistanceNear = 200
 
 -- audio
 config.volume = 0.3
