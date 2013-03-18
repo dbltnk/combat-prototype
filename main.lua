@@ -39,7 +39,6 @@ require 'Ressource'
 
 require 'ui'
 
-
 the.app = App:new
 {
 	numGamepads = love.joystick and 1 or 0,
@@ -52,8 +51,8 @@ the.app = App:new
 		if the.keys:justPressed ("f2") and the.gamepads[1].name ~= "NO DEVICE CONNECTED" then print("input mode: gamepad") input.setMode (input.MODE_GAMEPAD) end
 		if the.keys:justPressed ("f3") then print("input mode: touch") input.setMode (input.MODE_TOUCH) end	
 		
-		-- debug cheats
-		if the.keys:justPressed ("f5") then the.player.currentPain = the.player.currentPain + 20 end	
+		-- show the highscore table 
+		if the.keys:justPressed ("f5") then the.barrier:showHighscore() end	
 
 		-- show Fog of War
 		if the.keys:justPressed ("f9") then config.show_fog_of_war = true the.view:fogOn() end					

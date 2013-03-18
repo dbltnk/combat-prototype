@@ -6,6 +6,7 @@ Barrier = Tile:extend
 	currentPain = 0,
 	maxPain = config.barrierHealth,
 	wFactor = 0,
+	highscore = {},
 	
 	-- UiBar
 	painBar = nil,
@@ -32,7 +33,7 @@ Barrier = Tile:extend
 	end,
 	
 	gainPain = function (self, str)
-		print(self.oid, "gain pain", str)
+	--	print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
 		self:updatePain()
 		if str >= 0 then
@@ -45,20 +46,22 @@ Barrier = Tile:extend
 	end,
 	
 	receive = function (self, message_name, ...)
-		print(self.oid, "receives message", message_name, "with", ...)
+		--print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
-			local str = ...
+			local str, source_oid = ...
 			--print("BARRIER HEAL", str)
 		elseif message_name == "damage" then
-			local str = ...
+			local str, source_oid = ...
 			--print("BARRIER DAMANGE", str)
 			self:gainPain(str)
+			self:updateHighscore(source_oid,str)
 		elseif message_name == "damage_over_time" then
-			local str, duration, ticks = ...
+			local str, duration, ticks, source_oid = ...
 			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=1,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					self:gainPain(str)
+					self:updateHighscore(source_oid,str)
 				end)
 			end
 		end
@@ -69,6 +72,26 @@ Barrier = Tile:extend
 			self.currentPain = self.maxPain
 			self:die()
 		end	
+	end,
+	
+	updateHighscore = function(self,source_oid,score)
+		if not self.highscore[source_oid] then self.highscore[source_oid] = 0 end
+		self.highscore[source_oid] = self.highscore[source_oid] + score
+		self:showHighscore()
+	end,	
+	
+	showHighscore = function (self)
+		local l2 = list.process_keys(self.highscore)       -- holt alle keys (oids)
+        :orderby(function(a,b) return self.highscore[a] > self.highscore[b] end)      -- sortiert diese nach werten aus map
+        :select(function (a) return {k=a, v=self.highscore[a]} end)        -- und gibt eine liste zurück mit k und v einträge
+        :done() -- l2 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
+        print("---------------------------")
+        local i = 1
+		for _,x in pairs(l2) do
+			print(i,". Player #",x.k," with ",x.v," damage to the barrier")
+			i = i + 1
+		end
+		print("---------------------------")
 	end,
 	
 	onDie = function (self)
