@@ -26,9 +26,6 @@ GameView = View:extend
 		-- object -> true map for easy remove, key contains projectile reference
 		the.targetDummies = {}
 		
-		the.barrier = Barrier:new{}
-		self:add(the.barrier)
-		
 		-- object -> true map for easy remove, key contains footstep reference
 		the.footsteps = {}
 		

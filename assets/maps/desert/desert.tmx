@@ -65,7 +65,11 @@
   <object name="TargetDummy" x="453" y="2644" width="23" height="20"/>
   <object name="Npc" x="566" y="2689" width="64" height="64"/>
   <object name="Npc" x="1003" y="144" width="64" height="64"/>
-  <object name="Barrier" x="3" y="2369" width="90" height="188"/>
+  <object name="Barrier" x="3" y="2369" width="90" height="188">
+   <properties>
+    <property name="_the" value="barrier"/>
+   </properties>
+  </object>
   <object name="Ressource" x="1280" y="2528" width="64" height="64"/>
   <object name="Ressource" x="2814" y="2654" width="64" height="64"/>
   <object name="Ressource" x="2381" y="569" width="64" height="64"/>
