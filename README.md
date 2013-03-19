@@ -1,8 +1,17 @@
 # Controls:
 
-* Press F1 to switch to mouse & keyboard controls (default).
-* Press F2 to switch to gamepad controls (XBox controller).
-* Press F3 to switch to touch controls (not implemented yet).
+* Press F1 to switch to mouse & keyboard controls (default)
+* Press F2 to switch to gamepad controls (XBox controller)
+* Press F3 to switch to touch controls (not implemented yet)
+
+* Press F5 to toggle the highscore display
+* Press F9 to enable the Fog of War (if not already enabled)
+* Press F10 to togle fullscreen/windowed
+
+* Press F11 to print out rendering debug information
+* Press F12 to draw collision debug frames
+
+* Press ESC to exit the game
 
 ## Mouse & keyboard control scheme:
 
