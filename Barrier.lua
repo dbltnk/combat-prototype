@@ -80,20 +80,22 @@ Barrier = Tile:extend
 	end,	
 	
 	showHighscore = function (self)
+		if loveframes.GetState() == "none" then loveframes.SetState("highscore") else loveframes.SetState("none") end
+		
 		local l2 = list.process_keys(self.highscore)       -- holt alle keys (oids)
         :orderby(function(a,b) return self.highscore[a] > self.highscore[b] end)      -- sortiert diese nach werten aus map
         :select(function (a) return {k=a, v=self.highscore[a]} end)        -- und gibt eine liste zurück mit k und v einträge
         :done() -- l2 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
 		
 		local frame = loveframes.Create("frame")
-		frame:SetSize(500, 300)
+		frame:SetSize(350, 300)
 		frame:Center()
 		frame:SetName("Highscore")
-		--frame:SetState("mainmenu")
+		frame:SetState("highscore")
 
 		local list = loveframes.Create("list", frame)
 		list:SetPos(5, 30)
-		list:SetSize(490, 265)
+		list:SetSize(340, 265)
 		list:SetDisplayType("vertical")
 		list:SetPadding(5)
 		list:SetSpacing(5)
