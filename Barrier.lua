@@ -77,7 +77,6 @@ Barrier = Tile:extend
 	updateHighscore = function(self,source_oid,score)
 		if not self.highscore[source_oid] then self.highscore[source_oid] = 0 end
 		self.highscore[source_oid] = self.highscore[source_oid] + score
-		self:showHighscore()
 	end,	
 	
 	showHighscore = function (self)

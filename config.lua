@@ -36,6 +36,6 @@ config.gamepad_cursor_near_border = 200
 
 config.draw_debug_info = false
 config.show_profile_info = false
-config.show_fog_of_war = false
+config.show_fog_of_war = true
 
 return config
