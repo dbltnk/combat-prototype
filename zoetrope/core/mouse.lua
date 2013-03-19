@@ -22,8 +22,8 @@ Mouse = Sprite:extend{
 	new = function (self, obj)
 		obj = self:extend(obj)
 		the.mouse = obj
-		love.mousepressed = function (x, y, button) obj:mousePressed(button) end
-		love.mousereleased = function (x, y, button) obj:mouseReleased(button) end
+		love.mousepressed = function (x, y, button) obj:mousePressed(button) loveframes.mousepressed(x, y, button) end
+		love.mousereleased = function (x, y, button) obj:mouseReleased(button) loveframes.mousereleased(x, y, button) end
 		if obj.onNew then obj:onNew() end
 		return obj
 	end,

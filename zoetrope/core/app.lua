@@ -178,8 +178,8 @@ App = Class:extend
 		-- set up callbacks
 		
 		love.graphics.setCaption(self.name)
-		love.update = function (elapsed) self:update(elapsed) end
-		love.draw = function() self:draw() end
+		love.update = function (elapsed) self:update(elapsed) loveframes.update(elapsed) end
+		love.draw = function() self:draw() loveframes.draw() end
 		love.focus = function (value) self:onFocus(value) end	
 
 		if self.onRun then self:onRun() end

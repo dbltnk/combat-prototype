@@ -39,6 +39,8 @@ require 'Ressource'
 
 require 'ui'
 
+require 'loveframes'
+
 the.app = App:new
 {
 	numGamepads = love.joystick and 1 or 0,
