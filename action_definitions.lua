@@ -175,7 +175,7 @@ action_definitions = {
 		timeout = 0,
 		energy = 50,
 		on_the_run = false,
-		cast_particle_color = {0,0,0 },			
+		cast_particle_color = {200,200,200 },			
 		
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 100, speed = 100, ae_size = 50, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/shield_bash_projectile.png"},

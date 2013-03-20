@@ -10,6 +10,7 @@ Skill = Class:extend
 	-- ---------------
 	-- see action_definitions.lua
 	definition = nil,
+	iconColor = nil,
 	
 	nr = 0,	
 	timeout = 0,
@@ -89,7 +90,8 @@ Skill = Class:extend
 		self.timeout = self.definition.timeout
 		self.cast_time = self.definition.cast_time
 		self.lastUsed = -10000000
-		self.energyCosts = self.definition.energy   
+		self.energyCosts = self.definition.energy
+		self.iconColor = self.definition.cast_particle_color or {255,255,255}   
 	end,
 	
 	freezeMovementDuringCasting = function (self)

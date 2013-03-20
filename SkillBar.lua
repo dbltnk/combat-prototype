@@ -26,7 +26,18 @@ SkillBar = Class:extend
 	
 	onNew = function (self)
 		for index, skillImage in pairs(self.skills) do
-			local icon = SkillIcon:new { x = 0, y = 0 }
+			
+			-- telling the skill icon its color
+			local myColors = {}
+			for k,v in pairs(the.player.skills[index]) do 
+				if k == "iconColor" then 
+					for key, value in pairs(v) do 
+						myColors[key] = utils.mapIntoRange(value, 0, 255, 0, 1) 
+					end 
+				end 
+			end
+		
+			local icon = SkillIcon:new { x = 0, y = 0, color = myColors}
 			the.hud:add(icon)
 			
 			self.skillIcons[index] = icon
