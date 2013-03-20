@@ -379,9 +379,13 @@ Character = Animation:extend
 		if self.hidden then
 			self.visible = false
 			self.painBar.visible = false
+			self.painBar.bar.visible = false
+			self.painBar.background.visible = false						
 		else
 			self.visible = true
 			self.painBar.visible = false
+			self.painBar.bar.visible = true
+			self.painBar.background.visible = true						
 		end
 	end,
 }
