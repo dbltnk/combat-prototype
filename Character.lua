@@ -325,6 +325,8 @@ Character = Animation:extend
 			local animspeed = utils.mapIntoRange (ipt.speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
 			
 			self:play('walk')
+		elseif self.incapacitated then
+			self:freeze(8)
 		else
 			self:freeze(5)
 		end
