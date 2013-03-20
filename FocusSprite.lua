@@ -12,7 +12,8 @@ FocusSprite = Sprite:extend
 		-- weighted average
 		x,y = vector.add(x,y, vector.mul(worldCursorX, worldCursorY, 0.45))
 		x,y = vector.add(x,y, vector.mul(the.player.x, the.player.y, 0.55))
-		self.x, self.y = x,y
+		self.x = utils.clamp(x,love.graphics.getWidth() / 2, 3200 - love.graphics.getWidth() / 2) -- TODO: make this dynamic, map size currently 3200x3200
+		self.y = utils.clamp(y,love.graphics.getHeight() / 2, 3200 - love.graphics.getHeight() / 2) -- TODO: make this dynamic, map size currently 3200x3200 
 	end,
 	
 	__tostring = function (self)
