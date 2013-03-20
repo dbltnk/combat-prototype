@@ -194,8 +194,18 @@ GameView = View:extend
 						obj.painBar.background.visible = isVis 
 						obj.painBar.background.alpha = alpha
 					end
-				end	
-			end)
+				end
+			end)	
+			for projectile,v in pairs(the.projectiles) do	
+				if the.projectiles[projectile] == true then
+					local dist_projectiles = vector.lenFromTo(projectile.x, projectile.y, the.player.x, the.player.y)
+					local limit_projectiles = config.sightDistanceFar
+					local isVis_projectiles = dist_projectiles < limit_projectiles
+					local alpha_projectiles = utils.mapIntoRange(dist_projectiles, config.sightDistanceNear, limit_projectiles, 1, 0)
+					projectile.visible = isVis_projectiles
+					projectile.alpha = alpha_projectiles
+				end
+			end
 		end
 		
 		audio.update()
