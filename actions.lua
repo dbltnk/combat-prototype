@@ -176,6 +176,13 @@ action_handling.register_effect("gank", function (target, effect, source_oid)
 	object_manager.send(target.oid, "gank")
 end)
 
+-- effect: invis ----------------------------------------------------------
+-- eg. {effect_type = "invis"},
+-- has: duration TODO: not while moving, not while casting, etc.
+action_handling.register_effect("invis", function (target, effect, source_oid)
+	object_manager.send(target.oid, "invis", effect.duration, source_oid)
+end)
+
 -- effect: heal ----------------------------------------------------------
 -- eg. {effect_type = "heal", str = 60},
 -- has: str

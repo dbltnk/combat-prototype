@@ -15,6 +15,7 @@ Character = Animation:extend
 	tempMaxxed = false,
 	incapacitated = false,
 	wFactor = 0,	
+	hidden = false,
 
 	-- list of Skill
 	skills = {
@@ -23,8 +24,9 @@ Character = Animation:extend
 		--"scythe_attack",
 		--"scythe_pirouette",			
 		--"shield_bash",		
-		"sprint",		
-		"bandage",
+		"sprint",
+		"camouflage",		
+		--"bandage",
 		"fireball",
 		--"life_leech",
 		"gank",
@@ -234,6 +236,10 @@ Character = Animation:extend
 			if self.incapacitated == true then 
 				self:respawn() 
 			end
+		elseif message_name == "invis" then
+			local duration = ...
+			self.hidden = true
+			the.view.timer:after(duration, function() self.hidden = false end)
 		end
 	end,
 	
@@ -368,6 +374,14 @@ Character = Animation:extend
 			self.tint = {0.5,0.5,0.5}
 		else 
 			self.tint = {1,1,1}
+		end
+		
+		if self.hidden then
+			self.visible = false
+			self.painBar.visible = false
+		else
+			self.visible = true
+			self.painBar.visible = false
 		end
 	end,
 }

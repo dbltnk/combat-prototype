@@ -183,6 +183,23 @@ action_definitions = {
 				{effect_type = "gank"},
 			},
 		},	
+	},
+	-- -----------------------------------------------------------------------------------
+	camouflage = {
+		name = "Camouflage",
+		description = "Makes you invisible for a short time.",
+		icon = "/assets/graphics/action_icons/unknown.png", --TODO: create the icon
+		cast_time = 0.1,
+		timeout = 60,
+		energy = 100,
+		on_the_run =  true,
+		
+		application = {
+			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/sprint_particle.png"},
+			effects = {
+				{effect_type = "invis", duration = 5},
+			},
+		},	
 	},		
 }
 

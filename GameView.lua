@@ -183,7 +183,7 @@ GameView = View:extend
 				local isVis = dist < limit
 				local alpha = utils.mapIntoRange(dist, config.sightDistanceNear, limit, 1, 0)
 				
-				if obj.alive == nil or obj.alive == true then
+				if (obj.alive == nil or obj.alive == true) and obj.oid ~= the.player.oid and obj.hidden == false then
 					obj.visible = isVis
 					obj.alpha = alpha
 					if obj.painBar then 
