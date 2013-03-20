@@ -104,7 +104,7 @@ GameView = View:extend
 
 		the.character = Character:new{}
 		for i = 0, config.levelCap - 1 do
-			local width = (love.graphics.getWidth() + the.controlUI.width) / 3.5 / 10
+			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / config.levelCap
 			if i >= the.character.level then 
 				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i} 
 				the.hud:add(the.levelUI)	

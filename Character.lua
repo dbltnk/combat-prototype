@@ -178,8 +178,8 @@ Character = Animation:extend
 	updateLevel = function (self, elapsed)
 	--	print("update reveived! character level = ",  self.level)
 		for i = 0, config.levelCap - 1 do
-			local width = (love.graphics.getWidth() + the.controlUI.width) / 3.5 / 10
-			if self.level > i then  -- TODO: fix it so that the.character.level gets recognized
+			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / 10
+			if self.level > i then  
 				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
 				the.hud:add(the.levelUI)			
 			end							
