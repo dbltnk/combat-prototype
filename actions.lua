@@ -178,9 +178,9 @@ end)
 
 -- effect: invis ----------------------------------------------------------
 -- eg. {effect_type = "invis"},
--- has: duration TODO: not while moving, not while casting, etc.
+-- has: duration, speedPenalty TODO: not while moving, not while casting, etc.
 action_handling.register_effect("invis", function (target, effect, source_oid)
-	object_manager.send(target.oid, "invis", effect.duration, source_oid)
+	object_manager.send(target.oid, "invis", effect.duration, effect.speedPenalty, source_oid)
 end)
 
 -- effect: heal ----------------------------------------------------------

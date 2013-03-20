@@ -237,9 +237,10 @@ Character = Animation:extend
 				self:respawn() 
 			end
 		elseif message_name == "invis" then
-			local duration = ...
+			local duration, speedPenalty = ...
 			self.hidden = true
-			the.view.timer:after(duration, function() self.hidden = false end)
+			self.speedOverride = config.walkspeed * speedPenalty
+			the.view.timer:after(duration, function() self.hidden = false self.speedOverride = 0 end)
 		end
 	end,
 	

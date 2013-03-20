@@ -197,7 +197,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/sprint_particle.png"},
 			effects = {
-				{effect_type = "invis", duration = 5},
+				{effect_type = "invis", duration = 5, speedPenalty = 0.5},
 			},
 		},	
 	},		
