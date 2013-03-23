@@ -64,6 +64,28 @@ Skill = Class:extend
 			--~ particle_color = self.definition.cast_particle_color or {255,255,255}
 		--~ })
 		
+		local castTime = self.cast_time
+		-- new particle system example
+		local p = Particles:new{ 
+			image = "/assets/graphics/action_particles/firebal_particle.png",
+			width = 100,
+			height = 100,
+			onNew = function (self)
+				self.x, self.y = action_handling.get_target_position(player)
+				the.app.view.layers.particles:add(self)
+				-- destroy after cast time
+				the.app.view.timer:after(castTime, function()
+					self:die()
+				end)
+			end,
+			onDie = function (self)
+				the.app.view.layers.particles:remove(self)
+			end,
+			onUpdate = function (self, elapsed)
+				self.x, self.y = action_handling.get_target_position(player)
+			end,
+		 }
+		
 		if self.onUse then 
 			-- call use after casttime timeout
 			the.app.view.timer:after(self.cast_time, function() 
