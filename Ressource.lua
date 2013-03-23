@@ -25,7 +25,7 @@ Ressource = Tile:extend
 		if the.view.layers.ui:contains(self.t) == false then the.view.layers.ui:add(self.t) end	
 	end,		
 	
-	onNew = function (self)		
+	onNew = function (self)
 		self.width = 64
 		self.height = 64
 		self:updateQuad()
@@ -41,6 +41,8 @@ Ressource = Tile:extend
 			wFactor = self.wFactor,
 		}
 		drawDebugWrapper(self)
+		
+		the.view.timer:every(config.xpGainsEachNSeconds, function() self:giveXP() end)
 	end,
 	
 	gainPain = function (self, str)
@@ -93,14 +95,10 @@ Ressource = Tile:extend
 	changeOwner = function(self)
 		self.owner = self.nextOwner
 		self.currentPain = 0
-		self:giveXP()
 	end,
 	
 	giveXP = function(self)
-		the.app.view.timer:after(config.xpGainsEachNSeconds, function()
-			if self.owner ~= 0 then object_manager.send(self.owner, "xp", config.xpPerRessourceTick) end
-			self:giveXP()
-		end)
+		if self.owner ~= 0 then object_manager.send(self.owner, "xp", config.xpPerRessourceTick) end
 	end,	
 	
 	onUpdate = function (self)	

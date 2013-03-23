@@ -133,6 +133,7 @@ require 'zoetrope.sprites.fill'
 require 'zoetrope.sprites.map'
 require 'zoetrope.sprites.text'
 require 'zoetrope.sprites.tile'
+require 'zoetrope.sprites.particles'
 
 require 'zoetrope.ui.button'
 require 'zoetrope.ui.cursor'

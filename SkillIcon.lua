@@ -5,6 +5,7 @@ SkillIcon = Animation:extend
 	width = 32,
 	height = 32,
 	image = "/assets/graphics/action_icons/unknown.png",
+	color = {1,1,1},
 	sequences = 
 	{
 		available = { frames = {1}, fps = 1 },
@@ -19,4 +20,8 @@ SkillIcon = Animation:extend
 	setSkill = function (self, image)
 		self.image = image
 	end,
+	
+	onUpdate = function (self)
+		self.tint = self.color
+	end
 }

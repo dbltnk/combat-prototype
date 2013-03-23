@@ -33,7 +33,6 @@ require 'Player'
 require 'Npc'
 require 'FocusSprite'
 require 'Projectile'
-require 'Particles'
 require 'GameView'
 require 'Footstep'
 require 'Barrier'
@@ -43,6 +42,7 @@ require 'ConnectView'
 
 require 'ui'
     
+require 'loveframes'
 
 the.app = App:new
 {
@@ -59,12 +59,13 @@ the.app = App:new
 		if the.keys:justPressed ("f2") and the.gamepads[1].name ~= "NO DEVICE CONNECTED" then print("input mode: gamepad") input.setMode (input.MODE_GAMEPAD) end
 		if the.keys:justPressed ("f3") then print("input mode: touch") input.setMode (input.MODE_TOUCH) end	
 		
-		-- debug cheats
-		if the.keys:justPressed ("f5") then the.player.currentPain = the.player.currentPain + 20 end	
-					
+		-- show the highscore table 
+		if the.keys:justPressed ("f5") then the.barrier:showHighscore() end	
+
+		-- show Fog of War
+		if the.keys:justPressed ("f9") then config.show_fog_of_war = true the.view:fogOn() end					
 		-- toggle fullscreen
 		if the.keys:justPressed ("f10") then self:toggleFullscreen() end
-		
 		-- toggle profile
 		if the.keys:justPressed ("f11") then config.show_profile_info = not config.show_profile_info end
 		-- toggle debug draw

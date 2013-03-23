@@ -59,18 +59,17 @@
   </data>
  </layer>
  <objectgroup name="objects" width="100" height="100">
-  <object name="spawnpoint" x="1998" y="2036">
-   <properties>
-    <property name="_the" value="spawnpoint"/>
-   </properties>
-  </object>
   <object name="TargetDummy" x="458" y="2491" width="23" height="20"/>
   <object name="TargetDummy" x="510" y="2546" width="23" height="20"/>
   <object name="TargetDummy" x="642" y="2400" width="23" height="20"/>
   <object name="TargetDummy" x="453" y="2644" width="23" height="20"/>
   <object name="Npc" x="566" y="2689" width="64" height="64"/>
   <object name="Npc" x="1003" y="144" width="64" height="64"/>
-  <object name="Barrier" x="3" y="2369" width="90" height="188"/>
+  <object name="Barrier" x="3" y="2369" width="90" height="188">
+   <properties>
+    <property name="_the" value="barrier"/>
+   </properties>
+  </object>
   <object name="Ressource" x="1280" y="2528" width="64" height="64"/>
   <object name="Ressource" x="2814" y="2654" width="64" height="64"/>
   <object name="Ressource" x="2381" y="569" width="64" height="64"/>
@@ -125,6 +124,11 @@
   <object name="TargetDummy" x="1822" y="1699" width="23" height="20"/>
   <object name="TargetDummy" x="2046" y="1672" width="23" height="20"/>
   <object name="TargetDummy" x="1713" y="1869" width="23" height="20"/>
+  <object name="spawnpoint" x="296" y="2472">
+   <properties>
+    <property name="_the" value="spawnpoint"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
   <object x="1421" y="2157">

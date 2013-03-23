@@ -365,6 +365,7 @@ Sprite = Class:extend{
 	end,
 
 	update = function (self, elapsed)
+		-- TODO optimize
 		profile.start("sprite.update")
 		
 		local vel = self.velocity

@@ -58,6 +58,16 @@ TargetDummy = Tile:extend
 		end
 	end,
 	
+	trackDamage = function (self, source_oid, str)
+		-- zero values
+		if not self.dmgReceived[self.oid] then self.dmgReceived[self.oid] = {} end
+		local myDmgReceived = self.dmgReceived[self.oid]
+		if not myDmgReceived[source_oid] then myDmgReceived[source_oid] = 0 end
+		
+		-- interesting case
+		myDmgReceived[source_oid] = myDmgReceived[source_oid] + str
+	end,
+	
 	receive = function (self, message_name, ...)
 		--print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
@@ -69,6 +79,28 @@ TargetDummy = Tile:extend
 			self:gainPain(str)
 		--	print("start ", start_target)
 			-- damage handling for xp distribution	
+<<<<<<< HEAD
+			if self.dmgReceived[self.oid] then
+				for k,v in pairs(self.dmgReceived) do
+				--	print("existing oid dummy = " .. k .. " with ", v)				
+					v[source_oid] = (v[source_oid] or 0) + str
+				--	print("damage = " .. v[source_oid])
+					--~ for key, value in pairs(v) do
+				--		print("damager oid = " .. key,value)
+					--~ end
+				end
+			else 
+				self.dmgReceived[self.oid] = self.damagerTable
+				for k,v in pairs(self.dmgReceived) do
+					--print("new oid dummy = " .. k .. " with ", v)
+					v[source_oid] = str
+					--print("damage = " .. v[source_oid])
+					--~ for key, value in pairs(v) do
+						--print("damager oid = " .. key,value)
+					--~ end
+				end
+			end
+||||||| merged common ancestors
 			if self.dmgReceived[self.oid] then
 				for k,v in pairs(self.dmgReceived) do
 				--	print("existing oid dummy = " .. k .. " with ", v)				
@@ -89,6 +121,10 @@ TargetDummy = Tile:extend
 					end
 				end
 			end
+=======
+			self:trackDamage(source_oid, str)
+
+>>>>>>> master
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
@@ -96,29 +132,9 @@ TargetDummy = Tile:extend
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.alive then 
 						self:gainPain(str)
+						self:trackDamage(source_oid, str)
 					end
 				end)
-				-- damage handling for xp distribution	
-			if self.dmgReceived[self.oid] then
-				for k,v in pairs(self.dmgReceived) do
-					--print("existing oid dummy = " .. k .. " with ", v)				
-					v[source_oid] = v[source_oid] + str
-				--	print("damage = " .. v[source_oid])
-					for key, value in pairs(v) do
-					--	print("damager oid = " .. key,value)
-					end
-				end
-			else 
-				self.dmgReceived[self.oid] = self.damagerTable
-				for k,v in pairs(self.dmgReceived) do
-					--print("new oid dummy = " .. k .. " with ", v)
-					v[source_oid] = str
-					--print("damage = " .. v[source_oid])
-					for key, value in pairs(v) do
-						--print("damager oid = " .. key,value)
-					end
-				end
-			end
 			end
 		elseif message_name == "runspeed" then
 			local str, duration = ...
@@ -138,24 +154,20 @@ TargetDummy = Tile:extend
 		self.painBar:die()
 		the.targetDummies[self] = nil
 		-- find out how much xp which player gets and tell him
-		for k,v in pairs(self.dmgReceived) do 
-			for damager, value in pairs(v) do
-				if self.finalDamage ~= 0 then 
-					self.finalDamage = self.finalDamage + value				
-				else 	
-					self.finalDamage = value
-				end
-				object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
-			end
-		end
-<<<<<<< HEAD
+		local myDmgReceived = self.dmgReceived[self.oid]
 		
-		network.send({channel = "game", cmd = "delete", oid = self.oid, })
-||||||| merged common ancestors
-=======
+		for damager, value in pairs(myDmgReceived) do
+			self.finalDamage = self.finalDamage + value
+		end
+		
+		for damager, value in pairs(myDmgReceived) do
+			object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
+		end
+		
 		self.timeOfDeath = love.timer.getTime()
 		the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
->>>>>>> master
+
+		network.send({channel = "game", cmd = "delete", oid = self.oid, })
 	end,
 	
 	onUpdate = function (self)
@@ -169,30 +181,13 @@ TargetDummy = Tile:extend
 		self.painBar.currentValue = self.currentPain
 		self.painBar:updateBar()
 		self.painBar.x = self.x
-<<<<<<< HEAD
-		self.painBar.y = self.y
+		self.painBar.y = self.y	
 		
 		self.changeMonitor:checkAndSend()
-||||||| merged common ancestors
-		self.painBar.y = self.y
-=======
-		self.painBar.y = self.y	
->>>>>>> master
 	end,	
-<<<<<<< HEAD
-	
-	netCreate = function (self)
-		return { 
-			channel = "game", cmd = "create", class = "TargetDummy", oid = self.oid, 
-			x = self.x, y = self.y, owner = self.owner, 
-			currentPain = self.currentPain, currentEnergy = self.currentEnergy, rotation = self.rotation,
-			image = self.image, width = self.width, height = self.height, 
-		}
-	end,
-||||||| merged common ancestors
-=======
 	
 	respawn = function (self)
+		the.targetDummies[self] = true	
 		self.currentPain = 0
 		self.alive = true
 		self.timeOfDeath = 0
@@ -206,5 +201,13 @@ TargetDummy = Tile:extend
 		for k,v in pairs(self.dmgReceived) do k = nil v = nil end
 		for k,v in pairs(self.damagerTable) do  k = nil v = nil end		
 	end,
->>>>>>> master
+
+	netCreate = function (self)
+		return { 
+			channel = "game", cmd = "create", class = "TargetDummy", oid = self.oid, 
+			x = self.x, y = self.y, owner = self.owner, 
+			currentPain = self.currentPain, currentEnergy = self.currentEnergy, rotation = self.rotation,
+			image = self.image, width = self.width, height = self.height, 
+		}
+	end,
 }

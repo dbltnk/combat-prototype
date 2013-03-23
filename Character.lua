@@ -15,6 +15,7 @@ Character = Animation:extend
 	tempMaxxed = false,
 	incapacitated = false,
 	wFactor = 0,	
+	hidden = false,
 	changeMonitor = nil,
 
 	-- list of Skill
@@ -24,8 +25,9 @@ Character = Animation:extend
 		--"scythe_attack",
 		--"scythe_pirouette",			
 		--"shield_bash",		
-		"sprint",		
-		"bandage",
+		"sprint",
+		"camouflage",		
+		--"bandage",
 		"fireball",
 		--"life_leech",
 		"gank",
@@ -48,6 +50,8 @@ Character = Animation:extend
 	
 	-- if > 0 the player is not allowed to move
 	freezeMovementCounter = 0,
+	-- if > 0 the player is not allowed to cast actions
+	freezeCastingCounter = 0,
 	
 	-- if > 0 then player use this speed other than the normal one
 	speedOverride = 0,
@@ -90,13 +94,23 @@ Character = Animation:extend
 		network.send({channel = "game", cmd = "delete", oid = self.oid, })
 	end,
 	
+	freezeCasting = function (self)
+		--print("FREEEZ CAST")
+		self.freezeCastingCounter = self.freezeCastingCounter + 1
+	end,
+	
+	unfreezeCasting = function (self)
+		--print("UNFREEEZ CAST")
+		self.freezeCastingCounter = self.freezeCastingCounter - 1
+	end,
+	
 	freezeMovement = function (self)
-		--print("FREEEZ")
+		--print("FREEEZ MOVE")
 		self.freezeMovementCounter = self.freezeMovementCounter + 1
 	end,
 	
 	unfreezeMovement = function (self)
-		--print("UNFREEEZ")
+		--print("UNFREEEZ MOVE")
 		self.freezeMovementCounter = self.freezeMovementCounter - 1
 	end,
 	
@@ -113,21 +127,33 @@ Character = Animation:extend
 		end
 	end,
 	
+	setIncapacitation = function (self, incapState)
+		if incapState == self.incapacitated then return end
+		
+		if incapState then
+			self.incapacitated = true
+			self:freezeCasting()
+			self:freezeMovement()
+		else
+			self.incapacitated = false
+			self:unfreezeCasting()
+			self:unfreezeMovement()
+		end
+	end,
+	
 	updatePain = function (self)
 	--print("Player ", self.oid, " is incapacitated:", self.incapacitated)
-		if self.currentPain < 0 then self.currentPain = 0 end
 		if self.currentPain >= self.maxPain then 
-			self.currentPain = self.maxPain
-			self.incapacitated = true
-			self:freezeMovement()
-		end	
+			self:setIncapacitation(true) 
+		end
+		
+		self.currentPain = utils.clamp(self.currentPain, 0, self.maxPain)
 	end,
 		
 	respawn = function (self)
 		self.x, self.y = the.respawnpoint.x, the.respawnpoint.y
 		self.currentPain = 0
-		self.incapacitated = false	
-		self:unfreezeMovement()	
+		self:setIncapacitation(false)
 	end,	
 	
 	gainXP = function (self, str)
@@ -161,8 +187,8 @@ Character = Animation:extend
 	updateLevel = function (self, elapsed)
 	--	print("update reveived! character level = ",  self.level)
 		for i = 0, config.levelCap - 1 do
-			local width = (love.graphics.getWidth() + the.controlUI.width) / 3.5 / 10
-			if self.level > i then  -- TODO: fix it so that the.character.level gets recognized
+			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / 10
+			if self.level > i then  
 				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
 				the.hud:add(the.levelUI)			
 			end							
@@ -195,9 +221,11 @@ Character = Animation:extend
 			local duration, source_oid = ...
 		--	print("STUN", duration)
 			self:freezeMovement()
+			self:freezeCasting()
 			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration) end
 			the.app.view.timer:after(duration, function()
 				self:unfreezeMovement()
+				self:unfreezeCasting()
 			end)
 		elseif message_name == "runspeed" then
 			local str, duration, source_oid = ...
@@ -215,6 +243,11 @@ Character = Animation:extend
 			if self.incapacitated == true then 
 				self:respawn() 
 			end
+		elseif message_name == "invis" then
+			local duration, speedPenalty = ...
+			self.hidden = true
+			self.speedOverride = config.walkspeed * speedPenalty
+			the.view.timer:after(duration, function() self.hidden = false self.speedOverride = 0 end)
 		end
 	end,
 	
@@ -255,10 +288,7 @@ Character = Animation:extend
 			self.painBar.inc = false
 		end 
 		
-		if (self.incapacitated and self.currentPain <= self.maxPain * config.getUpPain) then
-			self.incapacitated = false
-			self:unfreezeMovement()	
-		end
+		if self.currentPain <= self.maxPain * config.getUpPain then self:setIncapacitation(false) end
 	end,
 
 	readInput = function (self, activeSkillNr)
@@ -308,6 +338,8 @@ Character = Animation:extend
 			local animspeed = utils.mapIntoRange (ipt.speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
 			
 			self:play('walk')
+		elseif self.incapacitated then
+			self:freeze(8)
 		else
 			self:freeze(5)
 		end
@@ -349,6 +381,18 @@ Character = Animation:extend
 			self.tint = {0.5,0.5,0.5}
 		else 
 			self.tint = {1,1,1}
+		end
+		
+		if self.hidden then
+			self.visible = false
+			self.painBar.visible = false
+			self.painBar.bar.visible = false
+			self.painBar.background.visible = false						
+		else
+			self.visible = true
+			self.painBar.visible = false
+			self.painBar.bar.visible = true
+			self.painBar.background.visible = true						
 		end
 
 		self.changeMonitor:checkAndSend()

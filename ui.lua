@@ -156,9 +156,7 @@ LevelUI = Fill:extend
 	border = {0,0,0,255},
     
 	onUpdate = function (self)
-		--self.x = (love.graphics.getWidth() + the.controlUI.width) / 2
 		self.y = love.graphics.getHeight() - self.height * 2 - 10
-		--self.width = (love.graphics.getWidth() + the.controlUI.width) / 3.5 / 10
 	end
 }
 
