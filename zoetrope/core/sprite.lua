@@ -227,6 +227,8 @@ Sprite = Class:extend{
 		if not self.solid or self == other then return false end
 		if STRICT then assert(other:instanceOf(Sprite), 'asked to displace a non-sprite') end
 			
+		profile.start("sprite:displace")
+			
 		local left = self.x
 		local right = self.x + self.width
 		local top = self.y
@@ -289,6 +291,8 @@ Sprite = Class:extend{
 		else
 			other.x = other.x + xChange
 		end
+		
+		profile.stop()
 	end,
 
 	-- Method: intersects

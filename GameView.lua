@@ -32,6 +32,7 @@ GameView = View:extend
 		self:loadLayers('/assets/maps/desert/desert.lua', true)
 		
 		self.collision.visible = false
+		self.collision.static = true
 		self.objects.visible = false
 		
 		-- specify render order
@@ -146,17 +147,13 @@ GameView = View:extend
 		profile.start("update.displace")
 		
 		for dummy,v in pairs(the.targetDummies) do
-			-- TODO optimize!!!
 			self.collision:displace(dummy)
-			-- TODO optimize!!!
 			self.layers.characters:displace(dummy)
 			self.landscape:subdisplace(dummy)
 			self.water:subdisplace(dummy)		
 		end
 		
-		-- TODO optimize!!!
 		self.collision:displace(the.player)
-		-- TODO optimize!!!
 		self.layers.characters:displace(the.player)
 		self.landscape:subdisplace(the.player)
 		self.water:subdisplace(the.player)

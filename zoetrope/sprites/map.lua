@@ -209,6 +209,7 @@ Map = Sprite:extend{
 	--		yHint - force vertical displacement in one direction, uses direction constants
 
 	subdisplace = function (self, other, xHint, yHint)	
+		profile.start("map:subdisplace")
 		local others
 
 		if other.sprites then
@@ -247,6 +248,7 @@ Map = Sprite:extend{
 				end
 			end
 		end
+		profile.stop()
 	end,
 
 	-- Method: getMapSize
