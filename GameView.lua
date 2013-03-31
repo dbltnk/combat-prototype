@@ -111,22 +111,26 @@ GameView = View:extend
 		self:add(self.layers.particles)
 		self:add(self.layers.characters)
 		self:add(self.layers.projectiles)
-		self:add(self.layers.ui)
 		self:add(self.layers.above)		
+		self:add(self.layers.ui)
 		self:add(self.layers.debug)
+		
+		for k,v in pairs(self.sprites) do
+			print("XXX3", k,v,v.image)
+		end
 		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
 		
+		self:remove(self.trees)
 		self.layers.above:add(self.trees)	
+		
+		self:remove(self.buildings)
 		self.layers.above:add(self.buildings)		
+		
 		-- set spawn position
 		the.player.x = the.spawnpoint.x
 		the.player.y = the.spawnpoint.y
-		
-
-		--~ the.dummy.x = the.dummySpawnpoint.x
-		--~ the.dummy.y = the.dummySpawnpoint.y
 			
 		
 		the.cursor = Cursor:new{ x = 0, y = 0 }

@@ -82,6 +82,19 @@ Group = Class:extend
 		table.insert(self.sprites, sprite)
 	end,
 
+	-- Method: reorder
+	-- reorders sprites to get new drawing order
+	--
+	-- Arguments:
+	--		comp - <Function> to compare all sprites (see table.sort)
+	--
+	-- Returns:
+	--		nothing
+	
+	reorder = function (self, comp)
+		table.sort(self.sprites, comp)
+	end,
+
 	-- Method: remove
 	-- Removes a sprite from the group. If the sprite is
 	-- not in the group, this does nothing.
