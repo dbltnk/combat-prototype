@@ -260,7 +260,8 @@ TimerDisplay = Text:extend
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
-		self.time = config.roundTime - (math.floor(love.timer.getTime()))
+		local runningTime = network.time - the.view.game_start_time
+		self.time = config.roundTime - math.floor(runningTime)
 		local minutes = math.floor(self.time / 60)
 		local seconds = (self.time - minutes * 60)
 		if seconds >= 10 then 

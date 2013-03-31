@@ -7,6 +7,8 @@ S>C {channel = "server", cmd = "left", id = client.id}
 C>S {channel = "server", cmd = "who", seq = } -> { ids }
 C>S {channel = "server", cmd = "ping", time = seq = } -> { time }
 C>S {channel = "server", cmd = "time", } -> { time }
+C>S {channel = "server", cmd = "get", key =, } -> { value }
+C>S {channel = "server", cmd = "set", key =, value = }
 C>C {channel = "game", cmd = "sync", oid = , owner = , ...}
 C>C {channel = "game", cmd = "create", class = , oid = , owner = , ...}
 C>C {channel = "game", cmd = "request", oid = }
@@ -197,4 +199,17 @@ function network.connect (host, port)
 	
 	client = socket.connect(host, port)
 	if client then client:settimeout(0, "t") end
+end
+
+-- callback(value)
+function network.get (key, callback)
+	network.send_request({channel = "server", cmd = "get", key = key, }, function(fin, result)
+		if callback then callback(result.value) end
+	end)
+end
+
+function network.set (key, value)
+	network.send_request({channel = "server", cmd = "set", key = key, value = value}, function(fin, result)
+		
+	end)
 end

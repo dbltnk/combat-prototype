@@ -12,6 +12,8 @@ GameView = View:extend
 		debug = Group:new(),
 	},
 	
+	game_start_time = 0,
+	
 	cover = nil,
 	on = false,
 
@@ -88,6 +90,18 @@ GameView = View:extend
 			Npc = true,
 		}
 		self:loadMap(mapFile, not network.is_first and networkSyncedObjects or nil)
+		
+		-- first client -> setup "new" world
+		if network.is_first then
+			self.game_start_time = network.time
+			network.set("game", {
+				start_time = self.game_start_time
+			})
+		else
+			network.get("game", function(data)
+				self.game_start_time = data.start_time
+			end)
+		end
 		
 		self.collision.visible = false
 		

@@ -81,6 +81,8 @@ function pop_part_from_buffer (buffer)
 end
 ]]
 
+local storage = {}
+
 local server
 server = net.createServer(function (client)
 	-- find first free id
@@ -121,6 +123,17 @@ server = net.createServer(function (client)
 				elseif message.cmd == "time" then
 					print("TIME")
 					send_to_one({seq = message.seq, time = os.uptime(), fin = true}, client)			
+				elseif message.cmd == "get" then
+					local key = message.key
+					local value = storage[key]
+					print("GET", key, value)
+					send_to_one({seq = message.seq, value = value, fin = true}, client)			
+				elseif message.cmd == "set" then
+					local key = message.key
+					local value = message.value
+					print("SET", key, value)
+					if key then storage[key] = value end
+					send_to_one({seq = message.seq, fin = true}, client)			
 				end
 			else
 				print("DELIVER TO OTHERS")
