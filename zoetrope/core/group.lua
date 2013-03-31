@@ -58,6 +58,8 @@ Group = Class:extend
 	-- taking a long time, changing this number may help.
 	gridSize = 50,
 
+	static = false,
+
 	-- Method: add
 	-- Adds a sprite to the group.
 	--
@@ -123,6 +125,7 @@ Group = Class:extend
 	--		<Sprite.collide>
 
 	collide = function (self, other)
+		if self.static and not self._cachedGrid then self:updateGrid() end
 		other = other or self
 
 		if STRICT then
@@ -156,12 +159,38 @@ Group = Class:extend
 				end
 			end
 		else
-			for _, spr in pairs(self.sprites) do
-				hit = spr:collide(other) or hit
+			if self._cachedGrid then
+				local grid = self._cachedGrid
+				local gridSize = self.gridSize
+			
+				local startX = math.floor(other.x / gridSize)
+				local endX = math.floor((other.x + other.width) / gridSize)
+				local startY = math.floor(other.y / gridSize)
+				local endY = math.floor((other.y + other.height) / gridSize)
+
+				for x = startX, endX do
+					if grid[x] then
+						for y = startY, endY do
+							if grid[x][y] then
+								for _, spr in pairs(grid[x][y]) do
+									hit = spr:collide(other) or hit
+								end
+							end
+						end
+					end
+				end
+			else
+				for _, spr in pairs(self.sprites) do
+					hit = spr:collide(other) or hit
+				end
 			end
 		end
 
 		return hit
+	end,
+	
+	updateGrid = function (self)
+		self._cachedGrid = self:grid()
 	end,
 
 	-- Method: displace
@@ -179,6 +208,8 @@ Group = Class:extend
 	--		<Sprite.displace>
 
 	displace = function (self, other, xHint, yHint)
+		if not self._cachedGrid then self:updateGrid() end
+	
 		if STRICT then
 			assert(other:instanceOf(Group) or other:instanceOf(Sprite), 'asked to displace non-group/sprite ' ..
 				   type(other))
@@ -186,7 +217,9 @@ Group = Class:extend
 
 		if not self.solid or not other then return false end
 
+		profile.start("group:displace")
 		if other.sprites then
+			profile.start("group:displace:other")
 			local grid = self:grid()
 			local gridSize = self.gridSize
 
@@ -208,11 +241,39 @@ Group = Class:extend
 					end
 				end
 			end
+			profile.stop()
 		else
-			for _, spr in pairs(self.sprites) do
-				spr:displace(other)
+			if self._cachedGrid then
+				profile.start("group:displace:cached")
+				local grid = self._cachedGrid
+				local gridSize = self.gridSize
+			
+				local startX = math.floor(other.x / gridSize)
+				local endX = math.floor((other.x + other.width) / gridSize)
+				local startY = math.floor(other.y / gridSize)
+				local endY = math.floor((other.y + other.height) / gridSize)
+
+				for x = startX, endX do
+					if grid[x] then
+						for y = startY, endY do
+							if grid[x][y] then
+								for _, spr in pairs(grid[x][y]) do
+									spr:displace(other)
+								end
+							end
+						end
+					end
+				end
+				profile.stop()
+			else
+				profile.start("group:displace:bruteforce")
+				for _, spr in pairs(self.sprites) do
+					spr:displace(other)
+				end
+				profile.stop()
 			end
 		end
+		profile.stop()
 	end,
 
 	-- Method: setEffect
@@ -358,6 +419,7 @@ Group = Class:extend
 	--		table
 
 	grid = function (self, existing)
+		profile.start("group:grid")
 		local result = existing or {}
 		local size = self.gridSize
 
@@ -384,6 +446,7 @@ Group = Class:extend
 			end
 		end
 
+		profile.stop()
 		return result
 	end,
 
@@ -406,9 +469,15 @@ Group = Class:extend
 		elapsed = elapsed * self.timeScale
 		if self.onUpdate then self:onUpdate(elapsed) end
 
-		for _, spr in pairs(self.sprites) do
-			if spr.active then spr:update(elapsed) end
+		-- update childs only if this group is not static
+		if not self.static then
+			for _, spr in pairs(self.sprites) do
+				if spr.active then spr:update(elapsed) end
+			end
 		end
+		
+		-- trigger grid regeneration each frame
+		if not self.static then self._cachedGrid = nil end
 	end,
 
 	-- passes endFrame events to member sprites

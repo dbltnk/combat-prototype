@@ -126,6 +126,7 @@ require 'zoetrope.core.promise'
 require 'zoetrope.core.timer'
 require 'zoetrope.core.tween'
 require 'zoetrope.core.view'
+require 'zoetrope.core.grid'
 
 require 'zoetrope.sprites.animation'
 require 'zoetrope.sprites.emitter'
