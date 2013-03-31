@@ -2,10 +2,11 @@
 
 --[[
 S>C {channel = "server", cmd = "join", id = client.id}
-S>C {channel = "server", cmd = "id", id = client.id, first = , }
+S>C {time=, channel = "server", cmd = "id", id = client.id, first = , }
 S>C {channel = "server", cmd = "left", id = client.id}
 C>S {channel = "server", cmd = "who", seq = } -> { ids }
 C>S {channel = "server", cmd = "ping", time = seq = } -> { time }
+C>S {channel = "server", cmd = "time", } -> { time }
 C>C {channel = "game", cmd = "sync", oid = , owner = , ...}
 C>C {channel = "game", cmd = "create", class = , oid = , owner = , ...}
 C>C {channel = "game", cmd = "request", oid = }
@@ -38,22 +39,79 @@ local stats_last_time = 0
 
 network.client_id = nil
 network.is_first = false
+network.time = 0
+network.last_time_update = 0
 
 local open_requests = {}
 
-function network.update ()
+local unprocessed = ""
+local bytes_read = 0
+
+-- returns message, buffer
+function decode_message(buffer)
+	local ok, message, newBuffer = pcall(bson.decode, buffer)
+	if ok then
+		return message, newBuffer
+	else
+		print("ERROR", message)
+		return nil, buffer
+	end
+end
+
+function replaceNonPrintableChars(s, replacement)
+	local r = ""
+	for i = 1,string.len(s) do
+		local b = s:byte(i)
+		if b >= 33 and b <= 126 then r = r .. string.char(b)
+		else r = r .. replacement end
+	end
+	return r
+end
+
+function toHex(s)
+	if not s or type(s) ~= "string" then return "<nil>" end
+	
+	local r = ""
+	for i = 1,string.len(s) do
+		r = r .. (s:byte(i) < 16 and "0" or "") .. string.format("%x ", s:byte(i))
+	end
+	r = r .. "(" .. string.len(s) .. " bytes) [" .. replaceNonPrintableChars(s, ".") .. "]"
+	return r
+end
+
+function network.update (dt)
+	-- update time and keep in sync
+	network.time = network.time + dt
+	
+	if love.timer.getTime() - network.last_time_update > 5 then
+		local t0 = love.timer.getTime()
+		network.send_request({channel = "server", cmd = "time"}, function(fin, result)
+			local t1 = love.timer.getTime()
+			local latency = (t1 - t0) / 2
+			network.time = result.time + latency
+		end)
+		network.last_time_update = t0
+	end
+	
 	while client do
-		local plain = client:receive()
-		if (not plain) then break end
+		local err, err_text, buffer = client:receive(1024*1024)
+		if buffer then 
+			unprocessed = unprocessed .. buffer
+			stats.in_bytes = stats.in_bytes + string.len(buffer)
+		end
+	
+		--~ if string.len(unprocessed) > 0 then print("NET IN STATUS", toHex(unprocessed)) end
+	
+		if (not unprocessed or string.len(unprocessed) == 0) then break end
+		
+		local m, rest = decode_message(unprocessed)
+		unprocessed = rest
 
-		stats.in_bytes = stats.in_bytes + string.len(plain)
-
-		print("NET IN", plain)
-		local m = json.decode (plain);
+		if not m or type(m) ~= "table" then break end
+	
+		print("NET IN", json.encode(m))
 		
 		stats.in_messages = stats.in_messages + 1
-		
-		if not m or type(m) ~= "table" then break end
 		
 		-- is this a reply?
 		local seq = m.seq or nil
@@ -71,6 +129,7 @@ function network.update ()
 			-- id message?
 			if m.channel == "server" and m.cmd == "id" then
 				network.client_id = m.id
+				network.time = m.time
 				network.is_first = m.first
 				object_manager.nextFreeId = (m.id - 1) * 100000
 			end
@@ -86,7 +145,7 @@ function network.update ()
 	if love.timer.getTime() - stats_last_time > stats_timeout then
 		stats_last_time = love.timer.getTime()
 		
-		network.stats = "\nIN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
+		network.stats = "\nTIME " .. math.floor(network.time) .. " IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s "
 			
 		stats = {
@@ -96,6 +155,11 @@ function network.update ()
 			out_messages = 0,
 		}
 	end
+end
+
+function network.shutdown()
+	if not client then return end
+	client:close()
 end
 
 -- seq gets added to the message, fin terminates the message
@@ -111,11 +175,21 @@ end
 
 function network.send (message)
 	if not client then return end
-	local m = json.encode(message)
+
+	print("NET OUT", json.encode(message))
+
+	local m = bson.encode(message)
 	stats.out_messages = stats.out_messages + 1
 	stats.out_bytes = stats.out_bytes + string.len(m)
-	print("NET OUT", m)
-	client:send(m .. "\n")
+
+	local i,j = 1, string.len(m)
+	
+	while true do
+		local r = client:send(m, i, j)
+		if r == nil then print("NET ERROR sending") break end
+		i = r + 1
+		if i > j then break end
+	end
 end
 
 function network.connect (host, port)
@@ -124,4 +198,3 @@ function network.connect (host, port)
 	client = socket.connect(host, port)
 	if client then client:settimeout(0, "t") end
 end
-

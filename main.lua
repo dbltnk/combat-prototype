@@ -12,6 +12,7 @@ input = require 'input'
 profile = require 'profile'
 list = require 'list'
 json = require 'dkjson'
+bson = require 'bson'
 
 action_definitions = require 'action_definitions'
 object_manager = require 'object_manager'
@@ -34,6 +35,7 @@ require 'Npc'
 require 'FocusSprite'
 require 'Projectile'
 require 'GameView'
+require 'TestView'
 require 'Footstep'
 require 'Barrier'
 require 'Ressource'
@@ -53,7 +55,7 @@ the.app = App:new
 
 	onUpdate = function (self, elapsed)
 		profile.start("network.update")
-		network.update()
+		network.update(elapsed)
 		profile.stop()
 		
 		-- set input mode
@@ -76,6 +78,7 @@ the.app = App:new
 		-- easy exit
 		if the.keys:pressed('escape') then 
 			--~ profiler.stop()
+			network.shutdown()
 			os.exit() 
 		end
 		if love.timer.getTime() >= config.roundTime then print("THE GAME IS OVER") os.exit() end -- TODO: switch to end screen

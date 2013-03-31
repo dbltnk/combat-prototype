@@ -2,38 +2,54 @@ local net = require 'net'
 local json = require 'json'
 local string = require 'string'
 local list = require 'list'
+local bson = require 'bson'
+local os = require 'os'
 
 local clients = {}
 local clients_count = 0
 
+function encode_message(message)
+	return bson.encode(message)
+end
+
+-- returns message, buffer
+function decode_message(buffer)
+	local ok, message, newBuffer = pcall(bson.decode, buffer)
+	if ok then
+		return message, newBuffer
+	else
+		return nil, buffer
+	end
+end
+
 function send_to_all(message, clients)
-	local json = json.stringify(message)
+	local json = encode_message(message)
 	send_to_all_raw(json, clients)
 end
 
 function send_to_all_raw(data, clients)
 	for k,v in pairs(clients) do
-		k:write(data .. "\n")
+		k:write(data)
 	end
 end
 
 function send_to_other_raw(data, client, clients)
 	for k,v in pairs(clients) do
-		if k ~= client then k:write(data .. "\n") end
+		if k ~= client then k:write(data) end
 	end
 end
 
 function send_to_one_raw(data, client)
-	client:write(data .. "\n")
+	client:write(data)
 end
 
 function send_to_one(message, client)
-	local json = json.stringify(message)
+	local json = encode_message(message)
 	send_to_one_raw(json, client)
 end
 
 function send_to_other(message, client, clients)
-	local json = json.stringify(message)
+	local json = encode_message(message)
 	send_to_other_raw(json, client, clients)
 end
 
@@ -43,13 +59,14 @@ function disconnect(client, clients)
 	clients_count = clients_count - 1
 	clients[client] = nil
 	-- send leave message
-	local leaveMessage = json.stringify({channel = "server", cmd = "left", id = client.id})
+	local leaveMessage = encode_message({channel = "server", cmd = "left", id = client.id})
 	for k,v in pairs(clients) do
-		k:write(leaveMessage .. "\n")
+		send_to_one_raw(leaveMessage, k)
 	end	
 end
 
 -- returns part, new_buffer
+--[[
 function pop_part_from_buffer (buffer)
 	if buffer == nil or string.len(buffer) == 0 then return nil, buffer end
 	local p = string.find(buffer, "\n", 1, true)
@@ -62,6 +79,7 @@ function pop_part_from_buffer (buffer)
 		return nil, buffer
 	end
 end
+]]
 
 local server
 server = net.createServer(function (client)
@@ -78,20 +96,19 @@ server = net.createServer(function (client)
 	clients[client] = true
 	
 	send_to_other({channel = "server", cmd = "join", id = client.id}, client, clients)
-	send_to_one({channel = "server", cmd = "id", id = client.id, first = clients_count == 1, }, client)
+	send_to_one({time=os.uptime(), channel = "server", cmd = "id", id = client.id, first = clients_count == 1, }, client)
 	client:on("data", function(data, ...)
 		--~ print("data", client, data, ...)
 
 		client.unprocessed = (client.unprocessed or "") .. data
 		--~ print("DATA", data)
 		while true do
-			local part, rest = pop_part_from_buffer(client.unprocessed)
-			--~ print("BUFFER", part, rest)
+			local message, rest = decode_message(client.unprocessed)
 			client.unprocessed = rest
-			if not part then break end
+		
+			if not message then break end
 			
-			print("TOPARSE", part)
-			local message = json.parse(part)
+			print("RECEIVED", json.stringify(message))
 			
 			if (message.channel == "server") then
 				if (message.cmd == "who") then
@@ -101,9 +118,13 @@ server = net.createServer(function (client)
 				elseif message.cmd == "ping" then
 					print("PING")
 					send_to_one({seq = message.seq, time = message.time, fin = true}, client)			
+				elseif message.cmd == "time" then
+					print("TIME")
+					send_to_one({seq = message.seq, time = os.uptime(), fin = true}, client)			
 				end
 			else
-				send_to_other_raw(data, client, clients)
+				print("DELIVER TO OTHERS")
+				send_to_other(message, client, clients)
 			end
 		end
 	end)
