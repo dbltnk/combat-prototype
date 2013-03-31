@@ -327,6 +327,6 @@ NetworkDisplay = Text:extend
 		self.y = 5
 		self.x = 10
 		    
-		self.text = "id: " .. (network.client_id or "?") .. " ping: " .. math.floor(self.pingTime * 1000) .. " ms online: " .. self.playerOnline
+		self.text = "id: " .. (network.client_id or "?") .. " ping: " .. math.floor(self.pingTime * 1000) .. " ms online: " .. self.playerOnline .. " " .. network.stats
 	end
 }

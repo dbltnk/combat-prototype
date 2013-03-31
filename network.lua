@@ -24,6 +24,18 @@ local next_seq = 1
 -- this method will not deliver request replies
 network.on_message = {}
 
+network.stats = ""
+
+local stats = {
+	in_bytes = 0,
+	in_messages = 0,
+	out_bytes = 0,
+	out_messages = 0,
+}
+
+local stats_timeout = 1
+local stats_last_time = 0
+
 network.client_id = nil
 network.is_first = false
 
@@ -34,8 +46,12 @@ function network.update ()
 		local plain = client:receive()
 		if (not plain) then break end
 
+		stats.in_bytes = stats.in_bytes + string.len(plain)
+
 		print("NET IN", plain)
 		local m = json.decode (plain);
+		
+		stats.in_messages = stats.in_messages + 1
 		
 		if not m or type(m) ~= "table" then break end
 		
@@ -65,6 +81,21 @@ function network.update ()
 			end
 		end
 	end
+	
+	-- refresh stats
+	if love.timer.getTime() - stats_last_time > stats_timeout then
+		stats_last_time = love.timer.getTime()
+		
+		network.stats = "\nIN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
+			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s "
+			
+		stats = {
+			in_bytes = 0,
+			in_messages = 0,
+			out_bytes = 0,
+			out_messages = 0,
+		}
+	end
 end
 
 -- seq gets added to the message, fin terminates the message
@@ -81,6 +112,8 @@ end
 function network.send (message)
 	if not client then return end
 	local m = json.encode(message)
+	stats.out_messages = stats.out_messages + 1
+	stats.out_bytes = stats.out_bytes + string.len(m)
 	print("NET OUT", m)
 	client:send(m .. "\n")
 end

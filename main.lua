@@ -52,7 +52,9 @@ the.app = App:new
 	icon = '/graphics/icon.png',
 
 	onUpdate = function (self, elapsed)
+		profile.start("network.update")
 		network.update()
+		profile.stop()
 		
 		-- set input mode
 		if the.keys:justPressed ("f1") then print("input mode: mouse+keyboard") input.setMode (input.MODE_MOUSE_KEYBOARD) end
