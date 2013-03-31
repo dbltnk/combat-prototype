@@ -44,8 +44,7 @@ Projectile = Tile:extend
 		
 		drawDebugWrapper(self)
 		
-		self.changeMonitor = MonitorChanges:new{ obj = self, keys = {"x", "y", 
-			"rotation", } }
+		self.changeMonitor = MonitorChanges:new{ obj = self, keys = {"x", "y"}, timeout = 3 }
 			
 		network.send(self:netCreate())
 	end,
@@ -56,6 +55,8 @@ Projectile = Tile:extend
 			x = self.x, y = self.y, owner = self.owner, 
 			rotation = self.rotation,
 			image = self.image, width = self.width, height = self.height, 
+			velocity = self.velocity,
+			creation_time = self.creation_time,
 		}
 	end,
 }

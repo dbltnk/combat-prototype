@@ -88,6 +88,7 @@ action_handling.register_target_selection("projectile", function (start_target, 
 		velocity = { x = projectilevx, y = projectilevy },
 		start = { x = cx, y = cy },
 		target = { x = tx, y = ty },
+		start_time = network.time,
 	}
 	
 	-- decorate onCollide

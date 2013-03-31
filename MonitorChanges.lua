@@ -32,7 +32,7 @@ MonitorChanges = Class:extend
 	checkAndSend = function (self)
 		if self:changed() then
 			local obj = self.obj
-			local msg = { channel = "game", cmd = "sync", oid = obj.oid, owner = obj.owner, }
+			local msg = { channel = "game", cmd = "sync", oid = obj.oid, owner = obj.owner, time = network.time, }
 			for _,key in pairs(self.keys) do msg[key] = obj[key] end
 			network.send (msg)
 		end

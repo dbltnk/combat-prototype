@@ -16,7 +16,8 @@ Character = Animation:extend
 	incapacitated = false,
 	wFactor = 0,	
 	hidden = false,
-	changeMonitor = nil,
+	changeMonitorSlow = nil,
+	changeMonitorFast = nil,
 
 	-- list of Skill
 	skills = {
@@ -67,8 +68,10 @@ Character = Animation:extend
 	end,
 	
 	onNew = function (self)
-		self.changeMonitor = MonitorChanges:new{ obj = self, keys = {"x", "y", 
-			"currentEnergy", "currentPain", "rotation",  } }
+		self.changeMonitorSlow = MonitorChanges:new{ timeout = 1, obj = self, keys = {
+			"currentEnergy", "currentPain" } }
+		self.changeMonitorFast = MonitorChanges:new{ obj = self, keys = {
+			"x", "y", "rotation",  } }
 		object_manager.create(self)
 		the.view.layers.characters:add(self)
 		self.wFactor = self.width / self.maxPain		
@@ -395,7 +398,8 @@ Character = Animation:extend
 			self.painBar.background.visible = true						
 		end
 
-		self.changeMonitor:checkAndSend()
+		self.changeMonitorSlow:checkAndSend()
+		self.changeMonitorFast:checkAndSend()
 	end,
 	
 	netCreate = function (self)
