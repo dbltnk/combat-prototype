@@ -115,10 +115,6 @@ GameView = View:extend
 		self:add(self.layers.ui)
 		self:add(self.layers.debug)
 		
-		for k,v in pairs(self.sprites) do
-			print("XXX3", k,v,v.image)
-		end
-		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
 		
@@ -126,7 +122,7 @@ GameView = View:extend
 		self.layers.above:add(self.trees)	
 		
 		self:remove(self.buildings)
-		self.layers.above:add(self.buildings)		
+		self.layers.above:add(self.buildings)
 		
 		-- set spawn position
 		the.player.x = the.spawnpoint.x
@@ -322,9 +318,9 @@ GameView = View:extend
 					if o then
 						-- sync
 						for k,v in pairs(m) do o[k] = v end
-						print("SYNC REMOTE OBEJECT", o.oid)
+						print("SYNC REMOTE OBJECT", o.oid)
 					else
-						print("SYNC REQUEST REMOTE OBEJECT", m.oid)
+						print("SYNC REQUEST REMOTE OBJECT", m.oid)
 						network.send ({ channel = "game", cmd = "request", oid = m.oid })
 					end
 				end

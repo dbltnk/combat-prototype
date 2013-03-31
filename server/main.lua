@@ -97,8 +97,10 @@ server = net.createServer(function (client)
 	client.unprocessed = ""
 	clients[client] = true
 	
-	send_to_other({channel = "server", cmd = "join", id = client.id}, client, clients)
-	send_to_one({time=os.uptime(), channel = "server", cmd = "id", id = client.id, first = clients_count == 1, }, client)
+	local ids = list.process_keys(clients):select(function(c) return c.id end):done()
+	
+	send_to_other({channel = "server", ids = ids, cmd = "join", id = client.id}, client, clients)
+	send_to_one({time=os.uptime(), channel = "server", ids = ids, cmd = "id", id = client.id, first = clients_count == 1, }, client)
 	client:on("data", function(data, ...)
 		--~ print("data", client, data, ...)
 

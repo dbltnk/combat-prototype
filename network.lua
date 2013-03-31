@@ -43,6 +43,8 @@ network.client_id = nil
 network.is_first = false
 network.time = 0
 network.last_time_update = 0
+network.connected_client_id_map = {}
+network.lowest_client_id = nil
 
 local open_requests = {}
 
@@ -79,6 +81,15 @@ function toHex(s)
 	end
 	r = r .. "(" .. string.len(s) .. " bytes) [" .. replaceNonPrintableChars(s, ".") .. "]"
 	return r
+end
+
+function network.update_lowest_client_id ()
+	local l = nil
+	for _, id in pairs(network.connected_client_id_map) do
+		l = math.min(l or id, id)
+	end
+	print("UPDATE LOWEST",l)
+	network.lowest_client_id = l
 end
 
 function network.update (dt)
@@ -129,11 +140,23 @@ function network.update (dt)
 			end
 		else
 			-- id message?
-			if m.channel == "server" and m.cmd == "id" then
-				network.client_id = m.id
-				network.time = m.time
-				network.is_first = m.first
-				object_manager.nextFreeId = (m.id - 1) * 100000
+			if m.channel == "server" then
+				if m.cmd == "id" then
+					network.client_id = m.id
+					network.time = m.time
+					network.is_first = m.first
+					object_manager.nextFreeId = (m.id - 1) * 100000
+					
+					network.connected_client_id_map = {}
+					for _,id in pairs(m.ids) do network.connected_client_id_map[id] = id end
+					network.update_lowest_client_id()
+				elseif m.cmd == "join" then
+					network.connected_client_id_map[m.id] = m.id
+					network.update_lowest_client_id()
+				elseif m.cmd == "left" then
+					network.connected_client_id_map[m.id] = nil
+					network.update_lowest_client_id()
+				end
 			end
 			
 			-- normal message
@@ -148,7 +171,8 @@ function network.update (dt)
 		stats_last_time = love.timer.getTime()
 		
 		network.stats = "\nTIME " .. math.floor(network.time) .. " IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
-			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s "
+			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s\n" ..
+			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no")
 			
 		stats = {
 			in_bytes = 0,
