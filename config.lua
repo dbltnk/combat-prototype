@@ -23,6 +23,7 @@ config.xpGainsEachNSeconds = 10
 config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds
 config.sightDistanceFar = 600
 config.sightDistanceNear = 300
+config.footStepVisibility = 30 -- beware: large numbers will be bad for performance
 
 -- audio
 config.volume = 0.3
