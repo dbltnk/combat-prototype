@@ -48,7 +48,9 @@ GameView = View:extend
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
 		
 		self.layers.above:add(self.trees)	
-		self.layers.above:add(self.buildings)		
+		self.layers.above:add(self.buildings)				
+		self.layers.above:add(self.vegetation)
+		
 		-- set spawn position
 		the.player.x = the.spawnpoint.x
 		the.player.y = the.spawnpoint.y
