@@ -345,15 +345,7 @@ Character = Animation:extend
 			self.skills[ipt.shootSkillNr]:use(cx, cy, ipt.viewx, ipt.viewy, self)
 		end
 		
-		-- combat music?
-		local isInCombat = false
-		for k,v in pairs(self.skills) do
-			isInCombat = isInCombat or (v:isOutOfCombat() == false)
-		end
-		
-		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))
-		
-		audio.isInCombat = isInCombat
+		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))	
 	end,
 	
 	onUpdate = function (self, elapsed)
@@ -384,9 +376,25 @@ Character = Animation:extend
 			self.painBar.background.visible = false						
 		else
 			self.visible = true
-			self.painBar.visible = false
+			self.painBar.visible = true
 			self.painBar.bar.visible = true
 			self.painBar.background.visible = true						
 		end
+
+		-- check if we're in combat
+		local isInCombat = false
+		for k,v in pairs(self.skills) do
+			isInCombat = isInCombat or (v:isOutOfCombat() == false)
+		end
+		
+		-- hide pain bar when not in combat and at full health
+		if not isInCombat and self.currentPain == 0 then
+			self.painBar.visible = false
+			self.painBar.bar.visible = false
+			self.painBar.background.visible = false	
+		end
+		
+		-- combat music?
+		audio.isInCombat = isInCombat
 	end,
 }
