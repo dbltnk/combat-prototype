@@ -205,6 +205,17 @@ GameView = View:extend
 					projectile.alpha = alpha_projectiles
 				end
 			end
+			for footstep,v in pairs(the.footsteps) do	
+				if the.footsteps[footstep] == true then
+					local dist_footsteps = vector.lenFromTo(footstep.x, footstep.y, the.player.x, the.player.y)
+					local limit_footsteps = config.sightDistanceFar
+					local isVis_footsteps = dist_footsteps < limit_footsteps
+					local alpha_footsteps = utils.mapIntoRange(dist_footsteps, config.sightDistanceNear, limit_footsteps, 1, 0)
+					footstep.visible = isVis_footsteps
+					footstep.fogAlpha = alpha_footsteps
+				end
+			end
+
 		end
 		
 		audio.update()
