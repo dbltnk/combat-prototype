@@ -24,6 +24,7 @@ config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * 
 config.sightDistanceFar = 600
 config.sightDistanceNear = 300
 config.footStepVisibility = 30 -- beware: large numbers will be bad for performance
+config.AEShowTime = 2
 
 -- audio
 config.volume = 0.3

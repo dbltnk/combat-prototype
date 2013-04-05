@@ -9,6 +9,7 @@ Projectile = Tile:extend
     -- target.x target.y start.x start.y
 
 	onCollide = function(self, other, horizOverlap, vertOverlap)
+	--	self:particle(self.x, self.y)
 		self:die()
 	end,
 	
@@ -17,6 +18,7 @@ Projectile = Tile:extend
 		local distFromStart = vector.lenFromTo(self.start.x, self.start.y, self.x, self.y)
 		
 		if distFromStart >= totalDistance then
+		--	self:particle(self.x, self.y)
 			self:die()
 		end
 	end,
@@ -32,7 +34,25 @@ Projectile = Tile:extend
 		the.app.view.layers.projectiles:add(self)
 		-- stores an projectile reference, projectiles get stored in the key
 		the.projectiles[self] = true
-		
 		drawDebugWrapper(self)
 	end,
+	
+	--~ particle = function (self, xd, yd)
+		--~ local castTime = 3 --self.cast_time
+		--~ local p = Particles:new{ 
+			--~ image = "/assets/graphics/action_particles/firebal_particle.png",
+			--~ width = 100,
+			--~ height = 100,
+			--~ onNew = function (self)
+				--~ self.x, self.y = xd, yd
+				--~ the.app.view.layers.particles:add(self)
+				--~ the.app.view.timer:after(castTime, function()
+					--~ self:die()
+				--~ end)
+			--~ end,
+			--~ onDie = function (self)
+				--~ the.app.view.layers.particles:remove(self)
+			--~ end,
+		 --~ }
+	--~ end,
 }

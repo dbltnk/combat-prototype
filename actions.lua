@@ -21,6 +21,25 @@ require 'zoetrope'
 -- function effect_callback(target, effect)
 -- -- function action_handling.register_effect(name, effect_callback)
 
+-- x,y centered
+
+spawnExplosionCircle = function (x,y,r,t,color)
+	t = config.AEShowTime
+	color = color or {255,0,255,128}
+	for k,v in pairs(color) do
+		print(k,v)
+	end
+	local d = Fill:new{ shape="circle", x = x-r, y = y-r, width = r*2, height = r*2, border = {0,0,0,0}, fill = color or defaultColor}
+	the.view.layers.particles:add(d)
+	the.view.timer:after(t, function() 
+		the.view.layers.particles:remove(d)
+	end)
+	the.view.timer:every(0.05, function() 
+		d.alpha = d.alpha - 0.05
+	end)
+end
+
+
 -- target_selection: self ----------------------------------------------------------
 action_handling.register_target_selection("self", function (start_target, target_selection, source_oid, targets_selected_callback)
 	targets_selected_callback({start_target})
@@ -34,6 +53,7 @@ action_handling.register_target_selection("ae", function (start_target, target_s
 	local x,y = action_handling.get_target_position(start_target)
 	
 	spawnDebugCircle(x,y,target_selection.range)
+	spawnExplosionCircle(x,y,target_selection.range,target_selection.explosion_color) -- TODO: fix target_selection.explosion_color
 	
 	local l = action_handling.find_ae_targets(x,y, target_selection.range, 
 		target_selection.piercing_number or 1000000)
@@ -139,6 +159,8 @@ action_handling.register_target_selection("projectile", function (start_target, 
 			print("PIERCING AE", target_selection.ae_targets, target_selection.ae_size)
 			local x,y = action_handling.get_target_position(self)
 			spawnDebugCircle(x,y,target_selection.ae_size)
+			spawnExplosionCircle(x,y,target_selection.range, target_selection.explosion_color)  -- TODO: fix target_selection.explosion_color
+
 			local l = action_handling.find_ae_targets(x,y, target_selection.ae_size, 
 				target_selection.piercing_number or 1000000)
 			
