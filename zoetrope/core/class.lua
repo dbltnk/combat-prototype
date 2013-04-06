@@ -84,6 +84,7 @@ Class = {
 		for key, value in pairs(obj) do
 			self[key] = obj[key]
 		end
+		if self.onMixin then self:onMixin() end
 	end,
 	
 	-- Function: instanceOf

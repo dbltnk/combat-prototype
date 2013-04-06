@@ -24,6 +24,7 @@ require 'network'
 
 require 'debug_utils'
 
+require 'GameObject'
 require 'MonitorChanges'
 require 'Skill'
 require 'SkillIcon'
@@ -67,7 +68,7 @@ the.app = App:new
 		if the.keys:justPressed ("f5") then the.barrier:showHighscore() end	
 
 		-- show Fog of War
-		if the.keys:justPressed ("f9") then config.show_fog_of_war = true the.view:fogOn() end					
+		if the.keys:justPressed ("f9") then config.show_fog_of_war = true the.app.view:fogOn() end					
 		-- toggle fullscreen
 		if the.keys:justPressed ("f10") then self:toggleFullscreen() end
 		-- toggle profile
@@ -90,8 +91,8 @@ the.app = App:new
 		
 		network.connect(config.server_hostname, config.server_port)
 		
-		--~ the.app.console:watch("viewx", "the.view.translate.x")
-		--~ the.app.console:watch("viewy", "the.view.translate.y")
+		--~ the.app.console:watch("viewx", "the.app.view.translate.x")
+		--~ the.app.console:watch("viewy", "the.app.view.translate.y")
 		
 		-- setup connect view
 		self.view = ConnectView:new()

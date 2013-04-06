@@ -200,9 +200,9 @@ UiBar = Sprite:extend
 			fill = {0,255,0,255},
 			border = {0,0,0,255},
 		}
-		the.view.layers.ui:add(self)
-		the.view.layers.ui:add(self.background)
-		the.view.layers.ui:add(self.bar)
+		the.app.view.layers.ui:add(self)
+		the.app.view.layers.ui:add(self.background)
+		the.app.view.layers.ui:add(self.bar)
 	end,
 	
 	onUpdate = function (self, elapsed)
@@ -231,9 +231,9 @@ UiBar = Sprite:extend
 		self.bar:die()
 		self.background:die()		
 
-		the.view.layers.ui:remove(self)
-		the.view.layers.ui:remove(self.background)
-		the.view.layers.ui:remove(self.bar)
+		the.app.view.layers.ui:remove(self)
+		the.app.view.layers.ui:remove(self.background)
+		the.app.view.layers.ui:remove(self.bar)
 	end,
 }
 
@@ -260,7 +260,7 @@ TimerDisplay = Text:extend
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
-		local runningTime = network.time - the.view.game_start_time
+		local runningTime = network.time - the.app.view.game_start_time
 		self.time = config.roundTime - math.floor(runningTime)
 		local minutes = math.floor(self.time / 60)
 		local seconds = (self.time - minutes * 60)
@@ -318,7 +318,7 @@ NetworkDisplay = Text:extend
 	end,
 	
 	onNew = function (self)
-		the.view.timer:every(5, function()
+		the.app.view.timer:every(5, function()
 			self:requestOnline()
 			self:requestPing()
 		end)

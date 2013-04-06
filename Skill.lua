@@ -58,7 +58,7 @@ Skill = Class:extend
 		self.lastUsed = love.timer.getTime()
 		
 		-- start particle
-		--~ local p = the.view.factory:create(Particles, { 
+		--~ local p = the.app.view.factory:create(Particles, { 
 			--~ duration = self.cast_time, 
 			--~ attached_to_object = player,
 			--~ particle_color = self.definition.cast_particle_color or {255,255,255}

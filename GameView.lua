@@ -70,8 +70,8 @@ GameView = View:extend
 	end,
 
     onNew = function (self)
-    
-    
+		the.app.view = self
+		print("the.app.view", the.app.view)
     
 		-- object -> true map for easy remove, key contains projectile references
 		the.projectiles = {}
@@ -194,7 +194,7 @@ GameView = View:extend
 			onUpdate = function (self)
 				local pX, pY = action_handling.get_target_position (the.player)
 				self.x = pX - self.width / 2
-					self.y = pY - self.height / 2
+				self.y = pY - self.height / 2
 			end	
 		}
 	
@@ -207,7 +207,7 @@ GameView = View:extend
     
     fogOn = function(self)
 		if self.on == false then
-			the.view.layers.ui:add(self.cover)
+			self.layers.ui:add(self.cover)
 			self.on = true
 		end
 	end,
@@ -293,7 +293,7 @@ GameView = View:extend
 					
 					if not o then
 						print("NEW REMOTE OBJECT", m.oid, m.owner, m.class)
-						o = object_manager.create_remote(SyncedObject:new(m), m.oid, m.owner)
+						o = _G[m.class]:new(m)
 					end
 				elseif m.cmd == "delete" then
 					print("DELETE OBJ REQUEST", m.oid)
@@ -308,8 +308,7 @@ GameView = View:extend
 					local o = object_manager.get(m.oid)
 					if o and o.netCreate then
 						print("NEW OBJECT REQUESTED")
-						local msg = o:netCreate()
-						network.send (msg)
+						o:netCreate()
 					end
 				elseif m.cmd == "msg" then
 					object_manager.send(m.oid, m.name, unpack(m.params or {}))
@@ -329,8 +328,7 @@ GameView = View:extend
 					-- new player so send obj create messages
 					for oid,obj in pairs(object_manager.objects) do
 						if obj.netCreate then
-							local msg = obj:netCreate()
-							network.send (msg)
+							obj:netCreate()
 						end
 					end
 				elseif m.cmd == "left" then

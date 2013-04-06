@@ -19,7 +19,7 @@ Barrier = Tile:extend
 		self:updateQuad()
 		object_manager.create(self)
 		--print("NEW BARRIER", self.x, self.y, self.width, self.height)
-		the.view.layers.characters:add(self)
+		the.app.view.layers.characters:add(self)
 		self.wFactor = self.width / self.maxPain
 		
 		self.painBar = UiBar:new{

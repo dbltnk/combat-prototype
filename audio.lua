@@ -30,7 +30,7 @@ function audio.update()
 	if audio.loudness_is_fading == false and math.abs(newLoundness - audio.loudness) > 0.01 then
 		-- start fade
 		audio.loudness_is_fading = true
-		the.view.tween:start(audio, "loudness", newLoundness, audio.fadeTime)
+		the.app.view.tween:start(audio, "loudness", newLoundness, audio.fadeTime)
 			:andThen(function() audio.loudness_is_fading = false end)
 	end
 

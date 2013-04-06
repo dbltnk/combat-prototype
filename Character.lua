@@ -4,6 +4,15 @@ characterMap = {}
 
 Character = Animation:extend
 {
+	class = "Character",
+
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "currentEnergy",
+		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", },			
+		
+	sync_high = {"x", "y", "currentEnergy", "currentPain", "rotation", "alive"},
+	sync_low = {"x", "y", "rotation", "image", "width", "height", "currentPain", "currentEnergy",
+		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", },			
+	
 	maxPain = config.maxPain, 
 	currentPain = 0,
 	maxEnergy = config.maxEnergy, 
@@ -16,8 +25,6 @@ Character = Animation:extend
 	incapacitated = false,
 	wFactor = 0,	
 	hidden = false,
-	changeMonitorSlow = nil,
-	changeMonitorFast = nil,
 
 	-- list of Skill
 	skills = {
@@ -68,12 +75,9 @@ Character = Animation:extend
 	end,
 	
 	onNew = function (self)
-		self.changeMonitorSlow = MonitorChanges:new{ timeout = 1, obj = self, keys = {
-			"currentEnergy", "currentPain" } }
-		self.changeMonitorFast = MonitorChanges:new{ obj = self, keys = {
-			"x", "y", "rotation",  } }
-		object_manager.create(self)
-		the.view.layers.characters:add(self)
+		self:mixin(GameObject)
+
+		the.app.view.layers.characters:add(self)
 		self.wFactor = self.width / self.maxPain		
 		
 		for k,v in pairs(self.skills) do
@@ -86,15 +90,11 @@ Character = Animation:extend
 			dx = 0, dy = self.height,
 			currentValue = self.currentPain, maxValue = self.maxPain, inc = false, wFactor = self.wFactor
 		}
-		
-		network.send(self:netCreate())
 	end,
 	
 	onDie = function (self)
-		the.view.layers.characters:remove(self)
+		the.app.view.layers.characters:remove(self)
 		self.painBar:die()
-		
-		network.send({channel = "game", cmd = "delete", oid = self.oid, })
 	end,
 	
 	freezeCasting = function (self)
@@ -198,7 +198,7 @@ Character = Animation:extend
 		end
 	end,
 	
-	receive = function (self, message_name, ...)
+	receiveLocal = function (self, message_name, ...)
 	--	print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
 			local str, source_oid = ...
@@ -250,7 +250,7 @@ Character = Animation:extend
 			local duration, speedPenalty = ...
 			self.hidden = true
 			self.speedOverride = config.walkspeed * speedPenalty
-			the.view.timer:after(duration, function() self.hidden = false self.speedOverride = 0 end)
+			the.app.view.timer:after(duration, function() self.hidden = false self.speedOverride = 0 end)
 		end
 	end,
 	
@@ -365,21 +365,7 @@ Character = Animation:extend
 		audio.isInCombat = isInCombat
 	end,
 	
-	onUpdate = function (self, elapsed)
-		self:onUpdateRegeneration(elapsed)
-		
-		local ipt = self:readInput(self.activeSkillNr)
-		
-		self:applyMovement(elapsed, ipt)
-		
-		local done = {}
-		for i = 1, 10 do 
-			if (math.floor(love.timer.getTime()) == config.xpCapTimer * i) and done[i] == nil then
-				self:resetXP()
-				done[i] = true
-			end
-		end
-		
+	onUpdateBoth = function (self, elapsed)
 		if self.incapacitated then
 			self.tint = {0.5,0.5,0.5}
 		else 
@@ -396,20 +382,23 @@ Character = Animation:extend
 			self.painBar.visible = false
 			self.painBar.bar.visible = true
 			self.painBar.background.visible = true						
-		end
-
-		self.changeMonitorSlow:checkAndSend()
-		self.changeMonitorFast:checkAndSend()
+		end	
 	end,
 	
-	netCreate = function (self)
-		return { 
-			channel = "game", cmd = "create", class = "Character", oid = self.oid, 
-			x = self.x, y = self.y, owner = self.owner, 
-			currentPain = self.currentPain, currentEnergy = self.currentEnergy, rotation = self.rotation,
-			image = self.image, width = self.width, height = self.height, 
-			maxEnergy = self.maxEnergy, xp = self.xp, xpCap = self.xpCap,
-			level = self.level, levelCap = self.levelCap, 
-		}
+	onUpdateLocal = function (self, elapsed)
+		self:onUpdateRegeneration(elapsed)
+		
+		local ipt = self:readInput(self.activeSkillNr)
+		
+		self:applyMovement(elapsed, ipt)
+		
+		local done = {}
+		for i = 1, 10 do 
+			if (math.floor(love.timer.getTime()) == config.xpCapTimer * i) and done[i] == nil then
+				self:resetXP()
+				done[i] = true
+			end
+		end
 	end,
+
 }

@@ -22,7 +22,7 @@ Ressource = Tile:extend
 	movable = false,
 	
 	onDraw = function(self)
-		if the.view.layers.ui:contains(self.t) == false then the.view.layers.ui:add(self.t) end	
+		if the.app.view.layers.ui:contains(self.t) == false then the.app.view.layers.ui:add(self.t) end	
 	end,		
 	
 	onNew = function (self)
@@ -31,7 +31,7 @@ Ressource = Tile:extend
 		self:updateQuad()
 		object_manager.create(self)
 		--print("NEW RESSOURCE", self.x, self.y, self.width, self.height)
-		the.view.layers.characters:add(self)
+		the.app.view.layers.characters:add(self)
 		self.wFactor = self.width / self.maxPain
 		
 		self.painBar = UiBar:new{
@@ -42,7 +42,7 @@ Ressource = Tile:extend
 		}
 		drawDebugWrapper(self)
 		
-		the.view.timer:every(config.xpGainsEachNSeconds, function() self:giveXP() end)
+		the.app.view.timer:every(config.xpGainsEachNSeconds, function() self:giveXP() end)
 	end,
 	
 	gainPain = function (self, str)

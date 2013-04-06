@@ -31,21 +31,20 @@ function object_manager.get (oid)
 	end
 end
 
-function object_manager.create_remote (o, oid, owner)
-	o.oid = oid
-	o.owner = owner
-	object_manager.objects[oid] = o
-	return o
-end
-
 -- writes property oid, owner into o (o.oid) and returns the changed object
 function object_manager.create (o)
-	local oid = object_manager.nextFreeId
-	object_manager.nextFreeId = object_manager.nextFreeId + 1
+	if not o.oid then
+		local oid = object_manager.nextFreeId
+		object_manager.nextFreeId = object_manager.nextFreeId + 1
+		
+		o.oid = oid
+	end
 	
-	o.oid = oid
-	o.owner = network.client_id
-	object_manager.objects[oid] = o
+	if not o.owner then
+		o.owner = network.client_id
+	end
+	
+	object_manager.objects[o.oid] = o
 	return o
 end
 
@@ -98,7 +97,21 @@ function object_manager.send (oids, message_name, ...)
 	for k,oid in pairs(oids) do
 		local o = object_manager.get(oid)
 		if o and o.receive then
-			o:receive(message_name, ...)
+			local deliver = true
+			
+			-- deliver only via network?
+			if o.isLocal then
+				if o:isLocal() then
+					deliver = true
+				else
+					deliver = false
+					local params = {...}
+					network.send({channel = "game", cmd = "msg", oid = o.oid, 
+						name = message_name, params = params, time = network.time})
+				end
+			end
+			
+			if deliver then o:receive(message_name, ...) end
 		end
 	end
 end

@@ -10,9 +10,9 @@ spawnDebugCircle = function (x,y,r,t,color)
 	t = t or defaultTime
 	color = color or defaultColor
 	local d = Fill:new{ shape="circle", x = x-r, y = y-r, width = r*2, height = r*2, border = color, fill = {0,0,0,0} }
-	the.view.layers.debug:add(d)
-	the.view.timer:after(t, function() 
-		the.view.layers.debug:remove(d)
+	the.app.view.layers.debug:add(d)
+	the.app.view.timer:after(t, function() 
+		the.app.view.layers.debug:remove(d)
 	end)
 end
 
@@ -22,9 +22,9 @@ spawnDebugPoint = function (x,y,r,t,color)
 	color = color or defaultColor
 	r = r or 3
 	local d = Fill:new{ shape="circle", x = x-r, y = y-r, width = r*2, height = r*2, fill = color }
-	the.view.layers.debug:add(d)
-	the.view.timer:after(t, function() 
-		the.view.layers.debug:remove(d)
+	the.app.view.layers.debug:add(d)
+	the.app.view.timer:after(t, function() 
+		the.app.view.layers.debug:remove(d)
 	end)
 end
 
@@ -33,9 +33,9 @@ spawnDebugRect = function (x,y,w,h,t,color)
 	t = t or defaultTime
 	color = color or defaultColor
 	local d = Fill:new{ x = x, y = y-r, width = w, height = h, border = color, fill = {0,0,0,0} }
-	the.view.layers.debug:add(d)
-	the.view.timer:after(t, function() 
-		the.view.layers.debug:remove(d)
+	the.app.view.layers.debug:add(d)
+	the.app.view.timer:after(t, function() 
+		the.app.view.layers.debug:remove(d)
 	end)
 end
 

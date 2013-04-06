@@ -2,6 +2,12 @@
 
 TargetDummy = Tile:extend
 {
+	class = "TargetDummy",
+
+	props = {"x", "y", "rotation", "image", "width", "height", "velocity", "creation_time",
+		"maxPain", "xpWorth", "finalDamage", },			
+	sync_high = {"x", "y", "currentEnergy", "currentPain", "rotation", "alive"},
+	
 	image = '/assets/graphics/dummy.png',
 	currentPain = 0,
 	maxPain = 100,
@@ -18,20 +24,17 @@ TargetDummy = Tile:extend
 	
 	movable = false,
 
-	changeMonitor = nil,
-	
 	onNew = function (self)
-		the.targetDummies[self] = true
+		self:mixin(GameObject)
 		
-		self.changeMonitor = MonitorChanges:new{ obj = self, keys = {"x", "y", 
-			"currentEnergy", "currentPain", "rotation", "alive" } }
+		the.targetDummies[self] = true
 		
 		self.width = 32
 		self.height = 64
 		self:updateQuad()
 		object_manager.create(self)
 		--print("NEW DUMMY", self.x, self.y, self.width, self.height)
-		the.view.layers.characters:add(self)
+		the.app.view.layers.characters:add(self)
 		self.wFactor = self.width / self.maxPain			
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
@@ -41,8 +44,6 @@ TargetDummy = Tile:extend
 		
 		drawDebugWrapper(self)
 		--if (math.random(-1, 1) > 0) then self.movable = true end
-		
-		network.send(self:netCreate())
 	end,
 	
 	gainPain = function (self, str)
@@ -68,7 +69,7 @@ TargetDummy = Tile:extend
 		myDmgReceived[source_oid] = myDmgReceived[source_oid] + str
 	end,
 	
-	receive = function (self, message_name, ...)
+	receiveLocal = function (self, message_name, ...)
 		--print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
 			local str = ...
@@ -106,7 +107,7 @@ TargetDummy = Tile:extend
 		end	
 	end,
 	
-	onDie = function (self)
+	onDieLocal = function (self)
 		self.painBar:die()
 		the.targetDummies[self] = nil
 		-- find out how much xp which player gets and tell him
@@ -121,25 +122,23 @@ TargetDummy = Tile:extend
 		end
 		
 		self.timeOfDeath = love.timer.getTime()
-		the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
-
-		network.send({channel = "game", cmd = "delete", oid = self.oid, })
+		--~ the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
 	end,
 	
-	onUpdate = function (self)
+	onUpdateLocal = function (self)
 		if ((math.random(-1, 1) > 0) and self.movable == true) then
 			self.dx = math.random(-10, 10)
 			self.dy = math.random(-10, 10)
 			self.x = self.x + self.dx
 			self.y = self.y + self.dy
 		end
-		
+	end,
+	
+	onUpdateBoth = function (self)
 		self.painBar.currentValue = self.currentPain
 		self.painBar:updateBar()
 		self.painBar.x = self.x
 		self.painBar.y = self.y	
-		
-		self.changeMonitor:checkAndSend()
 	end,	
 	
 	respawn = function (self)
@@ -156,14 +155,5 @@ TargetDummy = Tile:extend
 		}			
 		for k,v in pairs(self.dmgReceived) do k = nil v = nil end
 		for k,v in pairs(self.damagerTable) do  k = nil v = nil end		
-	end,
-
-	netCreate = function (self)
-		return { 
-			channel = "game", cmd = "create", class = "TargetDummy", oid = self.oid, 
-			x = self.x, y = self.y, owner = self.owner, 
-			currentPain = self.currentPain, currentEnergy = self.currentEnergy, rotation = self.rotation,
-			image = self.image, width = self.width, height = self.height, 
-		}
 	end,
 }
