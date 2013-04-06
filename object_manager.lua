@@ -44,6 +44,12 @@ function object_manager.create (o)
 		o.owner = network.client_id
 	end
 	
+	if o.oid == 0 then
+		utils.vardump(o)
+		print(debug.traceback())
+		os.exit()
+	end
+	
 	object_manager.objects[o.oid] = o
 	return o
 end

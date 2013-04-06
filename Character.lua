@@ -11,7 +11,7 @@ Character = Animation:extend
 		
 	sync_high = {"x", "y", "currentEnergy", "currentPain", "rotation", "alive"},
 	sync_low = {"x", "y", "rotation", "image", "width", "height", "currentPain", "currentEnergy",
-		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", },			
+		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", "incapacitated", },			
 	
 	maxPain = config.maxPain, 
 	currentPain = 0,
@@ -90,6 +90,8 @@ Character = Animation:extend
 			dx = 0, dy = self.height,
 			currentValue = self.currentPain, maxValue = self.maxPain, inc = false, wFactor = self.wFactor
 		}
+		
+		print(debug.traceback())
 	end,
 	
 	onDie = function (self)
@@ -280,17 +282,6 @@ Character = Animation:extend
 		if self.currentPain < 0 then self.currentPain = 0 end
 		if self.currentPain > self.maxPain then self.currentPain = self.maxPain end
 		
-		-- upate pain bar
-		self.painBar.currentValue = self.currentPain
-		self.painBar:updateBar()
-		self.painBar.x = self.x
-		self.painBar.y = self.y
-		if self.incapacitated then 
-			self.painBar.inc = true 
-		else
-			self.painBar.inc = false
-		end 
-		
 		if self.currentPain <= self.maxPain * config.getUpPain then self:setIncapacitation(false) end
 	end,
 
@@ -383,6 +374,17 @@ Character = Animation:extend
 			self.painBar.bar.visible = true
 			self.painBar.background.visible = true						
 		end	
+
+		-- upate pain bar
+		self.painBar.currentValue = self.currentPain
+		self.painBar:updateBar()
+		self.painBar.x = self.x
+		self.painBar.y = self.y
+		if self.incapacitated then 
+			self.painBar.inc = true 
+		else
+			self.painBar.inc = false
+		end 		
 	end,
 	
 	onUpdateLocal = function (self, elapsed)

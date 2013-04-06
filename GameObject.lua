@@ -95,4 +95,14 @@ GameObject = {
 			return network.client_id == network.lowest_client_id
 		end
 	end,
+	
+	propsToString = function (self)
+		local r = ""
+		if self.props then 
+			for k,v in pairs(self.props) do
+				r = r .. v .. "=" .. tostring(self[v]) .. " "
+			end
+		end
+		return r
+	end,
 }

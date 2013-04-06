@@ -2,6 +2,12 @@
 
 Barrier = Tile:extend
 {
+	class = "Barrier",
+
+	props = {"x", "y", "rotation", "image", "width", "height", },	
+	
+	sync_low = {"x", "y", "currentPain", "rotation", "alive"},
+
 	image = '/assets/graphics/barrier.png',
 	currentPain = 0,
 	maxPain = config.barrierHealth,
@@ -14,10 +20,11 @@ Barrier = Tile:extend
 	movable = false,
 	
 	onNew = function (self)		
+		self:mixin(GameObject)
+		
 		self.width = 96
 		self.height = 192
 		self:updateQuad()
-		object_manager.create(self)
 		--print("NEW BARRIER", self.x, self.y, self.width, self.height)
 		the.app.view.layers.characters:add(self)
 		self.wFactor = self.width / self.maxPain
@@ -45,7 +52,7 @@ Barrier = Tile:extend
 		end
 	end,
 	
-	receive = function (self, message_name, ...)
+	receiveLocal = function (self, message_name, ...)
 		--print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
 			local str, source_oid = ...
@@ -122,7 +129,7 @@ Barrier = Tile:extend
 		print("THE GAME JUST ENDED") -- TODO: call end screen
 	end,
 	
-	onUpdate = function (self)	
+	onUpdateBoth = function (self)	
 		self.painBar.currentValue = self.currentPain
 		self.painBar:updateBar()
 		self.painBar.x = self.x

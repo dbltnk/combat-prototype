@@ -145,8 +145,7 @@ function network.update (dt)
 					network.client_id = m.id
 					network.time = m.time
 					network.is_first = m.first
-					object_manager.nextFreeId = (m.id - 1) * 100000
-					
+					object_manager.nextFreeId = (m.id - 1) * 100000 + 1
 					network.connected_client_id_map = {}
 					for _,id in pairs(m.ids) do network.connected_client_id_map[id] = id end
 					network.update_lowest_client_id()
@@ -170,9 +169,25 @@ function network.update (dt)
 	if love.timer.getTime() - stats_last_time > stats_timeout then
 		stats_last_time = love.timer.getTime()
 		
-		network.stats = "\nTIME " .. math.floor(network.time) .. " IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
+		network.stats = "\nTIME " .. math.floor(network.time) .. "\n" .. 
+			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no")
+			
+		local objs = ""
+		object_manager.visit(function(oid,o)
+			local loc = "?"
+			if o.isLocal then
+				if o:isLocal() then 
+					loc = "LOCAL"
+				else 
+					loc = "REMOTE" 
+				end
+			end
+			local obj = "#" .. oid .. " " .. (o.class or "?") .. " " .. loc .. " " .. (o.propsToString and o:propsToString() or "") .. "\n"
+			objs = objs .. obj
+		end)
+		network.stats = network.stats .. "\n\n" .. objs
 			
 		stats = {
 			in_bytes = 0,

@@ -302,7 +302,7 @@ NetworkDisplay = Text:extend
 	y = 0, 
 	tint = {0,0,0},
 	time = 0,
-	width = 200,
+	width = love.graphics.getWidth() * 0.9,
 	
 	requestPing = function (self)
 		local t = love.timer.getTime()

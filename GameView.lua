@@ -82,12 +82,13 @@ GameView = View:extend
 		-- object -> true map for easy remove, key contains footstep references
 		the.footsteps = {}
 		
-		local mapFile = '/assets/maps/desert/desert.lua'
+		local mapFile = '/assets/maps/desert/test.lua'
 		self:loadLayers(mapFile, true, {objects = true, })
 		
 		local networkSyncedObjects = {
 			TargetDummy = true,
 			Npc = true,
+			Barrier = true,
 		}
 		self:loadMap(mapFile, not network.is_first and networkSyncedObjects or nil)
 		
@@ -177,10 +178,9 @@ GameView = View:extend
 		the.experienceUI = ExperienceUI:new{}
 		the.hud:add(the.experienceUI)	
 
-		the.character = Character:new{}
 		for i = 0, config.levelCap - 1 do
 			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / config.levelCap
-			if i >= the.character.level then 
+			if i >= the.player.level then 
 				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i} 
 				the.hud:add(the.levelUI)	
 			else
