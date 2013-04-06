@@ -10,6 +10,7 @@ Footstep = Tile:extend
 	height = 32,
 	image = '/assets/graphics/footsteps.png',
 	lifetime = 3,
+	owner = 0,
 	
 	dieAtTime = nil,
 	
@@ -25,7 +26,7 @@ Footstep = Tile:extend
 		end
 	end,
 	
-	onDie = function (self)
+	onDieBoth = function (self)
 		the.app.view.layers.ground:remove(self)
 	end,
 }

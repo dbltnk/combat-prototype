@@ -18,6 +18,7 @@ TargetDummy = Tile:extend
 	alive = true,
 	wFactor = 0,	
 	timeOfDeath = 0,	
+	owner = 0,
 	
 	-- UiBar
 	painBar = nil,

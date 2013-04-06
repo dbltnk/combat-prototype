@@ -13,7 +13,8 @@ Barrier = Tile:extend
 	maxPain = config.barrierHealth,
 	wFactor = 0,
 	highscore = {},
-	
+	owner = 0,
+
 	-- UiBar
 	painBar = nil,
 	
@@ -123,7 +124,7 @@ Barrier = Tile:extend
 				
 	end,
 	
-	onDie = function (self)
+	onDieBoth = function (self)
 		self.painBar:die()
 		os.exit()
 		print("THE GAME JUST ENDED") -- TODO: call end screen

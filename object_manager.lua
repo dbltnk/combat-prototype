@@ -14,7 +14,6 @@ local vector = require 'vector'
 local object_manager = {}
 
 object_manager.objects = {}
-object_manager.nextFreeId = 1
 
 function object_manager.visit (fun)
 	for oid,o in pairs(object_manager.objects) do
@@ -31,13 +30,20 @@ function object_manager.get (oid)
 	end
 end
 
+function object_manager.generate_free_oid ()
+	local oid = nil
+	
+	repeat
+		oid = math.random(1,1000000)
+	until not object_manager.objects[oid]
+	
+	return oid
+end
+
 -- writes property oid, owner into o (o.oid) and returns the changed object
 function object_manager.create (o)
 	if not o.oid then
-		local oid = object_manager.nextFreeId
-		object_manager.nextFreeId = object_manager.nextFreeId + 1
-		
-		o.oid = oid
+		o.oid = object_manager.generate_free_oid()
 	end
 	
 	if not o.owner then

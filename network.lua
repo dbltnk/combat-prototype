@@ -44,6 +44,7 @@ network.is_first = false
 network.time = 0
 network.last_time_update = 0
 network.connected_client_id_map = {}
+network.connected_client_count = 0
 network.lowest_client_id = nil
 
 local open_requests = {}
@@ -84,9 +85,11 @@ function toHex(s)
 end
 
 function network.update_lowest_client_id ()
+	network.connected_client_count = 0
 	local l = nil
 	for _, id in pairs(network.connected_client_id_map) do
 		l = math.min(l or id, id)
+		network.connected_client_count = network.connected_client_count + 1
 	end
 	print("UPDATE LOWEST",l)
 	network.lowest_client_id = l
@@ -145,7 +148,6 @@ function network.update (dt)
 					network.client_id = m.id
 					network.time = m.time
 					network.is_first = m.first
-					object_manager.nextFreeId = (m.id - 1) * 100000 + 1
 					network.connected_client_id_map = {}
 					for _,id in pairs(m.ids) do network.connected_client_id_map[id] = id end
 					network.update_lowest_client_id()

@@ -7,9 +7,9 @@ Character = Animation:extend
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "currentEnergy",
-		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", },			
+		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", "velocity" },			
 		
-	sync_high = {"x", "y", "currentEnergy", "currentPain", "rotation", "alive", "anim_play", "anim_freeze"},
+	sync_high = {"x", "y", "currentEnergy", "currentPain", "rotation", "alive", "anim_play", "anim_freeze", "velocity"},
 	sync_low = {"x", "y", "rotation", "image", "width", "height", "currentPain", "currentEnergy",
 		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", "incapacitated", },			
 	
@@ -112,7 +112,7 @@ Character = Animation:extend
 		end
 	end,
 	
-	onDie = function (self)
+	onDieBoth = function (self)
 		the.app.view.layers.characters:remove(self)
 		self.painBar:die()
 	end,

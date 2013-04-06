@@ -85,15 +85,17 @@ GameView = View:extend
 		local mapFile = '/assets/maps/desert/test.lua'
 		self:loadLayers(mapFile, true, {objects = true, })
 		
+		local is_server = network.is_first and network.connected_client_count == 1
+		
 		local networkSyncedObjects = {
 			TargetDummy = true,
 			Npc = true,
 			Barrier = true,
 		}
-		self:loadMap(mapFile, not network.is_first and networkSyncedObjects or nil)
+		self:loadMap(mapFile, not is_server and networkSyncedObjects or nil)
 		
 		-- first client -> setup "new" world
-		if network.is_first then
+		if is_server then
 			self.game_start_time = network.time
 			network.set("game", {
 				start_time = self.game_start_time
@@ -300,7 +302,7 @@ GameView = View:extend
 					local o = object_manager.get(m.oid)
 					
 					if o then
-						o:die()
+						if o.active then o:die() end
 						object_manager.delete(o)
 					end
 					
@@ -329,7 +331,9 @@ GameView = View:extend
 			elseif m.channel == "server" then
 				if m.cmd == "join" then
 					-- new player so send obj create messages
+					print("new player send objects#############")
 					for oid,obj in pairs(object_manager.objects) do
+						print("send net create", oid)
 						if obj.netCreate then
 							obj:netCreate()
 						end
@@ -339,7 +343,7 @@ GameView = View:extend
 					for oid,obj in pairs(object_manager.objects) do
 						--~ print("LEFT", oid, obj.owner, m.id)
 						if obj.owner == m.id then
-							obj:die()
+							if obj.active then obj:die() end
 							object_manager.delete(obj)
 						end
 					end

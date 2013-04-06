@@ -42,8 +42,6 @@ GameObject = {
 	end,
 	
 	onDie = function (self, ...)
-		print("GO DIE")
-		
 		if self:isLocal() then
 			if self.onDieLocal then self:onDieLocal(...) end
 			network.send({channel = "game", cmd = "delete", oid = self.oid, })
@@ -89,7 +87,7 @@ GameObject = {
 	end,
 	
 	isLocal = function (self)
-		if self.owner then
+		if self.owner and self.owner > 0 then
 			return self.owner == network.client_id
 		else
 			return network.client_id == network.lowest_client_id
