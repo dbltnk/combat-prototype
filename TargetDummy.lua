@@ -52,11 +52,9 @@ TargetDummy = Tile:extend
 		self.currentPain = self.currentPain + str
 		self:updatePain()
 		if str >= 0 then
-			self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
-			GameView.layers.ui:add(self.scrollingText)	
+			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
 		else
-			self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
-			GameView.layers.ui:add(self.scrollingText)	
+			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
 		end
 	end,
 	
@@ -70,6 +68,22 @@ TargetDummy = Tile:extend
 		myDmgReceived[source_oid] = myDmgReceived[source_oid] + str
 	end,
 	
+	receiveBoth = function (self, message_name, ...)
+		if message_name == "damage" then
+			local str, source_oid  = ...
+			self:trackDamage(source_oid, str)
+		elseif message_name == "damage_over_time" then 
+			local str, duration, ticks, source_oid = ...
+			for i=1,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					if self.alive then 
+						self:trackDamage(source_oid, str)
+					end
+				end)
+			end
+		end
+	end,
+	
 	receiveLocal = function (self, message_name, ...)
 		--print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "heal" then
@@ -81,7 +95,6 @@ TargetDummy = Tile:extend
 			self:gainPain(str)
 		--	print("start ", start_target)
 			-- damage handling for xp distribution	
-			self:trackDamage(source_oid, str)
 
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
@@ -90,7 +103,6 @@ TargetDummy = Tile:extend
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.alive then 
 						self:gainPain(str)
-						self:trackDamage(source_oid, str)
 					end
 				end)
 			end

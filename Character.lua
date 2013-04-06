@@ -141,13 +141,6 @@ Character = Animation:extend
 		--print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
 		self:updatePain()
-		if str >= 0 then
-			self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
-			GameView.layers.ui:add(self.scrollingText)	
-		else
-			self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
-			GameView.layers.ui:add(self.scrollingText)	
-		end
 	end,
 	
 	setIncapacitation = function (self, incapState)
@@ -194,8 +187,9 @@ Character = Animation:extend
 			-- TODO: add particle-fx here
 		end		
 		self:updateLevel()
-		if math.floor(str) > 0 then self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = math.floor(str), tint = {1,1,0}}
-		GameView.layers.ui:add(self.scrollingText) end	
+		if math.floor(str) > 0 then 
+			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = math.floor(str), tint = {1,1,0}}
+		end	
 	end,	
 	
 	resetXP = function (self)
@@ -215,6 +209,30 @@ Character = Animation:extend
 				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
 				the.hud:add(the.levelUI)			
 			end							
+		end
+	end,
+	
+	showDamage = function (self, str)
+		if str >= 0 then
+			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
+		else
+			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
+		end
+	end,
+	
+	receiveBoth = function (self, message_name, ...)
+		print("BOTH", message_name)
+		if message_name == "damage" then
+			local str, source_oid = ...
+			self:showDamage(str)
+		elseif message_name == "damage_over_time" then
+			local str, duration, ticks, source_oid = ...
+			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
+			for i=1,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					self:showDamage(str)
+				end)
+			end
 		end
 	end,
 	

@@ -283,13 +283,18 @@ ScrollingText = Text:extend
 	
 	onNew = function (self)
 		self.x = self.x - self.width / 2
+		GameView.layers.ui:add(self)
 	end,
 	
 	onUpdate = function (self)
 		self.y = self.y - 1
 		self.font = self.font - 0.1
 		if self.font <= 10 then self:die() end
-	end
+	end,
+	
+	onDie = function (self)
+		GameView.layers.ui:remove(self)
+	end,
 }
 
 NetworkDisplay = Text:extend

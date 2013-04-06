@@ -44,12 +44,28 @@ Barrier = Tile:extend
 	--	print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
 		self:updatePain()
+	end,
+	
+	showDamage = function (self, str)
 		if str >= 0 then
-			self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
-			GameView.layers.ui:add(self.scrollingText)	
+			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
 		else
-			self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
-			GameView.layers.ui:add(self.scrollingText)	
+			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
+		end
+	end,
+	
+	receiveBoth = function (self, message_name, ...)
+		if message_name == "damage" then
+			local str, source_oid = ...
+			self:showDamage(str)
+		elseif message_name == "damage_over_time" then
+			local str, duration, ticks, source_oid = ...
+			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
+			for i=1,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					self:showDamage(str)
+				end)
+			end
 		end
 	end,
 	

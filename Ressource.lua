@@ -50,11 +50,9 @@ Ressource = Tile:extend
 		self.currentPain = self.currentPain + str
 		self:updatePain()
 		if str >= 0 then
-			self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
-			GameView.layers.ui:add(self.scrollingText)	
+			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
 		else
-			self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
-			GameView.layers.ui:add(self.scrollingText)	
+			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
 		end
 	end,
 	

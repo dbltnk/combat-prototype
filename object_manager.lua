@@ -109,21 +109,7 @@ function object_manager.send (oids, message_name, ...)
 	for k,oid in pairs(oids) do
 		local o = object_manager.get(oid)
 		if o and o.receive then
-			local deliver = true
-			
-			-- deliver only via network?
-			if o.isLocal then
-				if o:isLocal() then
-					deliver = true
-				else
-					deliver = false
-					local params = {...}
-					network.send({channel = "game", cmd = "msg", oid = o.oid, 
-						name = message_name, params = params, time = network.time})
-				end
-			end
-			
-			if deliver then o:receive(message_name, ...) end
+			o:receive(message_name, ...)
 		end
 	end
 end
