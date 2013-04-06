@@ -9,7 +9,7 @@ Character = Animation:extend
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "currentEnergy",
 		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", },			
 		
-	sync_high = {"x", "y", "currentEnergy", "currentPain", "rotation", "alive"},
+	sync_high = {"x", "y", "currentEnergy", "currentPain", "rotation", "alive", "anim_play", "anim_freeze"},
 	sync_low = {"x", "y", "rotation", "image", "width", "height", "currentPain", "currentEnergy",
 		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", "incapacitated", },			
 	
@@ -26,6 +26,10 @@ Character = Animation:extend
 	wFactor = 0,	
 	hidden = false,
 
+	-- for anim sync
+	anim_play = nil,
+	anim_freeze = nil,
+			
 	-- list of Skill
 	skills = {
 		"bow_shot",
@@ -92,6 +96,20 @@ Character = Animation:extend
 		}
 		
 		--~ print(debug.traceback())
+		
+		-- attach network stuff to anim functions
+		local _play = self.play
+		self.play = function (self, name)
+			_play(self, name)
+			self.anim_play = name
+			self.anim_freeze = nil
+		end
+		
+		local _freeze = self.freeze
+		self.freeze = function (self, index)
+			_freeze(self, index)
+			self.anim_freeze = index
+		end
 	end,
 	
 	onDie = function (self)
@@ -354,6 +372,14 @@ Character = Animation:extend
 		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))
 		
 		audio.isInCombat = isInCombat
+	end,
+	
+	onUpdateRemote = function (self, elapsed)
+		if self.anim_freeze then 
+			self:freeze(self.anim_freeze)
+		elseif self.anim_play then
+			self:play(self.anim_play)
+		end
 	end,
 	
 	onUpdateBoth = function (self, elapsed)

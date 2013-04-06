@@ -317,6 +317,9 @@ GameView = View:extend
 					if o then
 						-- sync
 						for k,v in pairs(m) do o[k] = v end
+						if m.nils then
+							for _,v in pairs(m.nils) do o[v] = nil end
+						end
 						print("SYNC REMOTE OBJECT", o.oid)
 					else
 						print("SYNC REQUEST REMOTE OBJECT", m.oid)
