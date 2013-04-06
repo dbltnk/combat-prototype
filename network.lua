@@ -173,22 +173,24 @@ function network.update (dt)
 			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no")
-			
-		local objs = ""
-		object_manager.visit(function(oid,o)
-			local loc = "?"
-			if o.isLocal then
-				if o:isLocal() then 
-					loc = "LOCAL"
-				else 
-					loc = "REMOTE" 
+		
+		if config.show_object_list then
+			local objs = ""
+			object_manager.visit(function(oid,o)
+				local loc = "?"
+				if o.isLocal then
+					if o:isLocal() then 
+						loc = "LOCAL"
+					else 
+						loc = "REMOTE" 
+					end
 				end
-			end
-			local obj = "#" .. oid .. " " .. (o.class or "?") .. " " .. loc .. " " .. (o.propsToString and o:propsToString() or "") .. "\n"
-			objs = objs .. obj
-		end)
-		network.stats = network.stats .. "\n\n" .. objs
-			
+				local obj = "#" .. oid .. " " .. (o.class or "?") .. " " .. loc .. " " .. (o.propsToString and o:propsToString() or "") .. "\n"
+				objs = objs .. obj
+			end)
+			network.stats = network.stats .. "\n\n" .. objs
+		end
+		
 		stats = {
 			in_bytes = 0,
 			in_messages = 0,

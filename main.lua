@@ -67,6 +67,8 @@ the.app = App:new
 		-- show the highscore table 
 		if the.keys:justPressed ("f5") then the.barrier:showHighscore() end	
 
+		-- show object list
+		if the.keys:justPressed ("f8") then config.show_object_list = not config.show_object_list end					
 		-- show Fog of War
 		if the.keys:justPressed ("f9") then config.show_fog_of_war = true the.app.view:fogOn() end					
 		-- toggle fullscreen

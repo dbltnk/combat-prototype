@@ -91,7 +91,7 @@ Character = Animation:extend
 			currentValue = self.currentPain, maxValue = self.maxPain, inc = false, wFactor = self.wFactor
 		}
 		
-		print(debug.traceback())
+		--~ print(debug.traceback())
 	end,
 	
 	onDie = function (self)

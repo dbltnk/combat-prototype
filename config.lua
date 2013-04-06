@@ -34,9 +34,12 @@ config.gamepad_cursor_speed_far = 800
 config.gamepad_cursor_near_distance = 400
 config.gamepad_cursor_near_border = 200
 
+config.show_fog_of_war = true
+
+-- debug
 config.draw_debug_info = false
 config.show_profile_info = false
-config.show_fog_of_war = true
+config.show_object_list = false
 
 -- network
 --~ config.server_hostname = "192.168.2.103"
