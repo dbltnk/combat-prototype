@@ -240,7 +240,21 @@ end
 function network.connect (host, port)
 	if client then client:close() end
 	
-	client = socket.connect(host, port)
+	local s = socket.tcp()
+	s:settimeout(1, "t")
+	local r = s:connect(host, port)
+	
+	if r then
+		client = s
+	else
+		print("ERROR connection to", host, port, "falling back to local")
+		network.client_id = 1
+		network.time = love.timer.getTime()
+		network.is_first = true
+		network.connected_client_id_map = {[1] = 1}
+		network.update_lowest_client_id()
+	end
+	
 	if client then client:settimeout(0, "t") end
 end
 

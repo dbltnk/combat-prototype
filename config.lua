@@ -42,7 +42,7 @@ config.show_profile_info = false
 config.show_object_list = false
 
 -- network
---~ config.server_hostname = "192.168.2.103"
+--~ config.server_hostname = "192.168.2.1"
 config.server_hostname = "buffy.leenox.de"
 config.server_port = 9999
 

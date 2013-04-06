@@ -10,7 +10,7 @@ GameObject = {
 	-- changeMonitorLow
 	
 	onMixin = function (self)
-		print("GO MIXIN")
+		--~ print("GO MIXIN")
 		
 		object_manager.create(self)
 				
