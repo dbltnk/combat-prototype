@@ -205,6 +205,16 @@ GameView = View:extend
 					projectile.alpha = alpha_projectiles
 				end
 			end
+			for targetDummy,v in pairs(the.targetDummies) do	
+				if the.targetDummies[targetDummy] == true then
+					local dist_targetDummies = vector.lenFromTo(targetDummy.x, targetDummy.y, the.player.x, the.player.y)
+					local limit_targetDummies = config.sightDistanceFar
+					local isVis_targetDummies = dist_targetDummies < limit_targetDummies
+					local alpha_targetDummies = utils.mapIntoRange(dist_targetDummies, config.sightDistanceNear, limit_targetDummies, 1, 0)
+					targetDummy.visible = isVis_targetDummies
+					targetDummy.alpha = alpha_targetDummies
+				end
+			end			
 			for footstep,v in pairs(the.footsteps) do	
 				if the.footsteps[footstep] == true then
 					local dist_footsteps = vector.lenFromTo(footstep.x, footstep.y, the.player.x, the.player.y)

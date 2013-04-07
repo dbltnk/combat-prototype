@@ -129,6 +129,8 @@ TargetDummy = Tile:extend
 		self.painBar:updateBar()
 		self.painBar.x = self.x
 		self.painBar.y = self.y	
+		self.painBar.bar.alpha = self.alpha
+		self.painBar.background.alpha = self.alpha		
 	end,	
 	
 	respawn = function (self)
