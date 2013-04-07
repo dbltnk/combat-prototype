@@ -22,24 +22,26 @@ Particles = Sprite:extend
 	-- int maxParticleCount
 	-- Image image
 	
-	new = function (self, obj)
+	new = function (self, obj, r, g, b, a)
 		obj = obj or {}
 		self:extend(obj)
 		
+		r = 128
+		g = 128
+		b = 128
+		a = 128
+		
 		obj:updateSystem()
 		
-		obj.system:setEmissionRate(10)
+		obj.system:setEmissionRate(20)
 		obj.system:setLifetime(1)
-		obj.system:setParticleLife(7)
+		obj.system:setParticleLife(15)
 		obj.system:setDirection(0)
 		obj.system:setSpread(2 * math.pi)
 		obj.system:setSpeed(10, 20)
 		obj.system:setSizes(2, 0.5)
 		obj.system:setSizeVariation(0.3)
-		--~ obj.system:setColors(190,190,190,255,
-			--~ 200,200,200,255,
-			--~ 222,222,222,100,
-			--~ 255,255,255,0)
+		obj.system:setColors(r, g, b, a)
 
 		obj.system:start()
 		

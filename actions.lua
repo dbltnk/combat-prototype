@@ -26,9 +26,6 @@ require 'zoetrope'
 spawnExplosionCircle = function (x,y,r,t,color)
 	t = config.AEShowTime
 	color = color or {128,128,128,128}
-	for k,v in pairs(color) do
-		print(k,v)
-	end
 	local d = Fill:new{ shape="circle", x = x-r, y = y-r, width = r*2, height = r*2, border = {0,0,0,0}, fill = color}
 	the.view.layers.particles:add(d)
 	the.view.timer:after(t, function() 
