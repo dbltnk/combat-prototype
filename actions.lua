@@ -25,11 +25,11 @@ require 'zoetrope'
 
 spawnExplosionCircle = function (x,y,r,t,color)
 	t = config.AEShowTime
-	color = color or {255,0,255,128}
+	color = color or {128,128,128,128}
 	for k,v in pairs(color) do
 		print(k,v)
 	end
-	local d = Fill:new{ shape="circle", x = x-r, y = y-r, width = r*2, height = r*2, border = {0,0,0,0}, fill = color or defaultColor}
+	local d = Fill:new{ shape="circle", x = x-r, y = y-r, width = r*2, height = r*2, border = {0,0,0,0}, fill = color}
 	the.view.layers.particles:add(d)
 	the.view.timer:after(t, function() 
 		the.view.layers.particles:remove(d)
@@ -53,8 +53,6 @@ action_handling.register_target_selection("ae", function (start_target, target_s
 	local x,y = action_handling.get_target_position(start_target)
 	
 	spawnDebugCircle(x,y,target_selection.range)
-	-- NOTE target_selection.explosion_color works but you omitted the time and therefore
-	-- color got interpreted as time in spawnExplosionCircle
 	spawnExplosionCircle(x,y, target_selection.range, nil, target_selection.explosion_color)
 	
 	local l = action_handling.find_ae_targets(x,y, target_selection.range, 
@@ -161,7 +159,7 @@ action_handling.register_target_selection("projectile", function (start_target, 
 			print("PIERCING AE", target_selection.ae_targets, target_selection.ae_size)
 			local x,y = action_handling.get_target_position(self)
 			spawnDebugCircle(x,y,target_selection.ae_size)
-			spawnExplosionCircle(x,y,target_selection.range, target_selection.explosion_color)  -- TODO: fix target_selection.explosion_color
+			spawnExplosionCircle(x,y,target_selection.range, nil, target_selection.explosion_color)
 
 			local l = action_handling.find_ae_targets(x,y, target_selection.ae_size, 
 				target_selection.piercing_number or 1000000)
