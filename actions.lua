@@ -53,7 +53,9 @@ action_handling.register_target_selection("ae", function (start_target, target_s
 	local x,y = action_handling.get_target_position(start_target)
 	
 	spawnDebugCircle(x,y,target_selection.range)
-	spawnExplosionCircle(x,y,target_selection.range,target_selection.explosion_color) -- TODO: fix target_selection.explosion_color
+	-- NOTE target_selection.explosion_color works but you omitted the time and therefore
+	-- color got interpreted as time in spawnExplosionCircle
+	spawnExplosionCircle(x,y, target_selection.range, nil, target_selection.explosion_color)
 	
 	local l = action_handling.find_ae_targets(x,y, target_selection.range, 
 		target_selection.piercing_number or 1000000)
