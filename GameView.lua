@@ -40,8 +40,8 @@ GameView = View:extend
 		self:add(self.layers.particles)		
 		self:add(self.layers.characters)
 		self:add(self.layers.projectiles)
-		self:add(self.layers.ui)
 		self:add(self.layers.above)		
+		self:add(self.layers.ui)		
 		self:add(self.layers.debug)
 		
 		-- setup player
