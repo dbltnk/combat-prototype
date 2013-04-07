@@ -343,6 +343,7 @@ Character = Animation:extend
 		then
 			local cx,cy = self.x + self.width / 2, self.y + self.height / 2
 			self.skills[ipt.shootSkillNr]:use(cx, cy, ipt.viewx, ipt.viewy, self)
+			self.hidden = false
 		end
 		
 		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))	
