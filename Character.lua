@@ -33,15 +33,15 @@ Character = Animation:extend
 	-- list of Skill
 	skills = {
 		"bow_shot",
-		"xbow_piercing_shot",	
+		--"xbow_piercing_shot",	
 		--"scythe_attack",
-		--"scythe_pirouette",			
+		"scythe_pirouette",			
 		--"shield_bash",		
-		"sprint",
+		--"sprint",
 		"camouflage",		
 		--"bandage",
 		"fireball",
-		--"life_leech",
+		"life_leech",
 		"gank",
 	},
 	
@@ -379,17 +379,10 @@ Character = Animation:extend
 		then
 			local cx,cy = self.x + self.width / 2, self.y + self.height / 2
 			self.skills[ipt.shootSkillNr]:use(cx, cy, ipt.viewx, ipt.viewy, self)
+			self.hidden = false
 		end
 		
-		-- combat music?
-		local isInCombat = false
-		for k,v in pairs(self.skills) do
-			isInCombat = isInCombat or (v:isOutOfCombat() == false)
-		end
-		
-		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))
-		
-		audio.isInCombat = isInCombat
+		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))	
 	end,
 	
 	onUpdateRemote = function (self, elapsed)
@@ -414,7 +407,7 @@ Character = Animation:extend
 			self.painBar.background.visible = false						
 		else
 			self.visible = true
-			self.painBar.visible = false
+			self.painBar.visible = true
 			self.painBar.bar.visible = true
 			self.painBar.background.visible = true						
 		end	
@@ -445,6 +438,22 @@ Character = Animation:extend
 				done[i] = true
 			end
 		end
+
+		-- check if we're in combat
+		local isInCombat = false
+		for k,v in pairs(self.skills) do
+			isInCombat = isInCombat or (v:isOutOfCombat() == false)
+		end
+		
+		-- hide pain bar when not in combat and at full health
+		if not isInCombat and self.currentPain == 0 then
+			self.painBar.visible = false
+			self.painBar.bar.visible = false
+			self.painBar.background.visible = false	
+		end
+		
+		-- combat music?
+		audio.isInCombat = isInCombat
 	end,
 
 }

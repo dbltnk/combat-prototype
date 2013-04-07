@@ -122,9 +122,8 @@ GameView = View:extend
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
 		
 		self:remove(self.trees)
-		self.layers.above:add(self.trees)	
-		
 		self:remove(self.buildings)
+		self.layers.above:add(self.trees)	
 		self.layers.above:add(self.buildings)
 		
 		-- set spawn position
@@ -281,6 +280,27 @@ GameView = View:extend
 					projectile.alpha = alpha_projectiles
 				end
 			end
+			for targetDummy,v in pairs(the.targetDummies) do	
+				if the.targetDummies[targetDummy] == true then
+					local dist_targetDummies = vector.lenFromTo(targetDummy.x, targetDummy.y, the.player.x, the.player.y)
+					local limit_targetDummies = config.sightDistanceFar
+					local isVis_targetDummies = dist_targetDummies < limit_targetDummies
+					local alpha_targetDummies = utils.mapIntoRange(dist_targetDummies, config.sightDistanceNear, limit_targetDummies, 1, 0)
+					targetDummy.visible = isVis_targetDummies
+					targetDummy.alpha = alpha_targetDummies
+				end
+			end			
+			for footstep,v in pairs(the.footsteps) do	
+				if the.footsteps[footstep] == true then
+					local dist_footsteps = vector.lenFromTo(footstep.x, footstep.y, the.player.x, the.player.y)
+					local limit_footsteps = config.sightDistanceFar
+					local isVis_footsteps = dist_footsteps < limit_footsteps
+					local alpha_footsteps = utils.mapIntoRange(dist_footsteps, config.sightDistanceNear, limit_footsteps, 1, 0)
+					footstep.visible = isVis_footsteps
+					footstep.fogAlpha = alpha_footsteps
+				end
+			end
+
 		end
 		
 		audio.update()

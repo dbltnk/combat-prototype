@@ -67,10 +67,16 @@ Skill = Class:extend
 		local castTime = self.cast_time
 		-- new particle system example
 		local p = Particles:new{ 
-			image = "/assets/graphics/action_particles/firebal_particle.png",
+			image = "/assets/graphics/particle.png",
 			width = 100,
 			height = 100,
 			onNew = function (self)
+				local ps = self.system
+				
+				-- to adjust particle system parameter
+				-- use self.system which is a lšve ParticleSystem instance
+				ps:setColors(200,0,0,128)
+			
 				self.x, self.y = action_handling.get_target_position(player)
 				the.app.view.layers.particles:add(self)
 				-- destroy after cast time

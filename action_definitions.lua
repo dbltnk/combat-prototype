@@ -86,7 +86,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "projectile", range = 400, speed = 200, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/fireball_projectile.png"},
 			effects = {
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, gfx = "/assets/graphics/action_particles/fireball_particle.png"},
+					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = {255, 57, 17, 128}},
 					effects = {
 						{effect_type = "damage", str = 38, },
 					},
@@ -124,9 +124,14 @@ action_definitions = {
 		cast_particle_color = { 0,255,0 },		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, piercing_number = 1, ae_size = 50, ae_targets = 1, gfx = "/assets/graphics/action_projectiles/life_leech_projectile.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/life_leech_projectile.png"},
 			effects = {
-				{effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = {0, 255 ,0, 128}},
+					effects = {
+						{effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
+					},
+				}},	
 			},
 		},
 	},
@@ -188,7 +193,7 @@ action_definitions = {
 	camouflage = {
 		name = "Camouflage",
 		description = "Makes you invisible for a short time.",
-		icon = "/assets/graphics/action_icons/unknown.png", --TODO: create the icon
+		icon = "/assets/graphics/action_icons/camouflage_icon.png",
 		cast_time = 0.1,
 		timeout = 60,
 		energy = 100,
