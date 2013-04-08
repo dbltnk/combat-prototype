@@ -4,7 +4,7 @@ TargetDummy = Tile:extend
 {
 	image = '/assets/graphics/dummy.png',
 	currentPain = 0,
-	maxPain = 100,
+	maxPain = 90,
 	xpWorth = config.dummyXPWorth,
 	dmgReceived = {},
 	damagerTable = {},	

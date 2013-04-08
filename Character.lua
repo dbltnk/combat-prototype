@@ -25,8 +25,8 @@ Character = Animation:extend
 		"scythe_pirouette",			
 		--"shield_bash",		
 		--"sprint",
-		"camouflage",		
-		--"bandage",
+		--"camouflage",		
+		"bandage",
 		"fireball",
 		"life_leech",
 		"gank",
@@ -69,7 +69,7 @@ Character = Animation:extend
 		object_manager.create(self)
 		the.view.layers.characters:add(self)
 		self.wFactor = self.width / self.maxPain		
-		
+		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
 		for k,v in pairs(self.skills) do
 			self.skills[k] = Skill:new { nr = k, id = v, character = self }
 		end
@@ -213,6 +213,7 @@ Character = Animation:extend
 				the.hud:add(the.levelUI)			
 			end							
 		end
+		self.maxPain = config.maxPain *	(1 + config.strIncreaseFactor * self.level) 
 	end,
 	
 	receive = function (self, message_name, ...)
