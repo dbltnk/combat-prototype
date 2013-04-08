@@ -170,7 +170,6 @@ action_handling.register_target_selection("projectile", function (start_target, 
 		if oldOnDie then oldOnDie(self) end
 	end
 	
-	playSound('/assets/audio/bow.wav', 1, 'short') -- source: http://opengameart.org/content/battle-sound-effects
 end)
 
 

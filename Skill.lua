@@ -104,6 +104,7 @@ Skill = Class:extend
 				-- finished casting				
 				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
 				--print("SKILL", self.nr, "REALLY USE")
+				playSound(self.definition.sound or '/assets/audio/missing.wav', 1, 'short')
 				-- update view pos
 				if player.readInput then
 					local ipt = player:readInput()
