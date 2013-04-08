@@ -161,7 +161,34 @@ Character = Animation:extend
 			self.xp = 1000
 			self.tempMaxxed = true
 		--	print("leveled", self.level, self.oid)
-			-- TODO: add particle-fx here
+			-- new particle system example
+			local particleTime = 3
+			local p = Particles:new{ 
+			image = "/assets/graphics/particle.png",
+			width = 100,
+			height = 100,
+			onNew = function (self)
+				local ps = self.system
+				ps:setColors(255,255,0,128)
+				ps:setEmissionRate(100)
+				ps:setParticleLife(particleTime)
+				ps:setSpeed(20,30)
+				ps:setSizes(3,4)
+			
+				self.x, self.y = tools.object_center(the.player)
+				the.app.view.layers.particles:add(self)
+				-- destroy after cast time
+				the.app.view.timer:after(particleTime, function()
+					self:die()
+				end)
+			end,
+			onDie = function (self)
+				the.app.view.layers.particles:remove(self)
+			end,
+			onUpdate = function (self, elapsed)
+				self.x, self.y = tools.object_center(the.player)
+			end,
+		 }
 		end		
 		self:updateLevel()
 		if math.floor(str) > 0 then self.scrollingText  = ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = math.floor(str), tint = {1,1,0}}
