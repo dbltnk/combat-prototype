@@ -282,6 +282,7 @@ ScrollingText = Text:extend
 	
 	onNew = function (self)
 		self.x = self.x - self.width / 2
+		self.y = self.y - math.random(-10,10)
 	end,
 	
 	onUpdate = function (self)
