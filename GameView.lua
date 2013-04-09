@@ -82,7 +82,7 @@ GameView = View:extend
 		-- object -> true map for easy remove, key contains footstep references
 		the.footsteps = {}
 		
-		local mapFile = '/assets/maps/desert/test.lua'
+		local mapFile = '/assets/maps/desert/desert.lua'
 		self:loadLayers(mapFile, true, {objects = true, })
 		
 		local is_server = network.is_first and network.connected_client_count == 1
