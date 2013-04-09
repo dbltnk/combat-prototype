@@ -6,6 +6,7 @@ action_definitions = {
 		name = "Bow shot",
 		description = "Hits something with the pointy end of an arrow.",
 		icon = "/assets/graphics/action_icons/bow_shot_icon.png",
+		sound = "/assets/audio/bow_shot.wav",
 		cast_time = .5,
 		timeout = 1,
 		energy = 10,
@@ -24,6 +25,7 @@ action_definitions = {
 		name = "Scythe attack",
 		description = "Hits something with the razor sharp edge of your scythe.",
 		icon = "/assets/graphics/action_icons/scythe_attack_icon.png",
+		sound = "/assets/audio/scythe_attack.wav",		
 		cast_time = .75,
 		timeout = 3,
 		energy = 30,
@@ -41,6 +43,7 @@ action_definitions = {
 		name = "Bandage yourself",
 		description = "Reduces your pain.",
 		icon = "/assets/graphics/action_icons/bandage_icon.png",
+		sound = "/assets/audio/bandage.wav",				
 		cast_time = 2,
 		timeout = 5,
 		energy = 20,
@@ -59,6 +62,7 @@ action_definitions = {
 		name = "Sprint",
 		description = "Increases your run speed for a time.",
 		icon = "/assets/graphics/action_icons/sprint_icon.png",
+		sound = "/assets/audio/sprint.wav",				
 		cast_time = 0.1,
 		timeout = 20,
 		energy = 100,
@@ -76,6 +80,7 @@ action_definitions = {
 		name = "Fireball",
 		description = "Hurl a ball of fiery, glowing pain that explodes on impact.",
 		icon = "/assets/graphics/action_icons/fireball_icon.png",
+		sound = "/assets/audio/fireball.wav",				
 		cast_time = 3,
 		timeout = 9,
 		energy = 60,
@@ -86,7 +91,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "projectile", range = 400, speed = 200, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/fireball_projectile.png"},
 			effects = {
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, gfx = "/assets/graphics/action_particles/fireball_particle.png"},
+					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = {255, 57, 17, 128}},
 					effects = {
 						{effect_type = "damage", str = 38, },
 					},
@@ -99,6 +104,7 @@ action_definitions = {
 		name = "Shield bash",
 		description = "Daze your opponents by smashing their faces with your shield.",
 		icon = "/assets/graphics/action_icons/shield_bash_icon.png",
+		sound = "/assets/audio/shield_bash.wav",				
 		cast_time = 0.1,
 		timeout = 10,
 		energy = 12,
@@ -117,6 +123,7 @@ action_definitions = {
 		name = "Life leech",
 		description = "Drain your target's health to make it yours.",
 		icon = "/assets/graphics/action_icons/life_leech_icon.png",
+		sound = "/assets/audio/life_leech.wav",				
 		cast_time = 1.8,
 		timeout = 15,
 		energy = 36,
@@ -124,9 +131,14 @@ action_definitions = {
 		cast_particle_color = { 0,255,0 },		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, piercing_number = 1, ae_size = 50, ae_targets = 1, gfx = "/assets/graphics/action_projectiles/life_leech_projectile.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/life_leech_projectile.png"},
 			effects = {
-				{effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = {0, 255 ,0, 128}},
+					effects = {
+						{effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
+					},
+				}},	
 			},
 		},
 	},
@@ -135,6 +147,7 @@ action_definitions = {
 		name = "Scythe pirouettek",
 		description = "Spin your scythe around you, hitting everything in your vicinity.",
 		icon = "/assets/graphics/action_icons/scythe_pirouette_icon.png",
+		sound = "/assets/audio/scythe_pirouette.wav",				
 		cast_time = 1,
 		timeout = 15,
 		energy = 20,
@@ -152,6 +165,7 @@ action_definitions = {
 		name = "Piercing bolt",
 		description = "Pierce through a number of targets, bleeding them all.",
 		icon = "/assets/graphics/action_icons/xbow_piercing_shot_icon.png",
+		sound = "/assets/audio/xbow_piercing_shot.wav",				
 		cast_time = 1.5,
 		timeout = 12,
 		energy = 30,
@@ -171,6 +185,7 @@ action_definitions = {
 		name = "Gank",
 		description = "End the suffering of an unconcious player.",
 		icon = "/assets/graphics/action_icons/gank.png",
+		sound = "/assets/audio/gank.wav",						
 		cast_time = 5,
 		timeout = 0,
 		energy = 50,
@@ -188,7 +203,8 @@ action_definitions = {
 	camouflage = {
 		name = "Camouflage",
 		description = "Makes you invisible for a short time.",
-		icon = "/assets/graphics/action_icons/unknown.png", --TODO: create the icon
+		icon = "/assets/graphics/action_icons/camouflage_icon.png",
+		sound = "/assets/audio/camouflage.wav",						
 		cast_time = 0.1,
 		timeout = 60,
 		energy = 100,

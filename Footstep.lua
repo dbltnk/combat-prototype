@@ -9,7 +9,11 @@ Footstep = Tile:extend
 	width = 32,
 	height = 32,
 	image = '/assets/graphics/footsteps.png',
-	lifetime = 3,
+	
+	fogAlpha = 1,
+	fadeAlpha = 1,
+	duration = config.footStepVisibility,
+
 	owner = 0,
 	
 	dieAtTime = nil,
@@ -17,13 +21,18 @@ Footstep = Tile:extend
 	onNew = function (self)
 		self:mixin(GameObject)
 		the.app.view.layers.ground:add(self)
-		self.dieAtTime = network.time + self.lifetime
+		self.dieAtTime = network.time + self.duration
 	end,
 	
 	onUpdateLocal = function (self)
 		if network.time > self.dieAtTime then
 			self:die()
 		end
+	end,
+
+	onUpdateBoth = function (self, elapsed)
+		self.fadeAlpha = utils.mapIntoRange (network.time, self.dieAtTime - self.duration, self.dieAtTime, 0, 1)		
+		self.alpha = math.min(self.fadeAlpha, self.fogAlpha)
 	end,
 	
 	onDieBoth = function (self)

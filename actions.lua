@@ -21,6 +21,22 @@ require 'zoetrope'
 -- function effect_callback(target, effect)
 -- -- function action_handling.register_effect(name, effect_callback)
 
+-- x,y centered
+
+spawnExplosionCircle = function (x,y,r,t,color)
+	t = config.AEShowTime
+	color = color or {128,128,128,128}
+	local d = Fill:new{ shape="circle", x = x-r, y = y-r, width = r*2, height = r*2, border = {0,0,0,0}, fill = color}
+	the.view.layers.particles:add(d)
+	the.view.timer:after(t, function() 
+		the.view.layers.particles:remove(d)
+	end)
+	the.view.timer:every(0.05, function() 
+		d.alpha = d.alpha - 0.05
+	end)
+end
+
+
 -- target_selection: self ----------------------------------------------------------
 action_handling.register_target_selection("self", function (start_target, target_selection, source_oid, targets_selected_callback)
 	targets_selected_callback({start_target})
@@ -34,6 +50,7 @@ action_handling.register_target_selection("ae", function (start_target, target_s
 	local x,y = action_handling.get_target_position(start_target)
 	
 	spawnDebugCircle(x,y,target_selection.range)
+	spawnExplosionCircle(x,y, target_selection.range, nil, target_selection.explosion_color)
 	
 	local l = action_handling.find_ae_targets(x,y, target_selection.range, 
 		target_selection.piercing_number or 1000000)
@@ -140,6 +157,8 @@ action_handling.register_target_selection("projectile", function (start_target, 
 			print("PIERCING AE", target_selection.ae_targets, target_selection.ae_size)
 			local x,y = action_handling.get_target_position(self)
 			spawnDebugCircle(x,y,target_selection.ae_size)
+			spawnExplosionCircle(x,y,target_selection.range, nil, target_selection.explosion_color)
+
 			local l = action_handling.find_ae_targets(x,y, target_selection.ae_size, 
 				target_selection.piercing_number or 1000000)
 			
@@ -152,7 +171,6 @@ action_handling.register_target_selection("projectile", function (start_target, 
 		if oldOnDie then oldOnDie(self) end
 	end
 	
-	playSound('/assets/audio/bow.wav', 1, 'short') -- source: http://opengameart.org/content/battle-sound-effects
 end)
 
 
@@ -160,6 +178,7 @@ end)
 -- eg. {effect_type = "spawn", application = ...},
 -- has: application
 action_handling.register_effect("spawn", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
 	action_handling.start(effect.application, target, source_oid, source_oid)
 end)
 
@@ -181,47 +200,53 @@ end)
 -- eg. {effect_type = "invis"},
 -- has: duration, speedPenalty TODO: not while moving, not while casting, etc.
 action_handling.register_effect("invis", function (target, effect, source_oid)
-	object_manager.send(target.oid, "invis", effect.duration, effect.speedPenalty, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "invis", effect.duration * increase, effect.speedPenalty, source_oid)
 end)
 
 -- effect: heal ----------------------------------------------------------
 -- eg. {effect_type = "heal", str = 60},
 -- has: str
 action_handling.register_effect("heal", function (target, effect, source_oid)
-	object_manager.send(target.oid, "heal", effect.str, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "heal", effect.str * increase, source_oid)
 end)
 
 -- effect: damage ----------------------------------------------------------
 -- eg. {effect_type = "damage", str = 60},
 -- has: str
 action_handling.register_effect("damage", function (target, effect, source_oid)
-	object_manager.send(target.oid, "damage", effect.str, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "damage", effect.str * increase, source_oid)
 end)
 
 -- effect: damage_over_time ----------------------------------------------------------
 -- eg. {effect_type = "damage_over_time", ticks = 5, duration = 20, str = 5},
 -- has: str
 action_handling.register_effect("damage_over_time", function (target, effect, source_oid)
-	object_manager.send(target.oid, "damage_over_time", effect.str, effect.duration, effect.ticks, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "damage_over_time", effect.str * increase, effect.duration, effect.ticks, source_oid)
 end)
 
 -- effect: runspeed ----------------------------------------------------------
 -- eg. {effect_type = "runspeed", str = 100, duration = 10},
 -- has: str, duration
 action_handling.register_effect("runspeed", function (target, effect, source_oid)
-	object_manager.send(target.oid, "runspeed", effect.str, effect.duration, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "runspeed", effect.str, effect.duration * increase, source_oid)
 end)
 
 -- effect: stun ----------------------------------------------------------
 -- eg. {effect_type = "stun", duration = 10},
 -- has: duration
 action_handling.register_effect("stun", function (target, effect, source_oid)
-	object_manager.send(target.oid, "stun", effect.duration, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "stun", effect.duration * increase, source_oid)
 end)
 
 -- effect: transfer ----------------------------------------------------------
 -- eg. {effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
 -- todo: duration, from, to, eff, attribute, ticks, duration, str
-action_handling.register_effect("stun", function (target, effect, source_oid)
+action_handling.register_effect("stun", function (target, effect, source_oid) --TODO:  * increase
 	--~ object_manager.send(target.oid, "stun", effect.duration, source_oid)
 end)

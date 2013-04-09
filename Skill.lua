@@ -65,12 +65,31 @@ Skill = Class:extend
 		--~ })
 		
 		local castTime = self.cast_time
+		local colour = self.definition.cast_particle_color or {128,128,128}
+		for k,v in pairs(colour) do
+			if k == 1 then 
+				r = v
+			elseif k == 2 then 
+				g = v
+			elseif k == 3 then 
+				b = v
+			end
+		end
 		-- new particle system example
 		local p = Particles:new{ 
-			image = "/assets/graphics/action_particles/firebal_particle.png",
+			image = "/assets/graphics/particle.png",
 			width = 100,
 			height = 100,
 			onNew = function (self)
+				local ps = self.system
+				-- to adjust particle system parameter
+				-- use self.system which is a love ParticleSystem instance
+				ps:setColors(r,g,b,128)
+				ps:setEmissionRate(100)
+				ps:setParticleLife(castTime)
+				ps:setSpeed(20,30)
+				ps:setSizes(3,4)
+			
 				self.x, self.y = action_handling.get_target_position(player)
 				the.app.view.layers.particles:add(self)
 				-- destroy after cast time
@@ -92,6 +111,7 @@ Skill = Class:extend
 				-- finished casting				
 				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
 				--print("SKILL", self.nr, "REALLY USE")
+				playSound(self.definition.sound or '/assets/audio/missing.wav', 1, 'short')
 				-- update view pos
 				if player.readInput then
 					local ipt = player:readInput()

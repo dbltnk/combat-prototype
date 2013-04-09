@@ -10,7 +10,7 @@ TargetDummy = Tile:extend
 	
 	image = '/assets/graphics/dummy.png',
 	currentPain = 0,
-	maxPain = 100,
+	maxPain = 90,
 	xpWorth = config.dummyXPWorth,
 	dmgReceived = {},
 	damagerTable = {},	
@@ -91,10 +91,10 @@ TargetDummy = Tile:extend
 		--	print("DUMMY HEAL", str)
 		elseif message_name == "damage" then
 			local str, source_oid  = ...
+			-- damage handling for xp distribution	
+			self:trackDamage(source_oid, str)
 			--print("DUMMY DAMANGE", str)
 			self:gainPain(str)
-		--	print("start ", start_target)
-			-- damage handling for xp distribution	
 
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
@@ -102,6 +102,7 @@ TargetDummy = Tile:extend
 			for i=1,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.alive then 
+						self:trackDamage(source_oid, str)
 						self:gainPain(str)
 					end
 				end)
@@ -126,14 +127,15 @@ TargetDummy = Tile:extend
 		-- find out how much xp which player gets and tell him
 		local myDmgReceived = self.dmgReceived[self.oid]
 		
-		for damager, value in pairs(myDmgReceived) do
-			self.finalDamage = self.finalDamage + value
-		end
-		
-		for damager, value in pairs(myDmgReceived) do
-			object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
-		end
-		
+    if myDmgReceived then
+      for damager, value in pairs(myDmgReceived) do
+        self.finalDamage = self.finalDamage + value
+      end
+      
+      for damager, value in pairs(myDmgReceived) do
+        object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
+      end
+    end
 		self.timeOfDeath = love.timer.getTime()
 		--~ the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
 	end,
@@ -152,6 +154,8 @@ TargetDummy = Tile:extend
 		self.painBar:updateBar()
 		self.painBar.x = self.x
 		self.painBar.y = self.y	
+		self.painBar.bar.alpha = self.alpha
+		self.painBar.background.alpha = self.alpha		
 	end,	
 	
 	respawn = function (self)

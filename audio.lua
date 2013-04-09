@@ -15,10 +15,10 @@ audio.combatMusic = nil
 
 function audio.init()
 
-	audio.peaceMusic = playSound('/assets/audio/eots.ogg', config.volume, 'long') -- Shadowbane Soundtrack: Eye of the Storm
+	audio.peaceMusic = playSound('/assets/audio/peace.ogg', config.volume, 'long')
 	audio.peaceMusic:setLooping(true)
 
-	audio.combatMusic = playSound('/assets/audio/dos.ogg', 0, 'long') -- Shadowbane Soundtrack: Dance of Steel
+	audio.combatMusic = playSound('/assets/audio/war.ogg', 0, 'long')
 	audio.combatMusic:setLooping(true)
 	
 end

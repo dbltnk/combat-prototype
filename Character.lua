@@ -33,15 +33,15 @@ Character = Animation:extend
 	-- list of Skill
 	skills = {
 		"bow_shot",
-		"xbow_piercing_shot",	
+		--"xbow_piercing_shot",	
 		--"scythe_attack",
-		--"scythe_pirouette",			
+		"scythe_pirouette",			
 		--"shield_bash",		
-		"sprint",
-		"camouflage",		
-		--"bandage",
+		--"sprint",
+		--"camouflage",		
+		"bandage",
 		"fireball",
-		--"life_leech",
+		"life_leech",
 		"gank",
 	},
 	
@@ -83,7 +83,7 @@ Character = Animation:extend
 
 		the.app.view.layers.characters:add(self)
 		self.wFactor = self.width / self.maxPain		
-		
+		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
 		for k,v in pairs(self.skills) do
 			self.skills[k] = Skill:new { nr = k, id = v, character = self }
 		end
@@ -184,7 +184,34 @@ Character = Animation:extend
 			self.xp = 1000
 			self.tempMaxxed = true
 		--	print("leveled", self.level, self.oid)
-			-- TODO: add particle-fx here
+			-- new particle system example
+			local particleTime = 3
+			local p = Particles:new{ 
+			image = "/assets/graphics/particle.png",
+			width = 100,
+			height = 100,
+			onNew = function (self)
+				local ps = self.system
+				ps:setColors(255,255,0,128)
+				ps:setEmissionRate(100)
+				ps:setParticleLife(particleTime)
+				ps:setSpeed(20,30)
+				ps:setSizes(3,4)
+			
+				self.x, self.y = tools.object_center(the.player)
+				the.app.view.layers.particles:add(self)
+				-- destroy after cast time
+				the.app.view.timer:after(particleTime, function()
+					self:die()
+				end)
+			end,
+			onDie = function (self)
+				the.app.view.layers.particles:remove(self)
+			end,
+			onUpdate = function (self, elapsed)
+				self.x, self.y = tools.object_center(the.player)
+			end,
+		 }
 		end		
 		self:updateLevel()
 		if math.floor(str) > 0 then 
@@ -210,6 +237,7 @@ Character = Animation:extend
 				the.hud:add(the.levelUI)			
 			end							
 		end
+		self.maxPain = config.maxPain *	(1 + config.strIncreaseFactor * self.level) 
 	end,
 	
 	showDamage = function (self, str)
@@ -379,17 +407,10 @@ Character = Animation:extend
 		then
 			local cx,cy = self.x + self.width / 2, self.y + self.height / 2
 			self.skills[ipt.shootSkillNr]:use(cx, cy, ipt.viewx, ipt.viewy, self)
+			self.hidden = false
 		end
 		
-		-- combat music?
-		local isInCombat = false
-		for k,v in pairs(self.skills) do
-			isInCombat = isInCombat or (v:isOutOfCombat() == false)
-		end
-		
-		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))
-		
-		audio.isInCombat = isInCombat
+		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))	
 	end,
 	
 	onUpdateRemote = function (self, elapsed)
@@ -414,7 +435,7 @@ Character = Animation:extend
 			self.painBar.background.visible = false						
 		else
 			self.visible = true
-			self.painBar.visible = false
+			self.painBar.visible = true
 			self.painBar.bar.visible = true
 			self.painBar.background.visible = true						
 		end	
@@ -445,6 +466,22 @@ Character = Animation:extend
 				done[i] = true
 			end
 		end
+
+		-- check if we're in combat
+		local isInCombat = false
+		for k,v in pairs(self.skills) do
+			isInCombat = isInCombat or (v:isOutOfCombat() == false)
+		end
+		
+		-- hide pain bar when not in combat and at full health
+		if not isInCombat and self.currentPain == 0 then
+			self.painBar.visible = false
+			self.painBar.bar.visible = false
+			self.painBar.background.visible = false	
+		end
+		
+		-- combat music?
+		audio.isInCombat = isInCombat
 	end,
 
 }
