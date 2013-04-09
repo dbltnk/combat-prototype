@@ -1,6 +1,8 @@
 STRICT = true
 DEBUG = true
 
+if arg[#arg] == "-debug" then require("mobdebug").start() end
+
 -- local profiler = require 'profiler'
 --~ profiler.start('profile.out')
 require 'zoetrope'
@@ -73,7 +75,7 @@ the.app = App:new
 	end,
 
     onRun = function (self)
-		-- disable the hardware cursor
+    -- disable the hardware cursor
 		self:useSysCursor(false)
 		
 		--~ the.app.console:watch("viewx", "the.view.translate.x")

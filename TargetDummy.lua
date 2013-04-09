@@ -68,11 +68,10 @@ TargetDummy = Tile:extend
 		--	print("DUMMY HEAL", str)
 		elseif message_name == "damage" then
 			local str, source_oid  = ...
-			--print("DUMMY DAMANGE", str)
-			self:gainPain(str)
-		--	print("start ", start_target)
 			-- damage handling for xp distribution	
 			self:trackDamage(source_oid, str)
+			--print("DUMMY DAMANGE", str)
+			self:gainPain(str)
 
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
@@ -105,14 +104,15 @@ TargetDummy = Tile:extend
 		-- find out how much xp which player gets and tell him
 		local myDmgReceived = self.dmgReceived[self.oid]
 		
-		for damager, value in pairs(myDmgReceived) do
-			self.finalDamage = self.finalDamage + value
-		end
-		
-		for damager, value in pairs(myDmgReceived) do
-			object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
-		end
-		
+    if myDmgReceived then
+      for damager, value in pairs(myDmgReceived) do
+        self.finalDamage = self.finalDamage + value
+      end
+      
+      for damager, value in pairs(myDmgReceived) do
+        object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
+      end
+    end
 		self.timeOfDeath = love.timer.getTime()
 		the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
 	end,
