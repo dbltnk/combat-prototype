@@ -226,7 +226,9 @@ function bson.binary(v, subtype)
 end
 
 function bson.to_num(n,v)
-   if math.floor(v) ~= v then
+	-- TODO negative ints are broken so
+ 	-- just use floats in this case
+   if math.floor(v) ~= v or v < 0 then
       return bson.to_double(n,v)
    elseif v > 2147483647 or v < -2147483648 then
       return bson.to_int64(n,v)

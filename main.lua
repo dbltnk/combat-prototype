@@ -28,6 +28,7 @@ require 'debug_utils'
 
 require 'GameObject'
 require 'MonitorChanges'
+require 'Buffs'
 require 'Skill'
 require 'SkillIcon'
 require 'SkillBar'
