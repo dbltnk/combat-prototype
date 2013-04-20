@@ -7,11 +7,11 @@ Character = Animation:extend
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "currentEnergy",
-		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", "velocity" },			
+		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", "velocity", "hidden", "isInCombat" },			
 		
 	sync_high = {"x", "y", "currentEnergy", "currentPain", "rotation", "alive", "anim_play", "anim_freeze", "velocity"},
 	sync_low = {"x", "y", "rotation", "image", "width", "height", "currentPain", "currentEnergy",
-		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", "incapacitated", },			
+		"rotation", "maxEnergy", "xp", "xpCap", "level", "levelCap", "incapacitated", "hidden", "isInCombat" },			
 	
 	maxPain = config.maxPain, 
 	currentPain = 0,
@@ -25,6 +25,7 @@ Character = Animation:extend
 	incapacitated = false,
 	wFactor = 0,	
 	hidden = false,
+    isInCombat = false,	
 
 	-- for anim sync
 	anim_play = nil,
@@ -38,10 +39,10 @@ Character = Animation:extend
 		"scythe_pirouette",			
 		--"shield_bash",		
 		--"sprint",
-		--"camouflage",		
+		"camouflage",		
 		"bandage",
 		"fireball",
-		"life_leech",
+		--"life_leech",
 		"gank",
 	},
 	
@@ -452,13 +453,14 @@ Character = Animation:extend
 		end 
 		
 		-- check if we're in combat
-		local isInCombat = false
+		
+		self.isInCombat = false
 		for k,v in pairs(self.skills) do
-			isInCombat = isInCombat or (v:isOutOfCombat() == false)
+			self.isInCombat = self.isInCombat or (v:isOutOfCombat() == false)
 		end
 		
 		-- hide pain bar when not in combat and at full health
-		if not isInCombat and self.currentPain == 0 then
+		if not self.isInCombat and self.currentPain == 0 then
 			self.painBar.visible = false
 			self.painBar.bar.visible = false
 			self.painBar.background.visible = false	
@@ -481,7 +483,7 @@ Character = Animation:extend
 		end
 		
 		-- combat music?
-		audio.isInCombat = isInCombat
+		audio.isInCombat = self.isInCombat
 	end,
 
 }
