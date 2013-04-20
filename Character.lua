@@ -72,7 +72,7 @@ Character = Animation:extend
 	lastFootstep = 0,
 	
 	footstepsPossible = function (self)
-		return love.timer.getTime() - self.lastFootstep >= .25
+		if self.hidden == false then return love.timer.getTime() - self.lastFootstep >= .25 end
 	end,
 	
 	makeFootstep = function (self)
