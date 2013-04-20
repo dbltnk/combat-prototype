@@ -449,7 +449,20 @@ Character = Animation:extend
 			self.painBar.inc = true 
 		else
 			self.painBar.inc = false
-		end 		
+		end 
+		
+		-- check if we're in combat
+		local isInCombat = false
+		for k,v in pairs(self.skills) do
+			isInCombat = isInCombat or (v:isOutOfCombat() == false)
+		end
+		
+		-- hide pain bar when not in combat and at full health
+		if not isInCombat and self.currentPain == 0 then
+			self.painBar.visible = false
+			self.painBar.bar.visible = false
+			self.painBar.background.visible = false	
+		end				
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
@@ -465,19 +478,6 @@ Character = Animation:extend
 				self:resetXP()
 				done[i] = true
 			end
-		end
-
-		-- check if we're in combat
-		local isInCombat = false
-		for k,v in pairs(self.skills) do
-			isInCombat = isInCombat or (v:isOutOfCombat() == false)
-		end
-		
-		-- hide pain bar when not in combat and at full health
-		if not isInCombat and self.currentPain == 0 then
-			self.painBar.visible = false
-			self.painBar.bar.visible = false
-			self.painBar.background.visible = false	
 		end
 		
 		-- combat music?
