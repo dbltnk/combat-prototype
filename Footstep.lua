@@ -31,7 +31,7 @@ Footstep = Tile:extend
 	end,
 
 	onUpdateBoth = function (self, elapsed)
-		self.fadeAlpha = utils.mapIntoRange (network.time, self.dieAtTime - self.duration, self.dieAtTime, 0, 1)		
+		self.fadeAlpha = utils.mapIntoRange (network.time, self.dieAtTime - self.duration, self.dieAtTime, 1, 0)		
 		self.alpha = math.min(self.fadeAlpha, self.fogAlpha)
 	end,
 	
