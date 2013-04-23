@@ -91,6 +91,7 @@ GameView = View:extend
 			TargetDummy = true,
 			Npc = true,
 			Barrier = true,
+			Ressource = true,
 		}
 		self:loadMap(mapFile, not is_server and networkSyncedObjects or nil)
 		
