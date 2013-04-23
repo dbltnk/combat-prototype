@@ -1,0 +1,16 @@
+{
+  "name": "combat-prototype-server",
+  "description": "lalala",
+  "version": "0.0.1",
+  "author": "Sebastian Dorda <hagish@schattenkind.net>",
+  "dependencies": {
+    "underscore": "*",
+    "underscore.string": "*",
+    "wilson": "*",
+    "optimist": "*",
+    "q": "*",
+    "synchronized": "*",
+    "async": "*"
+  },
+  "engine": "node >= 0.10.0"
+}
