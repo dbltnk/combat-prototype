@@ -121,12 +121,13 @@ DebugConsole = Group:extend{
 				obj.log.text = obj.log.text .. tostring(value) .. ' '
 			end
 
+			obj.log.text = obj.log.text .. '\n'
+
 			-- trim to sane size
-			if obj.log.text:len() > 20*100 then 
+			if obj.log.text and obj.log.text:len() > 20*100 then 
 				obj.log.text = obj.log.text(obj.log.text:len() - 20*100) 
 			end
 
-			obj.log.text = obj.log.text .. '\n'
 			obj._updateLog = true
 			obj._oldPrint(...)
 		end
