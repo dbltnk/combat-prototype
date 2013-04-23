@@ -21,23 +21,23 @@ config.getUpPain = 0.5 -- in percent
 config.ressourceHealth = 300
 config.xpGainsEachNSeconds = 10
 config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds
+config.strIncreaseFactor = 0.1 -- 10% stronger per lvl
+
+-- visuals
+config.show_fog_of_war = true
 config.sightDistanceFar = 600
 config.sightDistanceNear = 300
 config.footStepVisibility = 30 -- beware: large numbers will be bad for performance
 config.AEShowTime = 2
-config.strIncreaseFactor = 0.1 -- 10% stronger per lvl
 
 -- audio
 config.volume = 0.3
-
 
 -- gamepad
 config.gamepad_cursor_speed_near = 300
 config.gamepad_cursor_speed_far = 800
 config.gamepad_cursor_near_distance = 400
 config.gamepad_cursor_near_border = 200
-
-config.show_fog_of_war = true
 
 -- debug
 config.draw_debug_info = false
@@ -48,5 +48,7 @@ config.show_object_list = false
 --~ config.server_hostname = "192.168.2.1"
 config.server_hostname = "buffy.leenox.de"
 config.server_port = 9999
+config.sync_high = 1 / 30
+config.sync_low = 1
 
 return config

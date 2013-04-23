@@ -1,7 +1,12 @@
--- Barrier
-
 Ressource = Tile:extend
 {
+	class = "Ressource",
+
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "controller" },	
+	
+	sync_high = {"currentPain"},
+	sync_low = {"controller"},
+
 	image = '/assets/graphics/ressource.png',
 	currentPain = 0,
 	maxPain = config.ressourceHealth,
@@ -13,8 +18,8 @@ Ressource = Tile:extend
 		y = 0, 
 		tint = {0,0,0},
 	},	
-	owner = 0,
-	nextOwner = 0,
+	controller = 0,
+	nextController = 0,
 	
 	-- UiBar
 	painBar = nil,
@@ -26,6 +31,7 @@ Ressource = Tile:extend
 	end,		
 	
 	onNew = function (self)
+		self:mixin(GameObject)
 		self.width = 64
 		self.height = 64
 		self:updateQuad()
@@ -49,30 +55,47 @@ Ressource = Tile:extend
 		--print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
 		self:updatePain()
+	end,
+	
+	showDamage = function (self, str)
 		if str >= 0 then
 			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
 		else
 			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
 		end
+	end,	
+	
+	receiveBoth = function (self, message_name, ...)
+		--print(self.oid, "receives message", message_name, "with", ...)
+		if message_name == "damage" then
+			local str, source_oid = ...
+			--print("RESSOURCE DAMANGE", str)
+			self:showDamage(str)
+		elseif message_name == "damage_over_time" then
+			local str, duration, ticks, source_oid = ...
+			--print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks)
+			for i=1,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					self:showDamage(str)
+				end)
+			end
+		end
 	end,
 	
-	receive = function (self, message_name, ...)
+	receiveLocal = function (self, message_name, ...)
 		--print(self.oid, "receives message", message_name, "with", ...)
-		if message_name == "heal" then
-			local str, source_oid = ...
-			--print("RESSOURCE HEAL", str)
-		elseif message_name == "damage" then
+		if message_name == "damage" then
 			local str, source_oid = ...
 			--print("RESSOURCE DAMANGE", str)
 			self:gainPain(str)
-			self.nextOwner = source_oid
+			self.nextController = source_oid
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=1,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					self:gainPain(str)
-					self.nextOwner = source_oid
+					self.nextController = source_oid
 				end)
 			end
 		end
@@ -82,7 +105,7 @@ Ressource = Tile:extend
 		if self.currentPain > self.maxPain then 
 			self.currentPain = self.maxPain
 			--self:die()
-			self:changeOwner()
+			self:changeController()
 		end	
 	end,
 	
@@ -90,24 +113,24 @@ Ressource = Tile:extend
 		-- TODO: player-owned
 	end,
 	
-	changeOwner = function(self)
-		self.owner = self.nextOwner
+	changeController = function(self)
+		self.controller = self.nextController
 		self.currentPain = 0
 	end,
 	
 	giveXP = function(self)
-		if self.owner ~= 0 then object_manager.send(self.owner, "xp", config.xpPerRessourceTick) end
+		if self.controller ~= 0 then object_manager.send(self.controller, "xp", config.xpPerRessourceTick) end
 	end,	
 	
-	onUpdate = function (self)	
+	onUpdateBoth = function (self)	
 		self.painBar.currentValue = self.currentPain
 		self.painBar:updateBar()
 		self.painBar.x = self.x
 		self.painBar.y = self.y
 		
-		if self.owner == 0 then self.t.text = "Owned by: none" else self.t.text = "Owned by: " .. self.owner end
+		if self.controller == 0 then self.t.text = "Owned by: none" else self.t.text = "Owned by: " .. self.controller end
 		self.t.x = self.x - self.width /4
 		self.t.y = self.y - self.t.height
-		self.t.width = 120			
+		self.t.width = 120	
 	end,	
 }

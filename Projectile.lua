@@ -6,7 +6,7 @@ Projectile = Tile:extend
 	class = "Projectile",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "velocity", "creation_time"},			
-	sync_low = {"x", "y"},
+	sync_high = {"x", "y", "velocity", "creation_time"},
 			
 	width = 32,
 	height = 32,

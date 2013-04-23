@@ -6,7 +6,7 @@ TargetDummy = Tile:extend
 
 	props = {"x", "y", "rotation", "image", "width", "height", "velocity", "creation_time",
 		"maxPain", "xpWorth", "finalDamage", },			
-	sync_high = {"x", "y", "currentEnergy", "currentPain", "rotation", "alive"},
+	sync_high = {"x", "y", "currentPain", "alive"},
 	
 	image = '/assets/graphics/dummy.png',
 	currentPain = 0,

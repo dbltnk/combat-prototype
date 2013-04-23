@@ -4,16 +4,15 @@ Barrier = Tile:extend
 {
 	class = "Barrier",
 
-	props = {"x", "y", "rotation", "image", "width", "height", },	
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive" },	
 	
-	sync_low = {"x", "y", "currentPain", "rotation", "alive"},
+	sync_high = {"currentPain", "alive"},
 
 	image = '/assets/graphics/barrier.png',
 	currentPain = 0,
 	maxPain = config.barrierHealth,
 	wFactor = 0,
 	highscore = {},
-	owner = 0,
 
 	-- UiBar
 	painBar = nil,
@@ -71,10 +70,7 @@ Barrier = Tile:extend
 	
 	receiveLocal = function (self, message_name, ...)
 		--print(self.oid, "receives message", message_name, "with", ...)
-		if message_name == "heal" then
-			local str, source_oid = ...
-			--print("BARRIER HEAL", str)
-		elseif message_name == "damage" then
+		if message_name == "damage" then
 			local str, source_oid = ...
 			--print("BARRIER DAMANGE", str)
 			self:gainPain(str)

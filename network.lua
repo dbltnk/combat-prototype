@@ -125,7 +125,7 @@ function network.update (dt)
 
 		if not m or type(m) ~= "table" then break end
 	
-		print("NET IN", json.encode(m))
+		-- print("NET IN", json.encode(m))
 		
 		stats.in_messages = stats.in_messages + 1
 		
@@ -221,7 +221,7 @@ end
 function network.send (message)
 	if not client then return end
 
-	print("NET OUT", json.encode(message))
+	--print("NET OUT", json.encode(message))
 
 	local m = bson.encode(message)
 	stats.out_messages = stats.out_messages + 1
