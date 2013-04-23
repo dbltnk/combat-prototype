@@ -66,8 +66,6 @@
   <object name="TargetDummy" x="510" y="2546" width="23" height="20"/>
   <object name="TargetDummy" x="642" y="2400" width="23" height="20"/>
   <object name="TargetDummy" x="453" y="2644" width="23" height="20"/>
-  <object name="Npc" x="566" y="2689" width="64" height="64"/>
-  <object name="Npc" x="1003" y="144" width="64" height="64"/>
   <object name="Barrier" x="3" y="2369" width="90" height="188">
    <properties>
     <property name="_the" value="barrier"/>
@@ -77,15 +75,6 @@
   <object name="Ressource" x="2814" y="2654" width="64" height="64"/>
   <object name="Ressource" x="2381" y="569" width="64" height="64"/>
   <object name="Ressource" x="1228" y="78" width="64" height="64"/>
-  <object name="Npc" x="1195" y="474" width="64" height="64"/>
-  <object name="Npc" x="2153" y="504" width="64" height="64"/>
-  <object name="Npc" x="2513" y="820" width="64" height="64"/>
-  <object name="Npc" x="2132" y="2859" width="64" height="64"/>
-  <object name="Npc" x="2547" y="2783" width="64" height="64"/>
-  <object name="Npc" x="2826" y="2435" width="64" height="64"/>
-  <object name="Npc" x="1916" y="2320" width="64" height="64"/>
-  <object name="Npc" x="150" y="2077" width="64" height="64"/>
-  <object name="Npc" x="195" y="2995" width="64" height="64"/>
   <object name="respawnpoint" x="1476" y="1384">
    <properties>
     <property name="_the" value="respawnpoint"/>
@@ -127,7 +116,7 @@
   <object name="TargetDummy" x="1822" y="1699" width="23" height="20"/>
   <object name="TargetDummy" x="2046" y="1672" width="23" height="20"/>
   <object name="TargetDummy" x="1713" y="1869" width="23" height="20"/>
-  <object name="spawnpoint" x="296" y="2472">
+  <object name="spawnpoint" x="1993" y="2304">
    <properties>
     <property name="_the" value="spawnpoint"/>
    </properties>

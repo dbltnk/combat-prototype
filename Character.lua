@@ -32,14 +32,14 @@ Character = Animation:extend
 	-- list of Skill
 	skills = {
 		"bow_shot",
-		--"xbow_piercing_shot",	
+		"xbow_piercing_shot",	
 		--"scythe_attack",
-		"scythe_pirouette",			
+		--"scythe_pirouette",			
 		--"shield_bash",		
-		--"sprint",
+		"sprint",
 		"camouflage",		
 		"bandage",
-		"fireball",
+		--"fireball",
 		--"life_leech",
 		"gank",
 	},
