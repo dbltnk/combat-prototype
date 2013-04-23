@@ -43,6 +43,7 @@ config.gamepad_cursor_near_border = 200
 config.draw_debug_info = false
 config.show_profile_info = false
 config.show_object_list = false
+config.show_prints = false
 
 -- network
 --~ config.server_hostname = "192.168.2.1"

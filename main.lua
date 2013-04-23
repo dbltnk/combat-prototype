@@ -1,6 +1,15 @@
 STRICT = true
 DEBUG = true
 
+config = require 'config'
+
+local luaPrint = print
+print = function (...)
+    if not config or config.show_prints then
+        luaPrint(...)
+    end
+end
+
 if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 -- local profiler = require 'profiler'
@@ -9,7 +18,6 @@ require 'zoetrope'
 
 vector = require 'vector'
 utils = require 'utils'
-config = require 'config'
 input = require 'input'
 profile = require 'profile'
 list = require 'list'
