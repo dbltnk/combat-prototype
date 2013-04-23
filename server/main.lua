@@ -4,22 +4,73 @@ local string = require 'string'
 local list = require 'list'
 local bson = require 'bson'
 local os = require 'os'
+local math = require 'math'
+
+json.encode = json.stringify
+json.decode = json.parse
 
 local clients = {}
 local clients_count = 0
 
-function encode_message(message)
-	return bson.encode(message)
+local function toLSB(bytes,value)
+  local res = ''
+  local size = bytes
+  local str = ""
+  for j=1,size do
+     str = str .. string.char(value % 256)
+     value = math.floor(value / 256)
+  end
+  return str
+end
+
+local function toLSB32(value) return toLSB(4,value) end
+
+local function fromLSB32(s)
+   return s:byte(1) + (s:byte(2)*256) + 
+      (s:byte(3)*65536) + (s:byte(4)*16777216)
+end
+
+-- returns message, buffer
+function decode_message_json(buffer)
+	if buffer == nil then return nil, buffer end
+	if buffer:len() < 4 then return nil, buffer end
+	
+	local size = fromLSB32(buffer:sub(1,4))
+	--~ print(size)
+	
+	if buffer:len() < 4 + size then return nil, buffer end
+	
+	local s = buffer:sub(5, 5 + size - 1)
+	
+	local rest = nil
+	if buffer:len() - size - 4 > 0 then
+		rest = buffer:sub(5 + size - 1 + 1)
+	end
+	
+	--~ print("REST", utils.toHex(rest))
+	
+	return json.decode(s), rest
+end
+
+function encode_message_json(message)
+	local s = json.encode(message)
+	return toLSB32(s:len()) .. s
 end
 
 -- returns message, buffer
 function decode_message(buffer)
-	local ok, message, newBuffer = pcall(bson.decode, buffer)
-	if ok then
-		return message, newBuffer
-	else
-		return nil, buffer
-	end
+	local msg, buf = decode_message_json(buffer)
+	return msg, buf
+end
+
+function encode_message(message)
+	return encode_message_json(message)
+end
+
+-- returns message, buffer
+function decode_message(buffer)
+	local msg, buf = decode_message_json(buffer)
+	return msg, buf
 end
 
 function send_to_all(message, clients)

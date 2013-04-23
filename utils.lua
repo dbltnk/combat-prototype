@@ -112,4 +112,25 @@ function utils.values (l)
 	return r
 end
 
+function utils.toHex(s)
+	local replaceNonPrintableChars = function (s, replacement)
+		local r = ""
+		for i = 1,string.len(s) do
+			local b = s:byte(i)
+			if b >= 33 and b <= 126 then r = r .. string.char(b)
+			else r = r .. replacement end
+		end
+		return r
+	end
+
+	if not s or type(s) ~= "string" then return "<nil>" end
+	
+	local r = ""
+	for i = 1,string.len(s) do
+		r = r .. (s:byte(i) < 16 and "0" or "") .. string.format("%x ", s:byte(i))
+	end
+	r = r .. "(" .. string.len(s) .. " bytes) [" .. replaceNonPrintableChars(s, ".") .. "]"
+	return r
+end
+
 return utils

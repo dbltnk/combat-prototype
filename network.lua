@@ -52,15 +52,55 @@ local open_requests = {}
 local unprocessed = ""
 local bytes_read = 0
 
+local function toLSB(bytes,value)
+  local res = ''
+  local size = bytes
+  local str = ""
+  for j=1,size do
+     str = str .. string.char(value % 256)
+     value = math.floor(value / 256)
+  end
+  return str
+end
+
+local function toLSB32(value) return toLSB(4,value) end
+
+local function fromLSB32(s)
+   return s:byte(1) + (s:byte(2)*256) + 
+      (s:byte(3)*65536) + (s:byte(4)*16777216)
+end
+
+-- returns message, buffer
+function decode_message_json(buffer)
+	if buffer == nil then return nil, buffer end
+	if buffer:len() < 4 then return nil, buffer end
+	
+	local size = fromLSB32(buffer:sub(1,4))
+	--~ print(size)
+	
+	if buffer:len() < 4 + size then return nil, buffer end
+	
+	local s = buffer:sub(5, 5 + size - 1)
+	
+	local rest = nil
+	if buffer:len() - size - 4 > 0 then
+		rest = buffer:sub(5 + size - 1 + 1)
+	end
+	
+	--~ print("REST", utils.toHex(rest))
+	
+	return json.decode(s), rest
+end
+
+function encode_message_json(message)
+	local s = json.encode(message)
+	return toLSB32(s:len()) .. s
+end
+
 -- returns message, buffer
 function decode_message(buffer)
-	local ok, message, newBuffer = pcall(bson.decode, buffer)
-	if ok then
-		return message, newBuffer
-	else
-		print("ERROR", message)
-		return nil, buffer
-	end
+	local msg, buf = decode_message_json(buffer)
+	return msg, buf
 end
 
 function replaceNonPrintableChars(s, replacement)
@@ -112,7 +152,7 @@ function network.update (dt)
 	while client do
 		local err, err_text, buffer = client:receive(1024*1024)
 		if buffer then 
-			unprocessed = unprocessed .. buffer
+			unprocessed = (unprocessed or "") .. buffer
 			stats.in_bytes = stats.in_bytes + string.len(buffer)
 		end
 	
@@ -223,7 +263,7 @@ function network.send (message)
 
 	--print("NET OUT", json.encode(message))
 
-	local m = bson.encode(message)
+	local m = encode_message_json(message)
 	stats.out_messages = stats.out_messages + 1
 	stats.out_bytes = stats.out_bytes + string.len(m)
 
