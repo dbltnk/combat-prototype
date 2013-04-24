@@ -1,7 +1,7 @@
 
 local config = {}
 
--- balancing variables
+-- combat balancing
 config.walkspeed = 150
 config.runspeed = 300
 config.animspeed = 16 * config.walkspeed / 50
@@ -10,17 +10,20 @@ config.energyreg = 6
 config.healthreg = 1
 config.maxPain = 200
 config.maxEnergy = 300
-config.barrierHealth = 10000
-config.roundTime = 3600 -- in seconds
+config.getUpPain = 0.5 -- in percent
+
+-- progression and round time
+config.timecompression = 4
+config.barrierHealth = 50000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.roundTime = 3600 / config.timecompression -- in seconds
 config.xpCap = 1000
 config.levelCap = 10
 config.dummyXPWorth = 50
 config.dummyRespawn = 10
-config.xpCapTimer = config.roundTime / config.levelCap
-config.getUpPain = 0.5 -- in percent
+config.xpCapTimer = config.roundTime / config.levelCap / config.timecompression
 config.ressourceHealth = 300
 config.xpGainsEachNSeconds = 10
-config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds
+config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds / config.timecompression
 config.strIncreaseFactor = 0.1 -- 10% stronger per lvl
 
 -- visuals
