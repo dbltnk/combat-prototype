@@ -151,6 +151,7 @@ require 'zoetrope.utils.subview'
 
 if not love.load then
 	love.load = function()
+    if arg[#arg] == "-debug" then require("mobdebug").start() end
 		if the.app then
 			-- if we only extended an app, instantiate it
 			if not (the.app.view and the.app.meta) then the.app = the.app:new() end
