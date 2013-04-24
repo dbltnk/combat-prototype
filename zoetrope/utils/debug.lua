@@ -122,6 +122,12 @@ DebugConsole = Group:extend{
 			end
 
 			obj.log.text = obj.log.text .. '\n'
+
+			-- trim to sane size
+			if obj.log.text and obj.log.text:len() > 20*100 then 
+				obj.log.text = obj.log.text(obj.log.text:len() - 20*100) 
+			end
+
 			obj._updateLog = true
 			obj._oldPrint(...)
 		end
