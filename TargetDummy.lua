@@ -137,7 +137,7 @@ TargetDummy = Tile:extend
       end
     end
 		self.timeOfDeath = love.timer.getTime()
-		--~ the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
+		the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
 	end,
 	
 	onUpdateLocal = function (self)
@@ -159,6 +159,7 @@ TargetDummy = Tile:extend
 	end,	
 	
 	respawn = function (self)
+		self:mixin(GameObject)
 		the.targetDummies[self] = true	
 		self.currentPain = 0
 		self.alive = true
