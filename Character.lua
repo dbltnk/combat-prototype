@@ -23,7 +23,7 @@ Character = Animation:extend
 	incapacitated = false,
 	wFactor = 0,	
 	hidden = false,
-    isInCombat = false,	
+  isInCombat = false,	
 
 	-- for anim sync
 	anim_play = nil,
@@ -251,13 +251,13 @@ Character = Animation:extend
 		print("BOTH", message_name)
 		if message_name == "damage" then
 			local str, source_oid = ...
-			self:showDamage(str)
+			if not self.incapacitated then self:showDamage(str) end
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=1,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					self:showDamage(str)
+					if not self.incapacitated then self:showDamage(str) end
 				end)
 			end
 		end
@@ -273,13 +273,15 @@ Character = Animation:extend
 		elseif message_name == "damage" then
 			local str, source_oid = ...
 		--	print("DAMANGE", str)
-			self:gainPain(str)
-			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str/100) end
+			if not self.incapacitated then 
+        self:gainPain(str)
+        if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str/100) end
+      end
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			for i=1,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.incapacitated == false then 
+					if not self.incapacitated then  
 						self:gainPain(str)
 						if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str/100) end
 					end
