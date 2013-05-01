@@ -8,64 +8,41 @@ var wilson = require("wilson");
 var net = require("net");
 var os = require("os");
 
-JSON.encode = JSON.stringify;
-JSON.decode = JSON.parse;
+// -> [message|null, buffer]
+function tryToParseBuffer (buffer) {
+	var s = buffer.toString();
+	try {
+		var m = JSON.parse(s);
+		return [m, new Buffer(0)];
+	}
+	catch (e) {}
+	
+	// fallback to partial parser
+	for (var i = buffer.length; i >= 0; --i) {
+		if (buffer[i] != 10) continue;
+		
+		var b = buffer.slice(0, i);
+		try {
+			var m = JSON.parse(b.toString());
+			return [m, buffer.slice(i, buffer.length)];
+		} 
+		catch(e) {}
+	}
+	
+	return [null, buffer]
+}
 
 var clients = [];
 var clients_count = 0;
 
-function toLSB(bytes, value) {
-  var res = "";
-  var size = bytes;
-  var b = new Buffer(4);
-  for(var j = 0; j < size; ++j) {
-     b[j] = value % 256;
-     value = Math.floor(value / 256);
-  }
-  return b;
-}
-
-function toLSB32(value) {
-	return toLSB(4,value);
-}
-
-function fromLSB32(s) {
-	return s[0] + (s[1]*256) + 
-      (s[2]*65536) + (s[3]*16777216);
-}
-
-// returns {msg: message, rest: buffer }
-function decode_message_json(buffer) {
-	if (buffer == null) { return {msg: null, rest: buffer}; }
-	if (buffer.length < 4) { return {msg: null, rest: buffer}; }
-	
-	var size = fromLSB32(buffer.slice(0,4));
-	
-	if (buffer.length < 4 + size) { return {msg: null, rest: buffer}; }
-	
-	var s = buffer.slice(4, 4 + size);
-	
-	var rest = null;
-	if (buffer.length - size - 4 > 0) {
-		rest = buffer.slice(4 + size);
-	}
-	
-	return {msg: JSON.decode(s.toString()), rest: rest};
-}
-
-function encode_message_json(message) {
-	var s = JSON.encode(message);
-	return Buffer.concat([toLSB32(s.length),new Buffer(s)]);
-}
-
 // returns {msg: message, rest: buffer }
 function decode_message(buffer) {
-	var t = decode_message_json(buffer);
-	return t;
+	var t = tryToParseBuffer(buffer);
+	return {msg: t[0], rest: t[1]};
 }
 
 function encode_message(message) {
-	return encode_message_json(message);
+	return JSON.stringify(message) + "\n";
 }
 
 function send_to_all(message, clients) {
@@ -139,7 +116,6 @@ server = net.createServer(function (client) {
 		else client.unprocessed = Buffer.concat([client.unprocessed, data]);
 
 		while (true) {
-			if (client.unprocessed) console.log(client.unprocessed.length);
 			var t = decode_message(client.unprocessed);
 			var message = t.msg;
 			var rest = t.rest;
@@ -148,7 +124,7 @@ server = net.createServer(function (client) {
 		
 			if (message == null) break;
 			
-			console.log("RECEIVED", JSON.stringify(message));
+			console.log("RECEIVED", JSON.stringify(message), client.unprocessed ? "<"+client.unprocessed.length+">" : "<>");
 			
 			if (message.channel == "server") {
 				if (message.cmd == "who") {
@@ -175,7 +151,7 @@ server = net.createServer(function (client) {
 					send_to_one({seq: message.seq, fin: true}, client);
 				}
 			} else {
-				console.log("DELIVER TO OTHERS");
+				//~ console.log("DELIVER TO OTHERS");
 				send_to_other(message, client, clients);
 			}
 		}

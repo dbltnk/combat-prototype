@@ -17,6 +17,7 @@ C>C {channel = "game", cmd = "msg", oid = , name =, params = [...]}
 ]]
 
 local socket = require 'socket'
+List = require 'pl.List'
 
 network = {}
 
@@ -48,59 +49,18 @@ network.connected_client_count = 0
 network.lowest_client_id = nil
 
 local open_requests = {}
-
 local unprocessed = ""
 local bytes_read = 0
 
-local function toLSB(bytes,value)
-  local res = ''
-  local size = bytes
-  local str = ""
-  for j=1,size do
-     str = str .. string.char(value % 256)
-     value = math.floor(value / 256)
-  end
-  return str
-end
-
-local function toLSB32(value) return toLSB(4,value) end
-
-local function fromLSB32(s)
-   return s:byte(1) + (s:byte(2)*256) + 
-      (s:byte(3)*65536) + (s:byte(4)*16777216)
-end
-
--- returns message, buffer
-function decode_message_json(buffer)
-	if buffer == nil then return nil, buffer end
-	if buffer:len() < 4 then return nil, buffer end
+-- -> message|nil, buffer
+function decode_message(buffer)
+	local ok, m, l = pcall(json.decode, buffer)
 	
-	local size = fromLSB32(buffer:sub(1,4))
-	--~ print(size)
-	
-	if buffer:len() < 4 + size then return nil, buffer end
-	
-	local s = buffer:sub(5, 5 + size - 1)
-	
-	local rest = nil
-	if buffer:len() - size - 4 > 0 then
-		rest = buffer:sub(5 + size - 1 + 1)
+	if ok and m ~= nil then
+		return m, buffer:sub(l)
 	end
 	
-	--~ print("REST", utils.toHex(rest))
-	
-	return json.decode(s), rest
-end
-
-function encode_message_json(message)
-	local s = json.encode(message)
-	return toLSB32(s:len()) .. s
-end
-
--- returns message, buffer
-function decode_message(buffer)
-	local msg, buf = decode_message_json(buffer)
-	return msg, buf
+	return nil, buffer
 end
 
 function replaceNonPrintableChars(s, replacement)
@@ -136,6 +96,8 @@ function network.update_lowest_client_id ()
 end
 
 function network.update (dt)
+	local messagesLeft = 1
+		
 	-- update time and keep in sync
 	network.time = network.time + dt
 	
@@ -150,13 +112,14 @@ function network.update (dt)
 	end
 	
 	while client do
-		local err, err_text, buffer = client:receive(1024*1024)
-		if buffer then 
+		local buffer, err = client:receive()
+		--~ print("###", buffer, err)
+		if not err then 
 			unprocessed = (unprocessed or "") .. buffer
 			stats.in_bytes = stats.in_bytes + string.len(buffer)
-		end
-	
-		--~ if string.len(unprocessed) > 0 then print("NET IN STATUS", toHex(unprocessed)) end
+		end		
+		
+		if unprocessed and string.len(unprocessed) > 0 then print("NET IN STATUS", toHex(unprocessed)) end
 	
 		if (not unprocessed or string.len(unprocessed) == 0) then break end
 		
@@ -189,6 +152,7 @@ function network.update (dt)
 					network.time = m.time
 					network.is_first = m.first
 					network.connected_client_id_map = {}
+					print("XXXXX", json.encode(m))
 					for _,id in pairs(m.ids) do network.connected_client_id_map[id] = id end
 					network.update_lowest_client_id()
 				elseif m.cmd == "join" then
@@ -260,24 +224,16 @@ end
 
 function network.send (message)
 	if not client then return end
-
-	--print("NET OUT", json.encode(message))
-
-	local m = encode_message_json(message)
+	
+	local m = json.encode(message) .. "\n"
 	stats.out_messages = stats.out_messages + 1
 	stats.out_bytes = stats.out_bytes + string.len(m)
-
-	local i,j = 1, string.len(m)
-	
-	while true do
-		local r = client:send(m, i, j)
-		if r == nil then print("NET ERROR sending") break end
-		i = r + 1
-		if i > j then break end
-	end
+	client:send(m)
 end
 
 function network.connect (host, port)
+	print("luasocket version", socket._VERSION)
+	
 	if client then client:close() end
 	
 	local s = socket.tcp()
@@ -295,7 +251,7 @@ function network.connect (host, port)
 		network.update_lowest_client_id()
 	end
 	
-	if client then client:settimeout(0, "t") end
+	if client then client:settimeout(0) end
 end
 
 -- callback(value)

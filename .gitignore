@@ -1,3 +1,5 @@
 .buildpath
 .project
+server/node_modules/
+/trace.log
 geany_run_script.bat

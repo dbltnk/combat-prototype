@@ -86,6 +86,7 @@ GameView = View:extend
 		self:loadLayers(mapFile, true, {objects = true, })
 		
 		local is_server = network.is_first and network.connected_client_count == 1
+		print("XXXXXXXXX", network.is_first, network.connected_client_count)
 		
 		local networkSyncedObjects = {
 			TargetDummy = true,
@@ -103,7 +104,7 @@ GameView = View:extend
 			})
 		else
 			network.get("game", function(data)
-				self.game_start_time = data.start_time
+				self.game_start_time = data and data.start_time or 0
 			end)
 		end
 		
@@ -363,6 +364,7 @@ GameView = View:extend
 							obj:netCreate()
 						end
 					end
+					print("DONE new player send objects#############")
 				elseif m.cmd == "left" then
 					-- player left so kill all objects from the player
 					for oid,obj in pairs(object_manager.objects) do
