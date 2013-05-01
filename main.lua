@@ -78,6 +78,8 @@ the.app = App:new
 		-- show the highscore table 
 		if the.keys:justPressed ("f5") then the.barrier:showHighscore() end	
 
+		-- resync
+		if the.keys:justPressed ("f7") then the.app.view:resyncAllLocalObjects() end					
 		-- show object list
 		if the.keys:justPressed ("f8") then config.show_object_list = not config.show_object_list end					
 		-- show Fog of War

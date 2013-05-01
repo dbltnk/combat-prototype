@@ -312,9 +312,16 @@ GameView = View:extend
 		audio.update()
     end,	
 
+	resyncAllLocalObjects = function ()
+		object_manager.visit(function(oid,o)
+			if o.sendResync then o:sendResync() end
+		end)
+	end,
+
 	setupNetworkHandler = function ()
 		table.insert(network.on_message, function(m) 
-			print ("RECEIVED", json.encode(m))
+			--~ print ("RECEIVED", json.encode(m))
+			
 			if m.channel == "game" then
 				if m.cmd == "create" then
 					local o = object_manager.get(m.oid)

@@ -51,8 +51,7 @@ network.lowest_client_id = nil
 local open_requests = {}
 local unprocessed = ""
 local bytes_read = 0
-local out_queue = List()
-local out_this_frame = 0
+local out_buff = ""
 
 -- -> message|nil, buffer
 function decode_message(buffer)
@@ -98,9 +97,6 @@ function network.update_lowest_client_id ()
 end
 
 function network.update (dt)
-	network.try_to_send()
-	out_this_frame = 0
-		
 	-- update time and keep in sync
 	network.time = network.time + dt
 	
@@ -181,7 +177,8 @@ function network.update (dt)
 		network.stats = "\nTIME " .. math.floor(network.time) .. "\n" .. 
 			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s\n" ..
-			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. " QUEUED " .. out_queue:len()
+			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
+				" OUTBUFF " .. out_buff:len()
 		
 		if config.show_object_list then
 			local objs = ""
@@ -225,26 +222,25 @@ function network.send_request (message, response_callback)
 	network.send(message)
 end
 
-function network.try_to_send ()
-	while out_queue:len() > 0 do
-		if out_this_frame > config.network_send_limit then return end
-		
-		local message = out_queue:pop()
-		
-		local m = json.encode(message) .. "\n"
-		stats.out_messages = stats.out_messages + 1
-		stats.out_bytes = stats.out_bytes + string.len(m)
-		out_this_frame = out_this_frame + string.len(m)
-		client:send(m)
-	end
-end
-
 function network.send (message)
 	if not client then return end
 	
-	out_queue:put(message)
-	
-	network.try_to_send()
+	local m = json.encode(message) .. "\n"
+
+	stats.out_messages = stats.out_messages + 1
+	stats.out_bytes = stats.out_bytes + string.len(m)
+
+	out_buff = out_buff .. m
+
+	local lr,ls,lerr = socket.select(nil,{client},0)
+	if #ls > 0 then
+		local s, err = client:send(out_buff)
+		if not s and err ~= "timeout" then
+			print("connection failed: ", err)
+			os.exit(-1)
+		end
+		if s then out_buff = out_buff:sub(s + 1, -1) end
+	end
 end
 
 function network.connect (host, port)

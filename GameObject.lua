@@ -94,6 +94,19 @@ GameObject = {
 		end
 	end,
 	
+	sendResync = function (self)
+		if not self:isLocal() then return end
+		
+		local nils = {}
+		local msg = { channel = "game", cmd = "sync", oid = self.oid, owner = self.owner, time = network.time, }
+		for _,prop in pairs(self.props) do
+			if self[prop] == nil then table.insert(nils, prop) end
+			msg[prop] = self[prop] 
+		end
+		msg.nils = nils
+		network.send (msg)
+	end,
+	
 	propsToString = function (self)
 		local r = ""
 		if self.props then 

@@ -49,7 +49,6 @@ config.show_object_list = false
 config.show_prints = true
 
 -- network
-config.network_send_limit = 10000
 --~ config.server_hostname = "windegg"
 config.server_hostname = "buffy.leenox.de"
 config.server_port = 9999
