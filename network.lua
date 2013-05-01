@@ -51,6 +51,8 @@ network.lowest_client_id = nil
 local open_requests = {}
 local unprocessed = ""
 local bytes_read = 0
+local out_queue = List()
+local out_this_frame = 0
 
 -- -> message|nil, buffer
 function decode_message(buffer)
@@ -96,7 +98,8 @@ function network.update_lowest_client_id ()
 end
 
 function network.update (dt)
-	local messagesLeft = 1
+	network.try_to_send()
+	out_this_frame = 0
 		
 	-- update time and keep in sync
 	network.time = network.time + dt
@@ -119,7 +122,7 @@ function network.update (dt)
 			stats.in_bytes = stats.in_bytes + string.len(buffer)
 		end		
 		
-		if unprocessed and string.len(unprocessed) > 0 then print("NET IN STATUS", toHex(unprocessed)) end
+		--~ if unprocessed and string.len(unprocessed) > 0 then print("NET IN STATUS", toHex(unprocessed)) end
 	
 		if (not unprocessed or string.len(unprocessed) == 0) then break end
 		
@@ -178,7 +181,7 @@ function network.update (dt)
 		network.stats = "\nTIME " .. math.floor(network.time) .. "\n" .. 
 			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s\n" ..
-			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no")
+			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. " QUEUED " .. out_queue:len()
 		
 		if config.show_object_list then
 			local objs = ""
@@ -222,13 +225,26 @@ function network.send_request (message, response_callback)
 	network.send(message)
 end
 
+function network.try_to_send ()
+	while out_queue:len() > 0 do
+		if out_this_frame > config.network_send_limit then return end
+		
+		local message = out_queue:pop()
+		
+		local m = json.encode(message) .. "\n"
+		stats.out_messages = stats.out_messages + 1
+		stats.out_bytes = stats.out_bytes + string.len(m)
+		out_this_frame = out_this_frame + string.len(m)
+		client:send(m)
+	end
+end
+
 function network.send (message)
 	if not client then return end
 	
-	local m = json.encode(message) .. "\n"
-	stats.out_messages = stats.out_messages + 1
-	stats.out_bytes = stats.out_bytes + string.len(m)
-	client:send(m)
+	out_queue:put(message)
+	
+	network.try_to_send()
 end
 
 function network.connect (host, port)

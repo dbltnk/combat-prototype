@@ -46,13 +46,14 @@ config.gamepad_cursor_near_border = 200
 config.draw_debug_info = false
 config.show_profile_info = false
 config.show_object_list = false
-config.show_prints = false
+config.show_prints = true
 
 -- network
---~ config.server_hostname = "192.168.2.1"
+config.network_send_limit = 10000
+--~ config.server_hostname = "windegg"
 config.server_hostname = "buffy.leenox.de"
 config.server_port = 9999
-config.sync_high = 1 / 30
+config.sync_high = 1 / 15
 config.sync_low = 1
 
 return config
