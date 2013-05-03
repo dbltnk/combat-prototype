@@ -51,23 +51,4 @@ Projectile = Tile:extend
 			self.y = self.y + self.velocity.y * dt
 		end
 	end,
-	
-	--~ particle = function (self, xd, yd)
-		--~ local castTime = 3 --self.cast_time
-		--~ local p = Particles:new{ 
-			--~ image = "/assets/graphics/action_particles/firebal_particle.png",
-			--~ width = 100,
-			--~ height = 100,
-			--~ onNew = function (self)
-				--~ self.x, self.y = xd, yd
-				--~ the.app.view.layers.particles:add(self)
-				--~ the.app.view.timer:after(castTime, function()
-					--~ self:die()
-				--~ end)
-			--~ end,
-			--~ onDie = function (self)
-				--~ the.app.view.layers.particles:remove(self)
-			--~ end,
-		 --~ }
-	--~ end,
 }
