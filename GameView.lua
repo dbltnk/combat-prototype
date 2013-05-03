@@ -313,9 +313,12 @@ GameView = View:extend
     end,	
 
 	resyncAllLocalObjects = function ()
+		local s,c = 0,0
 		object_manager.visit(function(oid,o)
-			if o.sendResync then o:sendResync() end
+			if o.sendResync then o:sendResync() s = s + 1 end
+			if o.netCreate then o:netCreate() c = c + 1 end
 		end)
+		print("RESYNC", "sync", s, "create", c)
 	end,
 
 	setupNetworkHandler = function ()

@@ -6,7 +6,7 @@ Projectile = Tile:extend
 	class = "Projectile",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "velocity", "creation_time"},			
-	sync_high = {"x", "y", "velocity", "creation_time"},
+	--~ sync_high = {"x", "y", "velocity", "creation_time"},
 			
 	width = 32,
 	height = 32,
@@ -15,7 +15,7 @@ Projectile = Tile:extend
 
 	onCollide = function(self, other, horizOverlap, vertOverlap)
 	--	self:particle(self.x, self.y)
-		self:die()
+		if self:isLocal() then self:die() end
 	end,
 	
 	onUpdateLocal = function (self)
@@ -42,6 +42,13 @@ Projectile = Tile:extend
 		-- stores an projectile reference, projectiles get stored in the key
 		the.projectiles[self] = true
 		drawDebugWrapper(self)
+		
+		-- creation time? apply movement
+		if self.creation_time and self.velocity then
+			local dt = network.time - self.creation_time
+			self.x = self.x + self.velocity.x * dt
+			self.y = self.y + self.velocity.y * dt
+		end
 	end,
 	
 	--~ particle = function (self, xd, yd)
