@@ -22,6 +22,7 @@ Footstep = Tile:extend
 		self:mixin(GameObject)
 		the.app.view.layers.ground:add(self)
 		self.dieAtTime = network.time + self.duration
+		drawDebugWrapper(self)
 	end,
 	
 	onUpdateLocal = function (self)

@@ -21,6 +21,12 @@ function object_manager.visit (fun)
 	end
 end
 
+function object_manager.count ()
+	local c = 0
+	for k,v in pairs(object_manager.objects) do c = c + 1 end
+	return c
+end
+
 function object_manager.get (oid)
 	if object_manager.objects[oid] then
 		return object_manager.objects[oid]
