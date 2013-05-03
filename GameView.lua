@@ -312,7 +312,7 @@ GameView = View:extend
 		audio.update()
     end,	
 
-	resyncAllLocalObjects = function ()
+	resyncAllLocalObjects = function (self)
 		local s,c = 0,0
 		object_manager.visit(function(oid,o)
 			if o.sendResync then o:sendResync() s = s + 1 end
@@ -321,9 +321,9 @@ GameView = View:extend
 		print("RESYNC", "sync", s, "create", c)
 	end,
 
-	setupNetworkHandler = function ()
+	setupNetworkHandler = function (self)
 		table.insert(network.on_message, function(m) 
-			--~ print ("RECEIVED", json.encode(m))
+			print ("RECEIVED", json.encode(m))
 			
 			if m.channel == "game" then
 				if m.cmd == "create" then
@@ -331,6 +331,7 @@ GameView = View:extend
 					
 					if not o then
 						print("NEW REMOTE OBJECT", m.oid, m.owner, m.class)
+						m.created_via_network = true
 						o = _G[m.class]:new(m)
 					end
 				elseif m.cmd == "delete" then
@@ -368,12 +369,7 @@ GameView = View:extend
 				if m.cmd == "join" then
 					-- new player so send obj create messages
 					print("new player send objects#############")
-					for oid,obj in pairs(object_manager.objects) do
-						print("send net create", oid)
-						if obj.netCreate then
-							obj:netCreate()
-						end
-					end
+					self:resyncAllLocalObjects();
 					print("DONE new player send objects#############")
 				elseif m.cmd == "left" then
 					-- player left so kill all objects from the player

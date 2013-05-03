@@ -14,10 +14,10 @@ GameObject = {
 		
 		object_manager.create(self)
 				
-		--~ if self:isLocal() then
+		if not self.created_via_network then
 			print("CREATE FOR NETWORK", self.oid, self.class)
 			self:netCreate()
-		--~ end
+		end
 
 		if self.sync_high then
 			self.changeMonitorHigh = MonitorChanges:new{ timeout = config.sync_high, obj = self, keys = self.sync_high }
