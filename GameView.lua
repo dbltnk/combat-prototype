@@ -121,7 +121,7 @@ GameView = View:extend
 		self:add(self.layers.debug)
 		
 		-- setup player
-		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2 }
+		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, name = localconfig.playerName }
 		
     -- place ontop
 		self:remove(self.trees)

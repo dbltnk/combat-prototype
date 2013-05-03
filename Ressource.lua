@@ -128,7 +128,15 @@ Ressource = Tile:extend
 		self.painBar.x = self.x
 		self.painBar.y = self.y
 		
-		if self.controller == 0 then self.t.text = "Owned by: none" else self.t.text = "Owned by: " .. self.controller end
+		local name = "none"
+		if self.controller ~= 0 then 
+			name = self.controller
+			local o = object_manager.get(self.controller)
+			if o and o.name then
+				name = o.name
+			end
+		end	
+		self.t.text = "Owned by: " .. name
 		self.t.x = self.x - self.width /4
 		self.t.y = self.y - self.t.height
 		self.t.width = 120	

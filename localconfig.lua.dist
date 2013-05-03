@@ -1,0 +1,11 @@
+
+local localconfig = {}
+
+localconfig.fullscreen = false
+localconfig.screenWidth = 800
+localconfig.screenHeight = 600 
+
+localconfig.playerName = "unknown"
+
+return localconfig
+

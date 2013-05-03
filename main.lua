@@ -2,6 +2,9 @@ STRICT = true
 DEBUG = true
 
 config = require 'config'
+localconfig = require 'localconfig'
+
+love.graphics.setMode(localconfig.screenWidth, localconfig.screenHeight, localconfig.fullscreen)
 
 local luaPrint = print
 print = function (...)
@@ -101,8 +104,8 @@ the.app = App:new
 	end,
 
     onRun = function (self)
-    -- disable the hardware cursor
-		self:useSysCursor(false)
+		-- disable the hardware cursor
+		self:useSysCursor(false)	
 		
 		network.connect(config.server_hostname, config.server_port)
 		
