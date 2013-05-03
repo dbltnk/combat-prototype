@@ -76,34 +76,7 @@ Skill = Class:extend
 			end
 		end
 		-- new particle system example
-		local p = Particles:new{ 
-			image = "/assets/graphics/particle.png",
-			width = 100,
-			height = 100,
-			onNew = function (self)
-				local ps = self.system
-				-- to adjust particle system parameter
-				-- use self.system which is a love ParticleSystem instance
-				ps:setColors(r,g,b,128)
-				ps:setEmissionRate(100)
-				ps:setParticleLife(castTime)
-				ps:setSpeed(20,30)
-				ps:setSizes(3,4)
-			
-				self.x, self.y = action_handling.get_target_position(player)
-				the.app.view.layers.particles:add(self)
-				-- destroy after cast time
-				the.app.view.timer:after(castTime, function()
-					self:die()
-				end)
-			end,
-			onDie = function (self)
-				the.app.view.layers.particles:remove(self)
-			end,
-			onUpdate = function (self, elapsed)
-				self.x, self.y = action_handling.get_target_position(player)
-			end,
-		 }
+		Effect:new{r=r, g=g, b=b, duration=castTime, follow_oid=player.oid}
 		
 		if self.onUse then 
 			-- call use after casttime timeout

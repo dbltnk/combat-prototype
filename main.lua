@@ -53,6 +53,7 @@ require 'Barrier'
 require 'Ressource'
 require 'SyncedObject'
 require 'ConnectView'
+require 'Effect'
 
 require 'ui'
     
