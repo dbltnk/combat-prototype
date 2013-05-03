@@ -289,8 +289,8 @@ ScrollingText = Text:extend
 	
 	onUpdate = function (self)
 		self.y = self.y - 1
-		self.font = self.font - 0.1
-		if self.font <= 10 then self:die() end
+		self.alpha = self.alpha - 0.05
+		if self.font <= 0.1 then self:die() end
 	end,
 	
 	onDie = function (self)
