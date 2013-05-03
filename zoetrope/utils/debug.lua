@@ -114,23 +114,23 @@ DebugConsole = Group:extend{
 
 		-- hijack print function
 		-- this is nasty to debug if it goes wrong, be careful
-
-		obj._oldPrint = print
-		print = function (...)
-			for _, value in pairs{...} do
-				obj.log.text = obj.log.text .. tostring(value) .. ' '
-			end
-
-			obj.log.text = obj.log.text .. '\n'
-
-			-- trim to sane size
-			if obj.log.text and obj.log.text:len() > 20*100 then 
-				obj.log.text = obj.log.text(obj.log.text:len() - 20*100) 
-			end
-
-			obj._updateLog = true
-			obj._oldPrint(...)
-		end
+--~ 
+		--~ obj._oldPrint = print
+		--~ print = function (...)
+			--~ for _, value in pairs{...} do
+				--~ obj.log.text = obj.log.text .. tostring(value) .. ' '
+			--~ end
+--~ 
+			--~ obj.log.text = obj.log.text .. '\n'
+--~ 
+			--~ -- trim to sane size
+			--~ if obj.log.text and obj.log.text:len() > 20*100 then 
+				--~ obj.log.text = obj.log.text(obj.log.text:len() - 20*100) 
+			--~ end
+--~ 
+			--~ obj._updateLog = true
+			--~ obj._oldPrint(...)
+		--~ end
 
 		the.console = obj
 		if obj.onNew then obj.onNew() end
