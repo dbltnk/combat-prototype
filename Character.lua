@@ -25,6 +25,7 @@ Character = Animation:extend
 	hidden = false,
 	isInCombat = false,	
 	name = nil,
+	reminder = nil,
 
 	-- for anim sync
 	anim_play = nil,
@@ -460,6 +461,37 @@ Character = Animation:extend
 		
 		-- combat music?
 		audio.isInCombat = self.isInCombat
+		
+		-- kill yourself with space if incap
+		local Reminder = Text:extend
+		{
+			font = 18,
+			text = "Press SPACE to re-spawn now. Or wait to get up here at 50% pain.",
+			x = 0,
+			y = 0, 
+			width = 600,
+			tint = {0.1,0.1,0.1},
+			
+			onUpdate = function (self)
+				self.x = (love.graphics.getWidth() - self.width) / 2
+				self.y = love.graphics.getHeight() - 100
+			end,
+			
+			onNew = function (self)
+				the.hud:add(self)
+			end,
+		}
+
+		if self.incapacitated and self.reminder ==  nil then 
+			self.reminder = Reminder:new() 
+		elseif self.incapacitated and self.reminder ~=  nil then 
+			self.reminder:revive() 
+		end
+		if self.incapacitated == false and self.reminder ~=  nil then 
+			self.reminder:die() 
+		end
+		
+		if the.keys:pressed(' ') and self.incapacitated then object_manager.send(self.oid, "gank") end
 	end,
 
 }

@@ -15,7 +15,7 @@ GameObject = {
 		object_manager.create(self)
 				
 		if not self.created_via_network then
-			print("CREATE FOR NETWORK", self.oid, self.class)
+--			print("CREATE FOR NETWORK", self.oid, self.class)
 			self:netCreate()
 		end
 
