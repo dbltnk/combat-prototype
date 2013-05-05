@@ -32,18 +32,13 @@ Character = Animation:extend
 	anim_freeze = nil,
 			
 	-- list of Skill
-	skills = {
+	skills = localconfig.skills or {
 		"bow_shot",
-		"xbow_piercing_shot",	
-		--"scythe_attack",
-		--"scythe_pirouette",			
-		--"shield_bash",		
-		"sprint",
-		"camouflage",		
-		"bandage",
-		--"fireball",
-		--"life_leech",
-		"gank",
+		"bow_shot",
+		"bow_shot",
+		"bow_shot",
+		"bow_shot",
+		"bow_shot",
 	},
 	
 

@@ -7,5 +7,19 @@ localconfig.screenHeight = 600
 
 localconfig.playerName = "unknown"
 
+localconfig.skills = {
+		"bow_shot",
+		"xbow_piercing_shot",	
+		--"scythe_attack",
+		--"scythe_pirouette",			
+		--"shield_bash",		
+		"sprint",
+		"camouflage",		
+		"bandage",
+		--"fireball",
+		--"life_leech",
+		"gank",
+	}
+
 return localconfig
 
