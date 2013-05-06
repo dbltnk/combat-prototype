@@ -338,3 +338,18 @@ NetworkDisplay = Text:extend
 			"objs: " .. object_manager.count() .. " " .. network.stats
 	end
 }
+
+RessourceDisplay = Text:extend
+{
+	font = 16,
+	text = "no ressources found",
+	x = 0,
+	y = 0, 
+	time = 0,
+	width = 200,
+	tint = {0.1,0.1,0.1},
+	
+	onUpdate = function (self)
+		self.x = love.graphics.getWidth() - self.width
+	end,
+}

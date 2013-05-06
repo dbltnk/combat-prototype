@@ -81,7 +81,7 @@ GameView = View:extend
 		
 		-- object -> true map for easy remove, key contains footstep references
 		the.footsteps = {}
-		
+				
 		local mapFile = '/assets/maps/desert/desert.lua'
 		self:loadLayers(mapFile, true, {objects = true, })
 		
@@ -148,6 +148,11 @@ GameView = View:extend
 		-- TODO obsolete? use self.layers instead?
 		the.hud = UiGroup:new()
 		self:add(the.hud)
+		
+		-- object -> true map for easy remove, key contains ressource references
+		the.ressources = {}
+		the.ressourceDisplay = RessourceDisplay:new{ x = 0, y = 0, text = "ressources uninitialized" }
+		the.hud:add(the.ressourceDisplay) 
 		
 		the.timerDisplay = TimerDisplay:new{ x = 0, y = 0 }
 		the.hud:add(the.timerDisplay)		
@@ -308,6 +313,17 @@ GameView = View:extend
 			end
 
 		end
+		
+		local orderedTable = {}
+		for k, v in pairs(the.ressources) do
+			table.insert(orderedTable,v)
+		end
+		
+		local s = ""
+		for i, v in ipairs(orderedTable) do
+			s = s .. "Res. #" .. i .. ": " .. v .. "\n"
+		end
+		the.ressourceDisplay.text = s
 		
 		audio.update()
     end,	

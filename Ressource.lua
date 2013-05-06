@@ -38,6 +38,7 @@ Ressource = Tile:extend
 		object_manager.create(self)
 		--print("NEW RESSOURCE", self.x, self.y, self.width, self.height)
 		the.app.view.layers.characters:add(self)
+				
 		self.wFactor = self.width / self.maxPain
 		
 		self.painBar = UiBar:new{
@@ -128,7 +129,7 @@ Ressource = Tile:extend
 		self.painBar.x = self.x
 		self.painBar.y = self.y
 		
-		local name = "none"
+		local name = "nobody"
 		if self.controller ~= 0 then 
 			name = self.controller
 			local o = object_manager.get(self.controller)
@@ -140,5 +141,6 @@ Ressource = Tile:extend
 		self.t.x = self.x - self.width /4
 		self.t.y = self.y - self.t.height
 		self.t.width = 120	
+		the.ressources[self] = name or "none"
 	end,	
 }
