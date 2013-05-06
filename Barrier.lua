@@ -123,7 +123,17 @@ Barrier = Tile:extend
 		local i = 1
 		local textList = {}
 		for _,x in pairs(l2) do
-			local txt = i .. ". Player #" .. x.k .. " with " .. x.v .. " damage to the barrier"
+		
+			local name = "nobody"
+			if x.k ~= 0 then 
+				name = x.k
+				local o = object_manager.get(x.k)
+				if o and o.name then
+					name = o.name
+				end
+			end	
+		
+			local txt = i .. ". " .. name .. " with " .. x.v .. " damage to the barrier"
 			textList[i]= txt
 			i = i + 1
 		end
