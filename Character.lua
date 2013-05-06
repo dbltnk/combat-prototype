@@ -50,6 +50,7 @@ Character = Animation:extend
 
 	-- UiBar
 	painBar = nil,
+	nameLevel = nil,
 	
 	sequences = 
 	{
@@ -91,6 +92,12 @@ Character = Animation:extend
 			currentValue = self.currentPain, maxValue = self.maxPain, inc = false, wFactor = self.wFactor
 		}
 		
+		self.nameLevel = NameLevel:new{
+			x = self.x, y = self.y, 
+			level = self.level, name = self.name
+		}
+	
+				
 		--~ print(debug.traceback())
 		
 		-- attach network stuff to anim functions
@@ -177,6 +184,7 @@ Character = Animation:extend
 		--print(self.xp)
 		if self.tempMaxxed == false and self.xp >= 1000 then 
 			self.level = self.level +1
+			self.nameLevel.level = self.level
 			self.xp = 1000
 			self.tempMaxxed = true
 		--	print("leveled", self.level, self.oid)
@@ -401,16 +409,21 @@ Character = Animation:extend
 			self.tint = {1,1,1}
 		end
 		
+		self.nameLevel.x = self.x
+		self.nameLevel.y = self.y
+		
 		if self.hidden then
 			self.visible = false
 			self.painBar.visible = false
 			self.painBar.bar.visible = false
-			self.painBar.background.visible = false						
+			self.painBar.background.visible = false	
+			self.nameLevel.visible = false					
 		else
 			self.visible = true
 			self.painBar.visible = true
 			self.painBar.bar.visible = true
 			self.painBar.background.visible = true						
+			self.nameLevel.visible = true
 		end	
 
 		-- upate pain bar
@@ -436,6 +449,7 @@ Character = Animation:extend
 			self.painBar.visible = false
 			self.painBar.bar.visible = false
 			self.painBar.background.visible = false	
+			self.nameLevel.visible = false
 		end				
 	end,
 	

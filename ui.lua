@@ -237,6 +237,26 @@ UiBar = Sprite:extend
 	end,
 }
 
+NameLevel = Text:extend
+{
+	font = 12,
+	text = "nixda",
+	width = 200,
+	level = 0,
+	name = "",
+	tint = {0.1,0.1,0.1},
+	
+	onUpdate = function (self)
+		self.text = self.name .. " (" .. self.level .. ")"
+		self.x = self.x - 20
+		self.y = self.y - 10
+	end,
+	
+	onNew = function (self)
+		the.app.view.layers.ui:add(self)
+	end
+}
+
 UiGroup = Group:extend
 {
 	solid = false,
