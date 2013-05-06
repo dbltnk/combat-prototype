@@ -141,6 +141,6 @@ Ressource = Tile:extend
 		self.t.x = self.x - self.width /4
 		self.t.y = self.y - self.t.height
 		self.t.width = 120	
-		the.ressources[self] = name or "none"
+		the.ressources[self.description] = name or "none"
 	end,	
 }

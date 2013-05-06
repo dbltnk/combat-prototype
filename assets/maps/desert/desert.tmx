@@ -71,10 +71,26 @@
     <property name="_the" value="barrier"/>
    </properties>
   </object>
-  <object name="Ressource" x="1280" y="2528" width="64" height="64"/>
-  <object name="Ressource" x="2814" y="2654" width="64" height="64"/>
-  <object name="Ressource" x="2381" y="569" width="64" height="64"/>
-  <object name="Ressource" x="1228" y="78" width="64" height="64"/>
+  <object name="Ressource" x="1280" y="2528" width="64" height="64">
+   <properties>
+    <property name="description" value="Oasis"/>
+   </properties>
+  </object>
+  <object name="Ressource" x="2814" y="2654" width="64" height="64">
+   <properties>
+    <property name="description" value="Settlement"/>
+   </properties>
+  </object>
+  <object name="Ressource" x="2381" y="569" width="64" height="64">
+   <properties>
+    <property name="description" value="Fort"/>
+   </properties>
+  </object>
+  <object name="Ressource" x="1228" y="78" width="64" height="64">
+   <properties>
+    <property name="description" value="Mine"/>
+   </properties>
+  </object>
   <object name="respawnpoint" x="1268" y="247">
    <properties>
     <property name="_the" value="respawnpoint"/>

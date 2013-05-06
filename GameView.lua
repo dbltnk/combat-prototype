@@ -314,14 +314,9 @@ GameView = View:extend
 
 		end
 		
-		local orderedTable = {}
-		for k, v in pairs(the.ressources) do
-			table.insert(orderedTable,v)
-		end
-		
 		local s = ""
-		for i, v in ipairs(orderedTable) do
-			s = s .. "Res. #" .. i .. ": " .. v .. "\n"
+		for k, v in pairs(the.ressources) do
+			s = s .. k .. ": " .. v .. "\n"
 		end
 		the.ressourceDisplay.text = s
 		
