@@ -7,6 +7,8 @@ Ressource = Tile:extend
 	sync_high = {"currentPain"},
 	sync_low = {"controller"},
 
+	owner = 0,
+
 	image = '/assets/graphics/ressource.png',
 	currentPain = 0,
 	maxPain = config.ressourceHealth,

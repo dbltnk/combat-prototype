@@ -15,6 +15,8 @@ Barrier = Tile:extend
 	wFactor = 0,
 	highscore = {},
 
+	owner = 0,
+
 	-- UiBar
 	painBar = nil,
 	
