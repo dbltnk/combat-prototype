@@ -4,6 +4,9 @@ DEBUG = true
 config = require 'config'
 localconfig = require 'localconfig'
 
+
+require "enet"
+
 love.graphics.setMode(localconfig.screenWidth, localconfig.screenHeight, localconfig.fullscreen)
 
 local luaPrint = print

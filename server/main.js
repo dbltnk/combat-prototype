@@ -7,6 +7,7 @@ var _s = require("underscore.string");
 var wilson = require("wilson");
 var net = require("net");
 var os = require("os");
+var enet = require("enet")
 
 // -> [message|null, buffer]
 function tryToParseBuffer (buffer) {
@@ -42,7 +43,7 @@ function decode_message(buffer) {
 }
 
 function encode_message(message) {
-	return JSON.stringify(message) + "\n";
+	return JSON.stringify(message);
 }
 
 function send_to_all(message, clients) {
@@ -58,12 +59,14 @@ function send_to_all_raw(data, clients) {
 
 function send_to_other_raw(data, client, clients) {
 	_.each(clients, function(c) {
-		if (c != client) c.write(data);
+		if (c != client) send_to_one_raw(data, c);
 	});
 }
 
 function send_to_one_raw(data, client) {
-	client.write(data);
+	var packet = new enet.Packet(data, enet.Packet.FLAG_RELIABLE);
+	console.log("SEND DATA TO", client.id, data);
+	client.peer.send(0, packet); // channel number, packet.
 }
 
 function send_to_one(message, client) {
@@ -92,91 +95,86 @@ function disconnect(client, clients) {
 	});
 }
 
+function client_by_peer(clients, peer) {
+	return _.find(clients, function(p) {
+		return p.peer._pointer == peer._pointer;
+	});
+}
+
 var storage = {};
 
 var next_free_client_id = 1;
-var server = null;
-server = net.createServer(function (client) {
+
+var bindaddr = new enet.Address('0.0.0.0', 9999);
+var host = new enet.Host(bindaddr, 32); // bind addr, number of peers to allow at once
+host.on('connect', function(peer, data) {
+    // Peer connected.
+    // data is an integer with out-of-band data
+    console.log("CONNECT", peer, data);
 	// find first free id
 	var client_id = next_free_client_id;
 	++next_free_client_id;
 	
 	clients_count = clients_count + 1;
 	
+	client = {};
 	client.id = client_id;
-	client.unprocessed = new Buffer(0);
+	client.peer = peer;
 	clients.push(client);
 	
 	var ids = _.map(clients, function(c) { return c.id; });
 	
 	send_to_other({channel: "server", ids: ids, cmd: "join", id: client.id}, client, clients);
 	send_to_one({time: os.uptime(), channel: "server", ids: ids, cmd: "id", id: client.id, first: clients_count == 1, }, client);
-	client.on("data", function(data) {
-		if (client.unprocessed == null) client.unprocessed = data;
-		else client.unprocessed = Buffer.concat([client.unprocessed, data]);
 
-		while (true) {
-			var t = decode_message(client.unprocessed);
-			var message = t.msg;
-			var rest = t.rest;
-			
-			client.unprocessed = rest;
+}).on('disconnect', function(peer, data) {
+    // Peer disconnected.
+    console.log("DISCONNECT", peer, data);
+    var client = client_by_peer(clients, peer);
+    console.log(client);
+    disconnect(client, clients);
+}).on('message', function(peer, packet, channel, data)
+{
+    // Peer sent a message to us in `packet' on `channel'.
+	var client = client_by_peer(clients, peer);
+	//~ console.log("DATA", packet, channel, peer, data);
+	
+	try {
+		var message = JSON.parse(packet.data().toString());
+		console.log(message);
 		
-			if (message == null) break;
-			
-			console.log("RECEIVED", JSON.stringify(message), client.unprocessed ? "<"+client.unprocessed.length+">" : "<>");
-			
-			if (message.channel == "server") {
-				if (message.cmd == "who") {
-					console.log("WHO");
-					var ids = _.map(clients, function(c) { return c.id; });
-					send_to_one({seq: message.seq, ids: ids, fin: true}, client);
-				} else if (message.cmd == "ping") {
-					console.log("PING");
-					send_to_one({seq: message.seq, time: message.time, fin: true}, client);
-				} else if (message.cmd == "time") {
-					console.log("TIME");
-					send_to_one({seq: message.seq, time: os.uptime(), fin: true}, client);
-				} else if (message.cmd == "get") {
-					var key = message.key;
-					var value = storage[key];
-					if (value === undefined) value = null;
-					console.log("GET", key, value);
-					send_to_one({seq: message.seq, value: value, fin: true}, client);
-				} else if (message.cmd == "set") {
-					var key = message.key;
-					var value = message.value;
-					console.log("SET", key, value);
-					if (key) { storage[key] = value; }
-					send_to_one({seq: message.seq, fin: true}, client);
-				}
-			} else {
-				//~ console.log("DELIVER TO OTHERS");
-				send_to_other(message, client, clients);
+		if (message.channel == "server") {
+			if (message.cmd == "who") {
+				console.log("WHO");
+				var ids = _.map(clients, function(c) { return c.id; });
+				send_to_one({seq: message.seq, ids: ids, fin: true}, client);
+			} else if (message.cmd == "ping") {
+				console.log("PING");
+				send_to_one({seq: message.seq, time: message.time, fin: true}, client);
+			} else if (message.cmd == "time") {
+				console.log("TIME");
+				send_to_one({seq: message.seq, time: os.uptime(), fin: true}, client);
+			} else if (message.cmd == "get") {
+				var key = message.key;
+				var value = storage[key];
+				if (value === undefined) value = null;
+				console.log("GET", key, value);
+				send_to_one({seq: message.seq, value: value, fin: true}, client);
+			} else if (message.cmd == "set") {
+				var key = message.key;
+				var value = message.value;
+				console.log("SET", key, value);
+				if (key) { storage[key] = value; }
+				send_to_one({seq: message.seq, fin: true}, client);
 			}
+		} else {
+			//~ console.log("DELIVER TO OTHERS");
+			send_to_other(message, client, clients);
 		}
-	});
-	
-	client.on("end", function() {
-		disconnect(client, clients);
-		console.log("end", client.id);
-	});
-	
-	client.on("close", function() {
-		disconnect(client, clients);
-		console.log("close", client.id);
-	});
-	
-	client.on("error", function() {
-		disconnect(client, clients);
-		console.log("error", client.id);
-	});
-	
-	client.on("timeout", function() {
-		disconnect(client, clients);
-		console.log("timeout", client.id);
-	});
+	}
+	catch(e){}
+});
 
-}).listen(9999);
+host.start_watcher();
 
 console.log("TCP echo server listening on port 9999");
