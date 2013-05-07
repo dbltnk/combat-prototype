@@ -4,8 +4,9 @@ Barrier = Tile:extend
 {
 	class = "Barrier",
 
-	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive" },	
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "highscore" },	
 	
+	sync_low = {"highscore"},
 	sync_high = {"currentPain", "alive"},
 
 	image = '/assets/graphics/barrier.png',
@@ -130,6 +131,7 @@ Barrier = Tile:extend
 			if x.k ~= 0 then 
 				name = x.k
 				local o = object_manager.get(x.k)
+				print(json.encode(o))
 				if o and o.name then
 					name = o.name
 				end
