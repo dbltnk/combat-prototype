@@ -23,7 +23,8 @@ MonitorChanges = Class:extend
 		local c = false
 		
 		for _,key in pairs(keys) do
-			if last[key] ~= obj[key] then c = true last[key] = obj[key] end
+			local s = json.encode(obj[key])
+			if last[key] ~= s then c = true last[key] = s end
 		end
 		
 		return c

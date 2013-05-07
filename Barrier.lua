@@ -131,7 +131,6 @@ Barrier = Tile:extend
 			if x.k ~= 0 then 
 				name = x.k
 				local o = object_manager.get(x.k)
-				print(json.encode(o))
 				if o and o.name then
 					name = o.name
 				end

@@ -28,10 +28,11 @@ function object_manager.count ()
 end
 
 function object_manager.get (oid)
+	oid = tonumber(oid)
 	if object_manager.objects[oid] then
 		return object_manager.objects[oid]
 	else
-		print("OBJECTMANAGER", "there is no object with oid", oid)
+		print("OBJECTMANAGER", "there is no object with oid", oid, type(oid))
 		return nil
 	end
 end
@@ -40,7 +41,7 @@ function object_manager.generate_free_oid ()
 	local oid = nil
 	
 	repeat
-		oid = math.random(1,1000000)
+		oid = tonumber(math.random(1,1000000))
 	until not object_manager.objects[oid]
 	
 	return oid
@@ -50,6 +51,8 @@ end
 function object_manager.create (o)
 	if not o.oid then
 		o.oid = object_manager.generate_free_oid()
+	else
+		o.oid = tonumber(o.oid)
 	end
 	
 	if not o.owner then
@@ -67,6 +70,7 @@ function object_manager.create (o)
 end
 
 function object_manager.delete (o)
+	o.oid = tonumber(o.oid)
 	if o.oid then
 		object_manager.objects[o.oid] = nil
 	else
