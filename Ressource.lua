@@ -2,7 +2,7 @@ Ressource = Tile:extend
 {
 	class = "Ressource",
 
-	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "controller" },	
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "controller", "description" },	
 	
 	sync_high = {"currentPain"},
 	sync_low = {"controller"},
