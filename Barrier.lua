@@ -20,6 +20,8 @@ Barrier = Tile:extend
 	movable = false,
 	
 	onNew = function (self)		
+		the.barrier = self
+		
 		self:mixin(GameObject)
 		
 		self.width = 96
