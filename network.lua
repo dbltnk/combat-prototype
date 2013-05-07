@@ -43,6 +43,7 @@ local stats_last_time = 0
 network.client_id = nil
 network.is_first = false
 network.time = 0
+network.last_server_time = 0
 network.last_time_update = 0
 network.connected_client_id_map = {}
 network.connected_client_count = 0
@@ -106,6 +107,7 @@ function network.update (dt)
 			local t1 = love.timer.getTime()
 			local latency = (t1 - t0) / 2
 			network.time = result.time + latency
+			network.last_server_time = network.time
 		end)
 		network.last_time_update = t0
 	end
@@ -174,7 +176,7 @@ function network.update (dt)
 	if love.timer.getTime() - stats_last_time > stats_timeout then
 		stats_last_time = love.timer.getTime()
 		
-		network.stats = "\nTIME " .. math.floor(network.time) .. "\n" .. 
+		network.stats = "\nTIME " .. math.floor(network.time) .. " (" .. math.floor(network.time-network.last_server_time) .. ")\n" .. 
 			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
