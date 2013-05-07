@@ -99,7 +99,7 @@ Barrier = Tile:extend
 		self.highscore[source_oid] = self.highscore[source_oid] + score
 	end,	
 	
-	showHighscore = function (self)
+	showHighscore = function (self, title)
 		if loveframes.GetState() == "none" then loveframes.SetState("highscore") else loveframes.SetState("none") end
 		
 		local l2 = list.process_keys(self.highscore)       -- holt alle keys (oids)
@@ -110,7 +110,7 @@ Barrier = Tile:extend
 		local frame = loveframes.Create("frame")
 		frame:SetSize(350, 300)
 		frame:Center()
-		frame:SetName("Highscore")
+		frame:SetName(title or "Highscore")
 		frame:SetState("highscore")
 
 		local list = loveframes.Create("list", frame)
@@ -148,8 +148,12 @@ Barrier = Tile:extend
 	
 	onDieBoth = function (self)
 		self.painBar:die()
-		os.exit()
-		print("THE GAME JUST ENDED") -- TODO: call end screen
+		if the.app.running then
+			local text = "The players won, here's how you did:"
+			self:showHighscore(text)
+			the.app.running = false
+			the.app.timeScale = 0
+		end
 	end,
 	
 	onUpdateBoth = function (self)	

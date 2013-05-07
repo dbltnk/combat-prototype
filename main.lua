@@ -57,10 +57,9 @@ require 'Ressource'
 require 'SyncedObject'
 require 'ConnectView'
 require 'Effect'
-
-require 'ui'
-    
+require 'ui' 
 require 'loveframes'
+
 
 the.app = App:new
 {
@@ -68,6 +67,7 @@ the.app = App:new
 	numGamepads = love.joystick and 1 or 0,
 	name = "Combat Prototype",
 	icon = '/graphics/icon.png',
+	running = true,
 
 	onUpdate = function (self, elapsed)
 		profile.start("network.update")
@@ -101,7 +101,16 @@ the.app = App:new
 			network.shutdown()
 			os.exit() 
 		end
-		if love.timer.getTime() >= config.roundTime then print("THE GAME IS OVER") os.exit() end -- TODO: switch to end screen
+		
+		-- game ends, players lost
+		if love.timer.getTime() >= config.roundTime then 
+			if self.running then
+				local text = "The players lost, here's how you did:"
+				the.barrier:showHighscore(text)
+				self.running = false
+				self.timeScale = 0
+			end
+		end
 	end,
 
     onRun = function (self)
