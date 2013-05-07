@@ -176,7 +176,11 @@ function network.update (dt)
 	if love.timer.getTime() - stats_last_time > stats_timeout then
 		stats_last_time = love.timer.getTime()
 		
-		network.stats = "\nTIME " .. math.floor(network.time) .. " (" .. math.floor(network.time-network.last_server_time) .. ")\n" .. 
+		local timeout = math.floor(network.time-network.last_server_time)
+		local timeoutWarning = ""
+		if timeout > 8 then timeoutWarning = " DISCONNECTED!!!!!!!!!!! " else timeoutWarning = "" end
+		
+		network.stats = "\nTIME " .. math.floor(network.time) .. " (" .. timeout .. ")" .. timeoutWarning .. "\n" .. 
 			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
