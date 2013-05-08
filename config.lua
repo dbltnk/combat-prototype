@@ -51,7 +51,7 @@ config.show_prints = true
 -- network
 --~ config.server_hostname = "windegg"
 config.server_hostname = "buffy.leenox.de"
-config.server_port = 9999
+config.server_port = 9998
 config.sync_high = 1 / 10
 config.sync_low = 1
 
