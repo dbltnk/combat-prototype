@@ -51,6 +51,9 @@ TargetDummy = Tile:extend
 		--print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
 		self:updatePain()
+	end,
+
+	showDamage = function (self, str)
 		if str >= 0 then
 			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
 		else
@@ -112,6 +115,31 @@ TargetDummy = Tile:extend
 		--	print("DUMMY SPEED", str, duration)
 		end
 	end,
+
+	receiveBoth = function (self, message_name, ...)
+		--print(self.oid, "receives message", message_name, "with", ...)
+		if message_name == "heal" then
+			local str = ...
+		--	print("DUMMY HEAL", str)
+		elseif message_name == "damage" then
+			local str, source_oid  = ...
+			-- damage handling for xp distribution	
+			self:showDamage(str)
+		elseif message_name == "damage_over_time" then 
+			local str, duration, ticks, source_oid = ...
+		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
+			for i=1,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					if self.alive then 
+						self:showDamage(str)
+					end
+				end)
+			end
+		elseif message_name == "runspeed" then
+			local str, duration = ...
+		--	print("DUMMY SPEED", str, duration)
+		end
+	end,
 	
 	updatePain = function (self)
 		if ((self.currentPain > self.maxPain) and self.alive == true) then 
@@ -121,23 +149,26 @@ TargetDummy = Tile:extend
 		end	
 	end,
 	
-	onDieLocal = function (self)
-		self.painBar:die()
-		the.targetDummies[self] = nil
+	onDieLocal = function (self)	
 		-- find out how much xp which player gets and tell him
 		local myDmgReceived = self.dmgReceived[self.oid]
-		
-    if myDmgReceived then
-      for damager, value in pairs(myDmgReceived) do
-        self.finalDamage = self.finalDamage + value
-      end
-      
-      for damager, value in pairs(myDmgReceived) do
-        object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
-      end
-    end
+		if myDmgReceived then
+		  for damager, value in pairs(myDmgReceived) do
+			self.finalDamage = self.finalDamage + value
+		  end
+		  
+		  for damager, value in pairs(myDmgReceived) do
+			object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
+		  end
+		end
+	
 		self.timeOfDeath = love.timer.getTime()
 		the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
+	end,
+	
+	onDieBoth = function (self)
+		self.painBar:die()
+		the.targetDummies[self] = nil		
 	end,
 	
 	onUpdateLocal = function (self)
