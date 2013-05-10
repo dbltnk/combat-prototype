@@ -229,7 +229,10 @@ Character = Animation:extend
 	
 	receiveBoth = function (self, message_name, ...)
 		print("BOTH", message_name)
-		if message_name == "damage" then
+		if message_name == "heal" then
+			local str, source_oid = ...
+			self:showDamage(-str)
+		elseif message_name == "damage" then
 			local str, source_oid = ...
 			if not self.incapacitated then self:showDamage(str) end
 		elseif message_name == "damage_over_time" then
