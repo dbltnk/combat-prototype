@@ -240,7 +240,7 @@ Character = Animation:extend
 					if not self.incapacitated then self:showDamage(str) end
 				end)
 			end
-		end
+		end	
 	end,
 	
 	receiveLocal = function (self, message_name, ...)
@@ -412,6 +412,7 @@ Character = Animation:extend
 		
 		self.nameLevel.x = self.x
 		self.nameLevel.y = self.y
+		self.nameLevel.level = self.level
 		
 		if self.hidden then
 			self.visible = false
