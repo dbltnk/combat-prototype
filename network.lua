@@ -127,7 +127,7 @@ function network.update (dt)
 				print("Connected to", event.peer)
 				--~ event.peer:send("hello world")
 			elseif event.type == "receive" and tostring(event.data) ~= "0" then
-				print("Got message: ", event.data, event.peer, type(event.data))
+				--~ print("Got message: ", event.data, event.peer, type(event.data))
 				--~ done = true
 				local m = json.decode(event.data)
 				
@@ -157,7 +157,7 @@ function network.update (dt)
 								network.time = m.time
 								network.is_first = m.first
 								network.connected_client_id_map = {}
-								print("XXXXX", json.encode(m))
+								--~ print("XXXXX", json.encode(m))
 								for _,id in pairs(m.ids) do network.connected_client_id_map[id] = id end
 								network.update_lowest_client_id()
 							elseif m.cmd == "join" then
@@ -175,10 +175,10 @@ function network.update (dt)
 						end
 					end
 				else
-					print("SKIPPING MESSAGE", m)
+					--~ print("SKIPPING MESSAGE", m)
 				end
 			elseif tostring(event.data) ~= "0" then
-				print("NETEVENT", event.type, event.data, event.peer)
+				--~ print("NETEVENT", event.type, event.data, event.peer)
 			end
 		end
     end
@@ -246,7 +246,7 @@ function network.send (message)
 	if not server then return end
 	
 	local m = json.encode(message)
-	print("SEND", server, m)
+	--~ print("SEND", server, m)
 	server:send(m)
 
 	stats.out_messages = stats.out_messages + 1
