@@ -183,16 +183,8 @@ Character = Animation:extend
 		--self:updatePain()
 		--print(self.xp)
 		if self.tempMaxxed == false and self.xp >= 1000 then 
-			self.level = self.level +1
-			self.nameLevel.level = self.level
-			self.xp = 1000
-			self.tempMaxxed = true
-		--	print("leveled", self.level, self.oid)
-			-- new particle system example
-			local particleTime = 3
-			Effect:new{r=255, g=255, b=0, duration=particleTime, follow_oid=self.oid}
+			self:updateLevel()							
 		end		
-		self:updateLevel()
 		if math.floor(str) > 0 then 
 			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = math.floor(str), tint = {1,1,0}}
 		end	
@@ -208,11 +200,19 @@ Character = Animation:extend
 	end,
 	
 	updateLevel = function (self, elapsed)
-	--	print("update reveived! character level = ",  self.level)
+		self.level = self.level +1
+		self.nameLevel.level = self.level
+		self.xp = 1000
+		self.tempMaxxed = true
+		--	print("leveled", self.level, self.oid)
+		-- new particle system example
+		local particleTime = 3
+		Effect:new{r=255, g=255, b=0, duration=particleTime, follow_oid=self.oid}
+		--	print("update reveived! character level = ",  self.level)
 		for i = 0, config.levelCap - 1 do
 			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / 10
-			if self.level > i then  
-				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
+			if self.level == i then  
+				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * (i - 1), fill = {255,255,0,255}} 
 				the.hud:add(the.levelUI)			
 			end							
 		end
