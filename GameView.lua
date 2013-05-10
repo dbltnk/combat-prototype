@@ -364,7 +364,7 @@ GameView = View:extend
 
 	setupNetworkHandler = function (self)
 		table.insert(network.on_message, function(m) 
-			print ("RECEIVED", json.encode(m))
+			--~ print ("RECEIVED", json.encode(m))
 			
 			if m.channel == "game" then
 				if m.cmd == "create" then
@@ -400,9 +400,9 @@ GameView = View:extend
 						if m.nils then
 							for _,v in pairs(m.nils) do o[v] = nil end
 						end
-						print("SYNC REMOTE OBJECT", o.oid)
+						--~ print("SYNC REMOTE OBJECT", o.oid)
 					else
-						print("SYNC REQUEST REMOTE OBJECT", m.oid)
+						--~ print("SYNC REQUEST REMOTE OBJECT", m.oid)
 						network.send ({ channel = "game", cmd = "request", oid = m.oid })
 					end
 				end

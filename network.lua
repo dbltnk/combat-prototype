@@ -16,6 +16,9 @@ C>C {channel = "game", cmd = "delete", oid = }
 C>C {channel = "game", cmd = "msg", oid = , name =, params = [...]}
 ]]
 
+local host = nil
+local server = nil
+
 local socket = require 'socket'
 List = require 'pl.List'
 
@@ -48,6 +51,7 @@ network.last_time_update = 0
 network.connected_client_id_map = {}
 network.connected_client_count = 0
 network.lowest_client_id = nil
+network.open_request_count = 0
 
 local open_requests = {}
 local unprocessed = ""
@@ -101,6 +105,8 @@ function network.update (dt)
 	-- update time and keep in sync
 	network.time = network.time + dt
 	
+	if not host then return end
+	
 	if love.timer.getTime() - network.last_time_update > 5 then
 		local t0 = love.timer.getTime()
 		network.send_request({channel = "server", cmd = "time"}, function(fin, result)
@@ -112,66 +118,71 @@ function network.update (dt)
 		network.last_time_update = t0
 	end
 	
-	while client do
-		local buffer, err = client:receive()
-		--~ print("###", buffer, err)
-		if not err then 
-			unprocessed = (unprocessed or "") .. buffer
-			stats.in_bytes = stats.in_bytes + string.len(buffer)
-		end		
+	while true do
+		local event = host:service(1)
+		if event == nil then break end
 		
-		--~ if unprocessed and string.len(unprocessed) > 0 then print("NET IN STATUS", toHex(unprocessed)) end
-	
-		if (not unprocessed or string.len(unprocessed) == 0) then break end
-		
-		local m, rest = decode_message(unprocessed)
-		unprocessed = rest
-
-		if not m or type(m) ~= "table" then break end
-	
-		-- print("NET IN", json.encode(m))
-		
-		stats.in_messages = stats.in_messages + 1
-		
-		-- is this a reply?
-		local seq = m.seq or nil
-		if seq then
-			-- response
-			local cb = open_requests[seq]
-			if cb then
-				local fin = m.fin or false
-				if fin then open_requests[seq] = nil end
-				cb(fin, m)
-			else
-				print("ERROR", "missing callback for", m)
-			end
-		else
-			-- id message?
-			if m.channel == "server" then
-				if m.cmd == "id" then
-					network.client_id = m.id
-					network.time = m.time
-					network.is_first = m.first
-					network.connected_client_id_map = {}
-					print("XXXXX", json.encode(m))
-					for _,id in pairs(m.ids) do network.connected_client_id_map[id] = id end
-					network.update_lowest_client_id()
-				elseif m.cmd == "join" then
-					network.connected_client_id_map[m.id] = m.id
-					network.update_lowest_client_id()
-				elseif m.cmd == "left" then
-					network.connected_client_id_map[m.id] = nil
-					network.update_lowest_client_id()
-				end
-			end
+		if event then
+			if event.type == "connect" then
+				print("Connected to", event.peer)
+				--~ event.peer:send("hello world")
+			elseif event.type == "receive" and tostring(event.data) ~= "0" then
+				--~ print("Got message: ", event.data, event.peer, type(event.data))
+				--~ done = true
+				local m = json.decode(event.data)
+				
+				if type(m) == "table" then
+					stats.in_messages = stats.in_messages + 1
 			
-			-- normal message
-			for k,fun in pairs(network.on_message) do
-				fun(m)
+					-- is this a reply?
+					local seq = m.seq or nil
+					if seq then
+						-- response
+						local cb = open_requests[seq]
+						if cb then
+							local fin = m.fin or false
+							if fin then 
+								open_requests[seq] = nil 
+								network.open_request_count = network.open_request_count - 1
+							end
+							cb(fin, m)
+						else
+							print("ERROR", "missing callback for", m)
+						end
+					else
+						-- id message?
+						if m.channel == "server" then
+							if m.cmd == "id" then
+								network.client_id = m.id
+								network.time = m.time
+								network.is_first = m.first
+								network.connected_client_id_map = {}
+								--~ print("XXXXX", json.encode(m))
+								for _,id in pairs(m.ids) do network.connected_client_id_map[id] = id end
+								network.update_lowest_client_id()
+							elseif m.cmd == "join" then
+								network.connected_client_id_map[m.id] = m.id
+								network.update_lowest_client_id()
+							elseif m.cmd == "left" then
+								network.connected_client_id_map[m.id] = nil
+								network.update_lowest_client_id()
+							end
+						end
+						
+						-- normal message
+						for k,fun in pairs(network.on_message) do
+							fun(m)
+						end
+					end
+				else
+					--~ print("SKIPPING MESSAGE", m)
+				end
+			elseif tostring(event.data) ~= "0" then
+				--~ print("NETEVENT", event.type, event.data, event.peer)
 			end
 		end
-	end
-	
+    end
+    
 	-- refresh stats
 	if love.timer.getTime() - stats_last_time > stats_timeout then
 		stats_last_time = love.timer.getTime()
@@ -184,7 +195,7 @@ function network.update (dt)
 			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
-				" OUTBUFF " .. out_buff:len()
+				" OUTBUFF " .. out_buff:len() .. " REQS " .. network.open_request_count
 		
 		if config.show_object_list then
 			local objs = ""
@@ -213,63 +224,42 @@ function network.update (dt)
 end
 
 function network.shutdown()
-	if not client then return end
-	client:close()
+	if server then server:disconnect() end
+	if host then host:flush() end
+	server = nil
+	host = nil
 end
 
 -- seq gets added to the message, fin terminates the message
 -- response_callback(finished, reply)
 function network.send_request (message, response_callback)
-	if not client then return end
+	if not server then return end
 	local seq = next_seq
 	message.seq = seq
 	next_seq = next_seq + 1
 	open_requests[seq] = response_callback
+	network.open_request_count = network.open_request_count + 1
 	network.send(message)
 end
 
 function network.send (message)
-	if not client then return end
+	if not server then return end
 	
-	local m = json.encode(message) .. "\n"
+	local m = json.encode(message)
+	--~ print("SEND", server, m)
+	server:send(m)
 
 	stats.out_messages = stats.out_messages + 1
 	stats.out_bytes = stats.out_bytes + string.len(m)
-
-	out_buff = out_buff .. m
-
-	local lr,ls,lerr = socket.select(nil,{client},0)
-	if #ls > 0 then
-		local s, err = client:send(out_buff)
-		if not s and err ~= "timeout" then
-			print("connection failed: ", err)
-			os.exit(-1)
-		end
-		if s then out_buff = out_buff:sub(s + 1, -1) end
-	end
 end
 
-function network.connect (host, port)
+function network.connect (_host, _port)
 	print("luasocket version", socket._VERSION)
 	
-	if client then client:close() end
+	host = enet.host_create()
+	server = host:connect(_host .. ":" .. _port)
 	
-	local s = socket.tcp()
-	s:settimeout(1, "t")
-	local r = s:connect(host, port)
-	
-	if r then
-		client = s
-	else
-		print("ERROR connection to", host, port, "falling back to local")
-		network.client_id = 1
-		network.time = love.timer.getTime()
-		network.is_first = true
-		network.connected_client_id_map = {[1] = 1}
-		network.update_lowest_client_id()
-	end
-	
-	if client then client:settimeout(0) end
+	print(host,server)
 end
 
 -- callback(value)
