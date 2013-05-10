@@ -353,8 +353,8 @@ NetworkDisplay = Text:extend
 	onUpdate = function (self)
 		self.y = 5
 		self.x = 10
-		    
-		self.text = "id: " .. (network.client_id or "?") .. " ping: " .. math.floor(self.pingTime * 1000) .. " ms online: " .. self.playerOnline .. "\n" ..
+		fps = love.timer.getFPS()
+		self.text = "fps: " .. fps .. " id: " .. (network.client_id or "?") .. " ping: " .. math.floor(self.pingTime * 1000) .. " ms online: " .. self.playerOnline .. "\n" ..
 			"objs: " .. object_manager.count() .. " " .. network.stats
 	end
 }
