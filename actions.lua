@@ -24,16 +24,7 @@ require 'zoetrope'
 -- x,y centered
 
 spawnExplosionCircle = function (x,y,r,t,color)
-	t = config.AEShowTime
-	color = color or {128,128,128,128}
-	local d = Fill:new{ shape="circle", x = x-r, y = y-r, width = r*2, height = r*2, border = {0,0,0,0}, fill = color}
-	the.view.layers.particles:add(d)
-	the.view.timer:after(t, function() 
-		the.view.layers.particles:remove(d)
-	end)
-	the.view.timer:every(0.05, function() 
-		d.alpha = d.alpha - 0.05
-	end)
+	EffectCircle:new{x = x, y = y, r = r, t = t,color = color}
 end
 
 

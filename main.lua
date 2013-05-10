@@ -57,6 +57,7 @@ require 'Ressource'
 require 'SyncedObject'
 require 'ConnectView'
 require 'Effect'
+require 'EffectCircle'
 require 'ui' 
 require 'loveframes'
 
