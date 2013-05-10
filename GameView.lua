@@ -14,7 +14,6 @@ GameView = View:extend
 	
 	game_start_time = 0,
 	
-	cover = nil,
 	on = false,
 
 	loadMap = function (self, file, objectNamesToIgnore)
@@ -202,13 +201,42 @@ GameView = View:extend
 		end
 		audio.init()
 	
-		self.cover = Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war.png', width = 2048, height = 2048,
+		self.covers = {}
+		table.insert(self.covers,Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war.png', width = 2048, height = 2048,
 			onUpdate = function (self)
 				local pX, pY = action_handling.get_target_position (the.player)
 				self.x = pX - self.width / 2
 				self.y = pY - self.height / 2
 			end	
-		}
+		})
+		table.insert(self.covers,Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war_extension.png', width = 1024, height = 1024,
+			onUpdate = function (self)
+				local pX, pY = action_handling.get_target_position (the.player)
+				self.x = pX - 2048
+				self.y = pY
+			end	
+		})
+		table.insert(self.covers,Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war_extension.png', width = 1024, height = 1024,
+			onUpdate = function (self)
+				local pX, pY = action_handling.get_target_position (the.player)
+				self.x = pX - 2048
+				self.y = pY - 1024
+			end	
+		})
+		table.insert(self.covers,Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war_extension.png', width = 1024, height = 1024,
+			onUpdate = function (self)
+				local pX, pY = action_handling.get_target_position (the.player)
+				self.x = pX + 1024
+				self.y = pY
+			end	
+		})
+		table.insert(self.covers,Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war_extension.png', width = 1024, height = 1024,
+			onUpdate = function (self)
+				local pX, pY = action_handling.get_target_position (the.player)
+				self.x = pX + 1024
+				self.y = pY - 1024
+			end	
+		})
 	
 		if config.show_fog_of_war then	
 			self:fogOn()
@@ -219,7 +247,9 @@ GameView = View:extend
     
     fogOn = function(self)
 		if self.on == false then
-			self.layers.ui:add(self.cover)
+			for _,v in pairs(self.covers) do
+				self.layers.ui:add(v)
+			end
 			self.on = true
 		end
 	end,
