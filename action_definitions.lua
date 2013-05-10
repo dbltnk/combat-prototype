@@ -64,14 +64,14 @@ action_definitions = {
 		icon = "/assets/graphics/action_icons/sprint_icon.png",
 		sound = "/assets/audio/sprint.wav",				
 		cast_time = 0.1,
-		timeout = 20,
-		energy = 100,
+		timeout = 30,
+		energy = 50,
 		on_the_run =  true,
 		
 		application = {
 			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/sprint_particle.png"},
 			effects = {
-				{effect_type = "runspeed", str = config.runspeed, duration = 10},
+				{effect_type = "runspeed", str = config.runspeed, duration = 5},
 			},
 		},	
 	},

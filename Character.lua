@@ -249,13 +249,13 @@ Character = Animation:extend
 			local str, source_oid = ...
 		--	print("HEAL", str)
 			self:gainPain(-str)
-			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str/100) end
+			object_manager.send(source_oid, "xp", str * config.combatHealXP)
 		elseif message_name == "damage" then
 			local str, source_oid = ...
 		--	print("DAMANGE", str)
 			if not self.incapacitated then 
         self:gainPain(str)
-        if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str/100) end
+        if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
       end
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
@@ -263,7 +263,7 @@ Character = Animation:extend
 				the.app.view.timer:after(duration / ticks * i, function()
 					if not self.incapacitated then  
 						self:gainPain(str)
-						if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str/100) end
+						if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
 					end
 				end)
 			end			
@@ -272,7 +272,7 @@ Character = Animation:extend
 		--	print("STUN", duration)
 			self:freezeMovement()
 			self:freezeCasting()
-			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration) end
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
 			the.app.view.timer:after(duration, function()
 				self:unfreezeMovement()
 				self:unfreezeCasting()
@@ -280,7 +280,7 @@ Character = Animation:extend
 		elseif message_name == "runspeed" then
 			local str, duration, source_oid = ...
 			--print("SPEED", str, duration)
-			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration) end
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self.speedOverride = str
 			the.app.view.timer:after(duration, function()
 				self.speedOverride = 0
@@ -294,7 +294,8 @@ Character = Animation:extend
 				self:respawn() 
 			end
 		elseif message_name == "invis" then
-			local duration, speedPenalty = ...
+			local duration, speedPenalty, source_oid = ...
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self.hidden = true
 			self.speedOverride = config.walkspeed * speedPenalty
 			the.app.view.timer:after(duration, function() self.hidden = false self.speedOverride = 0 end)

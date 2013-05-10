@@ -25,6 +25,8 @@ config.ressourceHealth = 300
 config.xpGainsEachNSeconds = 10
 config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds / config.timecompression
 config.strIncreaseFactor = 0.1 -- 10% stronger per lvl
+config.combatHealXP = 0.2 -- in % of damage / heal done
+config.crowdControlXP = 1 -- in % of duration in seconds
 
 -- visuals
 config.show_fog_of_war = true
