@@ -248,7 +248,7 @@ NameLevel = Text:extend
 	
 	onUpdate = function (self)
 		self.text = self.name .. " (" .. self.level .. ")"
-		self.x = self.x - 20
+		--~ self.x = self.x - 20
 		self.y = self.y - 10
 	end,
 	
