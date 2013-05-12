@@ -9,5 +9,5 @@ copy "%~dp0\build_material\lovewin32\*.*" "%~dp0\buildtmp\"
 copy /b "%~dp0\buildtmp\love.exe"+"%~dp0\buildtmp\game.love" "%~dp0\buildtmp\dastal_proto1.exe"
 del "%~dp0\buildtmp\game.love"
 del "%~dp0\buildtmp\love.exe"
-winrar a -ep1 dastal_proto1.zip buildtmp\*
+winrar a -ep1 dastal_proto1_win32.zip buildtmp\*
 rd /s /q buildtmp
