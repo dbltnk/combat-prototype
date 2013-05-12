@@ -1,0 +1,11 @@
+combat-prototype.deproj
+combat-prototype.deuser
+localconfig.lua.dist
+.git
+.gitignore
+localconfig.lua
+README.md
+.gitattributes
+geany_run_script.bat
+buildexclude.txt
+buildwin32.bat

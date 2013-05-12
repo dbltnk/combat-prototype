@@ -5,7 +5,7 @@ localconfig.fullscreen = false
 localconfig.screenWidth = 800
 localconfig.screenHeight = 600 
 
-localconfig.playerName = "unknown"
+localconfig.playerName = "changeme"
 
 localconfig.skills = {
 		"bow_shot",
