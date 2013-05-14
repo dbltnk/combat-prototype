@@ -7,19 +7,54 @@ localconfig.screenHeight = 600
 
 localconfig.playerName = "changeme"
 
-localconfig.skills = {
-		"bow_shot",
-		"xbow_piercing_shot",	
-		--"scythe_attack",
-		--"scythe_pirouette",			
-		--"shield_bash",		
-		"sprint",
-		"camouflage",		
-		"bandage",
-		--"fireball",
-		--"life_leech",
-		"gank",
-	}
+localconfig.weapon = "pickme" -- "bow" or "scythe" or "staff"
+localconfig.armor = "pickme" -- "robe" or "hide_armor" or "splint_mail"
 
+localconfig.skills = {} -- pick three weapon skills and three armor skills of your chosen types, leave the rest commented out
+
+if localconfig.weapon == "bow" then --pick three out of these six weapon skills
+	table.insert(localconfig.skills,"bow_shot")
+	table.insert(localconfig.skills,"bow_puncture")
+	table.insert(localconfig.skills,"bow_snare")
+	-- table.insert(localconfig.skills,"bow_expose")
+	-- table.insert(localconfig.skills,"bow_root")
+	-- table.insert(localconfig.skills,"bow_mark_target")
+elseif localconfig.weapon == "scythe" then --pick three out of these six weapon skills
+	table.insert(localconfig.skills,"scythe_sweep")
+	table.insert(localconfig.skills,"scythe_pirouette")
+	table.insert(localconfig.skills,"scythe_jump")
+	-- table.insert(localconfig.skills,"scythe_harpoon")
+	-- table.insert(localconfig.skills,"scythe_stun")
+	-- table.insert(localconfig.skills,"scythe_gank")
+elseif localconfig.weapon == "staff" then --pick three out of these six weapon skills
+	table.insert(localconfig.skills,"staff_life_leech")
+	table.insert(localconfig.skills,"staff_poison")
+	table.insert(localconfig.skills,"staff_fireball")
+	-- table.insert(localconfig.skills,"staff_heal_other")
+	-- table.insert(localconfig.skills,"staff_healing_breeze")
+	-- table.insert(localconfig.skills,"staff_mezz")
+elseif localconfig.armor == "robe" then --pick three out of these six armor skills
+	table.insert(localconfig.skills,"robe_bandage")
+	table.insert(localconfig.skills,"robe_shrink")
+	table.insert(localconfig.skills,"robe_stun_break")
+	-- table.insert(localconfig.skills,"robe_hide")
+	-- table.insert(localconfig.skills,"robe_quake")
+	-- table.insert(localconfig.skills,"robe_gust")
+elseif localconfig.armor == "hide_armor" then --pick three out of these six armor skills
+	table.insert(localconfig.skills,"hide_armor_sprint")
+	table.insert(localconfig.skills,"hide_armor_sneak")
+	table.insert(localconfig.skills,"hide_armor_root_break")
+	-- table.insert(localconfig.skills,"hide_armor_snare_break")
+	-- table.insert(localconfig.skills,"hide_armor_regenerate")
+	-- table.insert(localconfig.skills,"hide_armor_second_wind")
+elseif localconfig.armor == "splint_mail" then --pick three out of these six armor skills
+	table.insert(localconfig.skills,"splint_mail_absorb")
+	table.insert(localconfig.skills,"splint_mail_ignore_pain")
+	table.insert(localconfig.skills,"splint_mail_mezz_break")
+	-- table.insert(localconfig.skills,"splint_mail_grow")
+	-- table.insert(localconfig.skills,"splint_mail_rage")
+	-- table.insert(localconfig.skills,"splint_mail_invulnerability")
+end
+		
 return localconfig
 
