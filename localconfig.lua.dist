@@ -33,7 +33,9 @@ elseif localconfig.weapon == "staff" then --pick three out of these six weapon s
 	-- table.insert(localconfig.skills,"staff_heal_other")
 	-- table.insert(localconfig.skills,"staff_healing_breeze")
 	-- table.insert(localconfig.skills,"staff_mezz")
-elseif localconfig.armor == "robe" then --pick three out of these six armor skills
+end	
+
+if localconfig.armor == "robe" then --pick three out of these six armor skills
 	table.insert(localconfig.skills,"robe_bandage")
 	table.insert(localconfig.skills,"robe_shrink")
 	table.insert(localconfig.skills,"robe_stun_break")

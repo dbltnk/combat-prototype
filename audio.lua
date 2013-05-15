@@ -15,10 +15,10 @@ audio.combatMusic = nil
 
 function audio.init()
 
-	audio.peaceMusic = playSound('/assets/audio/peace.ogg', config.volume, 'long')
+	audio.peaceMusic = playSound('/assets/audio/music/peace.ogg', config.volume, 'long')
 	audio.peaceMusic:setLooping(true)
 
-	audio.combatMusic = playSound('/assets/audio/war.ogg', 0, 'long')
+	audio.combatMusic = playSound('/assets/audio/music/war.ogg', 0, 'long')
 	audio.combatMusic:setLooping(true)
 	
 end
