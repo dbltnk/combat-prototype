@@ -241,3 +241,12 @@ end)
 action_handling.register_effect("stun", function (target, effect, source_oid) --TODO:  * increase
 	--~ object_manager.send(target.oid, "stun", effect.duration, source_oid)
 end)
+
+-- effect: moveSelfTo ----------------------------------------------------------
+-- eg. {effect_type = "moveSelfTo"},
+-- has: 
+action_handling.register_effect("moveSelfTo", function (target, effect, source_oid)
+	local x,y = action_handling.get_target_position(target)
+	object_manager.send(source_oid, "moveSelfTo", x,y)
+end)
+

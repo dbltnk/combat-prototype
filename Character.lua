@@ -292,6 +292,10 @@ Character = Animation:extend
 			local str = ...
 			--print("XP", str)
 			self:gainXP(str)
+		elseif message_name == "moveSelfTo" then
+			local x,y = ...
+			self.x = x
+			self.y = y
 		elseif message_name == "gank" then
 			if self.incapacitated == true then 
 				self:respawn() 
