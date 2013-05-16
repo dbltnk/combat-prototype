@@ -81,6 +81,10 @@ Character = Animation:extend
 		the.app.view.layers.characters:add(self)
 		self.wFactor = self.width / self.maxPain		
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
+		-- fill up skill bar with missing skills
+		for i = 1,6 do 
+			if not self.skills[i] then self.skills[i] = "bow_shot" end
+		end
 		for k,v in pairs(self.skills) do
 			self.skills[k] = Skill:new { nr = k, id = v, character = self }
 		end
@@ -113,6 +117,7 @@ Character = Animation:extend
 			_freeze(self, index)
 			self.anim_freeze = index
 		end
+	
 	end,
 	
 	onDieBoth = function (self)

@@ -12,8 +12,8 @@ action_definitions = {
 	bow_shot = {
 		name = "Shot",
 		description = "Shoot a projectile that damages one target.",
-		icon = "/assets/graphics/action_icons/bow_shot.png",
-		sound = "/assets/audio/sfx/bow_shot.wav",
+		icon = nil,
+		sound = nil,
 		cast_time = .5,
 		timeout = 1,
 		energy = 10,
@@ -31,8 +31,8 @@ action_definitions = {
 	bow_puncture = {
 		name = "Puncture",
 		description = "Shoot a fast projectile that pierces several targets and makes them bleed.",
-		icon = "/assets/graphics/action_icons/bow_puncture.png",
-		sound = "/assets/audio/sfx/bow_puncture.wav",				
+		icon = nil,
+		sound = nil,
 		cast_time = 1.5,
 		timeout = 12,
 		energy = 30,
@@ -111,8 +111,8 @@ action_definitions = {
 	scythe_sweep = {
 		name = "Sweep",
 		description = "Sweeping blow that hits several targets in front of you.",
-		icon = "/assets/graphics/action_icons/scythe_sweep.png",
-		sound = "/assets/audio/sfx/scythe_sweep.wav",		
+		icon = nil,
+		sound = nil,
 		cast_time = .75,
 		timeout = 3,
 		energy = 30,
@@ -130,8 +130,8 @@ action_definitions = {
 	scythe_pirouette = {
 		name = "Pirouette",
 		description = "Sweeping blow that hits a lot of targets all around you.",
-		icon = "/assets/graphics/action_icons/scythe_pirouette.png",
-		sound = "/assets/audio/sfx/scythe_pirouette.wav",				
+		icon = nil,
+		sound = nil,
 		cast_time = 1,
 		timeout = 15,
 		energy = 20,
@@ -146,20 +146,25 @@ action_definitions = {
 		},	
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ scythe_jump = {
-		--~ name = "Jump",
-		--~ description = "Jump to your target location.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },	
+	scythe_jump = {
+		name = "Jump",
+		description = "Jump to your target location.",
+		icon = nil,
+		sound = nil,
+		cast_time = 1.5,
+		timeout = 12,
+		energy = 40,
+		on_the_run = false,
+		cast_particle_color = color_scythe,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 1200, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/unknown.png"},
+			effects = {
+				{effect_type = "moveSelfTo"},	
+			},
+		},	
+
+	},	
 	-- -----------------------------------------------------------------------------------
 	--~ scythe_harpoon = {
 		--~ name = "Harpoon",
@@ -179,8 +184,8 @@ action_definitions = {
 	scythe_stun = {
 		name = "Stun",
 		description = "Stun one target in close to you.",
-		icon = "/assets/graphics/action_icons/scythe_stun.png",
-		sound = "/assets/audio/sfx/scythe_stun.wav",				
+		icon = nil,
+		sound = nil,
 		cast_time = 0.1,
 		timeout = 10,
 		energy = 12,
@@ -199,8 +204,8 @@ action_definitions = {
 	scythe_gank = {
 		name = "Gank",
 		description = "Gank one target close to you.",
-		icon = "/assets/graphics/action_icons/scythe_gank.png",
-		sound = "/assets/audio/sfx/scythe_gank.wav",						
+		icon = nil,
+		sound = nil,
 		cast_time = 5,
 		timeout = 0,
 		energy = 50,
@@ -218,8 +223,8 @@ action_definitions = {
 	staff_life_leech = {
 		name = "Life Leech",
 		description = "Shoot a projectile that drains one targets life while healing you.",
-		icon = "/assets/graphics/action_icons/staff_life_leech.png",
-		sound = "/assets/audio/sfx/staff_life_leech.wav",				
+		icon = nil,
+		sound = nil,
 		cast_time = 1.8,
 		timeout = 15,
 		energy = 36,
@@ -257,8 +262,8 @@ action_definitions = {
 	staff_fireball = {
 		name = "Fireball",
 		description = "Shoot a projectile that explodes on impact and damages a lot of targets in the area.",
-		icon = "/assets/graphics/action_icons/staff_fireball.png",
-		sound = "/assets/audio/sfx/staff_fireball.wav",				
+		icon = nil,
+		sound = nil,
 		cast_time = 3,
 		timeout = 9,
 		energy = 60,
@@ -326,8 +331,8 @@ action_definitions = {
 	robe_bandage = {
 		name = "Bandage",
 		description = "Heal yourself instantly.",
-		icon = "/assets/graphics/action_icons/robe_bandage.png",
-		sound = "/assets/audio/sfx/robe_bandage.wav",				
+		icon = nil,
+		sound = nil,
 		cast_time = 2,
 		timeout = 5,
 		energy = 20,
@@ -420,8 +425,8 @@ action_definitions = {
 	hide_armor_sprint = {
 		name = "Sprint",
 		description = "Increases your movement speed for a short time.",
-		icon = "/assets/graphics/action_icons/hide_armor_sprint.png",
-		sound = "/assets/audio/sfx/hide_armor_sprint.wav",				
+		icon = nil,
+		sound = nil,
 		cast_time = 0.1,
 		timeout = 30,
 		energy = 50,
@@ -439,8 +444,8 @@ action_definitions = {
 	hide_armor_sneak = {
 		name = "Sneak",
 		description = "Renders you invisible for a short time even when moving.",
-		icon = "/assets/graphics/action_icons/hide_armor_sneak.png",
-		sound = "/assets/audio/sfx/hide_armor_sneak.wav",						
+		icon = nil,
+		sound = nil,
 		cast_time = 0.1,
 		timeout = 60,
 		energy = 100,
@@ -606,5 +611,11 @@ action_definitions = {
 	--~ },			
 }
 
+-- fill up asset names with identifiers
+for k,v in pairs(action_definitions) do
+	if not v.icon then v.icon = "/assets/graphics/action_icons/" .. k ..".png" end
+	if not v.sound then v.sound = "/assets/audio/sfx/" .. k .. ".wav" end
+	if not love.filesystem.exists(v.sound) then v.sound = "/assets/audio/sfx/missing.wav" end
+end		
 
 return action_definitions
