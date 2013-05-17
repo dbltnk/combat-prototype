@@ -60,6 +60,7 @@ Character = Animation:extend
 	image = nil,--'/assets/graphics/player_collision.png',
 
 	charSprite = nil,
+	hiddenSprite = nil,
 
 	-- UiBar
 	painBar = nil,
@@ -149,15 +150,24 @@ Character = Animation:extend
 				self.x = goSelf.x
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
-				
-				if not self.visible and goSelf == the.player then
-					self.alpha = 0.5
-					self.visible = true
-				else
-					self.alpha = 1
-				end
-				
+
 				self:play(goSelf.anim_name)
+			end,
+		}
+		
+		self.hiddenSprite = Tile:new{
+			width = 26,
+			height = 26,
+			image = '/assets/graphics/player_hidden.png',
+			solid = false,
+			visible = false,
+			
+			onNew = function(self)
+				the.app.view.layers.characters:add(self)
+			end,
+			
+			onDie = function(self)
+				the.app.view.layers.characters:remove(self)
 			end,
 		}
 	
@@ -566,7 +576,17 @@ Character = Animation:extend
 			self.painBar.bar.visible = false
 			self.painBar.background.visible = false	
 			self.nameLevel.visible = false
-		end				
+		end
+		
+		
+		-- local hidden image
+		if self.hidden and self == the.player then
+			self.hiddenSprite.visible = true
+		else
+			self.hiddenSprite.visible = false
+		end
+		self.hiddenSprite.x = self.x
+		self.hiddenSprite.y = self.y
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
