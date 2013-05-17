@@ -105,7 +105,7 @@ var storage = {};
 
 var next_free_client_id = 1;
 
-var bindaddr = new enet.Address('0.0.0.0', 9999);
+var bindaddr = new enet.Address('0.0.0.0', 9998);
 var host = new enet.Host(bindaddr, 32); // bind addr, number of peers to allow at once
 host.on('connect', function(peer, data) {
     // Peer connected.
@@ -181,4 +181,4 @@ host.on('connect', function(peer, data) {
 
 host.start_watcher();
 
-console.log("TCP echo server listening on port 9999");
+console.log("TCP echo server listening on port 9998");
