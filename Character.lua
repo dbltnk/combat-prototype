@@ -150,6 +150,13 @@ Character = Animation:extend
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
 				
+				if not self.visible and goSelf == the.player then
+					self.alpha = 0.5
+					self.visible = true
+				else
+					self.alpha = 1
+				end
+				
 				self:play(goSelf.anim_name)
 			end,
 		}
