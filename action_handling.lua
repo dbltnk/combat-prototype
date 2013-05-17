@@ -137,8 +137,13 @@ end
 -- returns list of ( {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center) )
 function action_handling.find_ae_targets (x,y, range, maxTargetCount)
 	local l = object_manager.find_in_sphere(x,y, range)
+	--~ utils.vardump(l)
+	--~ print(x,y, range)
 	
 	l = list.process_values(l)
+		:where(function(f) 
+			return f.targetable
+		end)
 		:select(function(t) 
 			local xx,yy = action_handling.get_target_position(t)
 			return {

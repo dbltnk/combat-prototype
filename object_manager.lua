@@ -92,6 +92,7 @@ end
 -- returns {oid0=o0, oid1=o1, ...}
 function object_manager.find_in_sphere (x,y,r)
 	return object_manager.find_where(function (oid, o)
+		--print("stuff",vector.lenFromTo(x,y, o.x,o.y),x,y,o.x,o.y,r,oid,o.class)
 		return vector.lenFromTo(x,y, o.x,o.y) <= r
 	end)
 end

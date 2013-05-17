@@ -19,6 +19,7 @@ TargetDummy = Tile:extend
 	wFactor = 0,	
 	timeOfDeath = 0,	
 	owner = 0,
+	targetable = true,
 	
 	-- UiBar
 	painBar = nil,
@@ -92,6 +93,7 @@ TargetDummy = Tile:extend
 		if message_name == "heal" then
 			local str = ...
 		--	print("DUMMY HEAL", str)
+			self:gainPain(-str)
 		elseif message_name == "damage" then
 			local str, source_oid  = ...
 			-- damage handling for xp distribution	
@@ -121,6 +123,7 @@ TargetDummy = Tile:extend
 		if message_name == "heal" then
 			local str = ...
 		--	print("DUMMY HEAL", str)
+			self:showDamage(-str)
 		elseif message_name == "damage" then
 			local str, source_oid  = ...
 			-- damage handling for xp distribution	
@@ -142,6 +145,7 @@ TargetDummy = Tile:extend
 	end,
 	
 	updatePain = function (self)
+		if self.currentPain < 0 then self.currentPain = 0 end
 		if ((self.currentPain > self.maxPain) and self.alive == true) then 
 			self.currentPain = self.maxPain
 			self.alive = false					

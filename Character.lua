@@ -26,6 +26,7 @@ Character = Animation:extend
 	isInCombat = false,	
 	name = nil,
 	reminder = nil,
+	targetable = true,
 
 	-- for anim sync
 	anim_play = nil,
@@ -262,19 +263,19 @@ Character = Animation:extend
 			local str, source_oid = ...
 		--	print("DAMANGE", str)
 			if not self.incapacitated then 
-        self:gainPain(str)
-        if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
-      end
+				self:gainPain(str)
+				if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
+			end
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			for i=1,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if not self.incapacitated then  
-						self:gainPain(str)
-						if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
-					end
-				end)
-			end			
+				if not self.incapacitated then  
+					self:gainPain(str)
+					if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
+				end
+			end)
+		end			
 		elseif message_name == "stun" then
 			local duration, source_oid = ...
 		--	print("STUN", duration)

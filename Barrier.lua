@@ -14,8 +14,8 @@ Barrier = Tile:extend
 	maxPain = config.barrierHealth,
 	wFactor = 0,
 	highscore = {},
-
 	owner = 0,
+	targetable = true,
 
 	-- UiBar
 	painBar = nil,

@@ -45,10 +45,13 @@ action_handling.register_target_selection("ae", function (start_target, target_s
 	
 	local l = action_handling.find_ae_targets(x,y, target_selection.range, 
 		target_selection.piercing_number or 1000000)
+	--print(x,y, target_selection.range, target_selection.piercing_number)
+	--utils.vardump(l)
 	
 	targets_selected_callback(utils.map1(l, function (o) 
 		local t = action_handling.object_to_target(o)
 		action_handling.add_view_on_demand(t, start_target)
+		--utils.vardump(t)
 		return t
 	end))
 end)
@@ -201,6 +204,14 @@ end)
 action_handling.register_effect("heal", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
 	object_manager.send(target.oid, "heal", effect.str * increase, source_oid)
+end)
+
+-- effect: healOnlyOthers ----------------------------------------------------------
+-- eg. {effect_type = "heal", str = 60},
+-- has: str
+action_handling.register_effect("healOnlyOthers", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	if target.oid ~= source_oid then object_manager.send(target.oid, "heal", effect.str * increase, source_oid) end
 end)
 
 -- effect: damage ----------------------------------------------------------

@@ -283,20 +283,29 @@ action_definitions = {
 		},
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ staff_heal_other = {
-		--~ name = "Heal Other",
-		--~ description = "Shoot a projectile that heals one target.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },	
+	staff_heal_other = {
+		name = "Heal Other",
+		description = "Shoot a projectile that heals one target.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 1.5,
+		timeout = 3,
+		energy = 20,
+		on_the_run = false,
+		cast_particle_color = color_staff,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/unknown.png"},
+			effects = {
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
+					effects = {
+						{effect_type = "healOnlyOthers", str = 50, },
+					},
+				}},
+			},
+		},
+	},	
 	-- -----------------------------------------------------------------------------------
 	--~ staff_healing_breeze = {
 		--~ name = "Healing Breeze",

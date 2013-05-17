@@ -22,6 +22,7 @@ Ressource = Tile:extend
 	},	
 	controller = 0,
 	nextController = 0,
+	targetable = true,
 	
 	-- UiBar
 	painBar = nil,
