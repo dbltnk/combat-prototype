@@ -45,18 +45,21 @@ Character = Animation:extend
 
 	activeSkillNr = 1,
 	
-	width = 64,
-	height = 64,
-	image = '/assets/graphics/player.png', -- source: http://www.synapsegaming.com/forums/t/1711.aspx
+	-- 32x48, 4 per row, 4 rows
+	
+	width = 26,
+	height = 26,
+	--~ image = '/assets/graphics/player_characters/robe_bow.png',
+	image = '/assets/graphics/player_collision.png',
 
 	-- UiBar
 	painBar = nil,
 	nameLevel = nil,
 	
-	sequences = 
-	{
-		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = config.animspeed },
-	},
+	--~ xxx sequences = 
+	--~ {
+		--~ walk = { frames = {1}, fps = config.animspeed },
+	--~ },
 	
 	-- if > 0 the player is not allowed to move
 	freezeMovementCounter = 0,
@@ -106,18 +109,19 @@ Character = Animation:extend
 		--~ print(debug.traceback())
 		
 		-- attach network stuff to anim functions
-		local _play = self.play
-		self.play = function (self, name)
-			_play(self, name)
-			self.anim_play = name
-			self.anim_freeze = nil
-		end
-		
-		local _freeze = self.freeze
-		self.freeze = function (self, index)
-			_freeze(self, index)
-			self.anim_freeze = index
-		end
+		--~ xxx
+		--~ local _play = self.play
+		--~ self.play = function (self, name)
+			--~ _play(self, name)
+			--~ self.anim_play = name
+			--~ self.anim_freeze = nil
+		--~ end
+		--~ 
+		--~ local _freeze = self.freeze
+		--~ self.freeze = function (self, index)
+			--~ _freeze(self, index)
+			--~ self.anim_freeze = index
+		--~ end
 	
 	end,
 	
@@ -406,11 +410,11 @@ Character = Animation:extend
 			
 			local animspeed = utils.mapIntoRange (ipt.speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
 			
-			self:play('walk')
+			--~ xxx self:play('walk')
 		elseif self.incapacitated then
-			self:freeze(8)
+			--~ self:freeze(8)
 		else
-			self:freeze(5)
+			--~ self:freeze(5)
 		end
 		
 		if self:isCasting() == false and ipt.doShoot and self.skills[ipt.shootSkillNr] and 
@@ -421,14 +425,14 @@ Character = Animation:extend
 			self.hidden = false
 		end
 		
-		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))	
+		--~ xxx self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))	
 	end,
 	
 	onUpdateRemote = function (self, elapsed)
 		if self.anim_freeze then 
-			self:freeze(self.anim_freeze)
+			--~ xxx self:freeze(self.anim_freeze)
 		elseif self.anim_play then
-			self:play(self.anim_play)
+			--~ xxx self:play(self.anim_play)
 		end
 	end,
 	
@@ -511,7 +515,7 @@ Character = Animation:extend
 			y = 0, 
 			width = 600,
 			tint = {0.1,0.1,0.1},
-			
+			 
 			onUpdate = function (self)
 				self.x = (love.graphics.getWidth() - self.width) / 2
 				self.y = love.graphics.getHeight() - 100
