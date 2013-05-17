@@ -120,7 +120,8 @@ GameView = View:extend
 		self:add(self.layers.debug)
 		
 		-- setup player
-		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, name = localconfig.playerName }
+		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, 
+			name = localconfig.playerName, armor = localconfig.armor, weapon = localconfig.weapon }
 		
     -- place ontop
 		self:remove(self.trees)
@@ -163,7 +164,6 @@ GameView = View:extend
 		-- set skillbar images
 		local skills = {}
 		for k,v in pairs(the.player.skills) do
-			--print(k, v)
 			table.insert(skills, action_definitions[v.id].icon)
 		end
 		the.skillbar:setSkills(skills)
