@@ -102,6 +102,8 @@ the.app = App:new
 		-- easy exit
 		if the.keys:pressed('escape') then 
 			--~ profiler.stop()
+			network.send({channel = "server", cmd = "bye"})
+			network.update(1)
 			network.shutdown()
 			os.exit() 
 		end
