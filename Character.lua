@@ -6,9 +6,11 @@ Character = Animation:extend
 {
 	class = "Character",
 
-	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "level", "anim_play", "anim_freeze", "velocity", "alive", "incapacitated", "hidden", "name"},			
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "level", "anim_name", 
+		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name"},			
 		
-	sync_high = {"x", "y", "rotation", "currentPain", "rotation", "anim_play", "anim_freeze", "velocity", "alive", "incapacitated", "hidden"},
+	sync_high = {"x", "y", "rotation", "currentPain", "rotation", "anim_name", "anim_speed",
+		"velocity", "alive", "incapacitated", "hidden"},
 	sync_low = {"image", "width", "height", "rotation", "level", "name"},			
 	
 	maxPain = config.maxPain, 
@@ -28,9 +30,14 @@ Character = Animation:extend
 	reminder = nil,
 	targetable = true,
 
+	--~ "bow" or "scythe" or "staff"
+	weapon = "bow",
+	--~ "robe" or "hide_armor" or "splint_mail"
+	armor = "robe",
+
 	-- for anim sync
-	anim_play = nil,
-	anim_freeze = nil,
+	anim_name = nil,
+	anim_speed = nil,
 			
 	-- list of Skill
 	skills = localconfig.skills or {
@@ -45,19 +52,19 @@ Character = Animation:extend
 
 	activeSkillNr = 1,
 	
-	width = 64,
-	height = 64,
-	image = '/assets/graphics/player.png', -- source: http://www.synapsegaming.com/forums/t/1711.aspx
+	-- 32x48, 4 per row, 4 rows
+	
+	width = 26,
+	height = 26,
+	--~ image = '/assets/graphics/player_characters/robe_bow.png',
+	image = nil,--'/assets/graphics/player_collision.png',
+
+	charSprite = nil,
 
 	-- UiBar
 	painBar = nil,
 	nameLevel = nil,
-	
-	sequences = 
-	{
-		walk = { frames = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, fps = config.animspeed },
-	},
-	
+		
 	-- if > 0 the player is not allowed to move
 	freezeMovementCounter = 0,
 	-- if > 0 the player is not allowed to cast actions
@@ -102,22 +109,68 @@ Character = Animation:extend
 			level = self.level, name = self.name
 		}
 	
+		local goSelf = self
+	
+		self.charSprite = Animation:new{
+			x = self.x,
+			y = self.y,
+			
+			-- 32x48, 4 per row, 4 rows
+			
+			width = 32,
+			height = 48,
+			image = '/assets/graphics/player_characters/' .. goSelf.armor .. "_" .. goSelf.weapon .. ".png",
+			
+			solid = false,
+			
+			sequences = 
+			{
+				incapacitated = { frames = {1}, fps = config.animspeed },
+				walk = { frames = {1,2,3,4}, fps = config.animspeed },
+				walk_down = { frames = {1,2,3,4}, fps = config.animspeed },
+				walk_left = { frames = {5,6,7,8}, fps = config.animspeed },
+				walk_right = { frames = {9,10,11,12}, fps = config.animspeed },
+				walk_up = { frames = {13,14,15,16}, fps = config.animspeed },
+				idle_down = { frames = {1}, fps = config.animspeed },
+				idle_left = { frames = {5}, fps = config.animspeed },
+				idle_right = { frames = {9}, fps = config.animspeed },
+				idle_up = { frames = {13}, fps = config.animspeed },
+			},
+			
+			onNew = function(self)
+				the.app.view.layers.characters:add(self)
+			end,
+			
+			onDie = function(self)
+				the.app.view.layers.characters:remove(self)
+			end,
+			
+			onUpdate = function(self)
+				self.x = goSelf.x
+				self.y = goSelf.y - self.height + goSelf.height
+				self.visible = goSelf.visible
+				
+				self:play(goSelf.anim_name)
+			end,
+		}
+	
 				
 		--~ print(debug.traceback())
 		
 		-- attach network stuff to anim functions
-		local _play = self.play
-		self.play = function (self, name)
-			_play(self, name)
-			self.anim_play = name
-			self.anim_freeze = nil
-		end
-		
-		local _freeze = self.freeze
-		self.freeze = function (self, index)
-			_freeze(self, index)
-			self.anim_freeze = index
-		end
+		--~ xxx
+		--~ local _play = self.play
+		--~ self.play = function (self, name)
+			--~ _play(self, name)
+			--~ self.anim_play = name
+			--~ self.anim_freeze = nil
+		--~ end
+		--~ 
+		--~ local _freeze = self.freeze
+		--~ self.freeze = function (self, index)
+			--~ _freeze(self, index)
+			--~ self.anim_freeze = index
+		--~ end
 	
 	end,
 	
@@ -405,13 +458,18 @@ Character = Animation:extend
 		if isMoving and self:footstepsPossible() then 
 			local rot = vector.toVisualRotation(ipt.movex, ipt.movey)
 			local footstep = Footstep:new{ 
-				x = self.x+17, y = self.y+15, 
+				x = self.x+self.width/2-16, y = self.y+self.height/2-16, 
 				rotation = rot,
 			}
 			the.footsteps[footstep] = true
 			self:makeFootstep()
 		end
-		
+
+		-- rotation
+		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))	
+		local ddx,ddy = vector.fromVisualRotation(self.rotation, 1)
+		local dir = vector.dirFromVisualRotation(ddx,ddy)
+
 		-- move into direction?
 		if self.freezeMovementCounter == 0 and vector.len(ipt.movex, ipt.movey) > 0 then
 			-- replace second 0 by a 1 to toggle runspeed to analog
@@ -422,13 +480,15 @@ Character = Animation:extend
 			
 			self.velocity.x, self.velocity.y = vector.normalizeToLen(ipt.movex, ipt.movey, s)
 			
-			local animspeed = utils.mapIntoRange (ipt.speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
+			self.anim_name = "walk_" .. dir
+			self.anim_speed = utils.mapIntoRange (ipt.speed, 0, 1, config.animspeed, config.animspeed * config.runspeed / config.walkspeed)
 			
-			self:play('walk')
 		elseif self.incapacitated then
-			self:freeze(8)
+			self.anim_name = "incapacitated"
+			self.anim_speed = 0
 		else
-			self:freeze(5)
+			self.anim_name = "idle_" .. dir
+			self.anim_speed = 0
 		end
 		
 		if self:isCasting() == false and ipt.doShoot and self.skills[ipt.shootSkillNr] and 
@@ -438,27 +498,27 @@ Character = Animation:extend
 			self.skills[ipt.shootSkillNr]:use(cx, cy, ipt.viewx, ipt.viewy, self)
 			self.hidden = false
 		end
-		
-		self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, ipt.viewx, ipt.viewy))	
 	end,
 	
 	onUpdateRemote = function (self, elapsed)
 		if self.anim_freeze then 
-			self:freeze(self.anim_freeze)
+			--~ xxx self:freeze(self.anim_freeze)
 		elseif self.anim_play then
-			self:play(self.anim_play)
+			--~ xxx self:play(self.anim_play)
 		end
 	end,
 	
 	onUpdateBoth = function (self, elapsed)
 		if self.incapacitated then
 			self.tint = {0.5,0.5,0.5}
+			self.charSprite.tint = {0.5,0.5,0.5}
 		else 
 			self.tint = {1,1,1}
+			self.charSprite.tint = {1,1,1}
 		end
 		
-		self.nameLevel.x = self.x
-		self.nameLevel.y = self.y
+		self.nameLevel.x = self.x - 5
+		self.nameLevel.y = self.y - 28
 		self.nameLevel.level = self.level
 		
 		if self.hidden then
@@ -475,7 +535,7 @@ Character = Animation:extend
 			self.nameLevel.visible = true
 		end	
 
-		-- upate pain bar
+		-- update pain bar
 		self.painBar.currentValue = self.currentPain
 		self.painBar:updateBar()
 		self.painBar.x = self.x
@@ -529,7 +589,7 @@ Character = Animation:extend
 			y = 0, 
 			width = 600,
 			tint = {0.1,0.1,0.1},
-			
+			 
 			onUpdate = function (self)
 				self.x = (love.graphics.getWidth() - self.width) / 2
 				self.y = love.graphics.getHeight() - 100

@@ -5,6 +5,10 @@ vector.len = function(x,y)
 	return math.sqrt(x*x + y*y)
 end
 
+vector.dot = function(x0,y0, x1,y1)
+	return (x0*x1 + y0*y1)
+end
+
 -- returns dx,dy
 vector.fromTo = function(x0,y0, x1,y1)
 	return x1-x0, y1-y0
@@ -49,6 +53,20 @@ vector.fromVisualRotation = function (radians, len)
 	len = len or 1
 	local r = radians - 0.5 * math.pi
 	return len * math.cos(r), len * math.sin(r)
+end
+
+-- return dir (eg. "up", "down", "left", "right")
+-- visual up is 0,-1
+vector.dirFromVisualRotation = function (dx,dy)
+	local maxDir = nil
+	local maxDot = nil
+	
+	if maxDot == nil or vector.dot(dx,dy, 1,0) > maxDot then maxDot = vector.dot(dx,dy, 1,0) maxDir = "right" end
+	if maxDot == nil or vector.dot(dx,dy, -1,0) > maxDot then maxDot = vector.dot(dx,dy, -1,0) maxDir = "left" end
+	if maxDot == nil or vector.dot(dx,dy, 0,-1) > maxDot then maxDot = vector.dot(dx,dy, 0,-1) maxDir = "up" end
+	if maxDot == nil or vector.dot(dx,dy, 0,1) > maxDot then maxDot = vector.dot(dx,dy, 0,1) maxDir = "down" end
+	
+	return maxDir
 end
 
 --[[
