@@ -7,11 +7,11 @@ Character = Animation:extend
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "level", "anim_name", 
-		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name"},			
+		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden"},
-	sync_low = {"image", "width", "height", "rotation", "level", "name"},			
+	sync_low = {"image", "width", "height", "rotation", "level", "name", "weapon", "armor"},			
 	
 	maxPain = config.maxPain, 
 	currentPain = 0,
