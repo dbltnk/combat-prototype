@@ -7,10 +7,10 @@ Character = Animation:extend
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "level", "anim_name", 
-		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor"},
+		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "rotation", "anim_name", "anim_speed",
-		"velocity", "alive", "incapacitated", "hidden"},
+		"velocity", "alive", "incapacitated", "hidden", "isInCombat"},
 	sync_low = {"image", "width", "height", "rotation", "level", "name", "weapon", "armor"},			
 	
 	maxPain = config.maxPain, 
@@ -563,13 +563,6 @@ Character = Animation:extend
 			self.painBar.inc = false
 		end 
 		
-		-- check if we're in combat
-		
-		self.isInCombat = false
-		for k,v in pairs(self.skills) do
-			self.isInCombat = self.isInCombat or (v:isOutOfCombat() == false)
-		end
-		
 		-- hide pain bar when not in combat and at full health
 		if not self.isInCombat and self.currentPain == 0 then
 			self.painBar.visible = false
@@ -577,7 +570,6 @@ Character = Animation:extend
 			self.painBar.background.visible = false	
 			self.nameLevel.visible = false
 		end
-		
 		
 		-- local hidden image
 		if self.hidden and self == the.player then
@@ -634,6 +626,12 @@ Character = Animation:extend
 		end
 		if self.incapacitated == false and self.reminder ~=  nil then 
 			self.reminder:die() 
+		end
+		
+		-- check if we're in combat		
+		self.isInCombat = false
+		for k,v in pairs(self.skills) do
+			self.isInCombat = self.isInCombat or (v:isOutOfCombat() == false)
 		end
 		
 		if the.keys:pressed(' ') and self.incapacitated then object_manager.send(self.oid, "gank") end
