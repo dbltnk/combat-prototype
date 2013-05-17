@@ -78,7 +78,7 @@ TargetDummy = Tile:extend
 			self:trackDamage(source_oid, str)
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
-			for i=1,ticks do
+			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.alive then 
 						self:trackDamage(source_oid, str)
@@ -104,7 +104,7 @@ TargetDummy = Tile:extend
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
-			for i=1,ticks do
+			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.alive then 
 						self:trackDamage(source_oid, str)
@@ -131,7 +131,7 @@ TargetDummy = Tile:extend
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
-			for i=1,ticks do
+			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.alive then 
 						self:showDamage(str)

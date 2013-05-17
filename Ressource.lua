@@ -78,11 +78,19 @@ Ressource = Tile:extend
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks)
-			for i=1,ticks do
+			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					self:showDamage(str)
 				end)
 			end
+		elseif message_name == "heal_over_time" then
+			local str, duration, ticks, source_oid = ...
+			--print("RESSOURCE HEAL_OVER_TIME", str, duration, ticks)
+			for i=0,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					self:showDamage(-str)
+				end)
+			end	
 		end
 	end,
 	
@@ -96,16 +104,26 @@ Ressource = Tile:extend
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks)
-			for i=1,ticks do
+			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					self:gainPain(str)
 					self.nextController = source_oid
 				end)
 			end
+		elseif message_name == "heal_over_time" then
+			local str, duration, ticks, source_oid = ...
+			--print("RESSOURCE HEAL_OVER_TIME", str, duration, ticks)
+			for i=0,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					self:gainPain(-str)
+					self.nextController = source_oid
+				end)
+			end	
 		end
 	end,
 	
 	updatePain = function (self)
+		if self.currentPain < 0 then self.currentPain = 0 end
 		if self.currentPain > self.maxPain then 
 			self.currentPain = self.maxPain
 			--self:die()

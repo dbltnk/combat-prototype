@@ -254,12 +254,20 @@ Character = Animation:extend
 			if not self.incapacitated then self:showDamage(str) end
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
-			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
-			for i=1,ticks do
+			--print("CHARACTER DAMAGE_OVER_TIME", str, duration, ticks)
+			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if not self.incapacitated then self:showDamage(str) end
 				end)
 			end
+		elseif message_name == "heal_over_time" then
+			local str, duration, ticks, source_oid = ...
+			--print("CHARACTER HEAL_OVER_TIME", str, duration, ticks)
+			for i=0,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					if not self.incapacitated then self:showDamage(-str) end
+				end)
+			end			
 		end	
 	end,
 	
@@ -284,14 +292,24 @@ Character = Animation:extend
 			end
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
-			for i=1,ticks do
+			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-				if not self.incapacitated then  
-					self:gainPain(str)
-					if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
-				end
-			end)
-		end			
+					if not self.incapacitated then  
+						self:gainPain(str)
+						if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
+					end
+				end)
+			end
+		elseif message_name == "heal_over_time" then
+			local str, duration, ticks, source_oid = ...
+			for i=0,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					if not self.incapacitated then  
+						self:gainPain(-str)
+						object_manager.send(source_oid, "xp", str * config.combatHealXP)
+					end
+				end)
+			end		
 		elseif message_name == "stun" then
 			local duration, source_oid = ...
 		--	print("STUN", duration)

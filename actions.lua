@@ -214,6 +214,14 @@ action_handling.register_effect("healOnlyOthers", function (target, effect, sour
 	if target.oid ~= source_oid then object_manager.send(target.oid, "heal", effect.str * increase, source_oid) end
 end)
 
+-- effect: heal_over_time ----------------------------------------------------------
+-- eg. {effect_type = "heal_over_time", ticks = 5, duration = 20, str = 5},
+-- has: str
+action_handling.register_effect("heal_over_time", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "heal_over_time", effect.str * increase, effect.duration, effect.ticks, source_oid)
+end)
+
 -- effect: stamHeal ----------------------------------------------------------
 -- eg. {effect_type = "stamHeal", str = 60},
 -- has: str

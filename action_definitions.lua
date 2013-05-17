@@ -43,7 +43,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 5,  gfx = "/assets/graphics/action_projectiles/bow_puncture.png"},
 			effects = {
 				{effect_type = "damage", str = 65},
-				{effect_type = "damage_over_time", ticks = 5, duration = 20, str = 5},	
+				{effect_type = "damage_over_time", ticks = 4, duration = 20, str = 5},	
 			},
 		},	
 	},	
@@ -237,7 +237,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = {0, 255 ,0, 128}},
 					effects = {
-						{effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
+						{effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 6, duration = 30, str = 10}
 					},
 				}},	
 			},
@@ -307,20 +307,29 @@ action_definitions = {
 		},
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ staff_healing_breeze = {
-		--~ name = "Healing Breeze",
-		--~ description = "Shoot a projectile that heals one target slowly over time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },	
+	staff_healing_breeze = {
+		name = "Healing Breeze",
+		description = "Shoot a projectile that heals one target slowly over time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 2,
+		timeout = 9,
+		energy = 50,
+		on_the_run = false,
+		cast_particle_color = color_staff,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/unknown.png"},
+			effects = {
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
+					effects = {
+						{effect_type = "heal_over_time", ticks = 12, duration = 60, str = 20},
+					},
+				}},
+			},
+		},
+	},	
 	-- -----------------------------------------------------------------------------------
 	--~ staff_mezz = {
 		--~ name = "Mezz",
@@ -503,20 +512,24 @@ action_definitions = {
 		--~ },	
 	--~ },		
 	-- -----------------------------------------------------------------------------------
-	--~ hide_armor_regenerate = {
-		--~ name = "Regenerate",
-		--~ description = "Decreases your pain slowly over time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	hide_armor_regenerate = {
+		name = "Regenerate",
+		description = "Decreases your pain slowly over time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 2,
+		timeout = 12,
+		energy = 25,
+		on_the_run = false,
+		cast_particle_color = color_hide_armor,		
+		
+		application = {
+			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/robe_bandage.png"},
+			effects = {
+				{effect_type = "heal_over_time", ticks = 12, duration = 60, str = 10},
+			},
+		},		
+	},		
 	-- -----------------------------------------------------------------------------------
 	hide_armor_second_wind = {
 		name = "Second Wind",
