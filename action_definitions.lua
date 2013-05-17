@@ -122,7 +122,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "ae", range = 100, cone = 180, piercing_number = 6, gfx = "/assets/graphics/action_projectiles/scythe_sweep.png"},
 			effects = {
-				{effect_type = "damage", str = 62},
+				{effect_type = "damageOnlyOthers", str = 62},
 			},
 		},	
 	},	
@@ -141,7 +141,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "ae", range = 100, cone = 360, piercing_number = 12, gfx = "/assets/graphics/action_projectiles/scythe_pirouette.png"},
 			effects = {
-				{effect_type = "damage", str = 21},
+				{effect_type = "damageOnlyOthers", str = 21},
 			},
 		},	
 	},	
@@ -195,7 +195,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "ae", range = 100, cone = 60, piercing_number = 3, gfx = "/assets/graphics/action_projectiles/scythe_stun.png"},
 			effects = {
-				{effect_type = "damage", str = 50},
+				{effect_type = "damageOnlyOthers", str = 50},
 				{effect_type = "stun", duration = 3},
 			},
 		},	

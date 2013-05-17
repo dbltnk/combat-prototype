@@ -211,6 +211,14 @@ action_handling.register_effect("damage", function (target, effect, source_oid)
 	object_manager.send(target.oid, "damage", effect.str * increase, source_oid)
 end)
 
+-- effect: damageOnlyOthers ----------------------------------------------------------
+-- eg. {effect_type = "damage", str = 60},
+-- has: str
+action_handling.register_effect("damageOnlyOthers", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	if target.oid ~= source_oid then object_manager.send(target.oid, "damage", effect.str * increase, source_oid) end
+end)
+
 -- effect: damage_over_time ----------------------------------------------------------
 -- eg. {effect_type = "damage_over_time", ticks = 5, duration = 20, str = 5},
 -- has: str
