@@ -73,8 +73,12 @@ Ressource = Tile:extend
 		--print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "damage" then
 			local str, source_oid = ...
-			--print("RESSOURCE DAMANGE", str)
+			--print("RESSOURCE DAMAGE", str)
 			self:showDamage(str)
+		elseif message_name == "heal" then
+			local str, source_oid = ...
+			--print("RESSOURCE HEAL", -str)
+			self:showDamage(-str)	
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks)
@@ -100,6 +104,11 @@ Ressource = Tile:extend
 			local str, source_oid = ...
 			--print("RESSOURCE DAMANGE", str)
 			self:gainPain(str)
+			self.nextController = source_oid
+		elseif message_name == "heal" then
+			local str, source_oid = ...
+			--print("RESSOURCE HEAL", -str)
+			self:gainPain(-str)
 			self.nextController = source_oid
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
