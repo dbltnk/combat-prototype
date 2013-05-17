@@ -192,7 +192,7 @@ end)
 
 -- effect: invis ----------------------------------------------------------
 -- eg. {effect_type = "invis"},
--- has: duration, speedPenalty TODO: not while moving, not while casting, etc.
+-- has: duration, speedPenalty
 action_handling.register_effect("invis", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
 	object_manager.send(target.oid, "invis", effect.duration * increase, effect.speedPenalty, source_oid)
@@ -274,7 +274,7 @@ end)
 -- effect: transfer ----------------------------------------------------------
 -- eg. {effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
 -- todo: duration, from, to, eff, attribute, ticks, duration, str
-action_handling.register_effect("stun", function (target, effect, source_oid) --TODO:  * increase
+action_handling.register_effect("transfer", function (target, effect, source_oid) --TODO:  * increase
 	--~ object_manager.send(target.oid, "stun", effect.duration, source_oid)
 end)
 
