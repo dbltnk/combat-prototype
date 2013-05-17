@@ -391,7 +391,10 @@ GameView = View:extend
 						o:netCreate()
 					end
 				elseif m.cmd == "msg" then
-					object_manager.send(m.oid, m.name, unpack(m.params or {}))
+					local o = object_manager.get(m.oid)
+					if o and o.receiveWithoutResendingToNet then
+						o:receiveWithoutResendingToNet(m.name, unpack(m.params or {}))
+					end
 				elseif m.cmd == "sync" then
 					local o = object_manager.get(m.oid)
 					if o then

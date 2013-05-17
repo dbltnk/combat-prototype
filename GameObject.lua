@@ -56,20 +56,28 @@ GameObject = {
 	end,
 	
 	receive = function (self, message_name, ...)
+		
+	end,
+	
+	receiveWithoutResendingToNet = function (self, message_name, ...)
 		print("GO RECEIVE", message_name, ...)
 
 		if self:isLocal() then
 			if self.receiveLocal then self:receiveLocal(message_name, ...) end
 		else
 			if self.receiveRemote then self:receiveRemote(message_name, ...) end
-
-			-- deliver message to network
-			local params = {...}
-			network.send({channel = "game", cmd = "msg", oid = self.oid, 
-				name = message_name, params = params, time = network.time})
 		end
 		
-		if self.receiveBoth then self:receiveBoth(message_name, ...) end
+		if self.receiveBoth then self:receiveBoth(message_name, ...) end	
+	end,
+	
+	receive = function (self, message_name, ...)
+		self:receiveWithoutResendingToNet(message_name, ...)
+		
+		-- deliver message to network
+		local params = {...}
+		network.send({channel = "game", cmd = "msg", oid = self.oid, 
+			name = message_name, params = params, time = network.time})		
 	end,
 	
 	netCreate = function (self)
