@@ -141,7 +141,7 @@ host.on('connect', function(peer, data) {
 	
 	try {
 		var message = JSON.parse(packet.data().toString());
-		console.log(message);
+		//~ console.log(message);
 		
 		if (message.channel == "server") {
 			if (message.cmd == "who") {
@@ -151,6 +151,10 @@ host.on('connect', function(peer, data) {
 			} else if (message.cmd == "ping") {
 				console.log("PING");
 				send_to_one({seq: message.seq, time: message.time, fin: true}, client);
+			} else if (message.cmd == "bye") {
+				console.log("BYE");
+				console.log(client);
+				disconnect(client, clients);
 			} else if (message.cmd == "time") {
 				console.log("TIME");
 				send_to_one({seq: message.seq, time: os.uptime(), fin: true}, client);
