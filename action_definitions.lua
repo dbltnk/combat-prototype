@@ -518,20 +518,24 @@ action_definitions = {
 		--~ },	
 	--~ },		
 	-- -----------------------------------------------------------------------------------
-	--~ hide_armor_second_wind = {
-		--~ name = "Second Wind",
-		--~ description = "Instantly decreases your fatigue a little.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	hide_armor_second_wind = {
+		name = "Second Wind",
+		description = "Instantly decreases your fatigue a little.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 1.5,
+		timeout = 60,
+		energy = 0,
+		on_the_run = false,
+		cast_particle_color = color_hide_armor,		
+		
+		application = {
+			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/robe_bandage.png"},
+			effects = {
+				{effect_type = "stamHeal", str = 100},
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
 	--~ splint_mail_absorb = {
 		--~ name = "Absorb",

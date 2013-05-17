@@ -152,6 +152,12 @@ Character = Animation:extend
 		self:updatePain()
 	end,
 	
+	gainFatigue = function (self, str)
+		--print(self.oid, "gain fatigue", str)
+		self.currentEnergy = self.currentEnergy - str
+		self:updateEnergy()
+	end,	
+	
 	setIncapacitation = function (self, incapState)
 		if incapState == self.incapacitated then return end
 		
@@ -173,6 +179,11 @@ Character = Animation:extend
 		end
 		
 		self.currentPain = utils.clamp(self.currentPain, 0, self.maxPain)
+	end,
+	
+	updateEnergy = function (self)
+	--print("Player ", self.oid, " is incapacitated:", self.incapacitated)
+		self.currentEnergy = utils.clamp(self.currentEnergy, 0, self.maxEnergy)
 	end,
 		
 	respawn = function (self)
@@ -259,6 +270,11 @@ Character = Animation:extend
 		--	print("HEAL", str)
 			self:gainPain(-str)
 			object_manager.send(source_oid, "xp", str * config.combatHealXP)
+		elseif message_name == "stamHeal" then
+			local str, source_oid = ...
+		--	print("STAMHEAL", str)
+			self:gainFatigue(-str)
+			object_manager.send(source_oid, "xp", str * config.combatHealXP)	
 		elseif message_name == "damage" then
 			local str, source_oid = ...
 		--	print("DAMANGE", str)
