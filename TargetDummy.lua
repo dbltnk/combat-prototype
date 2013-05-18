@@ -1,6 +1,6 @@
 -- TargetDummy
 
-TargetDummy = Tile:extend
+TargetDummy = Animation:extend
 {
 	class = "TargetDummy",
 
@@ -8,7 +8,7 @@ TargetDummy = Tile:extend
 		"maxPain", "xpWorth", "finalDamage", },			
 	sync_high = {"x", "y", "currentPain", "alive"},
 	
-	image = '/assets/graphics/dummy.png',
+	image = '/assets/graphics/dummy_new.png',
 	currentPain = 0,
 	maxPain = 90,
 	xpWorth = config.dummyXPWorth,
@@ -25,6 +25,11 @@ TargetDummy = Tile:extend
 	painBar = nil,
 	
 	movable = false,
+	
+	sequences = 
+    {
+        idle = { frames = {1, 2, 3, 4,}, fps = 2 },
+    },
 
 	onNew = function (self)
 		self:mixin(GameObject)
@@ -171,6 +176,7 @@ TargetDummy = Tile:extend
 	end,
 	
 	onUpdateBoth = function (self)
+		self:play('idle')
 		self.painBar.currentValue = self.currentPain
 		self.painBar:updateBar()
 		self.painBar.x = self.x
