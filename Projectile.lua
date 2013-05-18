@@ -27,6 +27,8 @@ Projectile = Tile:extend
 		--	self:particle(self.x, self.y)
 			self:die()
 		end
+		
+		if the.keys:pressed ("shift") then self.target.x, self.target.y = self.start.x, self.start.y end
 	end,
 	
 	onDieBoth = function (self)

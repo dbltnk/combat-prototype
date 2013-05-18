@@ -80,8 +80,8 @@ the.app = App:new
 		
 		-- set input mode
 		if the.keys:justPressed ("f1") then print("input mode: mouse+keyboard") input.setMode (input.MODE_MOUSE_KEYBOARD) end
-		if the.keys:justPressed ("f2") and the.gamepads[1].name ~= "NO DEVICE CONNECTED" then print("input mode: gamepad") input.setMode (input.MODE_GAMEPAD) end
-		if the.keys:justPressed ("f3") then print("input mode: touch") input.setMode (input.MODE_TOUCH) end	
+		--~ if the.keys:justPressed ("f2") and the.gamepads[1].name ~= "NO DEVICE CONNECTED" then print("input mode: gamepad") input.setMode (input.MODE_GAMEPAD) end
+		--~ if the.keys:justPressed ("f3") then print("input mode: touch") input.setMode (input.MODE_TOUCH) end	
 		
 		-- show the highscore table 
 		if the.keys:justPressed ("f5") then the.barrier:showHighscore() end	
@@ -91,7 +91,7 @@ the.app = App:new
 		-- show object list
 		if the.keys:justPressed ("f8") then config.show_object_list = not config.show_object_list end					
 		-- show Fog of War
-		if the.keys:justPressed ("f9") then config.show_fog_of_war = true the.app.view:fogOn() end					
+		--~ if the.keys:justPressed ("f9") then config.show_fog_of_war = true the.app.view:fogOn() end					
 		-- toggle fullscreen
 		if the.keys:justPressed ("f10") then self:toggleFullscreen() end
 		-- toggle profile
