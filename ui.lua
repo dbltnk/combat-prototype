@@ -241,15 +241,18 @@ NameLevel = Text:extend
 {
 	font = 12,
 	text = "nixda",
-	width = 200,
+	width = 32,
 	level = 0,
 	name = "",
 	tint = {0.1,0.1,0.1},
+	weapon = "",
+	armor = "",
 	
 	onUpdate = function (self)
 		self.text = self.name .. " (" .. self.level .. ")"
 		--~ self.x = self.x - 20
-		self.y = self.y - 10
+		self.y = self.y - 30
+		--~ self:centerAround(self.x,self.y,"horizontal")
 	end,
 	
 	onNew = function (self)

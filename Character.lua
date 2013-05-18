@@ -88,7 +88,7 @@ Character = Animation:extend
 		self:mixin(GameObject)
 
 		the.app.view.layers.characters:add(self)
-		self.wFactor = self.width / self.maxPain		
+		self.wFactor = self.width / self.maxPain * 2		
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
 		-- fill up skill bar with missing skills
 		for i = 1,6 do 
@@ -107,7 +107,8 @@ Character = Animation:extend
 		
 		self.nameLevel = NameLevel:new{
 			x = self.x, y = self.y, 
-			level = self.level, name = self.name
+			level = self.level, name = self.name,
+			weapon = self.weapon, armor = self.armor
 		}
 	
 		local goSelf = self
@@ -555,8 +556,8 @@ Character = Animation:extend
 		-- update pain bar
 		self.painBar.currentValue = self.currentPain
 		self.painBar:updateBar()
-		self.painBar.x = self.x
-		self.painBar.y = self.y
+		self.painBar.x = self.x - 10
+		self.painBar.y = self.y + 5
 		if self.incapacitated then 
 			self.painBar.inc = true 
 		else
