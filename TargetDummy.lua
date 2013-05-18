@@ -90,11 +90,7 @@ TargetDummy = Tile:extend
 	
 	receiveLocal = function (self, message_name, ...)
 		--print(self.oid, "receives message", message_name, "with", ...)
-		if message_name == "heal" then
-			local str = ...
-		--	print("DUMMY HEAL", str)
-			self:gainPain(-str)
-		elseif message_name == "damage" then
+		if message_name == "damage" then
 			local str, source_oid  = ...
 			-- damage handling for xp distribution	
 			self:trackDamage(source_oid, str)
@@ -112,19 +108,12 @@ TargetDummy = Tile:extend
 					end
 				end)
 			end
-		elseif message_name == "runspeed" then
-			local str, duration = ...
-		--	print("DUMMY SPEED", str, duration)
 		end
 	end,
 
 	receiveBoth = function (self, message_name, ...)
 		--print(self.oid, "receives message", message_name, "with", ...)
-		if message_name == "heal" then
-			local str = ...
-		--	print("DUMMY HEAL", str)
-			self:showDamage(-str)
-		elseif message_name == "damage" then
+		if message_name == "damage" then
 			local str, source_oid  = ...
 			-- damage handling for xp distribution	
 			self:showDamage(str)
@@ -138,9 +127,6 @@ TargetDummy = Tile:extend
 					end
 				end)
 			end
-		elseif message_name == "runspeed" then
-			local str, duration = ...
-		--	print("DUMMY SPEED", str, duration)
 		end
 	end,
 	
