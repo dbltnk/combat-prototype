@@ -213,7 +213,7 @@ action_definitions = {
 		cast_particle_color = color_scythe,			
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 100, speed = 100, ae_size = 50, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_gank.png"},
+			target_selection = {target_selection_type = "projectile", range = 100, speed = 100, ae_size = 50, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/unknown.png"},
 			effects = {
 				{effect_type = "gank"},
 			},
