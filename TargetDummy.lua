@@ -195,7 +195,7 @@ TargetDummy = Animation:extend
 			
 			-- make mobs move towards the player
 			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
-				if self.x < obj.x then
+				if self.x < obj.x then -- todo: find better movement code for this
 					self.x = self.x + config.mobMovementSpeed
 				else
 					self.x = self.x - config.mobMovementSpeed
@@ -211,7 +211,7 @@ TargetDummy = Animation:extend
 				if self:footstepsPossible() then 
 					local footstep = Footstep:new{ 
 						x = self.x+self.width/2-16, y = self.y+self.height/2-16, 
-						rotation = self.rotation,
+						rotation = self.rotation, -- todo: fix rotation of the footsteps
 					}
 					the.footsteps[footstep] = true
 					self:makeFootstep()	
@@ -219,7 +219,7 @@ TargetDummy = Animation:extend
 			end
 			
 			-- let's attack the player here
-			if dist <= config.mobAttackRange and obj.name then object_manager.send(obj.oid, "damage", config.mobDamage) end
+			if dist <= config.mobAttackRange and obj.name then object_manager.send(obj.oid, "damage", config.mobDamage) end  -- todo: attack in smaller intervals
 			
 		end)	
 	end,
@@ -246,7 +246,7 @@ TargetDummy = Animation:extend
 				self.anim_name = "walk_" .. dir	
 				self.rotation = 0
 			else
-				--~ self:freeze()
+				--~ self:freeze() -- todo: freeze animation
 			end
 		end)
 	end,	

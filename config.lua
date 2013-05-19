@@ -30,7 +30,7 @@ config.crowdControlXP = 1 -- in % of duration in seconds
 
 -- mobs
 config.mobSightRange = 250
-config.mobMovementSpeed = 0.75
+config.mobMovementSpeed = 1.5
 config.mobAttackRange = 60
 config.mobDamage = 0.1
 config.mobAnimSpeed = 3
