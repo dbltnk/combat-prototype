@@ -33,6 +33,7 @@ config.mobSightRange = 250
 config.mobMovementSpeed = 0.75
 config.mobAttackRange = 60
 config.mobDamage = 0.1
+config.mobAnimSpeed = 3
 
 -- visuals
 config.show_fog_of_war = true

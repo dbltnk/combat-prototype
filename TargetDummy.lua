@@ -40,16 +40,10 @@ TargetDummy = Animation:extend
 	
 	sequences = 
 			{
-				incapacitated = { frames = {1}, fps = config.animspeed },
-				walk = { frames = {1,2,3,4}, fps = config.animspeed },
-				walk_down = { frames = {1,2,3,4}, fps = config.animspeed },
-				walk_left = { frames = {5,6,7,8}, fps = config.animspeed },
-				walk_right = { frames = {9,10,11,12}, fps = config.animspeed },
-				walk_up = { frames = {13,14,15,16}, fps = config.animspeed },
-				idle_down = { frames = {1}, fps = config.animspeed },
-				idle_left = { frames = {5}, fps = config.animspeed },
-				idle_right = { frames = {9}, fps = config.animspeed },
-				idle_up = { frames = {13}, fps = config.animspeed },
+				walk_down = { frames = {1,2,3,4}, fps = config.mobAnimSpeed },
+				walk_left = { frames = {5,6,7,8}, fps = config.mobAnimSpeed },
+				walk_right = { frames = {9,10,11,12}, fps = config.mobAnimSpeed },
+				walk_up = { frames = {13,14,15,16}, fps = config.mobAnimSpeed },
 			},
 
 	onNew = function (self)
@@ -244,18 +238,15 @@ TargetDummy = Animation:extend
 		object_manager.visit(function(oid,obj) 
 			local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
 			-- make mobs move towards the player
-			if dist <= 250 and obj.name then 
+			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
 				-- set rotation and animation
 				self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, obj.x, obj.y))	
 				local ddx,ddy = vector.fromVisualRotation(self.rotation, 1)
 				local dir = vector.dirFromVisualRotation(ddx,ddy)
 				self.anim_name = "walk_" .. dir	
-			else 
-				-- set rotation and animation
-				self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, obj.x, obj.y))	
-				local ddx,ddy = vector.fromVisualRotation(self.rotation, 1)
-				local dir = vector.dirFromVisualRotation(ddx,ddy)			
-				self.anim_name = "idle_" .. dir
+				self.rotation = 0
+			else
+				--~ self:freeze()
 			end
 		end)
 	end,	
