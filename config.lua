@@ -28,6 +28,12 @@ config.strIncreaseFactor = 0.1 -- 10% stronger per lvl
 config.combatHealXP = 0.2 -- in % of damage / heal done
 config.crowdControlXP = 1 -- in % of duration in seconds
 
+-- mobs
+config.mobSightRange = 250
+config.mobMovementSpeed = 0.75
+config.mobAttackRange = 60
+config.mobDamage = 0.1
+
 -- visuals
 config.show_fog_of_war = true
 config.sightDistanceFar = 600

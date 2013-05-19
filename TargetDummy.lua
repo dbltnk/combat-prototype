@@ -200,17 +200,17 @@ TargetDummy = Animation:extend
 			local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
 			
 			-- make mobs move towards the player
-			if dist <= 250 and obj.name then 
+			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
 				if self.x < obj.x then
-					self.x = self.x + 0.5
+					self.x = self.x + config.mobMovementSpeed
 				else
-					self.x = self.x - 0.5
+					self.x = self.x - config.mobMovementSpeed
 				end	
 				
 				if self.y < obj.y then
-					self.y = self.y + 0.5
+					self.y = self.y + config.mobMovementSpeed
 				else
-					self.y = self.y - 0.5
+					self.y = self.y - config.mobMovementSpeed
 				end	
 				
 				-- let them set some footsteps
@@ -225,7 +225,7 @@ TargetDummy = Animation:extend
 			end
 			
 			-- let's attack the player here
-			if dist <= 60 and obj.name then object_manager.send(obj.oid, "damage", 0.1) end
+			if dist <= config.mobAttackRange and obj.name then object_manager.send(obj.oid, "damage", config.mobDamage) end
 			
 		end)	
 	end,
