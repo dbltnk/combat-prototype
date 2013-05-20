@@ -7,11 +7,11 @@ Character = Animation:extend
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "level", "anim_name", 
-		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat"},
+		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat"},
-	sync_low = {"image", "width", "height", "rotation", "level", "name", "weapon", "armor"},			
+	sync_low = {"image", "width", "height", "rotation", "level", "name", "weapon", "armor", "team"},			
 	
 	maxPain = config.maxPain, 
 	currentPain = 0,
@@ -29,6 +29,7 @@ Character = Animation:extend
 	name = nil,
 	reminder = nil,
 	targetable = true,
+	team = "none",
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -85,8 +86,9 @@ Character = Animation:extend
 	end,
 	
 	onNew = function (self)
+		if localconfig.team then self.team = localconfig.team end
 		self:mixin(GameObject)
-
+		
 		the.app.view.layers.characters:add(self)
 		self.wFactor = self.width / self.maxPain * 2		
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
@@ -108,7 +110,7 @@ Character = Animation:extend
 		self.nameLevel = NameLevel:new{
 			x = self.x, y = self.y, 
 			level = self.level, name = self.name,
-			weapon = self.weapon, armor = self.armor
+			weapon = self.weapon, armor = self.armor, team = self.team
 		}
 	
 		local goSelf = self

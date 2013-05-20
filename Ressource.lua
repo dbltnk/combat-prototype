@@ -150,7 +150,15 @@ Ressource = Tile:extend
 	end,
 	
 	giveXP = function(self)
-		if self.controller ~= 0 then object_manager.send(self.controller, "xp", config.xpPerRessourceTick) end
+		if self.controller ~= 0 then 
+			if object_manager.get(self.controller).team then		
+				object_manager.visit(function(oid,obj) 
+					if obj.team == object_manager.get(self.controller).team then
+						object_manager.send(obj, "xp", config.xpPerRessourceTick)
+					end
+				end)
+			end
+		end
 	end,	
 	
 	onUpdateBoth = function (self)	
