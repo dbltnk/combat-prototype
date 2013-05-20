@@ -120,7 +120,7 @@ action_definitions = {
 		cast_particle_color = color_scythe,			
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 100, cone = 180, piercing_number = 6, gfx = "/assets/graphics/action_projectiles/scythe_sweep.png"},
+			target_selection = {target_selection_type = "ae", range = 100, cone = 180, piercing_number = 6},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 62},
 			},
@@ -139,7 +139,7 @@ action_definitions = {
 		cast_particle_color = color_scythe,			
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 100, cone = 360, piercing_number = 12, gfx = "/assets/graphics/action_projectiles/scythe_pirouette.png"},
+			target_selection = {target_selection_type = "ae", range = 100, cone = 360, piercing_number = 12},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 21},
 			},
@@ -158,7 +158,7 @@ action_definitions = {
 		cast_particle_color = color_scythe,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 1200, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/unknown.png"},
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 1200, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_jump.png"},
 			effects = {
 				{effect_type = "moveSelfTo"},	
 			},
@@ -193,7 +193,7 @@ action_definitions = {
 		cast_particle_color = color_scythe,			
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 100, cone = 60, piercing_number = 3, gfx = "/assets/graphics/action_projectiles/scythe_stun.png"},
+			target_selection = {target_selection_type = "ae", range = 100, cone = 60, piercing_number = 3},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 50},
 				{effect_type = "stun", duration = 3},
@@ -213,7 +213,7 @@ action_definitions = {
 		cast_particle_color = color_scythe,			
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 100, speed = 100, ae_size = 50, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/unknown.png"},
+			target_selection = {target_selection_type = "projectile", range = 100, speed = 100, ae_size = 50, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_gank.png"},
 			effects = {
 				{effect_type = "gank"},
 			},
@@ -295,7 +295,7 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/unknown.png"},
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_heal_other.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
@@ -319,7 +319,7 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/unknown.png"},
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_healing_breeze.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
@@ -358,7 +358,7 @@ action_definitions = {
 		cast_particle_color = color_robe,		
 		
 		application = {
-			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/robe_bandage.png"},
+			target_selection = {target_selection_type = "self"},
 			effects = {
 				{effect_type = "heal", str = 100},
 			},
@@ -456,7 +456,7 @@ action_definitions = {
 		cast_particle_color = color_hide_armor,			
 		
 		application = {
-			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/hide_armor_sprint.png"},
+			target_selection = {target_selection_type = "self"},
 			effects = {
 				{effect_type = "runspeed", str = config.runspeed, duration = 5},
 			},
@@ -475,7 +475,7 @@ action_definitions = {
 		cast_particle_color = color_hide_armor,				
 		
 		application = {
-			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/hide_armor_sneak.png"},
+			target_selection = {target_selection_type = "self"},
 			effects = {
 				{effect_type = "invis", duration = 5, speedPenalty = 0.5},
 			},
@@ -524,7 +524,7 @@ action_definitions = {
 		cast_particle_color = color_hide_armor,		
 		
 		application = {
-			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/robe_bandage.png"},
+			target_selection = {target_selection_type = "self"},
 			effects = {
 				{effect_type = "heal_over_time", ticks = 12, duration = 60, str = 10},
 			},
@@ -543,7 +543,7 @@ action_definitions = {
 		cast_particle_color = color_hide_armor,		
 		
 		application = {
-			target_selection = {target_selection_type = "self", gfx = "/assets/graphics/action_particles/robe_bandage.png"},
+			target_selection = {target_selection_type = "self"},
 			effects = {
 				{effect_type = "stamHeal", str = 100},
 			},

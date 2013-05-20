@@ -1,16 +1,21 @@
-
 local localconfig = {}
+localconfig.skills = {}
 
-localconfig.fullscreen = false
-localconfig.screenWidth = 800
-localconfig.screenHeight = 600 
+-- ### Step 1: Set up your screen resolution. ###
+localconfig.fullscreen = false -- Set this to "true" for fullscreen.
+localconfig.screenWidth = 800 -- Choose your screen width in pixels.
+localconfig.screenHeight = 600 -- Choose your screen height in pixels.
 
-localconfig.playerName = "changeme"
+-- ### Step 2: Set your player name and join one of the four teams. ###
+localconfig.playerName = "changeme" -- Just type your nickname in between the "".
+localconfig.team = "choose one" -- You can pick "alpha", "beta", "gamma" or "delta".
 
-localconfig.weapon = "pickme" -- "bow" or "scythe" or "staff"
-localconfig.armor = "pickme" -- "robe" or "hide_armor" or "splint_mail"
+-- ### Step 3: Pick your weapon of choice. ###
+localconfig.weapon = "pickme" -- You can use "bow", "scythe" or "staff".
 
-localconfig.skills = {} -- pick three weapon skills and three armor skills of your chosen types, leave the rest commented out
+-- ### Step 4: Now choose which skills you want to use in your selected weapon class. ###
+-- ### To pick a skill, remove the two dashes (--) in front of the skills line. ###
+-- ### You can only have up to six skills in total so we advise to pick exactly three skills per weapon. ###
 
 if localconfig.weapon == "bow" then --pick three out of these six weapon skills
 	table.insert(localconfig.skills,"bow_shot")
@@ -34,6 +39,13 @@ elseif localconfig.weapon == "staff" then --pick three out of these six weapon s
 	-- table.insert(localconfig.skills,"staff_healing_breeze")
 	-- table.insert(localconfig.skills,"staff_mezz")
 end	
+
+-- ### Step 5: Now pick your armor of choice. ###
+localconfig.armor = "pickme" -- You can decide between "robe", "hide_armor" and "splint_mail".
+
+-- ### Step 6: Now choose which skills you want to use in your selected armor class. ###
+-- ### To pick a skill, remove the two dashes (--) in front of the skills line. ###
+-- ### Remember: You can only have up to six skills in total so we advise to pick exactly three skills here, too. ###
 
 if localconfig.armor == "robe" then --pick three out of these six armor skills
 	table.insert(localconfig.skills,"robe_bandage")
@@ -59,4 +71,3 @@ elseif localconfig.armor == "splint_mail" then --pick three out of these six arm
 end
 		
 return localconfig
-
