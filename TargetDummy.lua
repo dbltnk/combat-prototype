@@ -8,7 +8,7 @@ TargetDummy = Animation:extend
 		"maxPain", "xpWorth", "finalDamage", },			
 	sync_high = {"x", "y", "currentPain", "alive"},
 	
-	image = '/assets/graphics/dummy_new.png',
+	image = '/assets/graphics/dummy_full.png',
 	currentPain = 0,
 	maxPain = 90,
 	xpWorth = config.dummyXPWorth,
@@ -26,18 +26,33 @@ TargetDummy = Animation:extend
 	
 	movable = false,
 	
+	lastFootstep = 0,
+	
+	footstepsPossible = function (self)
+		return love.timer.getTime() - self.lastFootstep >= .75
+	end,
+	
+	makeFootstep = function (self)
+		self.lastFootstep = love.timer.getTime()
+	end,
+	
+	animName = nil,
+	
 	sequences = 
-    {
-        idle = { frames = {1, 2, 3, 4,}, fps = 2 },
-    },
+			{
+				walk_down = { frames = {1,2,3,4}, fps = config.mobAnimSpeed },
+				walk_left = { frames = {5,6,7,8}, fps = config.mobAnimSpeed },
+				walk_right = { frames = {9,10,11,12}, fps = config.mobAnimSpeed },
+				walk_up = { frames = {13,14,15,16}, fps = config.mobAnimSpeed },
+			},
 
 	onNew = function (self)
 		self:mixin(GameObject)
 		
 		the.targetDummies[self] = true
 		
-		self.width = 32
-		self.height = 64
+		self.width = 40
+		self.height = 56
 		self:updateQuad()
 		object_manager.create(self)
 		--print("NEW DUMMY", self.x, self.y, self.width, self.height)
@@ -173,16 +188,67 @@ TargetDummy = Animation:extend
 			self.x = self.x + self.dx
 			self.y = self.y + self.dy
 		end
+		
+		-- find a player close by
+		object_manager.visit(function(oid,obj) 
+			local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
+			
+			-- make mobs move towards the player
+			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
+				if self.x < obj.x then -- todo: find better movement code for this
+					self.x = self.x + config.mobMovementSpeed
+				else
+					self.x = self.x - config.mobMovementSpeed
+				end	
+				
+				if self.y < obj.y then
+					self.y = self.y + config.mobMovementSpeed
+				else
+					self.y = self.y - config.mobMovementSpeed
+				end	
+				
+				-- let them set some footsteps
+				if self:footstepsPossible() then 
+					local footstep = Footstep:new{ 
+						x = self.x+self.width/2-16, y = self.y+self.height/2-16, 
+						rotation = self.rotation, -- todo: fix rotation of the footsteps
+					}
+					the.footsteps[footstep] = true
+					self:makeFootstep()	
+				end	
+			end
+			
+			-- let's attack the player here
+			if dist <= config.mobAttackRange and obj.name then object_manager.send(obj.oid, "damage", config.mobDamage) end  -- todo: attack in smaller intervals
+			
+		end)	
 	end,
 	
 	onUpdateBoth = function (self)
-		self:play('idle')
 		self.painBar.currentValue = self.currentPain
 		self.painBar:updateBar()
 		self.painBar.x = self.x
 		self.painBar.y = self.y	
 		self.painBar.bar.alpha = self.alpha
 		self.painBar.background.alpha = self.alpha		
+		
+		self:play(self.anim_name)
+		
+		-- find a player close by
+		object_manager.visit(function(oid,obj) 
+			local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
+			-- make mobs move towards the player
+			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
+				-- set rotation and animation
+				self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, obj.x, obj.y))	
+				local ddx,ddy = vector.fromVisualRotation(self.rotation, 1)
+				local dir = vector.dirFromVisualRotation(ddx,ddy)
+				self.anim_name = "walk_" .. dir	
+				self.rotation = 0
+			else
+				--~ self:freeze() -- todo: freeze animation
+			end
+		end)
 	end,	
 	
 	respawn = function (self)
