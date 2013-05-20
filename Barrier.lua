@@ -113,7 +113,7 @@ Barrier = Tile:extend
 		if loveframes.GetState() == "none" then loveframes.SetState("highscore") else loveframes.SetState("none") end
 				
 		local frame = loveframes.Create("frame")
-		frame:SetSize(400, 500)
+		frame:SetSize(400, 400)
 		frame:Center()
 		frame:SetName(title or "Highscore")
 		frame:SetState("highscore")
@@ -124,12 +124,12 @@ Barrier = Tile:extend
         :select(function (a) return {k=a, v=self.teamscore[a]} end)        -- und gibt eine liste zurück mit k und v einträge
         :done() -- l2 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
 
-		local list = loveframes.Create("list", frame)
-		list:SetPos(5, 300)
-		list:SetSize(390, 265)
-		list:SetDisplayType("vertical")
-		list:SetPadding(5)
-		list:SetSpacing(5)
+		local upperList = loveframes.Create("list", frame)
+		upperList:SetPos(5, 30)
+		upperList:SetSize(390, 85)
+		upperList:SetDisplayType("vertical")
+		upperList:SetPadding(5)
+		upperList:SetSpacing(5)
 		
 		local j = 1
 		local textListTeam = {}
@@ -153,9 +153,8 @@ Barrier = Tile:extend
 		for k,v in pairs(textListTeam) do
 			local text = loveframes.Create("text")
 			text:SetText(v) 
-			list:AddItem(text)
+			upperList:AddItem(text)
 		end
-		
 		
 		--~ -- show the player highscores 
 		local l2 = list.process_keys(self.highscore)       -- holt alle keys (oids)
@@ -163,12 +162,12 @@ Barrier = Tile:extend
         :select(function (a) return {k=a, v=self.highscore[a]} end)        -- und gibt eine liste zurück mit k und v einträge
         :done() -- l2 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
 
-		local list = loveframes.Create("list", frame)
-		list:SetPos(5, 30)
-		list:SetSize(390, 265)
-		list:SetDisplayType("vertical")
-		list:SetPadding(5)
-		list:SetSpacing(5)
+		local lowerList = loveframes.Create("list", frame)
+		lowerList:SetPos(5, 120)
+		lowerList:SetSize(390, 275)
+		lowerList:SetDisplayType("vertical")
+		lowerList:SetPadding(5)
+		lowerList:SetSpacing(5)
 		
 		local i = 1
 		local textList = {}
@@ -196,11 +195,9 @@ Barrier = Tile:extend
 		for k,v in pairs(textList) do
 			local text = loveframes.Create("text")
 			text:SetText(v) 
-			list:AddItem(text)
+			lowerList:AddItem(text)
 		end
-		
-		
-	
+
 	end,
 	
 	onDieBoth = function (self)
