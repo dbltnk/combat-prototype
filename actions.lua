@@ -272,10 +272,16 @@ action_handling.register_effect("stun", function (target, effect, source_oid)
 end)
 
 -- effect: transfer ----------------------------------------------------------
--- eg. {effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
--- todo: duration, from, to, eff, attribute, ticks, duration, str
-action_handling.register_effect("transfer", function (target, effect, source_oid) --TODO:  * increase
+-- eg. {effect_type = "transfer", eff = 0.5, ticks = 5, duration = 30, str = 10}
+-- has: duration, ticks, duration, str, eff
+action_handling.register_effect_multitarget("transfer", function (targets, effect, source_oid) --TODO:  * increase
 	--~ object_manager.send(target.oid, "stun", effect.duration, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local targetOids = list.process(targets)
+		:where(function(t) return t.oid end)
+		:select(function(t) return t.oid end)
+		:done()
+	object_manager.send(source_oid, "transfer", effect.str * increase, effect.duration, effect.ticks, source_oid, targetOids, effect.eff)
 end)
 
 -- effect: moveSelfTo ----------------------------------------------------------

@@ -7,6 +7,7 @@ local action_handling = {}
 action_handling.registered_target_selections = {}
 -- effect_type -> { ... }
 action_handling.registered_effects = {}
+action_handling.registered_effects_multitarget = {}
 
 -- target_selection_type: projectile, ae, self
 -- effect_type: damage, heal, runspeed, spawn, transfer, damage_over_time
@@ -97,6 +98,13 @@ function action_handling.register_effect(name, effect_callback)
 	action_handling.registered_effects[name] = effect_callback
 end
 
+-- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
+-- targets: list of {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
+-- function effect_callback(targets, effect, source_oid)
+function action_handling.register_effect_multitarget(name, effect_callback)
+	action_handling.registered_effects_multitarget[name] = effect_callback
+end
+
 -- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 function action_handling.to_string_target(target)
 	return "oid=" .. (target.oid or "nil") .. " x=" .. (target.x or "nil") .. " y=" .. (target.y or "nil") .. " rotation=" .. (target.rotation or "nil")
@@ -127,9 +135,7 @@ function action_handling.start (application, target, source_oid)
 		
 		-- start each effect on each target
 		for ke,effect in pairs(application.effects) do
-			for kt,target in pairs(targets) do
-				action_handling.start_effect(effect, target, source_oid)
-			end
+			action_handling.start_effect(effect, targets, source_oid)
 		end
 	end)
 end
@@ -159,19 +165,21 @@ function action_handling.find_ae_targets (x,y, range, maxTargetCount)
 end
 
 -- effect: see action_definitions.lua, eg. {effect_type = "damage", str = 15},
--- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
+-- targets: list of {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 -- source_oid
-function action_handling.start_effect (effect, target, source_oid)
+function action_handling.start_effect (effect, targets, source_oid)
 	local t = effect.effect_type
 	
-	--~ print("ACTION start_effect", t, action_handling.to_string_target(target), source_oid)
+	--~ print("ACTION start_effect", t, action_handling.to_string_target(targets), source_oid)
 	
-	local e = action_handling.registered_effects[t]
-	
-	if e then
-		e(target, effect, source_oid)
+	if action_handling.registered_effects[t] then
+		for k,v in pairs(targets) do
+			action_handling.registered_effects[t](v, effect, source_oid)
+		end
+	elseif action_handling.registered_effects_multitarget[t] then
+		action_handling.registered_effects_multitarget[t](targets, effect, source_oid)
 	else
-		--print("ACTION start_effect", "unknown type")
+		print("ACTION start_effect", "unknown type")
 	end
 end
 

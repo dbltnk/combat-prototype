@@ -276,7 +276,8 @@ Character = Animation:extend
 			self:updateLevel()							
 		end		
 		if math.floor(str) > 0 then 
-			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = math.floor(str), tint = {1,1,0}}
+			str = math.floor(str * 10) / 10
+			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,1,0}}
 		end	
 	end,	
 	
@@ -310,6 +311,7 @@ Character = Animation:extend
 	end,
 	
 	showDamage = function (self, str)
+		str = math.floor(str * 10) / 10
 		if str >= 0 then
 			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
 		else
@@ -362,6 +364,22 @@ Character = Animation:extend
 			if not self.incapacitated then 
 				self:gainPain(str)
 				if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
+			end
+		elseif message_name == "transfer" then
+			local str, duration, ticks, source_oid, targetOids, eff = ...
+			utils.vardump(targetOids)
+			local strPerTargetPerTick = str / #targetOids
+			for i=0,ticks do
+				the.app.view.timer:after(duration / ticks * i, function()
+					if not self.incapacitated then  
+						for k,v in pairs(targetOids) do
+							if v ~= self.oid then 
+								object_manager.send(v, "damage", strPerTargetPerTick, self.oid) 
+								object_manager.send(self.oid, "heal", eff * strPerTargetPerTick, self.oid) 
+							end
+						end
+					end
+				end)
 			end
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
