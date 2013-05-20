@@ -127,6 +127,7 @@ Barrier = Tile:extend
 		
 		local i = 1
 		local textList = {}
+		local teamList = {}
 		for _,x in pairs(l2) do
 		
 			local name = "nobody"
@@ -145,11 +146,19 @@ Barrier = Tile:extend
 			local txt = i .. ". " .. name .. " [" .. team .. "] with " .. x.v .. " damage to the barrier"
 			textList[i]= txt
 			i = i + 1
+			
+			teamList[team] = x.v
 		end
 
 		for k,v in pairs(textList) do
 			local text = loveframes.Create("text")
 			text:SetText(v) 
+			list:AddItem(text)
+		end
+		
+		for k,v in pairs(teamList) do
+			local text = loveframes.Create("text")
+			text:SetText("Team " .. k .. ": " .. v .. " damage total") 
 			list:AddItem(text)
 		end
 				
