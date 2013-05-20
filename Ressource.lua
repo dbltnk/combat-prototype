@@ -20,8 +20,8 @@ Ressource = Tile:extend
 		y = 0, 
 		tint = {0,0,0},
 	},	
-	controller = 0,
-	nextController = 0,
+	controller = "",
+	nextController = "",
 	targetable = true,
 	
 	-- UiBar
@@ -52,7 +52,9 @@ Ressource = Tile:extend
 		}
 		drawDebugWrapper(self)
 		
-		the.app.view.timer:every(config.xpGainsEachNSeconds, function() self:giveXP() end)
+		the.app.view.timer:every(config.xpGainsEachNSeconds, function() 
+			if self:isLocal() then self:giveXP() end
+		end)
 	end,
 	
 	gainPain = function (self, str)
@@ -104,19 +106,19 @@ Ressource = Tile:extend
 			local str, source_oid = ...
 			--print("RESSOURCE DAMANGE", str)
 			self:gainPain(str)
-			self.nextController = source_oid
+			self.nextController = object_manager.get(source_oid).team
 		elseif message_name == "heal" then
 			local str, source_oid = ...
 			--print("RESSOURCE HEAL", -str)
 			self:gainPain(-str)
-			self.nextController = source_oid
+			self.nextController = object_manager.get(source_oid).team
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					self:gainPain(str)
-					self.nextController = source_oid
+					self.nextController = object_manager.get(source_oid).team
 				end)
 			end
 		elseif message_name == "heal_over_time" then
@@ -125,7 +127,7 @@ Ressource = Tile:extend
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					self:gainPain(-str)
-					self.nextController = source_oid
+					self.nextController = object_manager.get(source_oid).team
 				end)
 			end	
 		end
@@ -150,14 +152,12 @@ Ressource = Tile:extend
 	end,
 	
 	giveXP = function(self)
-		if self.controller ~= 0 then 
-			if object_manager.get(self.controller).team then		
-				object_manager.visit(function(oid,obj) 
-					if obj.team == object_manager.get(self.controller).team then
-						object_manager.send(obj, "xp", config.xpPerRessourceTick)
-					end
-				end)
-			end
+		if self.controller == "alpha" or self.controller == "beta" or self.controller == "gamma" or self.controller == "delta" then 
+			object_manager.visit(function(oid,obj) 
+				if obj.team == self.controller then
+					object_manager.send(obj, "xp", config.xpPerRessourceTick)
+				end
+			end)
 		end
 	end,	
 	
@@ -168,12 +168,8 @@ Ressource = Tile:extend
 		self.painBar.y = self.y
 		
 		local name = "nobody"
-		if self.controller ~= 0 then 
+		if self.controller ~= "" then 
 			name = self.controller
-			local o = object_manager.get(self.controller)
-			if o and o.name then
-				name = o.name
-			end
 		end	
 		self.t.text = "Owned by: " .. name
 		self.t.x = self.x - self.width /4
