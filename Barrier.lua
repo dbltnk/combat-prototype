@@ -4,9 +4,9 @@ Barrier = Tile:extend
 {
 	class = "Barrier",
 
-	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "highscore" },	
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "highscore", "teamscore" },	
 	
-	sync_low = {"highscore"},
+	sync_low = {"highscore", "teamscore"},
 	sync_high = {"currentPain", "alive"},
 
 	image = '/assets/graphics/barrier.png',
@@ -14,6 +14,7 @@ Barrier = Tile:extend
 	maxPain = config.barrierHealth,
 	wFactor = 0,
 	highscore = {},
+	teamscore = {},
 	owner = 0,
 	targetable = true,
 
@@ -100,34 +101,77 @@ Barrier = Tile:extend
 	end,
 	
 	updateHighscore = function(self,source_oid,score)
+		-- solo highscore
 		if not self.highscore[source_oid] then self.highscore[source_oid] = 0 end
 		self.highscore[source_oid] = self.highscore[source_oid] + score
+		-- team highscore
+		if not self.teamscore[object_manager.get(source_oid).team] then self.teamscore[object_manager.get(source_oid).team] = 0 end
+		self.teamscore[object_manager.get(source_oid).team] = self.teamscore[object_manager.get(source_oid).team] + score
 	end,	
 	
 	showHighscore = function (self, title)
 		if loveframes.GetState() == "none" then loveframes.SetState("highscore") else loveframes.SetState("none") end
+				
+		local frame = loveframes.Create("frame")
+		frame:SetSize(400, 500)
+		frame:Center()
+		frame:SetName(title or "Highscore")
+		frame:SetState("highscore")
 		
+		--show the team highscores
+		local l3 = list.process_keys(self.teamscore)       -- holt alle keys (oids)
+        :orderby(function(a,b) return self.teamscore[a] > self.teamscore[b] end)      -- sortiert diese nach werten aus map
+        :select(function (a) return {k=a, v=self.teamscore[a]} end)        -- und gibt eine liste zurück mit k und v einträge
+        :done() -- l2 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
+
+		local list = loveframes.Create("list", frame)
+		list:SetPos(5, 300)
+		list:SetSize(390, 265)
+		list:SetDisplayType("vertical")
+		list:SetPadding(5)
+		list:SetSpacing(5)
+		
+		local j = 1
+		local textListTeam = {}
+		for _,x in pairs(l3) do
+		
+			local name = "nobody"
+			if x.k ~= 0 then 
+				name = x.k
+				local o = object_manager.get(x.k)
+				if o and o.name then
+					name = o.name
+				end
+			end	
+		
+			local txt = j .. ". Team " .. name .. " with " .. x.v .. " damage to the barrier"
+			textListTeam[j]= txt	
+			j = j + 1
+
+		end
+
+		for k,v in pairs(textListTeam) do
+			local text = loveframes.Create("text")
+			text:SetText(v) 
+			list:AddItem(text)
+		end
+		
+		
+		--~ -- show the player highscores 
 		local l2 = list.process_keys(self.highscore)       -- holt alle keys (oids)
         :orderby(function(a,b) return self.highscore[a] > self.highscore[b] end)      -- sortiert diese nach werten aus map
         :select(function (a) return {k=a, v=self.highscore[a]} end)        -- und gibt eine liste zurück mit k und v einträge
         :done() -- l2 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
-		
-		local frame = loveframes.Create("frame")
-		frame:SetSize(350, 300)
-		frame:Center()
-		frame:SetName(title or "Highscore")
-		frame:SetState("highscore")
 
 		local list = loveframes.Create("list", frame)
 		list:SetPos(5, 30)
-		list:SetSize(340, 265)
+		list:SetSize(390, 265)
 		list:SetDisplayType("vertical")
 		list:SetPadding(5)
 		list:SetSpacing(5)
 		
 		local i = 1
 		local textList = {}
-		local teamList = {}
 		for _,x in pairs(l2) do
 		
 			local name = "nobody"
@@ -146,8 +190,7 @@ Barrier = Tile:extend
 			local txt = i .. ". " .. name .. " [" .. team .. "] with " .. x.v .. " damage to the barrier"
 			textList[i]= txt
 			i = i + 1
-			
-			teamList[team] = x.v
+
 		end
 
 		for k,v in pairs(textList) do
@@ -156,12 +199,8 @@ Barrier = Tile:extend
 			list:AddItem(text)
 		end
 		
-		for k,v in pairs(teamList) do
-			local text = loveframes.Create("text")
-			text:SetText("Team " .. k .. ": " .. v .. " damage total") 
-			list:AddItem(text)
-		end
-				
+		
+	
 	end,
 	
 	onDieBoth = function (self)
