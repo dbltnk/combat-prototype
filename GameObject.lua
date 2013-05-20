@@ -60,7 +60,7 @@ GameObject = {
 	end,
 	
 	receiveWithoutResendingToNet = function (self, message_name, ...)
-		print("GO RECEIVE", message_name, ...)
+		--~ print("GO RECEIVE", message_name, ...)
 
 		if self:isLocal() then
 			if self.receiveLocal then self:receiveLocal(message_name, ...) end

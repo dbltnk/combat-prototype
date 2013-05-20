@@ -318,7 +318,7 @@ Character = Animation:extend
 	end,
 	
 	receiveBoth = function (self, message_name, ...)
-		print("BOTH", message_name)
+		--~ print("BOTH", message_name)
 		if message_name == "heal" then
 			local str, source_oid = ...
 			self:showDamage(-str)
