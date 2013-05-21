@@ -170,20 +170,24 @@ action_definitions = {
 
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ scythe_harpoon = {
-		--~ name = "Harpoon",
-		--~ description = "Shoots a projectile that pulls one target to your location.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	scythe_harpoon = {
+		name = "Harpoon",
+		description = "Shoots a projectile that pulls one target to your location.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 1,
+		timeout = 9,
+		energy = 50,
+		on_the_run = false,
+		cast_particle_color = color_scythe,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 400, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_harpoon.png"},
+			effects = {
+				{effect_type = "moveToMe"},	
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------	
 	scythe_stun = {
 		name = "Stun",

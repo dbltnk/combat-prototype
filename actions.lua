@@ -302,3 +302,10 @@ action_handling.register_effect("moveSelfTo", function (target, effect, source_o
 	object_manager.send(source_oid, "moveSelfTo", x,y)
 end)
 
+-- effect: moveToMe ----------------------------------------------------------
+-- eg. {effect_type = "moveToMe"},
+-- has: 
+action_handling.register_effect("moveToMe", function (target, effect, source_oid)
+	local x,y = action_handling.get_target_position(object_manager.get(source_oid))
+	object_manager.send(target.oid, "moveSelfTo", x,y)
+end)
