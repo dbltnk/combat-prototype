@@ -370,6 +370,7 @@ Character = Animation:extend
 		--	print("HEAL", str)
 			self:gainPain(-str)
 			object_manager.send(source_oid, "xp", str * config.combatHealXP)
+			if self.hidden then self.hidden = false end			
 		elseif message_name == "stamHeal" then
 			local str, source_oid = ...
 		--	print("STAMHEAL", str)
@@ -386,6 +387,7 @@ Character = Animation:extend
 				end
 				if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
 			end
+			if self.hidden then self.hidden = false end
 		elseif message_name == "transfer" then
 			local str, duration, ticks, source_oid, targetOids, eff = ...
 			utils.vardump(targetOids)
@@ -402,6 +404,7 @@ Character = Animation:extend
 					end
 				end)
 			end
+			if self.hidden then self.hidden = false end			
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			for i=0,ticks do
@@ -416,6 +419,7 @@ Character = Animation:extend
 					end
 				end)
 			end
+			if self.hidden then self.hidden = false end			
 		elseif message_name == "heal_over_time" then
 			local str, duration, ticks, source_oid = ...
 			for i=0,ticks do
@@ -425,7 +429,8 @@ Character = Animation:extend
 						object_manager.send(source_oid, "xp", str * config.combatHealXP)
 					end
 				end)
-			end		
+			end	
+			if self.hidden then self.hidden = false end				
 		elseif message_name == "stun" then
 			local duration, source_oid = ...
 		--	print("STUN", duration)
@@ -456,12 +461,14 @@ Character = Animation:extend
 			if self.incapacitated == true then 
 				self:respawn() 
 			end
-		elseif message_name == "invis" then
+		elseif message_name == "sneak" then
 			local duration, speedPenalty, source_oid = ...
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self.hidden = true
 			self.speedOverride = config.walkspeed * speedPenalty
 			the.app.view.timer:after(duration, function() self.hidden = false self.speedOverride = 0 end)
+		elseif message_name == "hide" then
+			local duration, speedPenalty, source_oid = ...
+			self.hidden = true			
 		elseif message_name == "expose" then
 			local duration, source_oid = ...
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
@@ -640,6 +647,17 @@ Character = Animation:extend
 		local ipt = self:readInput(self.activeSkillNr)
 		
 		self:applyMovement(elapsed, ipt)
+		
+		if self.armor == "robe" then
+			if the.keys:justPressed ("w") then self.hidden = false end	
+			if the.keys:justPressed ("a") then self.hidden = false end	
+			if the.keys:justPressed ("s") then self.hidden = false end	
+			if the.keys:justPressed ("d") then self.hidden = false end	
+			if the.keys:justPressed ("up") then self.hidden = false end	
+			if the.keys:justPressed ("down") then self.hidden = false end	
+			if the.keys:justPressed ("left") then self.hidden = false end	
+			if the.keys:justPressed ("right") then self.hidden = false end	
+		end
 		
 		local done = {}
 		for i = 1, 10 do 

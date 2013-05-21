@@ -192,12 +192,19 @@ action_handling.register_effect("gank", function (target, effect, source_oid)
 	object_manager.send(target.oid, "gank")
 end)
 
--- effect: invis ----------------------------------------------------------
--- eg. {effect_type = "invis"},
+-- effect: sneak ----------------------------------------------------------
+-- eg. {effect_type = "sneak"},
 -- has: duration, speedPenalty
-action_handling.register_effect("invis", function (target, effect, source_oid)
+action_handling.register_effect("sneak", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
-	object_manager.send(target.oid, "invis", effect.duration * increase, effect.speedPenalty, source_oid)
+	object_manager.send(target.oid, "sneak", effect.duration * increase, effect.speedPenalty, source_oid)
+end)
+
+-- effect: hide ----------------------------------------------------------
+-- eg. {effect_type = "hide"},
+-- has: 
+action_handling.register_effect("hide", function (target, effect, source_oid)
+	object_manager.send(target.oid, "hide", source_oid)
 end)
 
 -- effect: heal ----------------------------------------------------------

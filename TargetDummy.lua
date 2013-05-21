@@ -102,7 +102,10 @@ TargetDummy = Animation:extend
 			self:trackDamage(source_oid, str)
 			--print("DUMMY DAMANGE", str)
 			self:gainPain(str)
-
+		elseif message_name == "moveSelfTo" then
+			local x,y = ...
+			self.x = x
+			self.y = y
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)

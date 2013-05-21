@@ -373,7 +373,6 @@ action_definitions = {
 		},
 	},
 	-- -----------------------------------------------------------------------------------
-	-- -----------------------------------------------------------------------------------
 	--~ robe_shrink = {
 		--~ name = "Shrink",
 		--~ description = "Decrease your body size for some time.",
@@ -404,20 +403,24 @@ action_definitions = {
 		--~ },	
 	--~ },		
 	-- -----------------------------------------------------------------------------------
-	--~ robe_hide = {
-		--~ name = "Hide",
-		--~ description = "Renders you invisible if you stand still.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	robe_hide = {
+		name = "Hide",
+		description = "Renders you invisible if you stand still.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 3,
+		timeout = 60,
+		energy = 30,
+		on_the_run = false,
+		cast_particle_color = color_robe,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "hide"},
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
 	robe_quake = {
 		name = "Quake",
@@ -452,6 +455,7 @@ action_definitions = {
 		--~ application = {
 		--~ },	
 	--~ },		
+	-- -----------------------------------------------------------------------------------	
 	hide_armor_sprint = {
 		name = "Sprint",
 		description = "Increases your movement speed for a short time.",
@@ -485,7 +489,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "invis", duration = 5, speedPenalty = 0.5},
+				{effect_type = "sneak", duration = 30, speedPenalty = 0.5},
 			},
 		},	
 	},	
