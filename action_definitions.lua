@@ -225,8 +225,8 @@ action_definitions = {
 		description = "Shoot a projectile that drains one targets life while healing you.",
 		icon = nil,
 		sound = nil,
-		cast_time = 1.8,
-		timeout = 15,
+		cast_time = 0.5,
+		timeout = 6,
 		energy = 36,
 		on_the_run =  false,
 		cast_particle_color = color_staff,		
@@ -235,7 +235,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_life_leech.png"},
 			effects = {
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 500, piercing_number = 10, explosion_color = {0, 255 ,0, 128}},
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 2, explosion_color = {0, 255 ,0, 128}},
 					effects = {
 						{effect_type = "transfer", eff = 0.5, ticks = 6, duration = 30, str = 10}
 					},
