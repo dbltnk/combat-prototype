@@ -140,7 +140,8 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	projectile.onDie = function(self)
 		-- target left? so trigger at location
 		if target_left > 0 then
-			local target = {x = self.x, y = self.y}
+			local x,y = action_handling.get_target_position(self)
+			local target = {x = x, y = y}
 			action_handling.add_view_on_demand(target, start_target)
 			targets_selected_callback({target})
 		end
@@ -173,6 +174,7 @@ end)
 -- has: application
 action_handling.register_effect("spawn", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	utils.vardump(target)
 	action_handling.start(effect.application, target, source_oid, source_oid)
 end)
 

@@ -142,13 +142,26 @@ end
 
 -- returns list of ( {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center) )
 function action_handling.find_ae_targets (x,y, range, maxTargetCount)
-	local l = object_manager.find_in_sphere(x,y, range)
+	local maxObjectSize = 0
+	object_manager.visit(function(oid,o)
+		local w = o.width or 0
+		local h = o.heigh or 0
+		local s = vector.lenFromTo(o.x,o.y,o.x+w,o.y+h)
+		maxObjectSize = math.max(s, maxObjectSize)
+	end)
+	
+	-- 2 * maxObjectSize : start and end object range
+	local l = object_manager.find_in_sphere(x,y, range + 2 * maxObjectSize)
 	--~ utils.vardump(l)
 	--~ print(x,y, range)
 	
 	l = list.process_values(l)
 		:where(function(f) 
 			return f.targetable
+		end)
+		:where(function(f)
+			print("---------", f.oid, f.class)
+			return collision.minDistPointToAABB (x,y, f.x, f.y, f.x+f.width, f.y+f.height) <= range
 		end)
 		:select(function(t) 
 			local xx,yy = action_handling.get_target_position(t)
