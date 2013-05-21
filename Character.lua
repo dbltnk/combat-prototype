@@ -30,6 +30,11 @@ Character = Animation:extend
 	reminder = nil,
 	targetable = true,
 	team = "none",
+	snare_counter = 0,
+	root_counter = 0,
+	stun_counter = 0,
+	mezz_counter = 0,
+	expose_counter = 0,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -326,13 +331,25 @@ Character = Animation:extend
 			self:showDamage(-str)
 		elseif message_name == "damage" then
 			local str, source_oid = ...
-			if not self.incapacitated then self:showDamage(str) end
+			if not self.incapacitated then 
+				if self.expose_counter > 0 then
+					self:showDamage(str * config.exposed) 
+				else
+					self:showDamage(str) 
+				end
+			end
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("CHARACTER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if not self.incapacitated then self:showDamage(str) end
+					if not self.incapacitated then 
+						if self.expose_counter > 0 then
+							self:showDamage(str * config.exposed) 
+						else
+							self:showDamage(str) 
+						end 
+					end
 				end)
 			end
 		elseif message_name == "heal_over_time" then
@@ -362,7 +379,11 @@ Character = Animation:extend
 			local str, source_oid = ...
 		--	print("DAMANGE", str)
 			if not self.incapacitated then 
-				self:gainPain(str)
+				if self.expose_counter > 0 then
+					self:gainPain(str * config.exposed) 
+				else
+					self:gainPain(str)
+				end
 				if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
 			end
 		elseif message_name == "transfer" then
@@ -386,7 +407,11 @@ Character = Animation:extend
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if not self.incapacitated then  
-						self:gainPain(str)
+						if self.expose_counter > 0 then
+							self:gainPain(str * config.exposed) 
+						else
+							self:gainPain(str)
+						end
 						if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
 					end
 				end)
@@ -437,6 +462,13 @@ Character = Animation:extend
 			self.hidden = true
 			self.speedOverride = config.walkspeed * speedPenalty
 			the.app.view.timer:after(duration, function() self.hidden = false self.speedOverride = 0 end)
+		elseif message_name == "expose" then
+			local duration, source_oid = ...
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			self.expose_counter = self.expose_counter + 1
+			the.app.view.timer:after(duration, function() 
+				self.expose_counter = self.expose_counter - 1
+			end)			
 		end
 	end,
 	

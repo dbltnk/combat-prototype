@@ -273,6 +273,14 @@ action_handling.register_effect("stun", function (target, effect, source_oid)
 	object_manager.send(target.oid, "stun", effect.duration * increase, source_oid)
 end)
 
+-- effect: expose ----------------------------------------------------------
+-- eg. {effect_type = "expose", duration = 10},
+-- has: duration
+action_handling.register_effect("expose", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "expose", effect.duration * increase, source_oid)
+end)
+
 -- effect: transfer ----------------------------------------------------------
 -- eg. {effect_type = "transfer", eff = 0.5, ticks = 5, duration = 30, str = 10}
 -- has: duration, ticks, duration, str, eff

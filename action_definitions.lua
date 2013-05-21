@@ -63,20 +63,24 @@ action_definitions = {
 		--~ },	
 	--~ },		
 	-- -----------------------------------------------------------------------------------
-	--~ bow_expose = {
-		--~ name = "Expose",
-		--~ description = "Shoot a projectile that exposes a target so it receives more damage.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },	
+	bow_expose = {
+		name = "Expose",
+		description = "Shoot a projectile that exposes a target so it receives more damage.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 1,
+		timeout = 9,
+		energy = 12,
+		on_the_run = false,
+		cast_particle_color = color_bow,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_expose.png"},
+			effects = {
+				{effect_type = "expose", duration = 30},
+			},
+		},		
+	},	
 	-- -----------------------------------------------------------------------------------
 	--~ bow_root = {
 		--~ name = "Root",
