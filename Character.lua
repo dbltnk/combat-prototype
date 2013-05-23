@@ -36,6 +36,7 @@ Character = Animation:extend
 	invul = false,
 	mezzed = false,
 	snared = false,
+	powerblocked = false,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -496,7 +497,17 @@ Character = Animation:extend
 				self.freezeMovementCounter = 0	
 				self.freezeCastingCounter = 0					
 				self.mezzed = false
-			end							
+			end	
+		elseif message_name == "powerblock" then
+			local duration, source_oid = ...
+		--	print("POWERBLOCKED", duration)
+			self:freezeCasting()
+			self.powerblocked = true
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
+			the.app.view.timer:after(duration, function()
+				self:unfreezeCasting()
+				self.powerblocked = false
+			end)									
 		elseif message_name == "runspeed" then
 			local str, duration, source_oid = ...
 			--print("SPEED", str, duration)

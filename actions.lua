@@ -302,6 +302,22 @@ action_handling.register_effect("stun_break", function (target, effect, source_o
 	object_manager.send(target.oid, "stun_break", source_oid)
 end)
 
+-- effect: powerblock ----------------------------------------------------------
+-- eg. {effect_type = "powerblock", duration = 10},
+-- has: powerblock
+action_handling.register_effect("powerblock", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "powerblock", effect.duration * increase, source_oid)
+end)
+
+-- effect: powerblockOnlyOthers ----------------------------------------------------------
+-- eg. {effect_type = "powerblockOnlyOthers", duration = 10},
+-- has: powerblock
+action_handling.register_effect("powerblockOnlyOthers", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	if target.oid ~= source_oid then object_manager.send(target.oid, "powerblock", effect.duration * increase, source_oid) end
+end)
+
 -- effect: mezz ----------------------------------------------------------
 -- eg. {effect_type = "mezz", duration = 10},
 -- has: duration

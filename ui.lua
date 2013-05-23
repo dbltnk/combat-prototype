@@ -384,12 +384,13 @@ DebuffDisplay = Text:extend
 	text = "",
 	x = 0,
 	y = 0, 
-	width = 200,
+	width = 250,
 	tint = {0.1,0.1,0.1},
 	rooted = "",
 	stunned = "",
 	mezzed = "",
 	snared = "",
+	powerblocked = "",
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
@@ -397,9 +398,10 @@ DebuffDisplay = Text:extend
 		if the.player.rooted == true then self.rooted = "rooted" else self.rooted = "" end
 		if the.player.stunned == true then self.stunned = "stunned" else self.stunned = "" end		
 		if the.player.mezzed == true then self.mezzed = "mezzed" else self.mezzed = "" end	
-		if the.player.snared == true then self.snared = "snared" else self.snared = "" end					
-		if self.rooted ~= "" or self.stunned ~= "" or self.mezzed ~= "" or self.snared ~= "" then 
-			self.text = self.rooted .. " " .. self.stunned .. " " .. self.mezzed .. " " .. self.snared 
+		if the.player.snared == true then self.snared = "snared" else self.snared = "" end			
+		if the.player.powerblocked == true then self.powerblocked = "pb'ed" else self.powerblocked = "" end					
+		if self.rooted ~= "" or self.stunned ~= "" or self.mezzed ~= "" or self.snared ~= "" or self.powerblocked ~= "" then 
+			self.text = self.rooted .. " " .. self.stunned .. " " .. self.mezzed .. " " .. self.snared .. " " .. self.powerblocked
 		else 
 			self.text = "" 
 		end

@@ -677,20 +677,24 @@ action_definitions = {
 		},	
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ splint_mail_rage = {
-		--~ name = "Rage",
-		--~ description = "Increase your melee damage for some time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },
+	splint_mail_shout = {
+		name = "Shout",
+		description = "Makes a lot of targets in the area around you unable to use actions for a brief time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 15,
+		energy = 30,
+		on_the_run = true,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "ae", range = 300, piercing_number = 20, explosion_color = color_splint_mail},
+				effects = {
+					{effect_type = "powerblockOnlyOthers", duration = 3},
+				},
+		},		
+	},
 	-- -----------------------------------------------------------------------------------
 	splint_mail_invulnerability = {
 		name = "Invulnerability",
