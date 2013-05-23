@@ -598,20 +598,24 @@ action_definitions = {
 		--~ },	
 	--~ },		
 	-- -----------------------------------------------------------------------------------
-	--~ splint_mail_ignore_pain = {
-		--~ name = "Ignore Pain",
-		--~ description = "Increases your pain resistance for some time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	splint_mail_ignore_pain = {
+		name = "Ignore Pain",
+		description = "Increases your pain resistance for some time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.1,
+		timeout = 60,
+		energy = 15,
+		on_the_run = false,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "buff_max_pain", str = 100, duration = 30},
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
 	--~ splint_mail_mezz_break = {
 		--~ name = "Mezz Break",

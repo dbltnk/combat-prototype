@@ -346,3 +346,11 @@ action_handling.register_effect("moveToMe", function (target, effect, source_oid
 	local x,y = action_handling.get_target_position(object_manager.get(source_oid))
 	object_manager.send(target.oid, "moveSelfTo", x,y)
 end)
+
+-- effect: buff_max_pain ----------------------------------------------------------
+-- eg. {effect_type = "buff_max_pain", str = 100, duration = 15},
+-- has: str, duration
+action_handling.register_effect("buff_max_pain", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "buff_max_pain", effect.str, effect.duration * increase, source_oid)
+end)

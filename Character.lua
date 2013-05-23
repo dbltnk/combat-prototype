@@ -6,10 +6,10 @@ Character = Animation:extend
 {
 	class = "Character",
 
-	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "level", "anim_name", 
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
 		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team"},
 		
-	sync_high = {"x", "y", "rotation", "currentPain", "rotation", "anim_name", "anim_speed",
+	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat"},
 	sync_low = {"image", "width", "height", "rotation", "level", "name", "weapon", "armor", "team"},			
 	
@@ -501,7 +501,15 @@ Character = Animation:extend
 				self.freezeMovementCounter = 0	
 				self.castingMovementCounter = 0				
 				self.stunned = false
-			end					
+			end		
+		elseif message_name == "buff_max_pain" then
+			local str, duration, source_oid = ...
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			self.maxPain = self.maxPain + str
+			the.app.view.timer:after(duration, function()
+				if self.currentPain >= self.maxPain - str then self:setIncapacitation(true) end
+				self.maxPain = self.maxPain - str
+			end)						
 		end
 	end,
 	
