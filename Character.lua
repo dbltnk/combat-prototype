@@ -31,6 +31,7 @@ Character = Animation:extend
 	targetable = true,
 	team = "none",
 	rooted = false,
+	stunned = false,
 	expose_counter = 0,
 
 	--~ "bow" or "scythe" or "staff"
@@ -437,10 +438,12 @@ Character = Animation:extend
 		--	print("STUN", duration)
 			self:freezeMovement()
 			self:freezeCasting()
+			self.stunned = true
 			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
 			the.app.view.timer:after(duration, function()
 				self:unfreezeMovement()
 				self:unfreezeCasting()
+				self.stunned = false
 			end)
 		elseif message_name == "runspeed" then
 			local str, duration, source_oid = ...
@@ -488,8 +491,17 @@ Character = Animation:extend
 			end)		
 		elseif message_name == "root_break" then
 			local duration, source_oid = ...
-			self.freezeMovementCounter = 0	
-			self.rooted = true		
+			if self.rooted then
+				self.freezeMovementCounter = 0	
+				self.rooted = false
+			end	
+		elseif message_name == "root_break" then
+			local duration, source_oid = ...
+			if self.stunned then
+				self.freezeMovementCounter = 0	
+				self.castingMovementCounter = 0				
+				self.stunned = false
+			end					
 		end
 	end,
 	

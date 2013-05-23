@@ -199,7 +199,7 @@ action_definitions = {
 		icon = nil,
 		sound = nil,
 		cast_time = 0.1,
-		timeout = 10,
+		timeout = 9,
 		energy = 12,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
@@ -208,7 +208,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "ae", range = 100, cone = 60, piercing_number = 3},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 50},
-				{effect_type = "stun", duration = 3},
+				{effect_type = "stunOnlyOthers", duration = 3},
 			},
 		},	
 	},	
@@ -392,20 +392,24 @@ action_definitions = {
 		--~ },	
 	--~ },		
 	-- -----------------------------------------------------------------------------------
-	--~ robe_stun_break = {
-		--~ name = "Stun Break",
-		--~ description = "Break all stun effects.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	robe_sonic_boom = {
+		name = "Sonic Boom",
+		description = "Stuns a lot of targets in the area around you for a brief time.",
+		icon =  nil,
+		sound = nil,				
+		cast_time = 0.1,
+		timeout = 6,
+		energy = 20,
+		on_the_run = true,
+		cast_particle_color = color_robe,		
+		
+		application = {
+			target_selection = {target_selection_type = "ae", range = 300, piercing_number = 20, explosion_color = color_robe},
+				effects = {
+					{effect_type = "stunOnlyOthers", duration = 1 },
+				},
+		},		
+	},		
 	-- -----------------------------------------------------------------------------------
 	robe_hide = {
 		name = "Hide",

@@ -280,6 +280,21 @@ action_handling.register_effect("stun", function (target, effect, source_oid)
 	object_manager.send(target.oid, "stun", effect.duration * increase, source_oid)
 end)
 
+-- effect: stunOnlyOthers ----------------------------------------------------------
+-- eg. {effect_type = "stun", duration = 10},
+-- has: duration
+action_handling.register_effect("stunOnlyOthers", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	if target.oid ~= source_oid then object_manager.send(target.oid, "stun", effect.duration * increase, source_oid) end
+end)
+
+-- effect: stun_break ----------------------------------------------------------
+-- eg. {effect_type = "stun_break"},
+-- has: 
+action_handling.register_effect("stun_break", function (target, effect, source_oid)
+	object_manager.send(target.oid, "stun_break", source_oid)
+end)
+
 -- effect: root ----------------------------------------------------------
 -- eg. {effect_type = "root", duration = 10},
 -- has: duration

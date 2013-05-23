@@ -387,11 +387,13 @@ DebuffDisplay = Text:extend
 	width = 200,
 	tint = {0.1,0.1,0.1},
 	rooted = "",
+	stunned = "",
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
 		self.y = love.graphics.getHeight() - 80
 		if the.player.rooted == true then self.rooted = "rooted" else self.rooted = "" end
-		if self.rooted ~= "" then self.text = self.rooted else self.text = "" end
+		if the.player.stunned == true then self.stunned = "stunned" else self.stunned = "" end		
+		if self.rooted ~= "" or self.stunned ~= "" then self.text = self.rooted .. " " .. self.stunned else self.text = "" end
 	end
 }
