@@ -48,65 +48,82 @@ action_definitions = {
 		},	
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ bow_snare = {
-		--~ name = "Snare",
-		--~ description = "Shoot a projectile that slows down one target.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	bow_snare = {
+		name = "Snare",
+		description = "Shoot a projectile that slows down one target.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.5,
+		timeout = 15,
+		energy = 45,
+		on_the_run = false,
+		cast_particle_color = color_bow,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 800, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_puncture.png"},
+			effects = {
+				{effect_type = "damage", str = 15},
+				{effect_type = "runspeed", duration = 15, str = config.walkspeed / 2},	
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
-	--~ bow_expose = {
-		--~ name = "Expose",
-		--~ description = "Shoot a projectile that exposes a target so it receives more damage.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },	
+	bow_expose = {
+		name = "Expose",
+		description = "Shoot a projectile that exposes a target so it receives more damage.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 1,
+		timeout = 9,
+		energy = 12,
+		on_the_run = false,
+		cast_particle_color = color_bow,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_expose.png"},
+			effects = {
+				{effect_type = "dmgModifier", str = 125, duration = 20},
+			},
+		},		
+	},	
 	-- -----------------------------------------------------------------------------------
-	--~ bow_root = {
-		--~ name = "Root",
-		--~ description = "Shoot a projectile that roots one target.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },	
+	bow_root = {
+		name = "Root",
+		description = "Shoot a projectile that roots one target.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.5,
+		timeout = 15,
+		energy = 10,
+		on_the_run = false,
+		cast_particle_color = color_bow,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_root.png"},
+			effects = {
+				{effect_type = "root", duration = 5},
+			},
+		},
+	},	
 	-- -----------------------------------------------------------------------------------
-	--~ bow_mark_target = {
-		--~ name = "Mark Target",
-		--~ description = "Shoot a projectile that hightlights one target.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	bow_mark_target = {
+		name = "Mark Target",
+		description = "Shoot a projectile that hightlights one target.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 3,
+		energy = 5,
+		on_the_run = true,
+		cast_particle_color = color_bow,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_mark_target.png"},
+			effects = {
+				{effect_type = "mark", duration = 60},
+			},
+		},
+	},		
 	-- -----------------------------------------------------------------------------------
 	scythe_sweep = {
 		name = "Sweep",
@@ -166,20 +183,24 @@ action_definitions = {
 
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ scythe_harpoon = {
-		--~ name = "Harpoon",
-		--~ description = "Shoots a projectile that pulls one target to your location.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	scythe_harpoon = {
+		name = "Harpoon",
+		description = "Shoots a projectile that pulls one target to your location.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 1,
+		timeout = 9,
+		energy = 50,
+		on_the_run = false,
+		cast_particle_color = color_scythe,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 400, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_harpoon.png"},
+			effects = {
+				{effect_type = "moveToMe"},	
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------	
 	scythe_stun = {
 		name = "Stun",
@@ -187,7 +208,7 @@ action_definitions = {
 		icon = nil,
 		sound = nil,
 		cast_time = 0.1,
-		timeout = 10,
+		timeout = 9,
 		energy = 12,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
@@ -196,7 +217,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "ae", range = 100, cone = 60, piercing_number = 3},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 50},
-				{effect_type = "stun", duration = 3},
+				{effect_type = "stunOnlyOthers", duration = 3},
 			},
 		},	
 	},	
@@ -225,8 +246,8 @@ action_definitions = {
 		description = "Shoot a projectile that drains one targets life while healing you.",
 		icon = nil,
 		sound = nil,
-		cast_time = 1.8,
-		timeout = 15,
+		cast_time = 0.5,
+		timeout = 6,
 		energy = 36,
 		on_the_run =  false,
 		cast_particle_color = color_staff,		
@@ -235,29 +256,38 @@ action_definitions = {
 			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_life_leech.png"},
 			effects = {
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = {0, 255 ,0, 128}},
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 2, explosion_color = color_staff},
 					effects = {
-						{effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 6, duration = 30, str = 10}
+						{effect_type = "transfer", eff = 0.5, ticks = 6, duration = 30, str = 10}
 					},
 				}},	
 			},
 		},
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ staff_poison = {
-		--~ name = "Poison",
-		--~ description = "Shoot a projectile that slowly decreases one targets life.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },	
+	staff_poison = {
+		name = "Poison",
+		description = "Shoot a projectile that slowly decreases one targets life.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 1,
+		timeout = 7.5,
+		energy = 30,
+		on_the_run = false,
+		cast_particle_color = color_staff,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_poison.png"},
+			effects = {
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
+					effects = {
+						{effect_type = "damage_over_time", ticks = 3, duration = 15, str = 25}
+					},
+				}},	
+			},
+		},	
+	},	
 	-- -----------------------------------------------------------------------------------
 	staff_fireball = {
 		name = "Fireball",
@@ -274,7 +304,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "projectile", range = 400, speed = 200, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_fireball.png"},
 			effects = {
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = {255, 57, 17, 128}},
+					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_staff},
 					effects = {
 						{effect_type = "damage", str = 38, },
 					},
@@ -324,27 +354,36 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
 					effects = {
-						{effect_type = "heal_over_time", ticks = 12, duration = 60, str = 20},
+						{effect_type = "heal_over_time", ticks = 6, duration = 30, str = 20},
 					},
 				}},
 			},
 		},
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ staff_mezz = {
-		--~ name = "Mezz",
-		--~ description = "Shoot a projectile that mesmerizes one target for some time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	staff_mezz = {
+		name = "Mezz",
+		description = "Shoot a projectile that mesmerizes one target for some time. Breaks on damage.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 20,
+		energy = 40,
+		on_the_run = false,
+		cast_particle_color = color_staff,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 400, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_mezz.png"},
+			effects = {
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
+					effects = {
+						{effect_type = "mezz", duration = 10},
+					},
+				}},
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------	
 	robe_bandage = {
 		name = "Bandage",
@@ -365,51 +404,62 @@ action_definitions = {
 		},
 	},
 	-- -----------------------------------------------------------------------------------
+	robe_shrink = {
+		name = "Shrink",
+		description = "Decrease your body size for some time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 60,
+		energy = 40,
+		on_the_run = true,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "changeSize", str = 75, duration = 15},
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
-	--~ robe_shrink = {
-		--~ name = "Shrink",
-		--~ description = "Decrease your body size for some time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	robe_sonic_boom = {
+		name = "Sonic Boom",
+		description = "Stuns a lot of targets in the area around you for a brief time.",
+		icon =  nil,
+		sound = nil,				
+		cast_time = 0.1,
+		timeout = 6,
+		energy = 20,
+		on_the_run = true,
+		cast_particle_color = color_robe,		
+		
+		application = {
+			target_selection = {target_selection_type = "ae", range = 300, piercing_number = 20, explosion_color = color_robe},
+				effects = {
+					{effect_type = "stunOnlyOthers", duration = 1 },
+				},
+		},		
+	},		
 	-- -----------------------------------------------------------------------------------
-	--~ robe_stun_break = {
-		--~ name = "Stun Break",
-		--~ description = "Break all stun effects.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
-	-- -----------------------------------------------------------------------------------
-	--~ robe_hide = {
-		--~ name = "Hide",
-		--~ description = "Renders you invisible if you stand still.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	robe_hide = {
+		name = "Hide",
+		description = "Renders you invisible if you stand still.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 3,
+		timeout = 60,
+		energy = 30,
+		on_the_run = false,
+		cast_particle_color = color_robe,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "hide"},
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
 	robe_quake = {
 		name = "Quake",
@@ -430,20 +480,25 @@ action_definitions = {
 		},	
 	},		
 	-- -----------------------------------------------------------------------------------
-	--~ robe_gust = {
-		--~ name = "Gust",
-		--~ description = "Push away a lot of targets in the area around you.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	robe_gust = {
+		name = "Gust",
+		description = "Push away a lot of targets in the area around you.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .5,
+		timeout = 15,
+		energy = 60,
+		on_the_run = false,
+		cast_particle_color = color_robe,		
+		
+		application = {
+			target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_robe},
+				effects = {
+					{effect_type = "moveAwayFromMe", str = 150},
+				},
+		},	
+	},		
+	-- -----------------------------------------------------------------------------------	
 	hide_armor_sprint = {
 		name = "Sprint",
 		description = "Increases your movement speed for a short time.",
@@ -477,40 +532,48 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "invis", duration = 5, speedPenalty = 0.5},
+				{effect_type = "sneak", duration = 30, speedPenalty = 0.5},
 			},
 		},	
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ hide_armor_root_break = {
-		--~ name = "Root Break",
-		--~ description = "Break all root effects.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	hide_armor_root_break = {
+		name = "Root Break",
+		description = "Break all root effects.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.1,
+		timeout = 6,
+		energy = 25,
+		on_the_run = true,
+		cast_particle_color = color_hide_armor,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "root_break"},
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
-	--~ hide_armor_snare_break = {
-		--~ name = "Snare Break",
-		--~ description = "Break all snare effects.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	hide_armor_snare_break = {
+		name = "Snare Break",
+		description = "Break all snare effects.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.1,
+		timeout = 6,
+		energy = 25,
+		on_the_run = true,
+		cast_particle_color = color_hide_armor,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "snare_break"},
+			},
+		},		
+	},		
 	-- -----------------------------------------------------------------------------------
 	hide_armor_regenerate = {
 		name = "Regenerate",
@@ -526,7 +589,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "heal_over_time", ticks = 12, duration = 60, str = 10},
+				{effect_type = "heal_over_time", ticks = 6, duration = 30, str = 10},
 			},
 		},		
 	},		
@@ -550,95 +613,120 @@ action_definitions = {
 		},	
 	},		
 	-- -----------------------------------------------------------------------------------
-	--~ splint_mail_absorb = {
-		--~ name = "Absorb",
-		--~ description = "Aborbs incoming damage for some time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	splint_mail_absorb = {
+		name = "Absorb",
+		description = "Aborbs incoming damage for some time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 30,
+		energy = 20,
+		on_the_run = false,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "dmgModifier", str = 75, duration = 10},
+			},	
+		},				
+	},		
 	-- -----------------------------------------------------------------------------------
-	--~ splint_mail_ignore_pain = {
-		--~ name = "Ignore Pain",
-		--~ description = "Increases your pain resistance for some time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	splint_mail_ignore_pain = {
+		name = "Ignore Pain",
+		description = "Increases your pain resistance for some time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.1,
+		timeout = 60,
+		energy = 15,
+		on_the_run = false,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "buff_max_pain", str = 100, duration = 30},
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
-	--~ splint_mail_mezz_break = {
-		--~ name = "Mezz Break",
-		--~ description = "Break all mezz effects.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	splint_mail_mezz_break = {
+		name = "Mezz Break",
+		description = "Break all mezz effects in a large area around you.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.1,
+		timeout = 6,
+		energy = 25,
+		on_the_run = true,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "ae", range = 400, piercing_number = 20, explosion_color = color_splint_mail},
+				effects = {
+					{effect_type = "mezz_break"},
+				},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
-	--~ splint_mail_grow = {
-		--~ name = "Grow",
-		--~ description = "Increase your body size for some time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },	
+	splint_mail_grow = {
+		name = "Grow",
+		description = "Increase your body size for some time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 60,
+		energy = 20,
+		on_the_run = true,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "changeSize", str = 150, duration = 30},
+			},
+		},	
+	},	
 	-- -----------------------------------------------------------------------------------
-	--~ splint_mail_rage = {
-		--~ name = "Rage",
-		--~ description = "Increase your melee damage for some time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },
+	splint_mail_shout = {
+		name = "Shout",
+		description = "Makes a lot of targets in the area around you unable to use actions for a brief time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 15,
+		energy = 30,
+		on_the_run = true,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "ae", range = 300, piercing_number = 20, explosion_color = color_splint_mail},
+				effects = {
+					{effect_type = "powerblockOnlyOthers", duration = 3},
+				},
+		},		
+	},
 	-- -----------------------------------------------------------------------------------
-	--~ splint_mail_invulnerability = {
-		--~ name = "Invulnerability",
-		--~ description = "Renders you invulnerable to damage for a short amount of time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },			
+	splint_mail_invulnerability = {
+		name = "Invulnerability",
+		description = "Renders you invulnerable to damage for a short amount of time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 30,
+		energy = 40,
+		on_the_run = true,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "invul", duration = 5},
+			},
+		},	
+	},	
+	-- -----------------------------------------------------------------------------------		
 }
 
 -- fill up asset names with identifiers

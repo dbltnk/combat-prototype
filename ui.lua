@@ -312,9 +312,9 @@ ScrollingText = Text:extend
 	end,
 	
 	onUpdate = function (self)
-		self.y = self.y - 1
-		self.alpha = self.alpha - 0.05
-		if self.font <= 0.1 then self:die() end
+		self.y = self.y - 0.5
+		self.alpha = self.alpha - 0.01
+		if self.alpha <= 0.1 then self:die() end
 	end,
 	
 	onDie = function (self)
@@ -376,4 +376,36 @@ RessourceDisplay = Text:extend
 	onUpdate = function (self)
 		self.x = love.graphics.getWidth() - self.width
 	end,
+}
+
+DebuffDisplay = Text:extend
+{
+	font = 20,
+	text = "",
+	x = 0,
+	y = 0, 
+	width = 250,
+	tint = {0.1,0.1,0.1},
+	rooted = "",
+	stunned = "",
+	mezzed = "",
+	snared = "",
+	powerblocked = "",
+	exposed = "",
+	
+	onUpdate = function (self)
+		self.x = (love.graphics.getWidth() - self.width) / 2
+		self.y = love.graphics.getHeight() - 80
+		if the.player.rooted == true then self.rooted = "rooted" else self.rooted = "" end
+		if the.player.stunned == true then self.stunned = "stunned" else self.stunned = "" end		
+		if the.player.mezzed == true then self.mezzed = "mezzed" else self.mezzed = "" end	
+		if the.player.snared == true then self.snared = "snared" else self.snared = "" end			
+		if the.player.powerblocked == true then self.powerblocked = "pb'ed" else self.powerblocked = "" end	
+		if the.player.dmgModified == 125 then self.exposed = "exposed" else self.exposed = "" end				
+		if self.rooted ~= "" or self.stunned ~= "" or self.mezzed ~= "" or self.snared ~= "" or self.powerblocked ~= "" or self.exposed ~= "" then 
+			self.text = self.rooted .. " " .. self.stunned .. " " .. self.mezzed .. " " .. self.snared .. " " .. self.powerblocked .. " " .. self.exposed
+		else 
+			self.text = "" 
+		end
+	end
 }

@@ -140,7 +140,8 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	projectile.onDie = function(self)
 		-- target left? so trigger at location
 		if target_left > 0 then
-			local target = {x = self.x, y = self.y}
+			local x,y = action_handling.get_target_position(self)
+			local target = {x = x, y = y}
 			action_handling.add_view_on_demand(target, start_target)
 			targets_selected_callback({target})
 		end
@@ -173,6 +174,7 @@ end)
 -- has: application
 action_handling.register_effect("spawn", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	utils.vardump(target)
 	action_handling.start(effect.application, target, source_oid, source_oid)
 end)
 
@@ -190,12 +192,19 @@ action_handling.register_effect("gank", function (target, effect, source_oid)
 	object_manager.send(target.oid, "gank")
 end)
 
--- effect: invis ----------------------------------------------------------
--- eg. {effect_type = "invis"},
+-- effect: sneak ----------------------------------------------------------
+-- eg. {effect_type = "sneak"},
 -- has: duration, speedPenalty
-action_handling.register_effect("invis", function (target, effect, source_oid)
+action_handling.register_effect("sneak", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
-	object_manager.send(target.oid, "invis", effect.duration * increase, effect.speedPenalty, source_oid)
+	object_manager.send(target.oid, "sneak", effect.duration * increase, effect.speedPenalty, source_oid)
+end)
+
+-- effect: hide ----------------------------------------------------------
+-- eg. {effect_type = "hide"},
+-- has: 
+action_handling.register_effect("hide", function (target, effect, source_oid)
+	object_manager.send(target.oid, "hide", source_oid)
 end)
 
 -- effect: heal ----------------------------------------------------------
@@ -263,6 +272,13 @@ action_handling.register_effect("runspeed", function (target, effect, source_oid
 	object_manager.send(target.oid, "runspeed", effect.str, effect.duration * increase, source_oid)
 end)
 
+-- effect: snare_break ----------------------------------------------------------
+-- eg. {effect_type = "snare_break"},
+-- has: 
+action_handling.register_effect("snare_break", function (target, effect, source_oid)
+	object_manager.send(target.oid, "snare_break", source_oid)
+end)
+
 -- effect: stun ----------------------------------------------------------
 -- eg. {effect_type = "stun", duration = 10},
 -- has: duration
@@ -271,11 +287,86 @@ action_handling.register_effect("stun", function (target, effect, source_oid)
 	object_manager.send(target.oid, "stun", effect.duration * increase, source_oid)
 end)
 
+-- effect: stunOnlyOthers ----------------------------------------------------------
+-- eg. {effect_type = "stun", duration = 10},
+-- has: duration
+action_handling.register_effect("stunOnlyOthers", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	if target.oid ~= source_oid then object_manager.send(target.oid, "stun", effect.duration * increase, source_oid) end
+end)
+
+-- effect: stun_break ----------------------------------------------------------
+-- eg. {effect_type = "stun_break"},
+-- has: 
+action_handling.register_effect("stun_break", function (target, effect, source_oid)
+	object_manager.send(target.oid, "stun_break", source_oid)
+end)
+
+-- effect: powerblock ----------------------------------------------------------
+-- eg. {effect_type = "powerblock", duration = 10},
+-- has: powerblock
+action_handling.register_effect("powerblock", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "powerblock", effect.duration * increase, source_oid)
+end)
+
+-- effect: powerblockOnlyOthers ----------------------------------------------------------
+-- eg. {effect_type = "powerblockOnlyOthers", duration = 10},
+-- has: powerblock
+action_handling.register_effect("powerblockOnlyOthers", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	if target.oid ~= source_oid then object_manager.send(target.oid, "powerblock", effect.duration * increase, source_oid) end
+end)
+
+-- effect: mezz ----------------------------------------------------------
+-- eg. {effect_type = "mezz", duration = 10},
+-- has: duration
+action_handling.register_effect("mezz", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "mezz", effect.duration * increase, source_oid)
+end)
+
+-- effect: mezz_break ----------------------------------------------------------
+-- eg. {effect_type = "stun_break"},
+-- has: 
+action_handling.register_effect("mezz_break", function (target, effect, source_oid)
+	object_manager.send(target.oid, "mezz_break", source_oid)
+end)
+
+-- effect: root ----------------------------------------------------------
+-- eg. {effect_type = "root", duration = 10},
+-- has: duration
+action_handling.register_effect("root", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "root", effect.duration * increase, source_oid)
+end)
+
+-- effect: root_break ----------------------------------------------------------
+-- eg. {effect_type = "root_break"},
+-- has: 
+action_handling.register_effect("root_break", function (target, effect, source_oid)
+	object_manager.send(target.oid, "root_break", source_oid)
+end)
+
+-- effect: dmgModifier ----------------------------------------------------------
+-- eg. {effect_type = "dmgModifier", duration = 10},
+-- has: str, duration
+action_handling.register_effect("dmgModifier", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "dmgModifier", effect.str, effect.duration * increase, source_oid)
+end)
+
 -- effect: transfer ----------------------------------------------------------
--- eg. {effect_type = "transfer", from = "targets", to = "self", eff = 0.5, attribute = "hp", ticks = 5, duration = 30, str = 10}
--- todo: duration, from, to, eff, attribute, ticks, duration, str
-action_handling.register_effect("transfer", function (target, effect, source_oid) --TODO:  * increase
+-- eg. {effect_type = "transfer", eff = 0.5, ticks = 5, duration = 30, str = 10}
+-- has: duration, ticks, duration, str, eff
+action_handling.register_effect_multitarget("transfer", function (targets, effect, source_oid) --TODO:  * increase
 	--~ object_manager.send(target.oid, "stun", effect.duration, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local targetOids = list.process(targets)
+		:where(function(t) return t.oid end)
+		:select(function(t) return t.oid end)
+		:done()
+	object_manager.send(source_oid, "transfer", effect.str * increase, effect.duration, effect.ticks, source_oid, targetOids, effect.eff)
 end)
 
 -- effect: moveSelfTo ----------------------------------------------------------
@@ -286,3 +377,58 @@ action_handling.register_effect("moveSelfTo", function (target, effect, source_o
 	object_manager.send(source_oid, "moveSelfTo", x,y)
 end)
 
+-- effect: moveToMe ----------------------------------------------------------
+-- eg. {effect_type = "moveToMe"},
+-- has: 
+action_handling.register_effect("moveToMe", function (target, effect, source_oid)
+	local sx,sy = action_handling.get_target_position(object_manager.get(source_oid))
+	local tx,ty = action_handling.get_target_position(target)
+	local dx, dy = (sx * 8 + tx) / 9, (sy * 8 + ty) / 9
+	object_manager.send(target.oid, "moveSelfTo", dx,dy)
+end)
+
+-- effect: moveAwayFromMe ----------------------------------------------------------
+-- eg. {effect_type = "moveAwayFromMe", str = 100},
+-- has: str
+action_handling.register_effect("moveAwayFromMe", function (target, effect, source_oid)
+	local sx,sy = action_handling.get_target_position(object_manager.get(source_oid))
+	local tx,ty = action_handling.get_target_position(target)
+	local dx, dy = 0, 0
+	if tx < sx and ty < sy then dx, dy = sx - effect.str, sy - effect.str end
+	if tx > sx and ty > sy then dx, dy = sx + effect.str, sy + effect.str end
+	if tx < sx and ty > sy then dx, dy = sx - effect.str, sy + effect.str end
+	if tx > sx and ty < sy then dx, dy = sx + effect.str, sy - effect.str end	
+	if target.oid ~= source_oid then object_manager.send(target.oid, "moveSelfTo", dx,dy) end
+end)
+
+-- effect: buff_max_pain ----------------------------------------------------------
+-- eg. {effect_type = "buff_max_pain", str = 100, duration = 15},
+-- has: str, duration
+action_handling.register_effect("buff_max_pain", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "buff_max_pain", effect.str, effect.duration * increase, source_oid)
+end)
+
+-- effect: invul ----------------------------------------------------------
+-- eg. {effect_type = "invul", duration = 15},
+-- has: duration
+action_handling.register_effect("invul", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "invul", effect.duration * increase, source_oid)
+end)
+
+-- effect: changeSize ----------------------------------------------------------
+-- eg. {effect_type = "changeSize", str = 150, duration = 15},
+-- has: str, duration
+action_handling.register_effect("changeSize", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "changeSize", effect.str, effect.duration * increase, source_oid)
+end)
+
+-- effect: mark ----------------------------------------------------------
+-- eg. {effect_type = "mark", duration = 15},
+-- has: duration
+action_handling.register_effect("mark", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "mark", effect.duration * increase, source_oid)
+end)

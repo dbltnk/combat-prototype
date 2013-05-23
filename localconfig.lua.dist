@@ -8,66 +8,71 @@ localconfig.screenHeight = 600 -- Choose your screen height in pixels.
 
 -- ### Step 2: Set your player name and join one of the four teams. ###
 localconfig.playerName = "changeme" -- Just type your nickname in between the "".
-localconfig.team = "choose one" -- You can pick "alpha", "beta", "gamma" or "delta".
+localconfig.team = "pick_one" -- You can pick "alpha", "beta", "gamma" or "delta".
 
 -- ### Step 3: Pick your weapon of choice. ###
-localconfig.weapon = "pickme" -- You can use "bow", "scythe" or "staff".
+localconfig.weapon = "pick_one" -- You can use "bow", "scythe" or "staff".
 
 -- ### Step 4: Now choose which skills you want to use in your selected weapon class. ###
--- ### To pick a skill, remove the two dashes (--) in front of the skills line. ###
--- ### You can only have up to six skills in total so we advise to pick exactly three skills per weapon. ###
+-- ### The first three skills for each weapon have already been picked - you can change that. ###
+-- ### To pick a skill, remove the two dashes (--) in front of the skills line. Add them if you want to un-pick it. ###
+-- ### You can only have up to six skills in total (1 weapon + 1 armor) so we advise to pick exactly three skills here. ###
+-- ### You will pick your three armor skills in the next block after this one. ###
 
-if localconfig.weapon == "bow" then --pick three out of these six weapon skills
-	table.insert(localconfig.skills,"bow_shot")
-	table.insert(localconfig.skills,"bow_puncture")
-	table.insert(localconfig.skills,"bow_snare")
-	-- table.insert(localconfig.skills,"bow_expose")
-	-- table.insert(localconfig.skills,"bow_root")
-	-- table.insert(localconfig.skills,"bow_mark_target")
-elseif localconfig.weapon == "scythe" then --pick three out of these six weapon skills
-	table.insert(localconfig.skills,"scythe_sweep")
-	table.insert(localconfig.skills,"scythe_pirouette")
-	table.insert(localconfig.skills,"scythe_jump")
-	-- table.insert(localconfig.skills,"scythe_harpoon")
-	-- table.insert(localconfig.skills,"scythe_stun")
-	-- table.insert(localconfig.skills,"scythe_gank")
-elseif localconfig.weapon == "staff" then --pick three out of these six weapon skills
-	table.insert(localconfig.skills,"staff_life_leech")
-	table.insert(localconfig.skills,"staff_poison")
-	table.insert(localconfig.skills,"staff_fireball")
-	-- table.insert(localconfig.skills,"staff_heal_other")
-	-- table.insert(localconfig.skills,"staff_healing_breeze")
-	-- table.insert(localconfig.skills,"staff_mezz")
+if localconfig.weapon == "bow" then -- The following lines are the six bow skills.
+	table.insert(localconfig.skills,"bow_shot") -- Shoot a projectile that damages one target.
+	table.insert(localconfig.skills,"bow_puncture") -- Shoot a fast projectile that pierces several targets and makes them bleed.
+	table.insert(localconfig.skills,"bow_snare") -- Shoot a projectile that slows down one target.
+	-- table.insert(localconfig.skills,"bow_expose") -- Shoot a projectile that exposes a target so it receives more damage.
+	-- table.insert(localconfig.skills,"bow_root") -- Shoot a projectile that roots one target.
+	-- table.insert(localconfig.skills,"bow_mark_target") -- Shoot a projectile that hightlights one target.
+
+elseif localconfig.weapon == "scythe" then -- The following lines are the six scythe skills.
+	table.insert(localconfig.skills,"scythe_sweep") -- Sweeping blow that hits several targets in front of you.
+	table.insert(localconfig.skills,"scythe_pirouette") -- Sweeping blow that hits a lot of targets all around you.
+	table.insert(localconfig.skills,"scythe_jump") -- Jump to your target location.
+	-- table.insert(localconfig.skills,"scythe_harpoon") -- Shoots a projectile that pulls one target to your location. 
+	-- table.insert(localconfig.skills,"scythe_stun") -- Stun one target in close to you.
+	-- table.insert(localconfig.skills,"scythe_gank") -- Gank one target close to you.
+
+elseif localconfig.weapon == "staff" then -- The following lines are the six staff skills.
+	table.insert(localconfig.skills,"staff_life_leech") -- Shoot a projectile that drains one targets life while healing you.
+	table.insert(localconfig.skills,"staff_poison") -- Shoot a projectile that slowly decreases one targets life.
+	table.insert(localconfig.skills,"staff_fireball") -- Shoot a projectile that explodes on impact and damages a lot of targets in the area.
+	-- table.insert(localconfig.skills,"staff_heal_other") -- Shoot a projectile that heals one target.
+	-- table.insert(localconfig.skills,"staff_healing_breeze") -- Shoot a projectile that heals one target slowly over time.
+	-- table.insert(localconfig.skills,"staff_mezz") -- Shoot a projectile that mesmerizes one target for some time. Breaks on damage.
 end	
 
 -- ### Step 5: Now pick your armor of choice. ###
-localconfig.armor = "pickme" -- You can decide between "robe", "hide_armor" and "splint_mail".
+localconfig.armor = "pick_one" -- You can decide between "robe", "hide_armor" and "splint_mail".
 
 -- ### Step 6: Now choose which skills you want to use in your selected armor class. ###
--- ### To pick a skill, remove the two dashes (--) in front of the skills line. ###
 -- ### Remember: You can only have up to six skills in total so we advise to pick exactly three skills here, too. ###
 
-if localconfig.armor == "robe" then --pick three out of these six armor skills
-	table.insert(localconfig.skills,"robe_bandage")
-	table.insert(localconfig.skills,"robe_shrink")
-	table.insert(localconfig.skills,"robe_stun_break")
-	-- table.insert(localconfig.skills,"robe_hide")
-	-- table.insert(localconfig.skills,"robe_quake")
-	-- table.insert(localconfig.skills,"robe_gust")
-elseif localconfig.armor == "hide_armor" then --pick three out of these six armor skills
-	table.insert(localconfig.skills,"hide_armor_sprint")
-	table.insert(localconfig.skills,"hide_armor_sneak")
-	table.insert(localconfig.skills,"hide_armor_root_break")
-	-- table.insert(localconfig.skills,"hide_armor_snare_break")
-	-- table.insert(localconfig.skills,"hide_armor_regenerate")
-	-- table.insert(localconfig.skills,"hide_armor_second_wind")
-elseif localconfig.armor == "splint_mail" then --pick three out of these six armor skills
-	table.insert(localconfig.skills,"splint_mail_absorb")
-	table.insert(localconfig.skills,"splint_mail_ignore_pain")
-	table.insert(localconfig.skills,"splint_mail_mezz_break")
-	-- table.insert(localconfig.skills,"splint_mail_grow")
-	-- table.insert(localconfig.skills,"splint_mail_rage")
-	-- table.insert(localconfig.skills,"splint_mail_invulnerability")
+if localconfig.armor == "robe" then -- The following lines are the six robe skills.
+	table.insert(localconfig.skills,"robe_bandage") -- Heal yourself instantly.
+	table.insert(localconfig.skills,"robe_shrink") -- Decrease your body size for some time.
+	table.insert(localconfig.skills,"robe_sonic_boom") -- Stuns a lot of targets in the area around you for a brief time.
+	-- table.insert(localconfig.skills,"robe_hide") -- Renders you invisible if you stand still.
+	-- table.insert(localconfig.skills,"robe_quake") -- Damages a lot of targets in the area around you.
+	-- table.insert(localconfig.skills,"robe_gust") -- Push away a lot of targets in the area around you.
+
+elseif localconfig.armor == "hide_armor" then -- The following lines are the six hide armor skills.
+	table.insert(localconfig.skills,"hide_armor_sprint") -- Increases your movement speed for a short time.
+	table.insert(localconfig.skills,"hide_armor_sneak") -- Renders you invisible for a short time even when moving.
+	table.insert(localconfig.skills,"hide_armor_root_break") -- Break all root effects.
+	-- table.insert(localconfig.skills,"hide_armor_snare_break") -- Break all snare effects.
+	-- table.insert(localconfig.skills,"hide_armor_regenerate") -- Decreases your pain slowly over time.
+	-- table.insert(localconfig.skills,"hide_armor_second_wind") -- Instantly decreases your fatigue a little.
+
+elseif localconfig.armor == "splint_mail" then -- The following lines are the six splint mail skills.
+	table.insert(localconfig.skills,"splint_mail_absorb") -- Aborbs incoming damage for some time.
+	table.insert(localconfig.skills,"splint_mail_ignore_pain") -- Increases your pain resistance for some time.
+	table.insert(localconfig.skills,"splint_mail_mezz_break") -- Break all mezz effects in a large area around you.
+	-- table.insert(localconfig.skills,"splint_mail_grow") -- Increase your body size for some time.
+	-- table.insert(localconfig.skills,"splint_mail_shout") -- Makes a lot of targets in the area around you unable to use actions for a brief time.
+	-- table.insert(localconfig.skills,"splint_mail_invulnerability") -- Renders you invulnerable to damage for a short amount of time.
 end
 		
 return localconfig
