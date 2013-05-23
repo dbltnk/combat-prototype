@@ -82,7 +82,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_expose.png"},
 			effects = {
-				{effect_type = "expose", duration = 30},
+				{effect_type = "dmgModifier", str = 125, duration = 20},
 			},
 		},		
 	},	
@@ -605,20 +605,24 @@ action_definitions = {
 		},	
 	},		
 	-- -----------------------------------------------------------------------------------
-	--~ splint_mail_absorb = {
-		--~ name = "Absorb",
-		--~ description = "Aborbs incoming damage for some time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	splint_mail_absorb = {
+		name = "Absorb",
+		description = "Aborbs incoming damage for some time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 30,
+		energy = 20,
+		on_the_run = false,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "dmgModifier", str = 75, duration = 10},
+			},	
+		},				
+	},		
 	-- -----------------------------------------------------------------------------------
 	splint_mail_ignore_pain = {
 		name = "Ignore Pain",

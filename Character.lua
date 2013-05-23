@@ -7,10 +7,10 @@ Character = Animation:extend
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
-		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team", "invul"},
+		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team", "invul", "dmgModified"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
-		"velocity", "alive", "incapacitated", "hidden", "isInCombat", "invul", "width", "height", "rotation",},
+		"velocity", "alive", "incapacitated", "hidden", "isInCombat", "invul", "width", "height", "rotation", "dmgModified"},
 	sync_low = {"image", "level", "name", "weapon", "armor", "team"},			
 	
 	maxPain = config.maxPain, 
@@ -32,7 +32,7 @@ Character = Animation:extend
 	team = "none",
 	rooted = false,
 	stunned = false,
-	expose_counter = 0,
+	dmgModified = 100,
 	invul = false,
 	mezzed = false,
 	snared = false,
@@ -343,8 +343,8 @@ Character = Animation:extend
 			local str, source_oid = ...
 			if not self.invul then
 				if not self.incapacitated then 
-					if self.expose_counter > 0 then
-						self:showDamage(str * config.exposed) 
+					if self.dmgModified then
+						self:showDamage(str / 100 * self.dmgModified) 
 					else
 						self:showDamage(str) 
 					end
@@ -357,8 +357,8 @@ Character = Animation:extend
 				the.app.view.timer:after(duration / ticks * i, function()
 					if not self.invul then
 						if not self.incapacitated then 
-							if self.expose_counter > 0 then
-								self:showDamage(str * config.exposed) 
+							if self.dmgModified then
+								self:showDamage(str / 100 * self.dmgModified)
 							else
 								self:showDamage(str) 
 							end 
@@ -401,8 +401,8 @@ Character = Animation:extend
 			local str, source_oid = ...
 		--	print("DAMANGE", str)
 			if not self.incapacitated then 
-				if self.expose_counter > 0 then
-					self:gainPain(str * config.exposed) 
+				if self.dmgModified then
+					self:gainPain(str / 100 * self.dmgModified) 
 				else
 					self:gainPain(str)
 				end
@@ -441,8 +441,8 @@ Character = Animation:extend
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if not self.incapacitated then  
-						if self.expose_counter > 0 then
-							self:gainPain(str * config.exposed) 
+						if self.dmgModified then
+							self:gainPain(str / 100 * self.dmgModified)  
 						else
 							self:gainPain(str)
 						end
@@ -536,12 +536,13 @@ Character = Animation:extend
 		elseif message_name == "hide" then
 			local duration, speedPenalty, source_oid = ...
 			self.hidden = true			
-		elseif message_name == "expose" then
-			local duration, source_oid = ...
+		elseif message_name == "dmgModifier" then
+			local str, duration, source_oid = ...
+			print("dmgModifier", str, duration)
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
-			self.expose_counter = self.expose_counter + 1
+			self.dmgModified = str
 			the.app.view.timer:after(duration, function() 
-				self.expose_counter = self.expose_counter - 1
+					self.dmgModified = 100
 			end)
 		elseif message_name == "root" then
 			local duration, source_oid = ...

@@ -348,12 +348,12 @@ action_handling.register_effect("root_break", function (target, effect, source_o
 	object_manager.send(target.oid, "root_break", source_oid)
 end)
 
--- effect: expose ----------------------------------------------------------
--- eg. {effect_type = "expose", duration = 10},
--- has: duration
-action_handling.register_effect("expose", function (target, effect, source_oid)
+-- effect: dmgModifier ----------------------------------------------------------
+-- eg. {effect_type = "dmgModifier", duration = 10},
+-- has: str, duration
+action_handling.register_effect("dmgModifier", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
-	object_manager.send(target.oid, "expose", effect.duration * increase, source_oid)
+	object_manager.send(target.oid, "dmgModifier", effect.str, effect.duration * increase, source_oid)
 end)
 
 -- effect: transfer ----------------------------------------------------------
