@@ -377,3 +377,21 @@ RessourceDisplay = Text:extend
 		self.x = love.graphics.getWidth() - self.width
 	end,
 }
+
+DebuffDisplay = Text:extend
+{
+	font = 20,
+	text = "",
+	x = 0,
+	y = 0, 
+	width = 200,
+	tint = {0.1,0.1,0.1},
+	rooted = "",
+	
+	onUpdate = function (self)
+		self.x = (love.graphics.getWidth() - self.width) / 2
+		self.y = love.graphics.getHeight() - 80
+		if the.player.rooted == true then self.rooted = "rooted" else self.rooted = "" end
+		if self.rooted ~= "" then self.text = self.rooted else self.text = "" end
+	end
+}

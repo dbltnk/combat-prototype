@@ -160,6 +160,9 @@ GameView = View:extend
 		the.networkDisplay = NetworkDisplay:new{ x = 0, y = 0 }
 		the.hud:add(the.networkDisplay)	
 		
+		the.debuffDisplay = DebuffDisplay:new{}
+		the.hud:add(the.debuffDisplay)
+		
 		the.skillbar = SkillBar:new()
 		-- set skillbar images
 		local skills = {}

@@ -280,6 +280,21 @@ action_handling.register_effect("stun", function (target, effect, source_oid)
 	object_manager.send(target.oid, "stun", effect.duration * increase, source_oid)
 end)
 
+-- effect: root ----------------------------------------------------------
+-- eg. {effect_type = "root", duration = 10},
+-- has: duration
+action_handling.register_effect("root", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "root", effect.duration * increase, source_oid)
+end)
+
+-- effect: root_break ----------------------------------------------------------
+-- eg. {effect_type = "root_break"},
+-- has: 
+action_handling.register_effect("root_break", function (target, effect, source_oid)
+	object_manager.send(target.oid, "root_break", source_oid)
+end)
+
 -- effect: expose ----------------------------------------------------------
 -- eg. {effect_type = "expose", duration = 10},
 -- has: duration

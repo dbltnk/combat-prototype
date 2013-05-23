@@ -30,10 +30,7 @@ Character = Animation:extend
 	reminder = nil,
 	targetable = true,
 	team = "none",
-	snare_counter = 0,
-	root_counter = 0,
-	stun_counter = 0,
-	mezz_counter = 0,
+	rooted = false,
 	expose_counter = 0,
 
 	--~ "bow" or "scythe" or "staff"
@@ -116,7 +113,7 @@ Character = Animation:extend
 			x = self.x, y = self.y, 
 			level = self.level, name = self.name,
 			weapon = self.weapon, armor = self.armor, team = self.team
-		}
+		}	
 	
 		local goSelf = self
 	
@@ -211,7 +208,9 @@ Character = Animation:extend
 	
 	unfreezeCasting = function (self)
 		--print("UNFREEEZ CAST")
-		self.freezeCastingCounter = self.freezeCastingCounter - 1
+		if self.freezeCastingCounter > 0 then
+			self.freezeCastingCounter = self.freezeCastingCounter - 1
+		end
 	end,
 	
 	freezeMovement = function (self)
@@ -221,7 +220,9 @@ Character = Animation:extend
 	
 	unfreezeMovement = function (self)
 		--print("UNFREEEZ MOVE")
-		self.freezeMovementCounter = self.freezeMovementCounter - 1
+		if self.freezeMovementCounter > 0 then
+			self.freezeMovementCounter = self.freezeMovementCounter - 1
+		end
 	end,
 	
 	gainPain = function (self, str)
@@ -475,7 +476,20 @@ Character = Animation:extend
 			self.expose_counter = self.expose_counter + 1
 			the.app.view.timer:after(duration, function() 
 				self.expose_counter = self.expose_counter - 1
-			end)			
+			end)
+		elseif message_name == "root" then
+			local duration, source_oid = ...
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			self:freezeMovement()
+			self.rooted = true
+			the.app.view.timer:after(duration, function() 
+				self:unfreezeMovement()
+				self.rooted = false
+			end)		
+		elseif message_name == "root_break" then
+			local duration, source_oid = ...
+			self.freezeMovementCounter = 0	
+			self.rooted = true		
 		end
 	end,
 	

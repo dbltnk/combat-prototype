@@ -82,20 +82,24 @@ action_definitions = {
 		},		
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ bow_root = {
-		--~ name = "Root",
-		--~ description = "Shoot a projectile that roots one target.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },	
+	bow_root = {
+		name = "Root",
+		description = "Shoot a projectile that roots one target.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.5,
+		timeout = 15,
+		energy = 10,
+		on_the_run = false,
+		cast_particle_color = color_bow,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_root.png"},
+			effects = {
+				{effect_type = "root", duration = 5},
+			},
+		},
+	},	
 	-- -----------------------------------------------------------------------------------
 	--~ bow_mark_target = {
 		--~ name = "Mark Target",
@@ -494,20 +498,24 @@ action_definitions = {
 		},	
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ hide_armor_root_break = {
-		--~ name = "Root Break",
-		--~ description = "Break all root effects.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	hide_armor_root_break = {
+		name = "Root Break",
+		description = "Break all root effects.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.1,
+		timeout = 6,
+		energy = 25,
+		on_the_run = true,
+		cast_particle_color = color_hide_armor,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "root_break"},
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
 	--~ hide_armor_snare_break = {
 		--~ name = "Snare Break",
