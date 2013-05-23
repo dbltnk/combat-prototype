@@ -7,10 +7,10 @@ Character = Animation:extend
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
-		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team"},
+		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team", "invul"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
-		"velocity", "alive", "incapacitated", "hidden", "isInCombat"},
+		"velocity", "alive", "incapacitated", "hidden", "isInCombat", "invul"},
 	sync_low = {"image", "width", "height", "rotation", "level", "name", "weapon", "armor", "team"},			
 	
 	maxPain = config.maxPain, 
@@ -33,6 +33,7 @@ Character = Animation:extend
 	rooted = false,
 	stunned = false,
 	expose_counter = 0,
+	invul = false,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -228,8 +229,12 @@ Character = Animation:extend
 	
 	gainPain = function (self, str)
 		--print(self.oid, "gain pain", str)
-		self.currentPain = self.currentPain + str
-		self:updatePain()
+		if self.invul and str >= 0 then 
+			-- do nothing
+		else
+			self.currentPain = self.currentPain + str
+			self:updatePain()
+		end
 	end,
 	
 	gainFatigue = function (self, str)
@@ -333,11 +338,13 @@ Character = Animation:extend
 			self:showDamage(-str)
 		elseif message_name == "damage" then
 			local str, source_oid = ...
-			if not self.incapacitated then 
-				if self.expose_counter > 0 then
-					self:showDamage(str * config.exposed) 
-				else
-					self:showDamage(str) 
+			if not self.invul then
+				if not self.incapacitated then 
+					if self.expose_counter > 0 then
+						self:showDamage(str * config.exposed) 
+					else
+						self:showDamage(str) 
+					end
 				end
 			end
 		elseif message_name == "damage_over_time" then
@@ -345,12 +352,14 @@ Character = Animation:extend
 			--print("CHARACTER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if not self.incapacitated then 
-						if self.expose_counter > 0 then
-							self:showDamage(str * config.exposed) 
-						else
-							self:showDamage(str) 
-						end 
+					if not self.invul then
+						if not self.incapacitated then 
+							if self.expose_counter > 0 then
+								self:showDamage(str * config.exposed) 
+							else
+								self:showDamage(str) 
+							end 
+						end
 					end
 				end)
 			end
@@ -509,7 +518,14 @@ Character = Animation:extend
 			the.app.view.timer:after(duration, function()
 				if self.currentPain >= self.maxPain - str then self:setIncapacitation(true) end
 				self.maxPain = self.maxPain - str
-			end)						
+			end)	
+		elseif message_name == "invul" then
+			local duration, source_oid = ...
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			self.invul = true
+			the.app.view.timer:after(duration, function()
+				self.invul = false
+			end)								
 		end
 	end,
 	

@@ -354,3 +354,11 @@ action_handling.register_effect("buff_max_pain", function (target, effect, sourc
 	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
 	object_manager.send(target.oid, "buff_max_pain", effect.str, effect.duration * increase, source_oid)
 end)
+
+-- effect: invul ----------------------------------------------------------
+-- eg. {effect_type = "invul", duration = 15},
+-- has: duration
+action_handling.register_effect("invul", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "invul", effect.duration * increase, source_oid)
+end)

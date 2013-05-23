@@ -662,20 +662,25 @@ action_definitions = {
 		--~ },	
 	--~ },
 	-- -----------------------------------------------------------------------------------
-	--~ splint_mail_invulnerability = {
-		--~ name = "Invulnerability",
-		--~ description = "Renders you invulnerable to damage for a short amount of time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },			
+	splint_mail_invulnerability = {
+		name = "Invulnerability",
+		description = "Renders you invulnerable to damage for a short amount of time.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 30,
+		energy = 40,
+		on_the_run = true,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "invul", duration = 5},
+			},
+		},	
+	},	
+	-- -----------------------------------------------------------------------------------		
 }
 
 -- fill up asset names with identifiers
