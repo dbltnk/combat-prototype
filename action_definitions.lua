@@ -480,20 +480,24 @@ action_definitions = {
 		},	
 	},		
 	-- -----------------------------------------------------------------------------------
-	--~ robe_gust = {
-		--~ name = "Gust",
-		--~ description = "Push away a lot of targets in the area around you.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	robe_gust = {
+		name = "Gust",
+		description = "Push away a lot of targets in the area around you.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .5,
+		timeout = 15,
+		energy = 60,
+		on_the_run = false,
+		cast_particle_color = color_robe,		
+		
+		application = {
+			target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_robe},
+				effects = {
+					{effect_type = "moveAwayFromMe", str = 150},
+				},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------	
 	hide_armor_sprint = {
 		name = "Sprint",

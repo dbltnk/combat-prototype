@@ -381,8 +381,24 @@ end)
 -- eg. {effect_type = "moveToMe"},
 -- has: 
 action_handling.register_effect("moveToMe", function (target, effect, source_oid)
-	local x,y = action_handling.get_target_position(object_manager.get(source_oid))
-	object_manager.send(target.oid, "moveSelfTo", x,y)
+	local sx,sy = action_handling.get_target_position(object_manager.get(source_oid))
+	local tx,ty = action_handling.get_target_position(target)
+	local dx, dy = (sx * 8 + tx) / 9, (sy * 8 + ty) / 9
+	object_manager.send(target.oid, "moveSelfTo", dx,dy)
+end)
+
+-- effect: moveAwayFromMe ----------------------------------------------------------
+-- eg. {effect_type = "moveAwayFromMe", str = 100},
+-- has: str
+action_handling.register_effect("moveAwayFromMe", function (target, effect, source_oid)
+	local sx,sy = action_handling.get_target_position(object_manager.get(source_oid))
+	local tx,ty = action_handling.get_target_position(target)
+	local dx, dy = 0, 0
+	if tx < sx and ty < sy then dx, dy = sx - effect.str, sy - effect.str end
+	if tx > sx and ty > sy then dx, dy = sx + effect.str, sy + effect.str end
+	if tx < sx and ty > sy then dx, dy = sx - effect.str, sy + effect.str end
+	if tx > sx and ty < sy then dx, dy = sx + effect.str, sy - effect.str end	
+	if target.oid ~= source_oid then object_manager.send(target.oid, "moveSelfTo", dx,dy) end
 end)
 
 -- effect: buff_max_pain ----------------------------------------------------------
