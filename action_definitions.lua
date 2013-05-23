@@ -15,7 +15,7 @@ action_definitions = {
 		icon = nil,
 		sound = nil,
 		cast_time = .5,
-		timeout = 1,
+		timeout = 2,
 		energy = 10,
 		on_the_run =  false,
 		cast_particle_color = color_bow,
@@ -132,14 +132,14 @@ action_definitions = {
 		sound = nil,
 		cast_time = .75,
 		timeout = 3,
-		energy = 30,
+		energy = 15,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 100, cone = 180, piercing_number = 6},
+			target_selection = {target_selection_type = "ae", range = 100, cone = 120, piercing_number = 6},
 			effects = {
-				{effect_type = "damageOnlyOthers", str = 62},
+				{effect_type = "damageOnlyOthers", str = 30},
 			},
 		},	
 	},	
@@ -150,15 +150,15 @@ action_definitions = {
 		icon = nil,
 		sound = nil,
 		cast_time = 1,
-		timeout = 15,
-		energy = 20,
+		timeout = 5,
+		energy = 25,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
 		
 		application = {
 			target_selection = {target_selection_type = "ae", range = 100, cone = 360, piercing_number = 12},
 			effects = {
-				{effect_type = "damageOnlyOthers", str = 21},
+				{effect_type = "damageOnlyOthers", str = 40},
 			},
 		},	
 	},	
@@ -214,7 +214,7 @@ action_definitions = {
 		cast_particle_color = color_scythe,			
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 100, cone = 60, piercing_number = 3},
+			target_selection = {target_selection_type = "ae", range = 100, cone = 120, piercing_number = 3},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 50},
 				{effect_type = "stunOnlyOthers", duration = 3},
@@ -271,7 +271,7 @@ action_definitions = {
 		icon = nil,
 		sound = nil,				
 		cast_time = 1,
-		timeout = 7.5,
+		timeout = 5,
 		energy = 30,
 		on_the_run = false,
 		cast_particle_color = color_staff,		
@@ -296,7 +296,7 @@ action_definitions = {
 		sound = nil,
 		cast_time = 3,
 		timeout = 9,
-		energy = 60,
+		energy = 40,
 		on_the_run =  false,
 		cast_particle_color = color_staff,		
 		
@@ -306,7 +306,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_staff},
 					effects = {
-						{effect_type = "damage", str = 38, },
+						{effect_type = "damage", str = 50, },
 					},
 				}},
 			},
@@ -354,7 +354,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
 					effects = {
-						{effect_type = "heal_over_time", ticks = 6, duration = 30, str = 20},
+						{effect_type = "heal_over_time", ticks = 6, duration = 30, str = 25},
 					},
 				}},
 			},
@@ -392,14 +392,14 @@ action_definitions = {
 		sound = nil,
 		cast_time = 2,
 		timeout = 5,
-		energy = 20,
+		energy = 30,
 		on_the_run =  false,
 		cast_particle_color = color_robe,		
 		
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "heal", str = 100},
+				{effect_type = "heal", str = 75},
 			},
 		},
 	},
@@ -468,7 +468,7 @@ action_definitions = {
 		sound = nil,				
 		cast_time = 4,
 		timeout = 15,
-		energy = 90,
+		energy = 70,
 		on_the_run = false,
 		cast_particle_color = color_robe,		
 		
@@ -581,7 +581,7 @@ action_definitions = {
 		icon = nil,
 		sound = nil,				
 		cast_time = 2,
-		timeout = 12,
+		timeout = 8,
 		energy = 25,
 		on_the_run = false,
 		cast_particle_color = color_hide_armor,		
@@ -589,7 +589,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "heal_over_time", ticks = 6, duration = 30, str = 10},
+				{effect_type = "heal_over_time", ticks = 6, duration = 30, str = 30},
 			},
 		},		
 	},		
