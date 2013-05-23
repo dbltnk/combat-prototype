@@ -48,20 +48,25 @@ action_definitions = {
 		},	
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ bow_snare = {
-		--~ name = "Snare",
-		--~ description = "Shoot a projectile that slows down one target.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	bow_snare = {
+		name = "Snare",
+		description = "Shoot a projectile that slows down one target.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.5,
+		timeout = 15,
+		energy = 45,
+		on_the_run = false,
+		cast_particle_color = color_bow,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 800, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_puncture.png"},
+			effects = {
+				{effect_type = "damage", str = 15},
+				{effect_type = "runspeed", duration = 15, str = config.walkspeed / 2},	
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
 	bow_expose = {
 		name = "Expose",
@@ -539,20 +544,24 @@ action_definitions = {
 		},	
 	},		
 	-- -----------------------------------------------------------------------------------
-	--~ hide_armor_snare_break = {
-		--~ name = "Snare Break",
-		--~ description = "Break all snare effects.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	hide_armor_snare_break = {
+		name = "Snare Break",
+		description = "Break all snare effects.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.1,
+		timeout = 6,
+		energy = 25,
+		on_the_run = true,
+		cast_particle_color = color_hide_armor,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "snare_break"},
+			},
+		},		
+	},		
 	-- -----------------------------------------------------------------------------------
 	hide_armor_regenerate = {
 		name = "Regenerate",

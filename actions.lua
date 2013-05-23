@@ -272,6 +272,13 @@ action_handling.register_effect("runspeed", function (target, effect, source_oid
 	object_manager.send(target.oid, "runspeed", effect.str, effect.duration * increase, source_oid)
 end)
 
+-- effect: snare_break ----------------------------------------------------------
+-- eg. {effect_type = "snare_break"},
+-- has: 
+action_handling.register_effect("snare_break", function (target, effect, source_oid)
+	object_manager.send(target.oid, "snare_break", source_oid)
+end)
+
 -- effect: stun ----------------------------------------------------------
 -- eg. {effect_type = "stun", duration = 10},
 -- has: duration

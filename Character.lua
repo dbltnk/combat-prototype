@@ -35,6 +35,7 @@ Character = Animation:extend
 	expose_counter = 0,
 	invul = false,
 	mezzed = false,
+	snared = false,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -539,12 +540,11 @@ Character = Animation:extend
 				self.freezeMovementCounter = 0	
 				self.rooted = false
 			end	
-		elseif message_name == "root_break" then
+		elseif message_name == "snare_break" then
 			local duration, source_oid = ...
-			if self.stunned then
-				self.freezeMovementCounter = 0	
-				self.castingMovementCounter = 0				
-				self.stunned = false
+			if self.snared then
+				self.speedOverride = 0
+				self.snared = false
 			end		
 		elseif message_name == "buff_max_pain" then
 			local str, duration, source_oid = ...
@@ -750,6 +750,12 @@ Character = Animation:extend
 				self:resetXP()
 				done[i] = true
 			end
+		end
+		
+		if self.speedOverride > 1 and self.speedOverride < config.walkspeed then 
+			self.snared = true 
+		else 
+			self.snared = false
 		end
 		
 		-- combat music?
