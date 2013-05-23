@@ -384,3 +384,11 @@ action_handling.register_effect("invul", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
 	object_manager.send(target.oid, "invul", effect.duration * increase, source_oid)
 end)
+
+-- effect: changeSize ----------------------------------------------------------
+-- eg. {effect_type = "changeSize", str = 150, duration = 15},
+-- has: str, duration
+action_handling.register_effect("changeSize", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "changeSize", effect.str, effect.duration * increase, source_oid)
+end)

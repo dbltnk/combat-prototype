@@ -10,8 +10,8 @@ Character = Animation:extend
 		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team", "invul"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
-		"velocity", "alive", "incapacitated", "hidden", "isInCombat", "invul"},
-	sync_low = {"image", "width", "height", "rotation", "level", "name", "weapon", "armor", "team"},			
+		"velocity", "alive", "incapacitated", "hidden", "isInCombat", "invul", "width", "height", "rotation",},
+	sync_low = {"image", "level", "name", "weapon", "armor", "team"},			
 	
 	maxPain = config.maxPain, 
 	currentPain = 0,
@@ -372,7 +372,14 @@ Character = Animation:extend
 				the.app.view.timer:after(duration / ticks * i, function()
 					if not self.incapacitated then self:showDamage(-str) end
 				end)
-			end			
+			end	
+		elseif message_name == "changeSize" then
+			local str, duration, source_oid = ...
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			self.charSprite.scale = self.charSprite.scale / 100 * str
+			the.app.view.timer:after(duration, function()
+				self.charSprite.scale = self.charSprite.scale / str * 100
+			end)			
 		end	
 	end,
 	
@@ -560,7 +567,16 @@ Character = Animation:extend
 			self.invul = true
 			the.app.view.timer:after(duration, function()
 				self.invul = false
-			end)								
+			end)	
+		elseif message_name == "changeSize" then
+			local str, duration, source_oid = ...
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			self.width = self.width / 100 * str
+			self.height = self.height / 100 * str
+			the.app.view.timer:after(duration, function()
+				self.width = self.width / str * 100 
+				self.height = self.height / str * 100
+			end)											
 		end
 	end,
 	
