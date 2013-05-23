@@ -7,10 +7,10 @@ Character = Animation:extend
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
-		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team", "invul", "dmgModified"},
+		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team", "invul", "dmgModified", "marked"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
-		"velocity", "alive", "incapacitated", "hidden", "isInCombat", "invul", "width", "height", "rotation", "dmgModified"},
+		"velocity", "alive", "incapacitated", "hidden", "isInCombat", "invul", "width", "height", "rotation", "dmgModified", "marked"},
 	sync_low = {"image", "level", "name", "weapon", "armor", "team"},			
 	
 	maxPain = config.maxPain, 
@@ -37,6 +37,7 @@ Character = Animation:extend
 	mezzed = false,
 	snared = false,
 	powerblocked = false,
+	marked = false,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -69,6 +70,7 @@ Character = Animation:extend
 
 	charSprite = nil,
 	hiddenSprite = nil,
+	markedSprite = nil,
 
 	-- UiBar
 	painBar = nil,
@@ -180,6 +182,22 @@ Character = Animation:extend
 				the.app.view.layers.characters:remove(self)
 			end,
 		}
+		
+		self.markedSprite = Tile:new{
+			width = 32,
+			height = 64,
+			image = '/assets/graphics/mark.png',
+			solid = false,
+			visible = false,
+			
+			onNew = function(self)
+				the.app.view.layers.characters:add(self)
+			end,
+			
+			onDie = function(self)
+				the.app.view.layers.characters:remove(self)
+			end,
+		}		
 	
 				
 		--~ print(debug.traceback())
@@ -376,11 +394,17 @@ Character = Animation:extend
 			end	
 		elseif message_name == "changeSize" then
 			local str, duration, source_oid = ...
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self.charSprite.scale = self.charSprite.scale / 100 * str
 			the.app.view.timer:after(duration, function()
 				self.charSprite.scale = self.charSprite.scale / str * 100
-			end)			
+			end)
+		elseif message_name == "mark" then
+			local duration, source_oid = ...
+			object_manager.send(source_oid, "xp", duration / 8 * config.crowdControlXP)
+				self.marked = true
+			the.app.view.timer:after(duration, function()
+				self.marked = false
+			end)						
 		end	
 	end,
 	
@@ -588,7 +612,7 @@ Character = Animation:extend
 			the.app.view.timer:after(duration, function()
 				self.width = self.width / str * 100 
 				self.height = self.height / str * 100
-			end)											
+			end)																						
 		end
 	end,
 	
@@ -752,6 +776,14 @@ Character = Animation:extend
 		end
 		self.hiddenSprite.x = self.x
 		self.hiddenSprite.y = self.y
+				
+		if self.marked then 
+			self.markedSprite.visible = true
+		else
+			self.markedSprite.visible = false
+		end
+		self.markedSprite.x = self.x
+		self.markedSprite.y = self.y - 32
 	end,
 	
 	onUpdateLocal = function (self, elapsed)

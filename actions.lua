@@ -408,3 +408,11 @@ action_handling.register_effect("changeSize", function (target, effect, source_o
 	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
 	object_manager.send(target.oid, "changeSize", effect.str, effect.duration * increase, source_oid)
 end)
+
+-- effect: mark ----------------------------------------------------------
+-- eg. {effect_type = "mark", duration = 15},
+-- has: duration
+action_handling.register_effect("mark", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	object_manager.send(target.oid, "mark", effect.duration * increase, source_oid)
+end)

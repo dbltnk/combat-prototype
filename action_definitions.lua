@@ -106,20 +106,24 @@ action_definitions = {
 		},
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ bow_mark_target = {
-		--~ name = "Mark Target",
-		--~ description = "Shoot a projectile that hightlights one target.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	bow_mark_target = {
+		name = "Mark Target",
+		description = "Shoot a projectile that hightlights one target.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 3,
+		energy = 5,
+		on_the_run = true,
+		cast_particle_color = color_bow,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_mark_target.png"},
+			effects = {
+				{effect_type = "mark", duration = 60},
+			},
+		},
+	},		
 	-- -----------------------------------------------------------------------------------
 	scythe_sweep = {
 		name = "Sweep",
