@@ -20,6 +20,7 @@ TargetDummy = Animation:extend
 	timeOfDeath = 0,	
 	owner = 0,
 	targetable = true,
+	attackPossible = true,
 	
 	-- UiBar
 	painBar = nil,
@@ -185,14 +186,7 @@ TargetDummy = Animation:extend
 		the.targetDummies[self] = nil		
 	end,
 	
-	onUpdateLocal = function (self)
-		if ((math.random(-1, 1) > 0) and self.movable == true) then
-			self.dx = math.random(-10, 10)
-			self.dy = math.random(-10, 10)
-			self.x = self.x + self.dx
-			self.y = self.y + self.dy
-		end
-		
+	onUpdateLocal = function (self, elapsed)
 		-- find a player close by
 		object_manager.visit(function(oid,obj) 
 			local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
@@ -200,15 +194,15 @@ TargetDummy = Animation:extend
 			-- make mobs move towards the player
 			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
 				if self.x < obj.x then -- todo: find better movement code for this
-					self.x = self.x + config.mobMovementSpeed
+					self.x = self.x + config.mobMovementSpeed * elapsed
 				else
-					self.x = self.x - config.mobMovementSpeed
+					self.x = self.x - config.mobMovementSpeed * elapsed
 				end	
 				
 				if self.y < obj.y then
-					self.y = self.y + config.mobMovementSpeed
+					self.y = self.y + config.mobMovementSpeed * elapsed
 				else
-					self.y = self.y - config.mobMovementSpeed
+					self.y = self.y - config.mobMovementSpeed * elapsed
 				end	
 				
 				-- let them set some footsteps
@@ -221,11 +215,24 @@ TargetDummy = Animation:extend
 					self:makeFootstep()	
 				end	
 			end
-			
-			-- let's attack the player here
-			if dist <= config.mobAttackRange and obj.name then object_manager.send(obj.oid, "damage", config.mobDamage) end  -- todo: attack in smaller intervals
-			
 		end)	
+		-- let's attack the player here
+		self:attack()
+	end,
+	
+	attack = function(self)
+		if self.attackPossible then
+			object_manager.visit(function(oid,obj)
+				local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
+				if dist <= config.mobAttackRange and obj.name then 
+					object_manager.send(obj.oid, "damage", config.mobDamage) 	
+					self.attackPossible = false					
+					the.app.view.timer:after(config.mobAttackTimer, function()
+						self.attackPossible = true
+					end)
+				end	
+			end)
+		end	
 	end,
 	
 	onUpdateBoth = function (self)
