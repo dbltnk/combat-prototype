@@ -388,12 +388,14 @@ DebuffDisplay = Text:extend
 	tint = {0.1,0.1,0.1},
 	rooted = "",
 	stunned = "",
+	mezzed = "",
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
 		self.y = love.graphics.getHeight() - 80
 		if the.player.rooted == true then self.rooted = "rooted" else self.rooted = "" end
 		if the.player.stunned == true then self.stunned = "stunned" else self.stunned = "" end		
-		if self.rooted ~= "" or self.stunned ~= "" then self.text = self.rooted .. " " .. self.stunned else self.text = "" end
+		if the.player.mezzed == true then self.mezzed = "mezzed" else self.mezzed = "" end			
+		if self.rooted ~= "" or self.stunned ~= "" or self.mezzed ~= "" then self.text = self.rooted .. " " .. self.stunned .. " " .. self.mezzed else self.text = "" end
 	end
 }

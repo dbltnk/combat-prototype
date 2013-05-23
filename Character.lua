@@ -34,6 +34,7 @@ Character = Animation:extend
 	stunned = false,
 	expose_counter = 0,
 	invul = false,
+	mezzed = false,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -399,6 +400,11 @@ Character = Animation:extend
 				if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
 			end
 			if self.hidden then self.hidden = false end
+			if self.mezzed then
+				self:unfreezeMovement()
+				self:unfreezeCasting()
+				self.mezzed = false
+			end
 		elseif message_name == "transfer" then
 			local str, duration, ticks, source_oid, targetOids, eff = ...
 			utils.vardump(targetOids)
@@ -413,9 +419,14 @@ Character = Animation:extend
 							end
 						end
 					end
-				end)
-			end
-			if self.hidden then self.hidden = false end			
+					if self.mezzed then
+						self:unfreezeMovement()
+						self:unfreezeCasting()
+						self.mezzed = false
+					end
+					if self.hidden then self.hidden = false end						
+				end)				
+			end		
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			for i=0,ticks do
@@ -428,9 +439,14 @@ Character = Animation:extend
 						end
 						if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
 					end
-				end)
-			end
-			if self.hidden then self.hidden = false end			
+					if self.mezzed then
+						self:unfreezeMovement()
+						self:unfreezeCasting()
+						self.mezzed = false
+					end
+					if self.hidden then self.hidden = false end	
+				end)				
+			end		
 		elseif message_name == "heal_over_time" then
 			local str, duration, ticks, source_oid = ...
 			for i=0,ticks do
@@ -454,6 +470,25 @@ Character = Animation:extend
 				self:unfreezeCasting()
 				self.stunned = false
 			end)
+		elseif message_name == "mezz" then
+			local duration, source_oid = ...
+		--	print("MEZZ", duration)
+			self:freezeMovement()
+			self:freezeCasting()
+			self.mezzed = true
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
+			the.app.view.timer:after(duration, function()
+				self:unfreezeMovement()
+				self:unfreezeCasting()
+				self.mezzed = false
+			end)
+		elseif message_name == "mezz_break" then
+			local duration, source_oid = ...
+			if self.mezzed then
+				self.freezeMovementCounter = 0	
+				self.freezeCastingCounter = 0					
+				self.mezzed = false
+			end							
 		elseif message_name == "runspeed" then
 			local str, duration, source_oid = ...
 			--print("SPEED", str, duration)

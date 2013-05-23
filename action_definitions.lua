@@ -352,20 +352,29 @@ action_definitions = {
 		},
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ staff_mezz = {
-		--~ name = "Mezz",
-		--~ description = "Shoot a projectile that mesmerizes one target for some time.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	staff_mezz = {
+		name = "Mezz",
+		description = "Shoot a projectile that mesmerizes one target for some time. Breaks on damage.",
+		icon = nil,
+		sound = nil,				
+		cast_time = .1,
+		timeout = 20,
+		energy = 40,
+		on_the_run = false,
+		cast_particle_color = color_staff,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 400, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_mezz.png"},
+			effects = {
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
+					effects = {
+						{effect_type = "mezz", duration = 10},
+					},
+				}},
+			},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------	
 	robe_bandage = {
 		name = "Bandage",
@@ -617,20 +626,24 @@ action_definitions = {
 		},	
 	},		
 	-- -----------------------------------------------------------------------------------
-	--~ splint_mail_mezz_break = {
-		--~ name = "Mezz Break",
-		--~ description = "Break all mezz effects.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },		
+	splint_mail_mezz_break = {
+		name = "Mezz Break",
+		description = "Break all mezz effects in a large area around you.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 0.1,
+		timeout = 6,
+		energy = 25,
+		on_the_run = true,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "ae", range = 400, piercing_number = 20, explosion_color = color_splint_mail},
+				effects = {
+					{effect_type = "mezz_break"},
+				},
+		},	
+	},		
 	-- -----------------------------------------------------------------------------------
 	--~ splint_mail_grow = {
 		--~ name = "Grow",

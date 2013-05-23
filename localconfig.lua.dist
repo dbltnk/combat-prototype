@@ -41,7 +41,7 @@ elseif localconfig.weapon == "staff" then -- The following lines are the six sta
 	table.insert(localconfig.skills,"staff_fireball") -- Shoot a projectile that explodes on impact and damages a lot of targets in the area.
 	-- table.insert(localconfig.skills,"staff_heal_other") -- Shoot a projectile that heals one target.
 	-- table.insert(localconfig.skills,"staff_healing_breeze") -- Shoot a projectile that heals one target slowly over time.
-	-- table.insert(localconfig.skills,"staff_mezz") -- Shoot a projectile that mesmerizes one target for some time.
+	-- table.insert(localconfig.skills,"staff_mezz") -- Shoot a projectile that mesmerizes one target for some time. Breaks on damage.
 end	
 
 -- ### Step 5: Now pick your armor of choice. ###
@@ -53,7 +53,7 @@ localconfig.armor = "pick_one" -- You can decide between "robe", "hide_armor" an
 if localconfig.armor == "robe" then -- The following lines are the six robe skills.
 	table.insert(localconfig.skills,"robe_bandage") -- Heal yourself instantly.
 	table.insert(localconfig.skills,"robe_shrink") -- Decrease your body size for some time.
-	table.insert(localconfig.skills,"robe_stun_break") -- Break all stun effects.
+	table.insert(localconfig.skills,"robe_sonic_boom") -- Stuns a lot of targets in the area around you for a brief time.
 	-- table.insert(localconfig.skills,"robe_hide") -- Renders you invisible if you stand still.
 	-- table.insert(localconfig.skills,"robe_quake") -- Damages a lot of targets in the area around you.
 	-- table.insert(localconfig.skills,"robe_gust") -- Push away a lot of targets in the area around you.
@@ -69,7 +69,7 @@ elseif localconfig.armor == "hide_armor" then -- The following lines are the six
 elseif localconfig.armor == "splint_mail" then -- The following lines are the six splint mail skills.
 	table.insert(localconfig.skills,"splint_mail_absorb") -- Aborbs incoming damage for some time.
 	table.insert(localconfig.skills,"splint_mail_ignore_pain") -- Increases your pain resistance for some time.
-	table.insert(localconfig.skills,"splint_mail_mezz_break") -- Break all mezz effects.
+	table.insert(localconfig.skills,"splint_mail_mezz_break") -- Break all mezz effects in a large area around you.
 	-- table.insert(localconfig.skills,"splint_mail_grow") -- Increase your body size for some time.
 	-- table.insert(localconfig.skills,"splint_mail_rage") -- Increase your melee damage for some time.
 	-- table.insert(localconfig.skills,"splint_mail_invulnerability") -- Renders you invulnerable to damage for a short amount of time.
