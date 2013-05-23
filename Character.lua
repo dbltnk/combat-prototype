@@ -395,7 +395,9 @@ Character = Animation:extend
 		elseif message_name == "changeSize" then
 			local str, duration, source_oid = ...
 			self.charSprite.scale = self.charSprite.scale / 100 * str
+			self.markedSprite.scale = self.charSprite.scale / 100 * str
 			the.app.view.timer:after(duration, function()
+			self.markedSprite.scale = self.charSprite.scale / 100 * str
 				self.charSprite.scale = self.charSprite.scale / str * 100
 			end)
 		elseif message_name == "mark" then
