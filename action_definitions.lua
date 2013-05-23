@@ -272,7 +272,7 @@ action_definitions = {
 		sound = nil,				
 		cast_time = 1,
 		timeout = 7.5,
-		energy = 36,
+		energy = 30,
 		on_the_run = false,
 		cast_particle_color = color_staff,		
 		
@@ -354,7 +354,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
 					effects = {
-						{effect_type = "heal_over_time", ticks = 12, duration = 60, str = 20},
+						{effect_type = "heal_over_time", ticks = 6, duration = 30, str = 20},
 					},
 				}},
 			},
@@ -589,7 +589,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "heal_over_time", ticks = 12, duration = 60, str = 10},
+				{effect_type = "heal_over_time", ticks = 6, duration = 30, str = 10},
 			},
 		},		
 	},		
