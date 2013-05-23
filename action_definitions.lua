@@ -256,20 +256,29 @@ action_definitions = {
 		},
 	},	
 	-- -----------------------------------------------------------------------------------
-	--~ staff_poison = {
-		--~ name = "Poison",
-		--~ description = "Shoot a projectile that slowly decreases one targets life.",
-		--~ icon = "/assets/graphics/action_icons/.png",
-		--~ sound = "/assets/audio/sfx/.wav",				
-		--~ cast_time = 0,
-		--~ timeout = 0,
-		--~ energy = 0,
-		--~ on_the_run = false,
-		--~ cast_particle_color = color_,		
-		--~ 
-		--~ application = {
-		--~ },	
-	--~ },	
+	staff_poison = {
+		name = "Poison",
+		description = "Shoot a projectile that slowly decreases one targets life.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 1,
+		timeout = 7.5,
+		energy = 36,
+		on_the_run = false,
+		cast_particle_color = color_staff,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_poison.png"},
+			effects = {
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = {0, 255 ,0, 128}},
+					effects = {
+						{effect_type = "damage_over_time", ticks = 3, duration = 15, str = 25}
+					},
+				}},	
+			},
+		},	
+	},	
 	-- -----------------------------------------------------------------------------------
 	staff_fireball = {
 		name = "Fireball",
