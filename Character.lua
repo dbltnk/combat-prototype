@@ -451,6 +451,10 @@ Character = Animation:extend
 				self:unfreezeCasting()
 				self.mezzed = false
 			end
+			if self.rooted then
+				self:unfreezeMovement()
+				self.rooted = false
+			end
 		elseif message_name == "transfer" then
 			local str, duration, ticks, source_oid, targetOids, eff = ...
 			--~ utils.vardump(targetOids)
@@ -469,6 +473,10 @@ Character = Animation:extend
 						self:unfreezeMovement()
 						self:unfreezeCasting()
 						self.mezzed = false
+					end
+					if self.rooted then
+						self:unfreezeMovement()
+						self.rooted = false
 					end
 					if self.hidden then self.hidden = false end						
 				end)				
@@ -489,6 +497,10 @@ Character = Animation:extend
 						self:unfreezeMovement()
 						self:unfreezeCasting()
 						self.mezzed = false
+					end
+					if self.rooted then
+						self:unfreezeMovement()
+						self.rooted = false
 					end
 					if self.hidden then self.hidden = false end	
 				end)				
