@@ -95,7 +95,6 @@ Character = Animation:extend
 	end,
 	
 	onNew = function (self)
-		if localconfig.team then self.team = localconfig.team end
 		self:mixin(GameObject)
 		
 		the.app.view.layers.characters:add(self)
@@ -736,6 +735,7 @@ Character = Animation:extend
 		self.nameLevel.x = self.x - 5
 		self.nameLevel.y = self.y - 28
 		self.nameLevel.level = self.level
+		self.nameLevel.team = self.team
 		
 		if self.hidden then
 			self.visible = false
