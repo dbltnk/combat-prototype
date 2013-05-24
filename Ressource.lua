@@ -23,6 +23,7 @@ Ressource = Tile:extend
 	controller = "",
 	nextController = "",
 	targetable = true,
+	deaths = 0,
 	
 	-- UiBar
 	painBar = nil,
@@ -84,18 +85,24 @@ Ressource = Tile:extend
 			self:showDamage(-str)	
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
+			local oldDeaths = self.deaths			
 			--print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					self:showDamage(str)
+					if self.deaths == oldDeaths then
+						self:showDamage(str)
+					end
 				end)
 			end
 		elseif message_name == "heal_over_time" then
 			local str, duration, ticks, source_oid = ...
+			local oldDeaths = self.deaths			
 			--print("RESSOURCE HEAL_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					self:showDamage(-str)
+					if self.deaths == oldDeaths then
+						self:showDamage(-str)
+					end
 				end)
 			end	
 		end
@@ -107,30 +114,45 @@ Ressource = Tile:extend
 			local str, source_oid = ...
 			--print("RESSOURCE DAMANGE", str)
 			self:gainPain(str)
-			self.nextController = object_manager.get(source_oid).team
+			self:controllerChanger(source_oid)
 		elseif message_name == "heal" then
 			local str, source_oid = ...
 			--print("RESSOURCE HEAL", -str)
 			self:gainPain(-str)
-			self.nextController = object_manager.get(source_oid).team
+			self:controllerChanger(source_oid)
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks)
+			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					self:gainPain(str)
-					self.nextController = object_manager.get(source_oid).team
+					if self.deaths == oldDeaths then
+						self:gainPain(str)
+						self:controllerChanger(source_oid)
+					end
 				end)
 			end
 		elseif message_name == "heal_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("RESSOURCE HEAL_OVER_TIME", str, duration, ticks)
+			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					self:gainPain(-str)
-					self.nextController = object_manager.get(source_oid).team
+					if self.deaths == oldDeaths then
+						self:gainPain(-str)
+						self:controllerChanger(source_oid)
+					end
 				end)
 			end	
+		end
+	end,
+	
+	controllerChanger = function (self, source_oid)
+		local source = object_manager.get(source_oid)
+		if source then
+			self.nextController = source.team
+		else 
+			self.nextController = "unknown"
 		end
 	end,
 	
@@ -146,6 +168,7 @@ Ressource = Tile:extend
 	changeController = function(self)
 		self.controller = self.nextController
 		self.currentPain = 0
+		self.deaths = self.deaths + 1
 	end,
 	
 	giveXP = function(self)
