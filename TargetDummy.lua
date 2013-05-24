@@ -231,7 +231,7 @@ TargetDummy = Animation:extend
 			end
 			
 			-- make mobs move towards the player
-			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
+			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name and not obj.hidden then 
 				if self.x < obj.x then -- todo: find better movement code for this
 					self.x = self.x + speed* elapsed
 				else
@@ -264,7 +264,7 @@ TargetDummy = Animation:extend
 			if self.attackPossible then
 				object_manager.visit(function(oid,obj)
 					local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
-					if dist <= config.mobAttackRange and obj.name then 
+					if dist <= config.mobAttackRange and obj.name and not obj.hidden then 
 						object_manager.send(obj.oid, "damage", config.mobDamage) 	
 						self.attackPossible = false					
 						the.app.view.timer:after(config.mobAttackTimer, function()
