@@ -130,7 +130,7 @@ GameView = View:extend
     -- place ontop
 		self:remove(self.trees)
 		self:remove(self.buildings)
-    self:remove(self.vegetation)
+		self:remove(self.vegetation)
     
 		self.layers.above:add(self.trees)	
 		self.layers.above:add(self.buildings)
@@ -249,7 +249,7 @@ GameView = View:extend
 			self:fogOn()
 		end
 
-		self:setupNetworkHandler()
+		the.app.view.timer:after(1, function() self:setupNetworkHandler() end)
     end,
     
     fogOn = function(self)
