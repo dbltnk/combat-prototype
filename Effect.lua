@@ -17,14 +17,11 @@ Effect = Sprite:extend
 	p = nil,
 	follow_oid = nil,
 	
-	dieAtTime = nil,
-	
 	onNew = function (self)
 		self:mixin(GameObject)
-		self.dieAtTime = network.time + self.duration
 		drawDebugWrapper(self)
 	
-		local selfself = self
+		local objSelf = self
 
 		self.p = Particles:new{ 
 			image = "/assets/graphics/particle.png",
@@ -32,36 +29,33 @@ Effect = Sprite:extend
 			height = 100,
 			onNew = function (self)
 				local ps = self.system
-				ps:setColors(selfself.r, selfself.g, selfself.b, 128)
+				ps:setColors(objSelf.r, objSelf.g, objSelf.b, 128)
 				ps:setEmissionRate(100)
-				ps:setParticleLife(selfself.duration)
+				ps:setParticleLife(objSelf.duration)
 				ps:setSpeed(20,30)
 				ps:setSizes(3,4)
 
 				the.app.view.layers.particles:add(self)
 				-- destroy after cast time
-				the.app.view.timer:after(selfself.duration, function()
+				the.app.view.timer:after(objSelf.duration, function()
 					self:die()
 				end)
 			end,
 			
 			onDie = function (self)
 				the.app.view.layers.particles:remove(self)
+				objSelf:die()
 			end,
 			
 			onUpdate = function (self, elapsed)
-				local o = object_manager.get(selfself.follow_oid)
+				local o = object_manager.get(objSelf.follow_oid)
 				if o then
 					self.x, self.y = o.x + o.width / 2, o.y + o.height / 2
 				end
 			end,
 		}
-	 
 	end,
 	
-	onUpdateLocal = function (self)
-		if network.time > self.dieAtTime then
-			self:die()
-		end
+	onDieBoth = function (self)
 	end,
 }

@@ -143,10 +143,6 @@ Ressource = Tile:extend
 		end	
 	end,
 	
-	onDie = function (self)
-		-- TODO: player-owned
-	end,
-	
 	changeController = function(self)
 		self.controller = self.nextController
 		self.currentPain = 0

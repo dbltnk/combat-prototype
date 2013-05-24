@@ -197,8 +197,21 @@ function network.update (dt)
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
 				" OUTBUFF " .. out_buff:len() .. " REQS " .. network.open_request_count
 		
+		-- groups
+		local objs = ""
+		local groups = {}
+		object_manager.visit(function(oid,o)
+			local c = o.class or "?"
+			if not groups[c] then groups[c] = 0 end
+			groups[c] = groups[c] + 1
+		end)
+		for k,v in pairs(groups) do
+			objs = objs .. k .. ": " .. v .. "\n"
+		end
+		
+		-- details
 		if config.show_object_list then
-			local objs = ""
+			objs = objs .. "\n"
 			object_manager.visit(function(oid,o)
 				local loc = "?"
 				if o.isLocal then
@@ -211,8 +224,9 @@ function network.update (dt)
 				local obj = "#" .. oid .. " " .. (o.class or "?") .. " " .. loc .. " " .. (o.propsToString and o:propsToString() or "") .. "\n"
 				objs = objs .. obj
 			end)
-			network.stats = network.stats .. "\n\n" .. objs
 		end
+		
+		network.stats = network.stats .. "\n\n" .. objs
 		
 		stats = {
 			in_bytes = 0,
