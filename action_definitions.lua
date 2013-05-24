@@ -496,7 +496,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_robe},
 				effects = {
 					{effect_type = "moveAwayFromMe", str = 150},
-					{effect_type = "damage", str = 15},
+					{effect_type = "damageOnlyOthers", str = 15},
 				},
 		},	
 	},		
@@ -706,7 +706,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "ae", range = 300, piercing_number = 20, explosion_color = color_splint_mail},
 				effects = {
 					{effect_type = "powerblockOnlyOthers", duration = 3},
-					{effect_type = "damage", str = 15},
+					{effect_type = "damageOnlyOthers", str = 15},
 				},
 		},		
 	},
