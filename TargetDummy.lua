@@ -11,7 +11,7 @@ TargetDummy = Animation:extend
 	
 	image = '/assets/graphics/dummy_full.png',
 	currentPain = 0,
-	maxPain = 90,
+	maxPain = config.dummyMaxPain,
 	xpWorth = config.dummyXPWorth,
 	dmgReceived = {},
 	damagerTable = {},	

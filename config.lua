@@ -6,14 +6,14 @@ config.walkspeed = 150
 config.runspeed = 300
 config.animspeed = 4 * config.walkspeed / 50
 config.projectilespeed = 500
-config.energyreg = 6
+config.energyreg = 8
 config.healthreg = 1
 config.maxPain = 200
 config.maxEnergy = 300
 config.getUpPain = 0.5 -- in percent
 
 -- progression and round time
-config.timecompression = 4
+config.timecompression = 2
 config.barrierHealth = 50000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
 config.roundTime = 3600 / config.timecompression -- in seconds
 config.xpCap = 1000
@@ -26,7 +26,7 @@ config.xpGainsEachNSeconds = 10
 config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds / config.timecompression
 config.strIncreaseFactor = 0.1 -- 10% stronger per lvl
 config.combatHealXP = 0.2 -- in % of damage / heal done
-config.crowdControlXP = 1 -- in % of duration in seconds
+config.crowdControlXP = 0.5 -- in % of duration in seconds
 
 -- mobs
 config.mobSightRange = 250
@@ -35,13 +35,14 @@ config.mobAttackRange = 60
 config.mobDamage = 10
 config.mobAnimSpeed = 3
 config.mobAttackTimer = 2
+config.dummyMaxPain = 90
 
 -- visuals
 config.show_fog_of_war = true
 config.sightDistanceFar = 600
 config.sightDistanceNear = 300
-config.footStepVisibility = 30 -- beware: large numbers will be bad for performance
-config.AEShowTime = 2
+config.footStepVisibility = 15 -- beware: large numbers will be bad for performance
+config.AEShowTime = 4
 
 -- audio
 config.volume = 0.3
