@@ -122,6 +122,8 @@ host.on('connect', function(peer, data) {
 	client.peer = peer;
 	clients.push(client);
 	
+	client.last_active = os.uptime()
+	
 	var ids = _.map(clients, function(c) { return c.id; });
 	
 	send_to_other({channel: "server", ids: ids, cmd: "join", id: client.id}, client, clients);
@@ -142,6 +144,8 @@ host.on('connect', function(peer, data) {
 	try {
 		var message = JSON.parse(packet.data().toString());
 		//~ console.log(message);
+		
+		client.last_active = os.uptime()
 		
 		if (message.channel == "server") {
 			if (message.cmd == "who") {
@@ -177,6 +181,15 @@ host.on('connect', function(peer, data) {
 		}
 	}
 	catch(e){}
+	
+	// disconnect broken clients
+	var t = os.uptime();
+	_.each(clients, function(c) {
+		if (t - c.last_active > 20) {
+			disconnect(c, clients);
+			return;
+		}
+	})
 });
 
 host.start_watcher();
