@@ -249,7 +249,7 @@ GameView = View:extend
 			self:fogOn()
 		end
 
-		the.app.view.timer:after(1, function() self:setupNetworkHandler() end)
+		self:setupNetworkHandler()
     end,
     
     fogOn = function(self)
