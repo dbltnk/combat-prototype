@@ -321,7 +321,7 @@ Character = Animation:extend
 		end		
 		if math.floor(str) > 0 then 
 			str = math.floor(str * 10) / 10
-			if not self.hidden then
+			if not self.hidden or self == the.player then
 				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,1,0}}
 			end
 		end	
@@ -358,7 +358,7 @@ Character = Animation:extend
 	
 	showDamage = function (self, str)
 		str = math.floor(str * 10) / 10
-		if not self.hidden then
+		if not self.hidden or self == the.player then
 			if str >= 0 then
 				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
 			else
