@@ -25,6 +25,7 @@ TargetDummy = Animation:extend
 	rooted = false,
 	stunned = false,
 	mezzed = false,
+	powerblocked = false,
 	
 	-- UiBar
 	painBar = nil,
@@ -162,7 +163,13 @@ TargetDummy = Animation:extend
 			self.mezzed = true
 			the.app.view.timer:after(duration, function()
 				self.mezzed = false
-			end)	
+			end)
+		elseif message_name == "powerblock" then
+			local duration = ...
+			self.powerblocked = true
+			the.app.view.timer:after(duration, function()
+				self.powerblocked = false
+			end)			
 		end
 	end,
 
@@ -260,7 +267,7 @@ TargetDummy = Animation:extend
 	end,
 	
 	attack = function(self)
-		if not self.stunned and not self.mezzed then 
+		if not self.stunned and not self.mezzed and not self.powerblocked then 
 			if self.attackPossible then
 				object_manager.visit(function(oid,obj)
 					local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
