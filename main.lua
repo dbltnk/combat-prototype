@@ -124,7 +124,7 @@ the.app = App:new
 		-- game ends, players lost
 		if the.app.view.game_start_time then
 			local remainingTime = (the.app.view.game_start_time + config.roundTime) - network.time
-			if remainingTime <= 0 then 
+			if remainingTime <= 0 and the.app.view.game_start_time > 0 then 
 				if self.running then
 					local text = "The players lost, here's how you did:"
 					the.barrier:showHighscore(text)
