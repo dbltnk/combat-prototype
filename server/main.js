@@ -46,17 +46,6 @@ function encode_message(message) {
 	return JSON.stringify(message);
 }
 
-function send_to_all(message, clients) {
-	var JSON = encode_message(message);
-	send_to_all_raw(JSON, clients);
-}
-
-function send_to_all_raw(data, clients) {
-	_.each(clients, function(c) {
-		c.write(data);
-	});
-}
-
 function send_to_other_raw(data, client, clients) {
 	_.each(clients, function(c) {
 		if (c != client) send_to_one_raw(data, c);
