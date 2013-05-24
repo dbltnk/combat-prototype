@@ -44,11 +44,14 @@ function action_handling.get_target_position (target)
 	
 	if target.oid then
 		local o = object_manager.get(target.oid)
-		x = o.x or x
-		y = o.y or y
 		
-		w = o.width or w
-		h = o.height or h
+		if o then
+			x = o.x or x
+			y = o.y or y
+			
+			w = o.width or w
+			h = o.height or h
+		end
 	end
 	
 	return x + w/2, y + h/2
