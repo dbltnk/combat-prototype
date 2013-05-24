@@ -38,6 +38,7 @@ Character = Animation:extend
 	snared = false,
 	powerblocked = false,
 	marked = false,
+	interrupted = false,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -509,6 +510,7 @@ Character = Animation:extend
 			self:freezeMovement()
 			self:freezeCasting()
 			self.stunned = true
+			self.interrupted = true
 			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
 			the.app.view.timer:after(duration, function()
 				self:unfreezeMovement()
@@ -521,6 +523,7 @@ Character = Animation:extend
 			self:freezeMovement()
 			self:freezeCasting()
 			self.mezzed = true
+			self.interrupted = true			
 			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
 			the.app.view.timer:after(duration, function()
 				self:unfreezeMovement()
@@ -539,6 +542,7 @@ Character = Animation:extend
 		--	print("POWERBLOCKED", duration)
 			self:freezeCasting()
 			self.powerblocked = true
+			self.interrupted = true			
 			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
 			the.app.view.timer:after(duration, function()
 				self:unfreezeCasting()

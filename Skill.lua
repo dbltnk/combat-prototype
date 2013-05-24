@@ -48,6 +48,7 @@ Skill = Class:extend
 		if self:freezeMovementDuringCasting() then player:freezeMovement() end
 		--print("SKILL", self.nr, "START USING")
 		
+		player.interrupted = false
 		self.source.x = x
 		self.source.y = y
 		-- read input can overwrite view later
@@ -81,17 +82,19 @@ Skill = Class:extend
 		if self.onUse then 
 			-- call use after casttime timeout
 			the.app.view.timer:after(self.cast_time, function() 
-				-- finished casting				
+				-- finished casting	
 				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
-				--print("SKILL", self.nr, "REALLY USE")
-				playSound(self.definition.sound or '/assets/audio/missing.wav', 1, 'short')
-				-- update view pos
-				if player.readInput then
-					local ipt = player:readInput()
-					self.source.viewx = ipt.viewx
-					self.source.viewy = ipt.viewy
+				if player.interrupted == false then			
+					--print("SKILL", self.nr, "REALLY USE")
+					playSound(self.definition.sound or '/assets/audio/missing.wav', 1, 'short')
+					-- update view pos
+					if player.readInput then
+						local ipt = player:readInput()
+						self.source.viewx = ipt.viewx
+						self.source.viewy = ipt.viewy
+					end
+					if self.character.freezeCastingCounter <= 0 then self:onUse() end
 				end
-				if self.character.freezeCastingCounter <= 0 then self:onUse() end
 				self.character.currentEnergy = self.character.currentEnergy - self.energyCosts
 			end)
 		end

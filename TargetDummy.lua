@@ -140,6 +140,7 @@ TargetDummy = Animation:extend
 						self:trackDamage(source_oid, str / 100 * self.dmgModified) 
 						self:gainPain(str / 100 * self.dmgModified) 
 						self.mezzed = false	
+						print("LLLLLLLLLLLLLLLLLLLLLLLLLL")
 					end
 				end)
 			end
