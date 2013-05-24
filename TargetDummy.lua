@@ -5,8 +5,9 @@ TargetDummy = Animation:extend
 	class = "TargetDummy",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "velocity", "creation_time",
-		"maxPain", "xpWorth", "finalDamage", },			
+		"maxPain", "xpWorth", "finalDamage", "focused_target" },			
 	sync_high = {"x", "y", "currentPain", "alive"},
+	sync_low = {"focused_target"},
 	
 	image = '/assets/graphics/dummy_full.png',
 	currentPain = 0,
@@ -27,6 +28,11 @@ TargetDummy = Animation:extend
 	mezzed = false,
 	powerblocked = false,
 	dmgModified = 100,
+	
+	-- oid that this mob is focused on
+	focused_target = 0,
+	last_refocus_time = 0,
+	refocus_timeout = 1,
 	
 	-- UiBar
 	painBar = nil,
@@ -140,7 +146,7 @@ TargetDummy = Animation:extend
 						self:trackDamage(source_oid, str / 100 * self.dmgModified) 
 						self:gainPain(str / 100 * self.dmgModified) 
 						self.mezzed = false	
-						print("LLLLLLLLLLLLLLLLLLLLLLLLLL")
+						--~ print("LLLLLLLLLLLLLLLLLLLLLLLLLL")
 					end
 				end)
 			end
@@ -216,8 +222,37 @@ TargetDummy = Animation:extend
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
-		-- find a player close by
-		object_manager.visit(function(oid,obj) 
+
+		-- refocus needed?
+		if love.timer.getTime() - self.last_refocus_time > self.refocus_timeout then
+			-- find a player close by
+			local l = list.process_values(object_manager.objects)
+					:select(function(obj) 
+						local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
+						return {
+							obj=obj, 
+							dist=dist,
+						} end)
+					:where(function(p) 
+						local obj = p.obj
+						local dist = p.dist
+						return (dist <= config.mobSightRange or self.currentPain > 0) and obj.name and not obj.hidden
+					end)
+					:orderby(function(a,b) return a.dist < b.dist end)
+					:take(1)
+					:select(function(a) return a.obj end)
+					:done()
+			local nearestObj = l[1]
+			
+			self.focused_target = nearestObj and nearestObj.oid or 0
+			--~ if nearestObj then print("NEAREST", nearestObj, self.focused_target,  self.last_refocus_time) end
+			self.last_refocus_time = love.timer.getTime()
+		end
+
+		local obj = object_manager.objects[self.focused_target]
+		
+		-- lets act
+		if obj then	
 			local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
 			
 			local speed = 0
@@ -253,15 +288,17 @@ TargetDummy = Animation:extend
 					self:makeFootstep()	
 				end	
 			end
-		end)	
-		-- let's attack the player here
-		self:attack()
+			
+			-- let's attack the player here
+			self:attack()
+		end
 	end,
 	
 	attack = function(self)
 		if not self.stunned and not self.mezzed and not self.powerblocked then 
 			if self.attackPossible then
-				object_manager.visit(function(oid,obj)
+				local obj = object_manager.objects[self.focused_target]
+				if obj then
 					local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
 					if dist <= config.mobAttackRange and obj.name and not obj.hidden then 
 						object_manager.send(obj.oid, "damage", config.mobDamage) 	
@@ -270,7 +307,7 @@ TargetDummy = Animation:extend
 							self.attackPossible = true
 						end)
 					end	
-				end)
+				end
 			end	
 		end	
 	end,

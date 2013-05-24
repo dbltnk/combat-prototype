@@ -453,7 +453,7 @@ Character = Animation:extend
 			end
 		elseif message_name == "transfer" then
 			local str, duration, ticks, source_oid, targetOids, eff = ...
-			utils.vardump(targetOids)
+			--~ utils.vardump(targetOids)
 			local strPerTargetPerTick = str / #targetOids
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
