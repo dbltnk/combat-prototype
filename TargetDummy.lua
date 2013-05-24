@@ -26,6 +26,7 @@ TargetDummy = Animation:extend
 	stunned = false,
 	mezzed = false,
 	powerblocked = false,
+	dmgModified = 100,
 	
 	-- UiBar
 	painBar = nil,
@@ -102,13 +103,15 @@ TargetDummy = Animation:extend
 	receiveBoth = function (self, message_name, ...)
 		if message_name == "damage" then
 			local str, source_oid  = ...
-			self:trackDamage(source_oid, str)
+			self:trackDamage(source_oid, str / 100 * self.dmgModified) 
+			self:showDamage(str / 100 * self.dmgModified) 
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.alive then 
-						self:trackDamage(source_oid, str)
+						self:trackDamage(source_oid, str / 100 * self.dmgModified) 
+						self:showDamage(str / 100 * self.dmgModified) 
 					end
 				end)
 			end
@@ -120,9 +123,9 @@ TargetDummy = Animation:extend
 		if message_name == "damage" then
 			local str, source_oid  = ...
 			-- damage handling for xp distribution	
-			self:trackDamage(source_oid, str)
+			self:trackDamage(source_oid, str / 100 * self.dmgModified) 
 			--print("DUMMY DAMANGE", str)
-			self:gainPain(str)
+			self:gainPain(str / 100 * self.dmgModified) 
 			self.mezzed = false
 		elseif message_name == "moveSelfTo" then
 			local x,y = ...
@@ -134,8 +137,8 @@ TargetDummy = Animation:extend
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.alive then 
-						self:trackDamage(source_oid, str)
-						self:gainPain(str)
+						self:trackDamage(source_oid, str / 100 * self.dmgModified) 
+						self:gainPain(str / 100 * self.dmgModified) 
 						self.mezzed = false	
 					end
 				end)
@@ -169,26 +172,14 @@ TargetDummy = Animation:extend
 			self.powerblocked = true
 			the.app.view.timer:after(duration, function()
 				self.powerblocked = false
-			end)			
-		end
-	end,
-
-	receiveBoth = function (self, message_name, ...)
-		--print(self.oid, "receives message", message_name, "with", ...)
-		if message_name == "damage" then
-			local str, source_oid  = ...
-			-- damage handling for xp distribution	
-			self:showDamage(str)
-		elseif message_name == "damage_over_time" then 
-			local str, duration, ticks, source_oid = ...
-		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
-			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
-					if self.alive then 
-						self:showDamage(str)
-					end
-				end)
-			end
+			end)	
+		elseif message_name == "dmgModifier" then
+			local str, duration, source_oid = ...
+			--print("dmgModifier", str, duration)
+			self.dmgModified = str
+			the.app.view.timer:after(duration, function() 
+					self.dmgModified = 100
+			end)					
 		end
 	end,
 	

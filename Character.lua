@@ -564,7 +564,7 @@ Character = Animation:extend
 			self.hidden = true			
 		elseif message_name == "dmgModifier" then
 			local str, duration, source_oid = ...
-			print("dmgModifier", str, duration)
+			--print("dmgModifier", str, duration)
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self.dmgModified = str
 			the.app.view.timer:after(duration, function() 
