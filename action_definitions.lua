@@ -583,15 +583,15 @@ action_definitions = {
 		icon = nil,
 		sound = nil,				
 		cast_time = 2,
-		timeout = 8,
-		energy = 25,
+		timeout = 13,
+		energy = 35,
 		on_the_run = false,
 		cast_particle_color = color_hide_armor,		
 		
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "heal_over_time", ticks = 6, duration = 30, str = 25},
+				{effect_type = "heal_over_time", ticks = 6, duration = 15, str = 30},
 			},
 		},		
 	},		
