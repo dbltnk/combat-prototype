@@ -21,6 +21,10 @@ TargetDummy = Animation:extend
 	owner = 0,
 	targetable = true,
 	attackPossible = true,
+	snared = false,
+	rooted = false,
+	stunned = false,
+	mezzed = false,
 	
 	-- UiBar
 	painBar = nil,
@@ -118,6 +122,7 @@ TargetDummy = Animation:extend
 			self:trackDamage(source_oid, str)
 			--print("DUMMY DAMANGE", str)
 			self:gainPain(str)
+			self.mezzed = false
 		elseif message_name == "moveSelfTo" then
 			local x,y = ...
 			self.x = x
@@ -130,9 +135,34 @@ TargetDummy = Animation:extend
 					if self.alive then 
 						self:trackDamage(source_oid, str)
 						self:gainPain(str)
+						self.mezzed = false	
 					end
 				end)
 			end
+		elseif message_name == "runspeed" then
+			local str, duration = ...
+			self.snared = true
+			the.app.view.timer:after(duration, function()
+				self.snared = false
+			end)	
+		elseif message_name == "root" then
+			local duration = ...
+			self.rooted = true
+			the.app.view.timer:after(duration, function()
+				self.rooted = false
+			end)	
+		elseif message_name == "stun" then
+			local duration = ...
+			self.stunned = true
+			the.app.view.timer:after(duration, function()
+				self.stunned = false
+			end)
+		elseif message_name == "mezz" then
+			local duration = ...
+			self.mezzed = true
+			the.app.view.timer:after(duration, function()
+				self.mezzed = false
+			end)	
 		end
 	end,
 
@@ -191,18 +221,27 @@ TargetDummy = Animation:extend
 		object_manager.visit(function(oid,obj) 
 			local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
 			
+			local speed = 0
+			if self.rooted or self.stunned or self.mezzed then 
+				speed = 0 
+			elseif self.snared then 
+				speed = config.mobMovementSpeed / 2 
+			else 
+				speed = config.mobMovementSpeed 
+			end
+			
 			-- make mobs move towards the player
 			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
 				if self.x < obj.x then -- todo: find better movement code for this
-					self.x = self.x + config.mobMovementSpeed * elapsed
+					self.x = self.x + speed* elapsed
 				else
-					self.x = self.x - config.mobMovementSpeed * elapsed
+					self.x = self.x - speed * elapsed
 				end	
 				
 				if self.y < obj.y then
-					self.y = self.y + config.mobMovementSpeed * elapsed
+					self.y = self.y + speed * elapsed
 				else
-					self.y = self.y - config.mobMovementSpeed * elapsed
+					self.y = self.y - speed * elapsed
 				end	
 				
 				-- let them set some footsteps
@@ -221,17 +260,19 @@ TargetDummy = Animation:extend
 	end,
 	
 	attack = function(self)
-		if self.attackPossible then
-			object_manager.visit(function(oid,obj)
-				local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
-				if dist <= config.mobAttackRange and obj.name then 
-					object_manager.send(obj.oid, "damage", config.mobDamage) 	
-					self.attackPossible = false					
-					the.app.view.timer:after(config.mobAttackTimer, function()
-						self.attackPossible = true
-					end)
-				end	
-			end)
+		if not self.stunned and not self.mezzed then 
+			if self.attackPossible then
+				object_manager.visit(function(oid,obj)
+					local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
+					if dist <= config.mobAttackRange and obj.name then 
+						object_manager.send(obj.oid, "damage", config.mobDamage) 	
+						self.attackPossible = false					
+						the.app.view.timer:after(config.mobAttackTimer, function()
+							self.attackPossible = true
+						end)
+					end	
+				end)
+			end	
 		end	
 	end,
 	
