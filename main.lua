@@ -2,8 +2,19 @@ STRICT = true
 DEBUG = true
 
 config = require 'config'
-localconfig = require 'localconfig'
 
+function readConfig(file)
+	local f = file and io.open(file)
+	if not f then 
+		file = "localconfig.lua"
+	end
+	
+	print("using config file", file)
+	
+	return dofile(file)
+end
+
+localconfig = readConfig(arg[2])
 
 require "enet"
 
@@ -64,6 +75,7 @@ require 'Effect'
 require 'EffectCircle'
 require 'ui' 
 require 'loveframes'
+
 
 
 the.app = App:new
