@@ -278,15 +278,15 @@ TargetDummy = Animation:extend
 					self.y = self.y - speed * elapsed
 				end	
 				
-				-- let them set some footsteps
-				if self:footstepsPossible() then 
-					local footstep = Footstep:new{ 
-						x = self.x+self.width/2-16, y = self.y+self.height/2-16, 
-						rotation = self.rotation, -- todo: fix rotation of the footsteps
-					}
-					the.footsteps[footstep] = true
-					self:makeFootstep()	
-				end	
+				--~ -- let them set some footsteps
+				--~ if self:footstepsPossible() then 
+					--~ local footstep = Footstep:new{ 
+						--~ x = self.x+self.width/2-16, y = self.y+self.height/2-16, 
+						--~ rotation = self.rotation, -- todo: fix rotation of the footsteps
+					--~ }
+					--~ the.footsteps[footstep] = true
+					--~ self:makeFootstep()	
+				--~ end	
 			end
 			
 			-- let's attack the player here
