@@ -182,14 +182,14 @@ host.on('connect', function(peer, data) {
 	}
 	catch(e){}
 	
-	// disconnect broken clients
-	var t = os.uptime();
-	_.each(clients, function(c) {
-		if (t - c.last_active > 20) {
-			disconnect(c, clients);
-			return;
-		}
-	})
+	//~ // disconnect broken clients
+	//~ var t = os.uptime();
+	//~ _.each(clients, function(c) {
+		//~ if (t - c.last_active > 20) {
+			//~ disconnect(c, clients);
+			//~ return;
+		//~ }
+	//~ })
 });
 
 host.start_watcher();

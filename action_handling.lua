@@ -54,7 +54,10 @@ function action_handling.get_target_position (target)
 		end
 	end
 	
-	return (x + w/2) or 0, (y + h/2) or 0
+	x = x or 0
+	y = y or 0
+	
+	return x + w/2, y + h/2
 end
 
 -- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
