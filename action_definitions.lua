@@ -413,7 +413,7 @@ action_definitions = {
 		timeout = 60,
 		energy = 40,
 		on_the_run = true,
-		cast_particle_color = color_splint_mail,		
+		cast_particle_color = color_robe,		
 		
 		application = {
 			target_selection = {target_selection_type = "self"},
