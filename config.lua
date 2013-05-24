@@ -25,8 +25,8 @@ config.ressourceHealth = 300
 config.xpGainsEachNSeconds = 10
 config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds / config.timecompression
 config.strIncreaseFactor = 0.1 -- 10% stronger per lvl
-config.combatHealXP = 0.2 -- in % of damage / heal done
-config.crowdControlXP = 0.5 -- in % of duration in seconds
+config.combatHealXP = 0.15 -- in % of damage / heal done
+config.crowdControlXP = 0.2 -- in % of duration in seconds
 
 -- mobs
 config.mobSightRange = 250
