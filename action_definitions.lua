@@ -216,7 +216,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "ae", range = 100, cone = 120, piercing_number = 3},
 			effects = {
-				{effect_type = "damageOnlyOthers", str = 50},
+				{effect_type = "damageOnlyOthers", str = 15},
 				{effect_type = "stunOnlyOthers", duration = 3},
 			},
 		},	
