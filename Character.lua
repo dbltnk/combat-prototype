@@ -303,9 +303,9 @@ Character = Animation:extend
 		self.snared = false
 		self.powerblocked = false
 		self.marked = false
-		freezeMovementCounter = 0
-		freezeCastingCounter = 0
-		speedOverride = 0
+		self.freezeMovementCounter = 0
+		self.freezeCastingCounter = 0
+		self.speedOverride = 0
 	end,	
 	
 	gainXP = function (self, str)
