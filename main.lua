@@ -122,12 +122,15 @@ the.app = App:new
 		end
 		
 		-- game ends, players lost
-		if love.timer.getTime() >= config.roundTime then 
-			if self.running then
-				local text = "The players lost, here's how you did:"
-				the.barrier:showHighscore(text)
-				self.running = false
-				self.timeScale = 0
+		if the.app.view.game_start_time then
+			local remainingTime = (the.app.view.game_start_time + config.roundTime) - network.time
+			if remainingTime <= 0 then 
+				if self.running then
+					local text = "The players lost, here's how you did:"
+					the.barrier:showHighscore(text)
+					self.running = false
+					self.timeScale = 0
+				end
 			end
 		end
 	end,
