@@ -295,14 +295,14 @@ Character = Animation:extend
 		self.x, self.y = the.respawnpoint.x, the.respawnpoint.y
 		self.currentPain = 0
 		self:setIncapacitation(false)
-		self.rooted = false,
-		self.stunned = false,
-		self.dmgModified = 100,
-		self.invul = false,
-		self.mezzed = false,
-		self.snared = false,
-		self.powerblocked = false,
-		self.marked = false,
+		self.rooted = false
+		self.stunned = false
+		self.dmgModified = 100
+		self.invul = false
+		self.mezzed = false
+		self.snared = false
+		self.powerblocked = false
+		self.marked = false
 	end,	
 	
 	gainXP = function (self, str)
