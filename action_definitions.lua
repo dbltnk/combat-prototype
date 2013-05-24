@@ -197,6 +197,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 400, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_harpoon.png"},
 			effects = {
+				{effect_type = "damage", str = 35},
 				{effect_type = "moveToMe"},	
 			},
 		},	
@@ -495,6 +496,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_robe},
 				effects = {
 					{effect_type = "moveAwayFromMe", str = 150},
+					{effect_type = "damage", str = 15},
 				},
 		},	
 	},		
@@ -704,6 +706,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "ae", range = 300, piercing_number = 20, explosion_color = color_splint_mail},
 				effects = {
 					{effect_type = "powerblockOnlyOthers", duration = 3},
+					{effect_type = "damage", str = 15},
 				},
 		},		
 	},
