@@ -30,17 +30,21 @@ MonitorChanges = Class:extend
 		return c
 	end,
 	
+	send = function (self)
+		local nils = {}
+		local obj = self.obj
+		local msg = { channel = "game", cmd = "sync", oid = obj.oid, owner = obj.owner, time = network.time, }
+		for _,key in pairs(self.keys) do 
+			if obj[key] == nil then table.insert(nils, key) end
+			msg[key] = obj[key] 
+		end
+		msg.nils = nils
+		network.send (msg)
+	end,
+	
 	checkAndSend = function (self)
 		if self:changed() then
-			local nils = {}
-			local obj = self.obj
-			local msg = { channel = "game", cmd = "sync", oid = obj.oid, owner = obj.owner, time = network.time, }
-			for _,key in pairs(self.keys) do 
-				if obj[key] == nil then table.insert(nils, key) end
-				msg[key] = obj[key] 
-			end
-			msg.nils = nils
-			network.send (msg)
+			self:send()
 		end
 	end,
 }
