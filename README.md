@@ -17,3 +17,5 @@
 * Use action 5: press 3
 * Use action 6: press 4
 * Target yourself: keep left shift pressed
+
+test
