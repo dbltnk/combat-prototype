@@ -254,7 +254,7 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_life_leech.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_life_leech.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 2, explosion_color = color_staff},
@@ -278,7 +278,7 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_poison.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_poison.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
@@ -302,7 +302,7 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 400, speed = 200, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_fireball.png"},
+			target_selection = {target_selection_type = "projectile", range = 400, speed = 300, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_fireball.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_staff},
@@ -374,7 +374,7 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 400, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_mezz.png"},
+			target_selection = {target_selection_type = "projectile", range = 400, speed = 600, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_mezz.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
