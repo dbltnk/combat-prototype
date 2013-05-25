@@ -145,7 +145,11 @@ action_handling.register_target_selection("projectile", function (start_target, 
 			action_handling.add_view_on_demand(target, start_target)
 			targets_selected_callback({target})
 		end
-		-- ae effect at the end?
+		if target_selection.ae_targets == 0 and target_selection.ae_size == 0 then 
+			local x,y = action_handling.get_target_position(self)
+			spawnExplosionCircle(x, y, 6, nil, {64,32,32,128})
+		end
+		--~ -- ae effect at the end?
 		if target_selection.ae_targets and target_selection.ae_size and 
 			target_selection.ae_targets > 0 and target_selection.ae_size > 0 
 		then
