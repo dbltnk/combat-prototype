@@ -5,3 +5,4 @@ server/node_modules/
 geany_run_script.bat
 localconfig.lua
 build
+changelog.txt
