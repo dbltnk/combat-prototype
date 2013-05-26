@@ -19,5 +19,7 @@ rm buildtmp/love.exe
 mv buildtmp dastal_proto1
 zip -r dastal_proto1.zip dastal_proto1
 mkdir -p build
+rm -rf build/dastal_proto1
+mv dastal_proto1 build
 mv dastal_proto1.zip build
 rm -rf buildtmp
