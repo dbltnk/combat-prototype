@@ -12,6 +12,7 @@ echo "------------" >> changelog.txt
 git log --pretty=oneline --abbrev-commit --since "2 weeks" >> changelog.txt
 mv changelog.txt unixfile.txt
 perl -p -e 's/\n/\r\n/' < unixfile.txt > changelog.txt
+rm unixfile.txt
 
 echo build client win
 rm -rf buildtmp
