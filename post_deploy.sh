@@ -21,4 +21,3 @@ zip -r dastal_proto1.zip dastal_proto1
 mkdir -p build
 mv dastal_proto1.zip build
 rm -rf buildtmp
-rm -rf dastal_proto1
