@@ -34,9 +34,8 @@ action_handling.register_target_selection("self", function (start_target, target
 end)
 
 -- target_selection: ae ----------------------------------------------------------
--- eg. {target_selection_type = "ae", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/graphics/action_projectiles/shield_bash_projectile.png"},
+-- eg. {target_selection_type = "ae", range = 10, piercing_number = 3},
 -- has: range, piercing_number
--- todo: cone, gfx
 action_handling.register_target_selection("ae", function (start_target, target_selection, source_oid, targets_selected_callback)
 	local x,y = action_handling.get_target_position(start_target)
 	
@@ -44,6 +43,46 @@ action_handling.register_target_selection("ae", function (start_target, target_s
 	spawnExplosionCircle(x,y, target_selection.range, nil, target_selection.explosion_color)
 	
 	local l = action_handling.find_ae_targets(x,y, target_selection.range, 
+		target_selection.piercing_number or 1000000)
+	--print(x,y, target_selection.range, target_selection.piercing_number)
+	--utils.vardump(l)
+	
+	targets_selected_callback(utils.map1(l, function (o) 
+		local t = action_handling.object_to_target(o)
+		action_handling.add_view_on_demand(t, start_target)
+		--utils.vardump(t)
+		return t
+	end))
+end)
+
+-- target_selection: cone ----------------------------------------------------------
+-- eg. {target_selection_type = "cone", range = 10, cone = 60, piercing_number = 3, gfx = "/assets/graphics/action_projectiles/shield_bash_projectile.png"},
+-- has: range, piercing_number, cone, gfx
+action_handling.register_target_selection("cone", function (start_target, target_selection, source_oid, targets_selected_callback)
+	local cx,cy = action_handling.get_target_position(start_target)
+	
+	local vx,vy = action_handling.get_view(start_target)
+	local dx,dy = vx - cx, vy - cy
+	
+	if vector.len(dx,dy) == 0 then
+		print("ERROR it is not possible to shoot a cone without a view/destination position")
+		return
+	end
+	
+	local x,y = action_handling.get_target_position(start_target)
+	local rotation = vector.toVisualRotation(dx,dy)
+	
+	if (target_selection.gfx and target_selection.gfx_radius) then
+		EffectImage:new{x = x, y = y, r = target_selection.gfx_radius, image = target_selection.gfx, 
+			rotation = rotation, color = target_selection.explosion_color,}
+	else
+		spawnExplosionCircle(x,y, target_selection.range, nil, target_selection.explosion_color)
+	end
+
+	spawnDebugCircle(x,y,target_selection.range)
+	
+	local coneRadians = target_selection.cone / 180 * math.pi
+	local l = action_handling.find_cone_targets(x,y, dx,dy, coneRadians / 2, target_selection.range, 
 		target_selection.piercing_number or 1000000)
 	--print(x,y, target_selection.range, target_selection.piercing_number)
 	--utils.vardump(l)

@@ -73,6 +73,7 @@ require 'SyncedObject'
 require 'ConnectView'
 require 'Effect'
 require 'EffectCircle'
+require 'EffectImage'
 require 'ui' 
 require 'loveframes'
 

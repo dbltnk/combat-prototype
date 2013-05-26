@@ -137,7 +137,9 @@ action_definitions = {
 		cast_particle_color = color_scythe,			
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 100, cone = 120, piercing_number = 6},
+			target_selection = {target_selection_type = "cone", 
+				gfx_radius = 50, gfx = "assets/graphics/melee_radians/120_100.png",
+				range = 100, cone = 120, piercing_number = 6},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 30},
 			},
@@ -156,7 +158,8 @@ action_definitions = {
 		cast_particle_color = color_scythe,			
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 100, cone = 360, piercing_number = 12},
+			target_selection = {target_selection_type = "ae", 
+				range = 100, piercing_number = 12},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 40},
 			},
@@ -215,7 +218,9 @@ action_definitions = {
 		cast_particle_color = color_scythe,			
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 100, cone = 120, piercing_number = 3},
+			target_selection = {target_selection_type = "cone", 
+				gfx_radius = 50, gfx = "assets/graphics/melee_radians/120_100.png",
+				range = 100, cone = 120, piercing_number = 3},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 15},
 				{effect_type = "stunOnlyOthers", duration = 3},

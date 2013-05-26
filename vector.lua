@@ -23,6 +23,12 @@ vector.lenFromTo = function(x0,y0, x1,y1)
 	return vector.len(vector.fromTo(x0,y0, x1,y1))
 end
 
+vector.angleFromTo = function(x0,y0, x1,y1)
+	x0,y0 = vector.normalize(x0,y0)
+	x1,y1 = vector.normalize(x1,y1)
+	return math.acos(vector.dot(x0,y0, x1,y1))
+end
+
 -- returns x,y
 vector.normalize = function(x,y)
 	local l = vector.len(x,y)
@@ -99,5 +105,6 @@ end
 vector.mul = function(x,y,s)
 	return x*s,y*s
 end
+
 
 return vector
