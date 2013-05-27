@@ -259,6 +259,15 @@ end
 function network.send (message)
 	if not server then return end
 	
+	-- round to save space
+	for k,v in pairs(message) do
+		if type(v) == "number" then
+			local f = 1000
+			message[k] = math.floor(v * f) / f
+			--~ print("round", k,v,message[k])
+		end
+	end
+	
 	local m = json.encode(message)
 	--~ print("SEND", server, m)
 	server:send(m)
