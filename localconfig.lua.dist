@@ -67,7 +67,7 @@ elseif localconfig.armor == "hide_armor" then -- The following lines are the six
 	-- table.insert(localconfig.skills,"hide_armor_second_wind") -- Instantly decreases your fatigue a little.
 
 elseif localconfig.armor == "splint_mail" then -- The following lines are the six splint mail skills.
-	table.insert(localconfig.skills,"splint_mail_absorb") -- Aborbs incoming damage for some time.
+	table.insert(localconfig.skills,"splint_mail_absorb") -- Drains the health of a lot of targets around you and absorbs incoming damage for some time..
 	table.insert(localconfig.skills,"splint_mail_ignore_pain") -- Increases your pain resistance for some time.
 	table.insert(localconfig.skills,"splint_mail_mezz_break") -- Break all mezz effects in a large area around you.
 	-- table.insert(localconfig.skills,"splint_mail_grow") -- Increase your body size for some time.

@@ -290,7 +290,8 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
 					effects = {
-						{effect_type = "damage_over_time", ticks = 3, duration = 15, str = 25}
+						{effect_type = "damage", str = 20},
+						{effect_type = "damage_over_time", ticks = 3, duration = 15, str = 15}
 					},
 				}},	
 			},
@@ -624,12 +625,12 @@ action_definitions = {
 	-- -----------------------------------------------------------------------------------
 	splint_mail_absorb = {
 		name = "Absorb",
-		description = "Aborbs incoming damage for some time.",
+		description = "Drains the health of a lot of targets around you and absorbs incoming damage for some time.",
 		icon = nil,
 		sound = nil,				
-		cast_time = .1,
-		timeout = 30,
-		energy = 20,
+		cast_time = 2,
+		timeout = 20,
+		energy = 50,
 		on_the_run = false,
 		cast_particle_color = color_splint_mail,		
 		
@@ -637,6 +638,12 @@ action_definitions = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
 				{effect_type = "dmgModifier", str = 75, duration = 10},
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 200, piercing_number = 20, explosion_color = color_splint_mail},
+					effects = {
+						{effect_type = "transfer", eff = 1, ticks = 1, duration = 10, str = 100}
+					},
+				}},
 			},	
 		},				
 	},		
