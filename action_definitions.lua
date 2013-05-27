@@ -138,7 +138,7 @@ action_definitions = {
 		
 		application = {
 			target_selection = {target_selection_type = "cone", 
-				gfx_radius = 50, gfx = "assets/graphics/melee_radians/120_100.png",
+				gfx_radius = 100, gfx = "assets/graphics/melee_radians/120_200.png",
 				range = 100, cone = 120, piercing_number = 6},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 30},
@@ -208,7 +208,7 @@ action_definitions = {
 	-- -----------------------------------------------------------------------------------	
 	scythe_stun = {
 		name = "Stun",
-		description = "Stun one target in close to you.",
+		description = "Stun one target in front of you.",
 		icon = nil,
 		sound = nil,
 		cast_time = 0.1,
@@ -219,7 +219,7 @@ action_definitions = {
 		
 		application = {
 			target_selection = {target_selection_type = "cone", 
-				gfx_radius = 50, gfx = "assets/graphics/melee_radians/120_100.png",
+				gfx_radius = 100, gfx = "assets/graphics/melee_radians/120_200.png",
 				range = 100, cone = 120, piercing_number = 3},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 15},
@@ -230,21 +230,23 @@ action_definitions = {
 -- -----------------------------------------------------------------------------------
 	scythe_gank = {
 		name = "Gank",
-		description = "Gank one target close to you.",
+		description = "Gank one target in front of you.",
 		icon = nil,
 		sound = nil,
 		cast_time = 5,
 		timeout = 0,
 		energy = 50,
 		on_the_run = false,
-		cast_particle_color = color_scythe,			
+		cast_particle_color = color_scythe,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 100, speed = 100, ae_size = 50, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_gank.png"},
+			target_selection = {target_selection_type = "cone", 
+				gfx_radius = 100, gfx = "assets/graphics/melee_radians/120_200.png",
+				range = 100, cone = 120, piercing_number = 3},
 			effects = {
 				{effect_type = "gank"},
 			},
-		},	
+		},		
 	},	
 	-- -----------------------------------------------------------------------------------
 	staff_life_leech = {

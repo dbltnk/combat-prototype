@@ -32,8 +32,8 @@ elseif localconfig.weapon == "scythe" then -- The following lines are the six sc
 	table.insert(localconfig.skills,"scythe_pirouette") -- Sweeping blow that hits a lot of targets all around you.
 	table.insert(localconfig.skills,"scythe_jump") -- Jump to your target location.
 	-- table.insert(localconfig.skills,"scythe_harpoon") -- Shoots a projectile that pulls one target to your location. 
-	-- table.insert(localconfig.skills,"scythe_stun") -- Stun one target in close to you.
-	-- table.insert(localconfig.skills,"scythe_gank") -- Gank one target close to you.
+	-- table.insert(localconfig.skills,"scythe_stun") -- Stun one target in front of you.
+	-- table.insert(localconfig.skills,"scythe_gank") -- Gank one target in front of you.
 
 elseif localconfig.weapon == "staff" then -- The following lines are the six staff skills.
 	table.insert(localconfig.skills,"staff_life_leech") -- Shoot a projectile that drains one targets life while healing you.
