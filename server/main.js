@@ -90,6 +90,28 @@ function client_by_peer(clients, peer) {
 	});
 }
 
+setInterval(function() {
+	if (clients) {
+		var ids = _.map(clients, function(c) { return c.id; });
+		var lastActives = _.map(clients, function(c) { return os.uptime() - c.last_active; });
+		console.log("CONNECTED IDS", ids);	
+		console.log("CONNECTED TIMEOUTS", lastActives);	
+		console.log("CONNECTED IDS DATA", clients);	
+	
+		// disconnect broken clients
+		var t = os.uptime();
+		_.each(clients, function(c) {
+			if (t - c.last_active > 20) {
+				console.log("TIMOUET CLIENT", c.id);	
+				disconnect(c, clients);
+				return;
+			}
+		});
+	} else {
+		console.log("NO ONE CONNECTED");
+	}
+}, 5000 );
+
 var storage = {};
 
 var next_free_client_id = 1;
@@ -111,7 +133,7 @@ host.on('connect', function(peer, data) {
 	client.peer = peer;
 	clients.push(client);
 	
-	client.last_active = os.uptime()
+	client.last_active = os.uptime();
 	
 	var ids = _.map(clients, function(c) { return c.id; });
 	
@@ -134,7 +156,7 @@ host.on('connect', function(peer, data) {
 		var message = JSON.parse(packet.data().toString());
 		//~ console.log(message);
 		
-		client.last_active = os.uptime()
+		client.last_active = os.uptime();
 		
 		if (message.channel == "server") {
 			if (message.cmd == "who") {
@@ -170,15 +192,6 @@ host.on('connect', function(peer, data) {
 		}
 	}
 	catch(e){}
-	
-	//~ // disconnect broken clients
-	//~ var t = os.uptime();
-	//~ _.each(clients, function(c) {
-		//~ if (t - c.last_active > 20) {
-			//~ disconnect(c, clients);
-			//~ return;
-		//~ }
-	//~ })
 });
 
 host.start_watcher();
