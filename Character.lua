@@ -105,6 +105,84 @@ Character = Animation:extend
 		for i = 1,6 do 
 			if not self.skills[i] then self.skills[i] = "bow_shot" end
 		end
+		
+		-- TODO: remove this ugly hack
+		for k,v in pairs(self.skills) do
+			if self.skills[k] ~= "bow_shot" then
+				if self.skills[k] ~= "bow_puncture" then
+					if self.skills[k] ~= "bow_snare" then
+						if self.skills[k] ~= "bow_expose" then
+							if self.skills[k] ~= "bow_root" then
+								if self.skills[k] ~= "bow_mark_target" then
+									if self.skills[k] ~= "scythe_sweep" then
+										if self.skills[k] ~= "scythe_pirouette" then
+											if self.skills[k] ~= "scythe_jump" then
+												if self.skills[k] ~= "scythe_harpoon" then
+													if self.skills[k] ~= "scythe_stun" then
+														if self.skills[k] ~= "scythe_gank" then
+															if self.skills[k] ~= "staff_life_leech" then
+																if self.skills[k] ~= "staff_poison" then
+																	if self.skills[k] ~= "staff_fireball" then
+																		if self.skills[k] ~= "staff_heal_other" then
+																			if self.skills[k] ~= "staff_healing_breeze" then
+																				if self.skills[k] ~= "staff_mezz" then
+																					if self.skills[k] ~= "robe_bandage" then
+																						if self.skills[k] ~= "robe_shrink" then
+																							if self.skills[k] ~= "robe_sonic_boom" then
+																								if self.skills[k] ~= "robe_hide" then
+																									if self.skills[k] ~= "robe_quake" then
+																										if self.skills[k] ~= "robe_gust" then
+																											if self.skills[k] ~= "hide_armor_sprint" then
+																												if self.skills[k] ~= "hide_armor_sneak" then
+																													if self.skills[k] ~= "hide_armor_root_break" then
+																														if self.skills[k] ~= "hide_armor_snare_break" then
+																															if self.skills[k] ~= "hide_armor_regenerate" then
+																																if self.skills[k] ~= "hide_armor_second_wind" then
+																																	if self.skills[k] ~= "splint_mail_absorb" then
+																																		if self.skills[k] ~= "splint_mail_ignore_pain" then
+																																			if self.skills[k] ~= "splint_mail_mezz_break" then
+																																				if self.skills[k] ~= "splint_mail_grow" then
+																																					if self.skills[k] ~= "splint_mail_shout" then
+																																						if self.skills[k] ~= "splint_mail_invulnerability" then
+																																							self.skills[k] = "bow_puncture"
+																																						end 
+																																					end
+																																				end
+																																			end
+																																		end
+																																	end
+																																end
+																															end
+																														end
+																													end
+																												end
+																											end
+																										end
+																									end
+																								end
+																							end
+																						end
+																					end
+																				end
+																			end
+																		end
+																	end
+																end
+															end
+														end
+													end
+												end
+											end
+										end
+									end				
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+
 		for k,v in pairs(self.skills) do
 			self.skills[k] = Skill:new { nr = k, id = v, character = self }
 		end
@@ -123,7 +201,8 @@ Character = Animation:extend
 		}	
 	
 		local goSelf = self
-		
+
+		-- TODO: remove this ugly hack
 		if goSelf.weapon ~= "bow" then
 			if goSelf.weapon ~= "scythe" then
 				if goSelf.weapon ~= "staff" then
@@ -132,6 +211,7 @@ Character = Animation:extend
 			end
 		end
 
+		-- TODO: remove this ugly hack
 		if goSelf.armor ~= "robe" then
 			if goSelf.armor ~= "hide_armor" then
 				if goSelf.armor ~= "splint_mail" then
