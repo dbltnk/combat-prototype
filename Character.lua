@@ -123,6 +123,22 @@ Character = Animation:extend
 		}	
 	
 		local goSelf = self
+		
+		if goSelf.weapon ~= "bow" then
+			if goSelf.weapon ~= "scythe" then
+				if goSelf.weapon ~= "staff" then
+					goSelf.weapon = "bow"
+				end
+			end
+		end
+
+		if goSelf.armor ~= "robe" then
+			if goSelf.armor ~= "hide_armor" then
+				if goSelf.armor ~= "splint_mail" then
+					goSelf.armor = "robe" 
+				end
+			end
+		end
 	
 		self.charSprite = Animation:new{
 			x = self.x,
