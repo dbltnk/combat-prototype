@@ -45,6 +45,7 @@ local stats_last_time = 0
 
 network.client_id = nil
 network.is_first = false
+network.lag = -1
 network.time = 0
 network.last_server_time = 0
 network.last_time_update = 0
@@ -194,6 +195,7 @@ function network.update (dt)
 		network.stats = "\nTIME " .. math.floor(network.time) .. " (" .. timeout .. ")" .. timeoutWarning .. "\n" .. 
 			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s\n" ..
+			"LAG " .. network.lag .. "\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
 				" OUTBUFF " .. out_buff:len() .. " REQS " .. network.open_request_count
 		

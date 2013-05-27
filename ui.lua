@@ -337,6 +337,7 @@ NetworkDisplay = Text:extend
 	requestPing = function (self)
 		local t = love.timer.getTime()
 		network.send_request({channel = "server", cmd = "ping", time = t}, function(fin, result)
+			network.lag = result.lag or -1
 			self.pingTime = love.timer.getTime() - t
 		end)
 	end,

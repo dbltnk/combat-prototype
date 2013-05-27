@@ -7,7 +7,8 @@ var _s = require("underscore.string");
 var wilson = require("wilson");
 var net = require("net");
 var os = require("os");
-var enet = require("enet")
+var enet = require("enet");
+var toobusy = require('toobusy');
 
 // -> [message|null, buffer]
 function tryToParseBuffer (buffer) {
@@ -165,7 +166,7 @@ host.on('connect', function(peer, data) {
 				send_to_one({seq: message.seq, ids: ids, fin: true}, client);
 			} else if (message.cmd == "ping") {
 				console.log("PING");
-				send_to_one({seq: message.seq, time: message.time, fin: true}, client);
+				send_to_one({seq: message.seq, time: message.time, lag: toobusy.lag(), fin: true}, client);
 			} else if (message.cmd == "bye") {
 				console.log("BYE");
 				console.log(client);
