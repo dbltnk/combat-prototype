@@ -548,9 +548,9 @@ action_definitions = {
 		},	
 	},	
 	-- -----------------------------------------------------------------------------------
-	hide_armor_root_break = {
-		name = "Root Break",
-		description = "Break all root effects.",
+	hide_armor_freedom = {
+		name = "Freedom",
+		description = "Break all root and snare effects.",
 		icon = nil,
 		sound = nil,				
 		cast_time = 0.1,
@@ -563,6 +563,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
 				{effect_type = "root_break"},
+				{effect_type = "snare_break"},
 			},
 		},	
 	},		
