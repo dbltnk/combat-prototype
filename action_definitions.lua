@@ -438,13 +438,13 @@ action_definitions = {
 		icon =  nil,
 		sound = nil,				
 		cast_time = 0.1,
-		timeout = 6,
+		timeout = 12,
 		energy = 20,
 		on_the_run = true,
 		cast_particle_color = color_robe,		
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 300, piercing_number = 20, explosion_color = color_robe},
+			target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_robe},
 				effects = {
 					{effect_type = "stunOnlyOthers", duration = 1 },
 				},
@@ -639,9 +639,9 @@ action_definitions = {
 			effects = {
 				{effect_type = "dmgModifier", str = 75, duration = 10},
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 200, piercing_number = 20, explosion_color = color_splint_mail},
+					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_splint_mail},
 					effects = {
-						{effect_type = "transfer", eff = 1, ticks = 1, duration = 10, str = 100}
+						{effect_type = "transfer", eff = 1, ticks = 1, duration = 10, str = 75}
 					},
 				}},
 			},	
@@ -717,7 +717,7 @@ action_definitions = {
 		cast_particle_color = color_splint_mail,		
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 300, piercing_number = 20, explosion_color = color_splint_mail},
+			target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_splint_mail},
 				effects = {
 					{effect_type = "powerblockOnlyOthers", duration = 3},
 					{effect_type = "damageOnlyOthers", str = 15},
