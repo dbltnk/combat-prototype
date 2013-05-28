@@ -601,7 +601,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "heal_over_time", ticks = 6, duration = 15, str = 30},
+				{effect_type = "heal_over_time", ticks = 3, duration = 15, str = 30},
 			},
 		},		
 	},		
