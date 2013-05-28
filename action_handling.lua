@@ -89,9 +89,11 @@ end
 -- target_with_view: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=}
 -- returns target with added view necessary
 function action_handling.add_view_on_demand (target, target_with_view)
-	target.viewx = target.viewx or target_with_view.viewx
-	target.viewy = target.viewy or target_with_view.viewy
-	return target
+	if not target.spectator then
+		target.viewx = target.viewx or target_with_view.viewx
+		target.viewy = target.viewy or target_with_view.viewy
+		return target
+	end
 end
 
 -- function targets_selected_callback({t0,t1,t2,...})
