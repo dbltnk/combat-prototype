@@ -403,6 +403,8 @@ Character = Animation:extend
 		self.freezeMovementCounter = 0
 		self.freezeCastingCounter = 0
 		self.speedOverride = 0
+		self.markedSprite.scale = 1
+		self.charSprite.scale = 1
 	end,	
 	
 	gainXP = function (self, str)
@@ -509,8 +511,8 @@ Character = Animation:extend
 			self.charSprite.scale = self.charSprite.scale / 100 * str
 			self.markedSprite.scale = self.charSprite.scale / 100 * str
 			the.app.view.timer:after(duration, function()
-			self.markedSprite.scale = self.charSprite.scale / 100 * str
-				self.charSprite.scale = self.charSprite.scale / str * 100
+				self.markedSprite.scale = 1
+				self.charSprite.scale = 1
 			end)
 		elseif message_name == "mark" then
 			local duration, source_oid = ...
