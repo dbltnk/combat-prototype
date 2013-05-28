@@ -39,6 +39,7 @@ Character = Animation:extend
 	powerblocked = false,
 	marked = false,
 	interrupted = false,
+	deaths = 0,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -405,6 +406,7 @@ Character = Animation:extend
 		self.speedOverride = 0
 		self.markedSprite.scale = 1
 		self.charSprite.scale = 1
+		self.deaths = self.deaths + 1
 	end,	
 	
 	gainXP = function (self, str)
@@ -485,15 +487,18 @@ Character = Animation:extend
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("CHARACTER DAMAGE_OVER_TIME", str, duration, ticks)
+			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if not self.invul then
-						if not self.incapacitated then 
-							if self.dmgModified then
-								self:showDamage(str / 100 * self.dmgModified)
-							else
-								self:showDamage(str) 
-							end 
+					if self.deaths == oldDeaths then
+						if not self.invul then
+							if not self.incapacitated then 
+								if self.dmgModified then
+									self:showDamage(str / 100 * self.dmgModified)
+								else
+									self:showDamage(str) 
+								end 
+							end
 						end
 					end
 				end)
@@ -501,9 +506,12 @@ Character = Animation:extend
 		elseif message_name == "heal_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("CHARACTER HEAL_OVER_TIME", str, duration, ticks)
+			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if not self.incapacitated then self:showDamage(-str) end
+					if self.deaths == oldDeaths then
+						if not self.incapacitated then self:showDamage(-str) end
+					end
 				end)
 			end	
 		elseif message_name == "changeSize" then
@@ -586,35 +594,41 @@ Character = Animation:extend
 			end		
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
+			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if not self.incapacitated then  
-						if self.dmgModified then
-							self:gainPain(str / 100 * self.dmgModified)  
-						else
-							self:gainPain(str)
+					if self.deaths == oldDeaths then
+						if not self.incapacitated then  
+							if self.dmgModified then
+								self:gainPain(str / 100 * self.dmgModified)  
+							else
+								self:gainPain(str)
+							end
+							if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
 						end
-						if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
+						if self.mezzed then
+							self:unfreezeMovement()
+							self:unfreezeCasting()
+							self.mezzed = false
+						end
+						if self.rooted then
+							self:unfreezeMovement()
+							self.rooted = false
+						end
+						if self.hidden then self.hidden = false end	
 					end
-					if self.mezzed then
-						self:unfreezeMovement()
-						self:unfreezeCasting()
-						self.mezzed = false
-					end
-					if self.rooted then
-						self:unfreezeMovement()
-						self.rooted = false
-					end
-					if self.hidden then self.hidden = false end	
 				end)				
 			end		
 		elseif message_name == "heal_over_time" then
 			local str, duration, ticks, source_oid = ...
+			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if not self.incapacitated then  
-						self:gainPain(-str)
-						object_manager.send(source_oid, "xp", str * config.combatHealXP)
+					if self.deaths == oldDeaths then
+						if not self.incapacitated then  
+							self:gainPain(-str)
+							object_manager.send(source_oid, "xp", str * config.combatHealXP)
+						end
 					end
 				end)
 			end	
