@@ -17,7 +17,7 @@ action_definitions = {
 		cast_time = .5,
 		timeout = 2,
 		energy = 10,
-		on_the_run =  false,
+		on_the_run =  true,
 		cast_particle_color = color_bow,
 		
 		application = {
@@ -56,7 +56,7 @@ action_definitions = {
 		cast_time = 0.5,
 		timeout = 15,
 		energy = 45,
-		on_the_run = false,
+		on_the_run = true,
 		cast_particle_color = color_bow,		
 		
 		application = {
@@ -95,7 +95,7 @@ action_definitions = {
 		cast_time = 0.5,
 		timeout = 15,
 		energy = 10,
-		on_the_run = false,
+		on_the_run = true,
 		cast_particle_color = color_bow,		
 		
 		application = {
