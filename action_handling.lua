@@ -172,7 +172,7 @@ function action_handling.find_cone_targets (x,y, dx,dy, coneDeltaRadians, range,
 	
 	l = list.process_values(l)
 		:where(function(f) 
-			return f.targetable
+			return f.targetable and not f.spectator
 		end)
 		:where(function(f)
 			--~ print("---------", f.oid, f.class)
@@ -218,7 +218,7 @@ function action_handling.find_ae_targets (x,y, range, maxTargetCount)
 	
 	l = list.process_values(l)
 		:where(function(f) 
-			return f.targetable
+			return f.targetable and not f.spectator
 		end)
 		:where(function(f)
 			return collision.minDistPointToAABB (x,y, f.x, f.y, f.x+f.width, f.y+f.height) <= range
