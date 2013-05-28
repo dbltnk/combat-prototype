@@ -889,7 +889,7 @@ Character = Animation:extend
 		self.nameLevel.level = self.level
 		self.nameLevel.team = self.team
 		
-		if self.hidden then
+		if self.hidden or self.spectator then
 			self.visible = false
 			self.painBar.visible = false
 			self.painBar.bar.visible = false
@@ -940,17 +940,6 @@ Character = Animation:extend
 		end
 		self.markedSprite.x = self.x
 		self.markedSprite.y = self.y - 32
-		
-		if localconfig.spectator then
-			self.spectator = true
-			self.freezeCastingCounter = 999
-			self.speedOverride = 500
-			self.charSprite.scale = 0
-			self.solid = false			
-			self.charSprite.solid = false			
-			self.hiddenSprite.solid = false
-			self.team = "spectators"
-		end
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
@@ -1024,6 +1013,16 @@ Character = Animation:extend
 		end
 		
 		if the.keys:pressed(' ') and self.incapacitated then object_manager.send(self.oid, "gank") end
+		
+		if localconfig.spectator then
+			self.spectator = true
+			self.freezeCastingCounter = 999
+			self.speedOverride = 500
+			self.solid = false			
+			self.charSprite.solid = false			
+			self.hiddenSprite.solid = false
+			self.team = "spectators"
+		end
 	end,
 
 }
