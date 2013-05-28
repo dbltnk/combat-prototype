@@ -192,9 +192,14 @@ function network.update (dt)
 		local timeoutWarning = ""
 		if timeout > 8 then timeoutWarning = " DISCONNECTED!!!!!!!!!!! " else timeoutWarning = "" end
 		
+		local out_msg_size = -1
+		local in_msg_size = -1
+		if stats.in_messages > 0 then in_msg_size = math.floor(stats.in_bytes / stats.in_messages) end
+		if stats.out_messages > 0 then out_msg_size = math.floor(stats.out_bytes / stats.out_messages) end
+		
 		network.stats = "\nTIME " .. math.floor(network.time) .. " (" .. timeout .. ")" .. timeoutWarning .. "\n" .. 
-			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s\n" ..
-			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s\n" ..
+			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s " .. in_msg_size .. " b\n" ..
+			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s " .. out_msg_size .. " b\n" ..
 			"LAG " .. network.lag .. "\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
 				" OUTBUFF " .. out_buff:len() .. " REQS " .. network.open_request_count
@@ -271,7 +276,7 @@ function network.send (message)
 	end
 	
 	local m = json.encode(message)
-	--~ print("SEND", server, m)
+	--~ print("SEND", server, m:len(), m)
 	server:send(m)
 
 	stats.out_messages = stats.out_messages + 1
