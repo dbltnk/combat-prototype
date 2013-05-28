@@ -25,8 +25,13 @@ application = {
 -- any: contains x,y,rotation or oid
 -- returns {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 function action_handling.get_target (any)
-	if any.oid then return { oid = any.oid }
-	else return { x = any.x or 0, y = any.y or 0, rotation = any.rotation or 0 } end
+	if not object_manager.get(any.oid).spectator then
+		if any.oid then 
+			return { oid = any.oid }
+		else 
+			return { x = any.x or 0, y = any.y or 0, rotation = any.rotation or 0 } 
+		end
+	end
 end
 
 -- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)

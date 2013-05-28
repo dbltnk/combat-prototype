@@ -925,7 +925,7 @@ Character = Animation:extend
 		end
 		
 		-- local hidden image
-		if self.hidden and self == the.player then
+		if (self.hidden or self.spectator) and self == the.player then
 			self.hiddenSprite.visible = true
 		else
 			self.hiddenSprite.visible = false
