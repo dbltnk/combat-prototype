@@ -119,12 +119,16 @@ Barrier = Tile:extend
 		frame:SetName(title or "Highscore")
 		frame:SetState("highscore")
 		
+        for _,v in pairs(self.teamscore) do
+			v = math.floor(v * 10000) / 10000
+		end
+				
 		--show the team highscores
 		local l3 = list.process_keys(self.teamscore)       -- holt alle keys (oids)
         :orderby(function(a,b) return self.teamscore[a] > self.teamscore[b] end)      -- sortiert diese nach werten aus map
         :select(function (a) return {k=a, v=self.teamscore[a]} end)        -- und gibt eine liste zurück mit k und v einträge
-        :done() -- l2 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
-
+        :done() -- l3 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
+		
 		local upperList = loveframes.Create("list", frame)
 		upperList:SetPos(5, 30)
 		upperList:SetSize(390, 85)
@@ -155,6 +159,10 @@ Barrier = Tile:extend
 			local text = loveframes.Create("text")
 			text:SetText(v) 
 			upperList:AddItem(text)
+		end
+		
+        for _,v in pairs(self.highscore) do
+			v = math.floor(v * 10000) / 10000
 		end
 		
 		--~ -- show the player highscores 
