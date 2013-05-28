@@ -940,6 +940,10 @@ Character = Animation:extend
 		end
 		self.markedSprite.x = self.x
 		self.markedSprite.y = self.y - 32
+		
+		if self.spectator then
+			self.solid = false	
+		end
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
@@ -1017,10 +1021,7 @@ Character = Animation:extend
 		if localconfig.spectator then
 			self.spectator = true
 			self.freezeCastingCounter = 999
-			self.speedOverride = 500
-			self.solid = false			
-			self.charSprite.solid = false			
-			self.hiddenSprite.solid = false
+			self.speedOverride = 500		
 			self.team = "spectators"
 		end
 	end,
