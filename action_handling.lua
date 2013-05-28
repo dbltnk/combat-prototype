@@ -89,10 +89,12 @@ end
 -- target_with_view: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=}
 -- returns target with added view necessary
 function action_handling.add_view_on_demand (target, target_with_view)
-	if not target.spectator then
+	if target then
 		target.viewx = target.viewx or target_with_view.viewx
 		target.viewy = target.viewy or target_with_view.viewy
 		return target
+	else
+		print("I think I just saw a ghost!")
 	end
 end
 
