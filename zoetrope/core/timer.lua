@@ -30,8 +30,8 @@ Timer = Sprite:extend{
 
 			if delay <= 0 then
 				local info = debug.getinfo(2, 'Sl')
-				print('Warning: timer delay is ' .. delay .. ', will be triggered immediately (' .. 
-					  info.short_src .. ', line ' .. info.currentline .. ')')
+				--~ print('Warning: timer delay is ' .. delay .. ', will be triggered immediately (' .. 
+					  --~ info.short_src .. ', line ' .. info.currentline .. ')')
 			end
 		end
 		
@@ -59,8 +59,8 @@ Timer = Sprite:extend{
 
 			if delay <= 0 then
 				local info = debug.getinfo(2, 'Sl')
-				print('Warning: timer delay is ' .. delay .. ', will be triggered immediately (' .. 
-					  info.short_src .. ', line ' .. info.currentline .. ')')
+				--~ print('Warning: timer delay is ' .. delay .. ', will be triggered immediately (' .. 
+					  --~ info.short_src .. ', line ' .. info.currentline .. ')')
 			end
 		end
 		
