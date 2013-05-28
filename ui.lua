@@ -184,6 +184,7 @@ UiBar = Sprite:extend
 	
 	currentValue = 0,
 	maxValue = 100,
+	originalWidth = 0,
 
 	onNew = function (self)
 		self.bar = Fill:new{
@@ -198,11 +199,12 @@ UiBar = Sprite:extend
 			width = self.maxValue * self.wFactor,
 			height = 5,
 			fill = {0,255,0,255},
-			border = {0,0,0,255},
+			border = {0,0,0,255}
 		}
 		the.app.view.layers.ui:add(self)
 		the.app.view.layers.ui:add(self.background)
 		the.app.view.layers.ui:add(self.bar)
+		self.originalWidth = self.background.width
 	end,
 	
 	onUpdate = function (self, elapsed)
@@ -210,6 +212,9 @@ UiBar = Sprite:extend
 		self.bar.y = self.y + self.dy
 		self.background.x = self.x + self.dx
 		self.background.y = self.y + self.dy	
+		self.bar.width = self.currentValue * self.wFactor
+		self.background.width = self.maxValue * self.wFactor
+		
 		if self.inc then
 			self.background.fill = {127,127,127,255}
 			self.bar.fill = {255,40,244,255}			

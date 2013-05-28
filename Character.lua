@@ -450,6 +450,7 @@ Character = Animation:extend
 			end							
 		end
 		self.maxPain = config.maxPain *	(1 + config.strIncreaseFactor * self.level) 
+		self.painBar.wFactor = self.painBar.originalWidth / self.painBar.maxValue		
 	end,
 	
 	showDamage = function (self, str)
@@ -880,6 +881,8 @@ Character = Animation:extend
 
 		-- update pain bar
 		self.painBar.currentValue = self.currentPain
+		self.painBar.maxValue = self.maxPain
+
 		self.painBar:updateBar()
 		self.painBar.x = self.x - 10
 		self.painBar.y = self.y + 5
