@@ -236,7 +236,7 @@ TargetDummy = Animation:extend
 					:where(function(p) 
 						local obj = p.obj
 						local dist = p.dist
-						return (dist <= config.mobSightRange or self.currentPain > 0) and obj.name and not obj.hidden
+						return (dist <= config.mobSightRange or self.currentPain > 0) and obj.name and not obj.hidden and not obj.incapacitated
 					end)
 					:orderby(function(a,b) return a.dist < b.dist end)
 					:take(1)
