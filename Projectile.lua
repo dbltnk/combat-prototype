@@ -52,5 +52,8 @@ Projectile = Tile:extend
 			self.x = self.x + self.velocity.x * dt
 			self.y = self.y + self.velocity.y * dt
 		end
+		
+		-- scythe_jump is allowed to bypass all collision
+		if self.image == "/assets/graphics/action_projectiles/scythe_jump.png" then self.solid = false end
 	end,
 }
