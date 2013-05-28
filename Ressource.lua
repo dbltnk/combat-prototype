@@ -175,7 +175,7 @@ Ressource = Tile:extend
 		if self.controller == "alpha" or self.controller == "beta" or self.controller == "gamma" or self.controller == "delta" then 
 			object_manager.visit(function(oid,obj) 
 				if obj.team == self.controller then
-					object_manager.send(obj, "xp", config.xpPerRessourceTick)
+					object_manager.send(oid, "xp", config.xpPerRessourceTick)
 				end
 			end)
 		end
