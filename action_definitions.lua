@@ -668,9 +668,9 @@ action_definitions = {
 		},	
 	},		
 	-- -----------------------------------------------------------------------------------
-	splint_mail_mezz_break = {
-		name = "Mezz Break",
-		description = "Break all mezz effects in a large area around you.",
+	splint_mail_clarity = {
+		name = "Clarity",
+		description = "Break all stun, mezz and powerblock effects in a large area around you.",
 		icon = nil,
 		sound = nil,				
 		cast_time = 0.1,
@@ -682,7 +682,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "ae", range = 400, piercing_number = 20, explosion_color = color_splint_mail},
 				effects = {
-					{effect_type = "mezz_break"},
+					{effect_type = "clarity"},
 				},
 		},	
 	},		

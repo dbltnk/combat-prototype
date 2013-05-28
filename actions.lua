@@ -369,11 +369,11 @@ action_handling.register_effect("mezz", function (target, effect, source_oid)
 	object_manager.send(target.oid, "mezz", effect.duration * increase, source_oid)
 end)
 
--- effect: mezz_break ----------------------------------------------------------
--- eg. {effect_type = "stun_break"},
+-- effect: clarity ----------------------------------------------------------
+-- eg. {effect_type = "clarity"},
 -- has: 
-action_handling.register_effect("mezz_break", function (target, effect, source_oid)
-	object_manager.send(target.oid, "mezz_break", source_oid)
+action_handling.register_effect("clarity", function (target, effect, source_oid)
+	object_manager.send(target.oid, "clarity", source_oid)
 end)
 
 -- effect: root ----------------------------------------------------------

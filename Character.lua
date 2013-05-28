@@ -141,7 +141,7 @@ Character = Animation:extend
 																																if self.skills[k] ~= "hide_armor_second_wind" then
 																																	if self.skills[k] ~= "splint_mail_absorb" then
 																																		if self.skills[k] ~= "splint_mail_ignore_pain" then
-																																			if self.skills[k] ~= "splint_mail_mezz_break" then
+																																			if self.skills[k] ~= "splint_mail_clarity" then
 																																				if self.skills[k] ~= "splint_mail_grow" then
 																																					if self.skills[k] ~= "splint_mail_shout" then
 																																						if self.skills[k] ~= "splint_mail_invulnerability" then
@@ -659,12 +659,21 @@ Character = Animation:extend
 				self:unfreezeCasting()
 				self.mezzed = false
 			end)
-		elseif message_name == "mezz_break" then
+		elseif message_name == "clarity" then
 			local duration, source_oid = ...
 			if self.mezzed then
 				self.freezeMovementCounter = 0	
 				self.freezeCastingCounter = 0					
 				self.mezzed = false
+			end	
+			if self.stunned then
+				self.freezeMovementCounter = 0	
+				self.freezeCastingCounter = 0					
+				self.stunned = false
+			end	
+			if self.powerblocked then
+				self.freezeCastingCounter = 0					
+				self.powerblocked = false
 			end	
 		elseif message_name == "powerblock" then
 			local duration, source_oid = ...

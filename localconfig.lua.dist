@@ -69,7 +69,7 @@ elseif localconfig.armor == "hide_armor" then -- The following lines are the six
 elseif localconfig.armor == "splint_mail" then -- The following lines are the six splint mail skills.
 	table.insert(localconfig.skills,"splint_mail_absorb") -- Drains the health of a lot of targets around you and absorbs incoming damage for some time..
 	table.insert(localconfig.skills,"splint_mail_ignore_pain") -- Increases your pain resistance for some time.
-	table.insert(localconfig.skills,"splint_mail_mezz_break") -- Break all mezz effects in a large area around you.
+	table.insert(localconfig.skills,"splint_mail_clarity") -- Break all stun, mezz and powerblock effects in a large area around you.
 	table.insert(localconfig.skills,"splint_mail_grow") -- Increase your body size for some time.
 	-- table.insert(localconfig.skills,"splint_mail_shout") -- Makes a lot of targets in the area around you unable to use actions for a brief time.
 	-- table.insert(localconfig.skills,"splint_mail_invulnerability") -- Renders you invulnerable to damage for a short amount of time.
