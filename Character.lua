@@ -102,7 +102,7 @@ Character = Animation:extend
 		self.wFactor = self.width / self.maxPain * 2		
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
 		-- fill up skill bar with missing skills
-		for i = 1,6 do 
+		for i = 1,8 do 
 			if not self.skills[i] then self.skills[i] = "bow_shot" end
 		end
 		

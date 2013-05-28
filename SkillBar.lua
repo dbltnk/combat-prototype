@@ -10,7 +10,8 @@ SkillBar = Class:extend
 		"/assets/graphics/action_icons/unknown.png",
 		"/assets/graphics/action_icons/unknown.png",
 		"/assets/graphics/action_icons/unknown.png",
---~ 		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
+		"/assets/graphics/action_icons/unknown.png",
 	},
 	
 	-- contains references to SkillIcon
@@ -21,7 +22,7 @@ SkillBar = Class:extend
 	skillTimerText = {},
 	
 	-- position
-	x = love.graphics.getWidth() / 2 - SkillIcon.width / 2 * 6 - 6, -- to-do: erste 6 ersetzen durch table.getn(skills) oder ähnliche zählmethode
+	x = love.graphics.getWidth() / 2 - SkillIcon.width / 2 * 8 - 11, -- to-do: erste 6 ersetzen durch table.getn(skills) oder ähnliche zählmethode
 	y = love.graphics.getHeight()  - SkillIcon.height,
 	
 	onNew = function (self)
@@ -69,7 +70,8 @@ SkillBar = Class:extend
 		
 		for index, skillIcon in pairs(self.skillIcons) do
 			local space = 0
-			if index >=3 then space = 10 end
+			if index >=3 and index <=6 then space = 10 end
+			if index >=7 then space = 20 end
 			
 			skillIcon.x = (index - 1) * 32 + self.x + space
 			skillIcon.y = self.y

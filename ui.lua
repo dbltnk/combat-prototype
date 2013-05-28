@@ -3,7 +3,7 @@
 
 ControlUI = Tile:extend
 {
-	width = 212,
+	width = 287,
 	height = 54,
 	image = '/assets/graphics/controls_mouse.png',
     

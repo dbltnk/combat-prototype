@@ -107,9 +107,8 @@ Player = Character:extend
 			if the.keys:pressed('2') then shootSkillNr = 4 doShoot = true end
 			if the.keys:pressed('3') then shootSkillNr = 5 doShoot = true end
 			if the.keys:pressed('4') then shootSkillNr = 6 doShoot = true end
---~ 			if the.keys:pressed('5') then shootSkillNr = 7 doShoot = true end
---~ 			if the.keys:pressed('6') then shootSkillNr = 8 doShoot = true end
---~ 			if the.keys:pressed('7') then shootSkillNr = 9 doShoot = true end
+			if the.keys:pressed('q') then shootSkillNr = 7 doShoot = true end
+			if the.keys:pressed('e') then shootSkillNr = 8 doShoot = true end
 
 			if the.keys:pressed('left', 'a') then movex = -1 end
 			if the.keys:pressed('right', 'd') then movex = 1 end
