@@ -7,10 +7,10 @@ Character = Animation:extend
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
-		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team", "invul", "dmgModified", "marked"},
+		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team", "invul", "dmgModified", "marked", "spectator"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
-		"velocity", "alive", "incapacitated", "hidden", "isInCombat", "invul", "width", "height", "rotation", "dmgModified", "marked"},
+		"velocity", "alive", "incapacitated", "hidden", "isInCombat", "invul", "width", "height", "rotation", "dmgModified", "marked", "spectator"},
 	sync_low = {"image", "level", "name", "weapon", "armor", "team"},			
 	
 	maxPain = config.maxPain, 
@@ -40,6 +40,7 @@ Character = Animation:extend
 	marked = false,
 	interrupted = false,
 	deaths = 0,
+	spectator = false,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -89,7 +90,7 @@ Character = Animation:extend
 	lastFootstep = 0,
 	
 	footstepsPossible = function (self)
-		if self.hidden == false then return love.timer.getTime() - self.lastFootstep >= .25 end
+		if self.hidden == false and localconfig.spectator == false then return love.timer.getTime() - self.lastFootstep >= .25 end
 	end,
 	
 	makeFootstep = function (self)
@@ -939,6 +940,17 @@ Character = Animation:extend
 		end
 		self.markedSprite.x = self.x
 		self.markedSprite.y = self.y - 32
+		
+		if localconfig.spectator then
+			self.spectator = true
+			self.freezeCastingCounter = 999
+			self.speedOverride = 500
+			self.charSprite.scale = 0
+			self.solid = false			
+			self.charSprite.solid = false			
+			self.hiddenSprite.solid = false
+			self.team = "spectators"
+		end
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
