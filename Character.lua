@@ -539,7 +539,7 @@ Character = Animation:extend
 		--	print("HEAL", str)
 			self:gainPain(-str)
 			object_manager.send(source_oid, "xp", str * config.combatHealXP)
-			if self.hidden then self.hidden = false end			
+			if self.hidden then self.hidden = false self.speedOverride = 0 end			
 		elseif message_name == "stamHeal" then
 			local str, source_oid = ...
 		--	print("STAMHEAL", str)
@@ -556,7 +556,7 @@ Character = Animation:extend
 				end
 				if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
 			end
-			if self.hidden then self.hidden = false end
+			if self.hidden then self.hidden = false self.speedOverride = 0 end	
 			if self.mezzed then
 				self:unfreezeMovement()
 				self:unfreezeCasting()
@@ -589,7 +589,7 @@ Character = Animation:extend
 						self:unfreezeMovement()
 						self.rooted = false
 					end
-					if self.hidden then self.hidden = false end						
+					if self.hidden then self.hidden = false self.speedOverride = 0 end						
 				end)				
 			end		
 		elseif message_name == "damage_over_time" then
@@ -615,7 +615,7 @@ Character = Animation:extend
 							self:unfreezeMovement()
 							self.rooted = false
 						end
-						if self.hidden then self.hidden = false end	
+						if self.hidden then self.hidden = false self.speedOverride = 0 end	
 					end
 				end)				
 			end		
@@ -632,7 +632,7 @@ Character = Animation:extend
 					end
 				end)
 			end	
-			if self.hidden then self.hidden = false end				
+			if self.hidden then self.hidden = false self.speedOverride = 0 end				
 		elseif message_name == "stun" then
 			local duration, source_oid = ...
 		--	print("STUN", duration)
@@ -855,6 +855,7 @@ Character = Animation:extend
 		then
 			local cx,cy = self.x + self.width / 2, self.y + self.height / 2
 			self.skills[ipt.shootSkillNr]:use(cx, cy, ipt.viewx, ipt.viewy, self)
+			if self.hidden then self.speedOverride = 0 end
 			self.hidden = false
 		end
 	end,
