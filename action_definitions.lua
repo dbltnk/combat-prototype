@@ -568,9 +568,9 @@ action_definitions = {
 		},	
 	},		
 	-- -----------------------------------------------------------------------------------
-	hide_armor_snare_break = {
-		name = "Snare Break",
-		description = "Break all snare effects.",
+	hide_armor_mend_wounds = {
+		name = "Mend Wounds",
+		description = "Break all damage-over-time effects.",
 		icon = nil,
 		sound = nil,				
 		cast_time = 0.1,
@@ -582,7 +582,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "snare_break"},
+				{effect_type = "stop_dots"},
 			},
 		},		
 	},		

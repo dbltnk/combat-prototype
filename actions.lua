@@ -391,6 +391,13 @@ action_handling.register_effect("root_break", function (target, effect, source_o
 	object_manager.send(target.oid, "root_break", source_oid)
 end)
 
+-- effect: stop_dots ----------------------------------------------------------
+-- eg. {effect_type = "stop_dots"},
+-- has: 
+action_handling.register_effect("stop_dots", function (target, effect, source_oid)
+	object_manager.send(target.oid, "stop_dots", source_oid)
+end)
+
 -- effect: dmgModifier ----------------------------------------------------------
 -- eg. {effect_type = "dmgModifier", duration = 10},
 -- has: str, duration

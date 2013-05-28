@@ -136,7 +136,7 @@ Character = Animation:extend
 																											if self.skills[k] ~= "hide_armor_sprint" then
 																												if self.skills[k] ~= "hide_armor_sneak" then
 																													if self.skills[k] ~= "hide_armor_freedom" then
-																														if self.skills[k] ~= "hide_armor_snare_break" then
+																														if self.skills[k] ~= "hide_armor_mend_wounds" then
 																															if self.skills[k] ~= "hide_armor_regenerate" then
 																																if self.skills[k] ~= "hide_armor_second_wind" then
 																																	if self.skills[k] ~= "splint_mail_absorb" then
@@ -506,12 +506,9 @@ Character = Animation:extend
 		elseif message_name == "heal_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("CHARACTER HEAL_OVER_TIME", str, duration, ticks)
-			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.deaths == oldDeaths then
-						if not self.incapacitated then self:showDamage(-str) end
-					end
+					if not self.incapacitated then self:showDamage(-str) end
 				end)
 			end	
 		elseif message_name == "changeSize" then
@@ -621,14 +618,11 @@ Character = Animation:extend
 			end		
 		elseif message_name == "heal_over_time" then
 			local str, duration, ticks, source_oid = ...
-			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.deaths == oldDeaths then
-						if not self.incapacitated then  
-							self:gainPain(-str)
-							object_manager.send(source_oid, "xp", str * config.combatHealXP)
-						end
+					if not self.incapacitated then  
+						self:gainPain(-str)
+						object_manager.send(source_oid, "xp", str * config.combatHealXP)
 					end
 				end)
 			end	
@@ -766,7 +760,10 @@ Character = Animation:extend
 			the.app.view.timer:after(duration, function()
 				self.width = self.width / str * 100 
 				self.height = self.height / str * 100
-			end)																						
+			end)	
+		elseif message_name == "stop_dots" then
+			local duration, source_oid = ...
+			self.deaths = self.deaths + 1																							
 		end
 	end,
 	

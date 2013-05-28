@@ -62,7 +62,7 @@ elseif localconfig.armor == "hide_armor" then -- The following lines are the six
 	table.insert(localconfig.skills,"hide_armor_sprint") -- Increases your movement speed for a short time.
 	table.insert(localconfig.skills,"hide_armor_sneak") -- Renders you invisible for a short time even when moving.
 	table.insert(localconfig.skills,"hide_armor_freedom") -- Break all root and snare effects.
-	table.insert(localconfig.skills,"hide_armor_snare_break") -- Break all snare effects.
+	table.insert(localconfig.skills,"hide_armor_mend_wounds") -- Break all damage-over-time effects.
 	-- table.insert(localconfig.skills,"hide_armor_regenerate") -- Decreases your pain slowly over time.
 	-- table.insert(localconfig.skills,"hide_armor_second_wind") -- Instantly decreases your fatigue a little.
 
