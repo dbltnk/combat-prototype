@@ -702,7 +702,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "changeSize", str = 150, duration = 30},
+				{effect_type = "changeSize", str = 200, duration = 30},
 			},
 		},	
 	},	
