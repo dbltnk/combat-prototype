@@ -125,7 +125,7 @@ Character = Animation:extend
 															if self.skills[k] ~= "staff_life_leech" then
 																if self.skills[k] ~= "staff_poison" then
 																	if self.skills[k] ~= "staff_fireball" then
-																		if self.skills[k] ~= "staff_heal_other" then
+																		if self.skills[k] ~= "staff_healing_orb" then
 																			if self.skills[k] ~= "staff_healing_breeze" then
 																				if self.skills[k] ~= "staff_mezz" then
 																					if self.skills[k] ~= "robe_bandage" then
@@ -967,7 +967,7 @@ Character = Animation:extend
 		local done = {}
 		for i = 1, 10 do 
 			local remainingTime = (the.app.view.game_start_time + config.roundTime) - network.time
-			print(math.floor(love.timer.getTime()), config.xpCapTimer, i, math.floor(remainingTime))
+			--~ print(math.floor(love.timer.getTime()), config.xpCapTimer, i, math.floor(remainingTime))
 			if (math.floor(remainingTime) == config.xpCapTimer * i) and done[i] == nil then
 				self:resetXP()
 				done[i] = true
