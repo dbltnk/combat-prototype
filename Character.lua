@@ -721,7 +721,7 @@ Character = Animation:extend
 			the.app.view.timer:after(duration, function()
 				if self.currentPain >= self.maxPain - str then self:setIncapacitation(true) end
 				self.maxPain = self.maxPain - str
-				self.maxPainOverdrive = 1 - str / self.maxPain
+				self.maxPainOverdrive = 1
 			end)	
 		elseif message_name == "invul" then
 			local duration, source_oid = ...
@@ -884,7 +884,8 @@ Character = Animation:extend
 		self.painBar.currentValue = self.currentPain
 		self.painBar.maxValue = self.maxPain
 		self.painBar.width = self.pain_bar_size * self.maxPainOverdrive
-		
+		print("xxxxxxxxxxxxxxxxxxxxxx", self.maxPain, self.maxPainOverdrive, self.painBar.currentValue, self.painBar.maxValue)
+
 		self.painBar:updateBar()
 		self.painBar.x = self.x - 10
 		self.painBar.y = self.y + 5
