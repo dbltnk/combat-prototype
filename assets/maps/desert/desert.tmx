@@ -83,10 +83,10 @@
     <property name="_the" value="respawnpoint"/>
    </properties>
   </object>
-  <object name="TargetDummy" x="577" y="751" width="23" height="20"/>
-  <object name="TargetDummy" x="631" y="629" width="23" height="20"/>
-  <object name="TargetDummy" x="540" y="654" width="23" height="20"/>
-  <object name="TargetDummy" x="673" y="716" width="23" height="20"/>
+  <object name="TargetDummy" x="523" y="835" width="23" height="20"/>
+  <object name="TargetDummy" x="718" y="447" width="23" height="20"/>
+  <object name="TargetDummy" x="486" y="738" width="23" height="20"/>
+  <object name="TargetDummy" x="619" y="800" width="23" height="20"/>
   <object name="TargetDummy" x="2531" y="1022" width="23" height="20"/>
   <object name="TargetDummy" x="2410" y="942" width="23" height="20"/>
   <object name="TargetDummy" x="2522" y="896" width="23" height="20"/>
@@ -109,7 +109,7 @@
   <object name="TargetDummy" x="2861" y="1826" width="23" height="20"/>
   <object name="TargetDummy" x="2427" y="858" width="23" height="20"/>
   <object name="TargetDummy" x="173" y="272" width="23" height="20"/>
-  <object name="TargetDummy" x="210" y="472" width="23" height="20"/>
+  <object name="TargetDummy" x="115" y="440" width="23" height="20"/>
   <object name="TargetDummy" x="616" y="369" width="23" height="20"/>
   <object name="TargetDummy" x="804" y="1460" width="23" height="20"/>
   <object name="TargetDummy" x="1222" y="1414" width="23" height="20"/>
@@ -125,87 +125,6 @@
   </object>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
-  <object x="1279" y="1963">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="259" y="1487">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="383" y="1421">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="449" y="1331">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="333" y="1311">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="144" y="1342">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="942" y="1242">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="1595" y="1200">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="256" y="1968">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="128" y="2892">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="542" y="3084">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="734" y="3058">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2110" y="3084">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2272" y="3054">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2396" y="2994">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2270" y="2764">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2942" y="3118">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="3102" y="2611">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="3038" y="2348">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2624" y="2380">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2206" y="2190">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2078" y="1872">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="1858" y="1774">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2558" y="1998">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2718" y="1840">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2880" y="1968">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
-  <object x="2972" y="1742">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
   <object x="1866" y="2484" width="138" height="105"/>
   <object x="1675" y="2775" width="138" height="105"/>
   <object x="1097" y="2806" width="138" height="105"/>
@@ -229,14 +148,51 @@
   <object x="2787" y="2192" width="90" height="109"/>
   <object x="2754" y="3053" width="91" height="80"/>
   <object x="1701" y="2681" width="57" height="35"/>
-  <object x="1805" y="1245">
-   <polygon points="0,0 2,16 17,20 31,15 34,3 33,-5 20,-8 5,-7"/>
-  </object>
   <object x="1732" y="2266" width="57" height="35"/>
   <object x="1476" y="2938" width="57" height="35"/>
   <object x="1314" y="2844" width="57" height="35"/>
   <object x="995" y="2683" width="57" height="35"/>
   <object x="1184" y="2069" width="57" height="35"/>
   <object x="1408" y="2139" width="57" height="35"/>
+  <object x="851" y="66" width="89" height="369"/>
+  <object x="950" y="379" width="114" height="57"/>
+  <object x="725" y="699" width="95" height="140"/>
+  <object x="972" y="637" width="113" height="101"/>
+  <object x="610" y="625" width="123" height="65"/>
+  <object x="487" y="571" width="122" height="64"/>
+  <object x="290" y="297" width="121" height="60"/>
+  <object x="239" y="362" width="103" height="270"/>
+  <object x="358" y="602" width="121" height="60"/>
+  <object x="420" y="287" width="121" height="60"/>
+  <object x="521" y="218" width="121" height="60"/>
+  <object x="1037" y="569" width="121" height="60"/>
+  <object x="139" y="1326" width="37" height="36"/>
+  <object x="334" y="1295" width="37" height="36"/>
+  <object x="262" y="1477" width="22" height="24"/>
+  <object x="388" y="1417" width="22" height="24"/>
+  <object x="454" y="1320" width="22" height="24"/>
+  <object x="936" y="1231" width="37" height="36"/>
+  <object x="1803" y="1231" width="37" height="36"/>
+  <object x="1604" y="1192" width="22" height="24"/>
+  <object x="2881" y="1959" width="22" height="24"/>
+  <object x="2982" y="1736" width="22" height="24"/>
+  <object x="2722" y="1833" width="22" height="24"/>
+  <object x="2568" y="1995" width="22" height="24"/>
+  <object x="2213" y="2183" width="22" height="24"/>
+  <object x="3045" y="2345" width="22" height="24"/>
+  <object x="3108" y="2597" width="22" height="24"/>
+  <object x="2950" y="3112" width="22" height="24"/>
+  <object x="2629" y="2375" width="22" height="24"/>
+  <object x="2276" y="2759" width="22" height="24"/>
+  <object x="2406" y="2984" width="22" height="24"/>
+  <object x="2120" y="3083" width="22" height="24"/>
+  <object x="2280" y="3053" width="22" height="24"/>
+  <object x="1861" y="1769" width="22" height="24"/>
+  <object x="2082" y="1864" width="22" height="24"/>
+  <object x="742" y="3051" width="22" height="24"/>
+  <object x="549" y="3083" width="22" height="24"/>
+  <object x="133" y="2891" width="22" height="24"/>
+  <object x="262" y="1960" width="22" height="24"/>
+  <object x="1284" y="1961" width="22" height="24"/>
  </objectgroup>
 </map>
