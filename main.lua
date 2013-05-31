@@ -118,7 +118,11 @@ the.app = App:new
 		if the.keys:pressed('escape') then 
 			--~ profiler.stop()
 			network.send({channel = "server", cmd = "bye"})
-			network.update(1)
+			-- wait a little bit to ensure bye delivery
+			local t = love.timer.getTime()
+			while love.timer.getTime() - t < 1 do
+				network.update(1)
+			end
 			network.shutdown()
 			os.exit() 
 		end
