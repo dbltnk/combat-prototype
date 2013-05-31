@@ -17,9 +17,7 @@ object_manager.objects = {}
 
 function object_manager.visit (fun)
 	for oid,o in pairs(object_manager.objects) do
-		if not object_manager.get(oid).spectator then
-			fun(oid,o)
-		end
+		fun(oid,o)
 	end
 end
 

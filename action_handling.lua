@@ -25,13 +25,8 @@ application = {
 -- any: contains x,y,rotation or oid
 -- returns {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
 function action_handling.get_target (any)
-	if not object_manager.get(any.oid).spectator then
-		if any.oid then 
-			return { oid = any.oid }
-		else 
-			return { x = any.x or 0, y = any.y or 0, rotation = any.rotation or 0 } 
-		end
-	end
+	if any.oid then return { oid = any.oid }
+	else return { x = any.x or 0, y = any.y or 0, rotation = any.rotation or 0 } end
 end
 
 -- target: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=} (x,y is center)
@@ -89,13 +84,9 @@ end
 -- target_with_view: {oid=,viewx=,viewy=} or {x=,y=,viewx=,viewy=}
 -- returns target with added view necessary
 function action_handling.add_view_on_demand (target, target_with_view)
-	if target then
-		target.viewx = target.viewx or target_with_view.viewx
-		target.viewy = target.viewy or target_with_view.viewy
-		return target
-	else
-		print("I think I just saw a ghost!")
-	end
+	target.viewx = target.viewx or target_with_view.viewx
+	target.viewy = target.viewy or target_with_view.viewy
+	return target
 end
 
 -- function targets_selected_callback({t0,t1,t2,...})
@@ -172,7 +163,7 @@ function action_handling.find_cone_targets (x,y, dx,dy, coneDeltaRadians, range,
 	
 	l = list.process_values(l)
 		:where(function(f) 
-			return f.targetable and not f.spectator
+			return f.targetable
 		end)
 		:where(function(f)
 			--~ print("---------", f.oid, f.class)
@@ -218,7 +209,7 @@ function action_handling.find_ae_targets (x,y, range, maxTargetCount)
 	
 	l = list.process_values(l)
 		:where(function(f) 
-			return f.targetable and not f.spectator
+			return f.targetable
 		end)
 		:where(function(f)
 			return collision.minDistPointToAABB (x,y, f.x, f.y, f.x+f.width, f.y+f.height) <= range

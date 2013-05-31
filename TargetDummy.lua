@@ -236,7 +236,7 @@ TargetDummy = Animation:extend
 					:where(function(p) 
 						local obj = p.obj
 						local dist = p.dist
-						return (dist <= config.mobSightRange or self.currentPain > 0) and obj.name and not obj.hidden and not obj.incapacitated and not obj.spectator
+						return (dist <= config.mobSightRange or self.currentPain > 0) and obj.name and not obj.hidden and not obj.incapacitated
 					end)
 					:orderby(function(a,b) return a.dist < b.dist end)
 					:take(1)
@@ -265,7 +265,7 @@ TargetDummy = Animation:extend
 			end
 			
 			-- make mobs move towards the player
-			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name and not obj.hidden and not obj.spectator then 
+			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name and not obj.hidden then 
 				if self.x < obj.x then -- todo: find better movement code for this
 					self.x = self.x + speed* elapsed
 				else
@@ -326,7 +326,7 @@ TargetDummy = Animation:extend
 		object_manager.visit(function(oid,obj) 
 			local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
 			-- make mobs move towards the player
-			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name and not obj.spectator then 
+			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
 				-- set rotation and animation
 				self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, obj.x, obj.y))	
 				local ddx,ddy = vector.fromVisualRotation(self.rotation, 1)
