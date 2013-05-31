@@ -177,26 +177,26 @@ UiBar = Sprite:extend
 {
 	pb = nil,
 	pbb = nil,
-	wFactor = 0.30,
+	width = 52,
+	
 	dx = 0,
 	dy = 0,
 	inc = false,
 	
 	currentValue = 0,
 	maxValue = 100,
-	originalWidth = 0,
 
 	onNew = function (self)
 		self.bar = Fill:new{
 			x = self.x, y = self.y, 
-			width = self.currentValue * self.wFactor,
+			width = self.width,
 			height = 5,
 			fill = {255,0,0,255},
 			border = {0,0,0,255}	
 		}
 		self.background = Fill:new{
 			x = self.x, y = self.y, 
-			width = self.maxValue * self.wFactor,
+			width = self.width,
 			height = 5,
 			fill = {0,255,0,255},
 			border = {0,0,0,255}
@@ -208,12 +208,17 @@ UiBar = Sprite:extend
 	end,
 	
 	onUpdate = function (self, elapsed)
+		self:updateBar()
+	end,
+	
+	updateBar = function (self)
 		self.bar.x = self.x + self.dx
 		self.bar.y = self.y + self.dy
 		self.background.x = self.x + self.dx
 		self.background.y = self.y + self.dy	
-		self.bar.width = self.currentValue * self.wFactor
-		self.background.width = self.maxValue * self.wFactor
+		local f = self.currentValue / self.maxValue
+		self.bar.width = f * self.width
+		self.background.width = self.width
 		
 		if self.inc then
 			self.background.fill = {127,127,127,255}
@@ -222,14 +227,6 @@ UiBar = Sprite:extend
 			self.background.fill = {0,255,0,255}
 			self.bar.fill = {255,0,0,255}
 		end
-	end,
-	
-	updateBar = function (self)
-		if self.currentValue > self.maxValue then 
-			self.currentValue = self.maxValue
-		else
-			self.bar.width = self.currentValue * self.wFactor
-		end	
 	end,
 	
 	onDie = function (self)

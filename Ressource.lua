@@ -12,7 +12,6 @@ Ressource = Tile:extend
 	image = '/assets/graphics/ressource.png',
 	currentPain = 0,
 	maxPain = config.ressourceHealth,
-	wFactor = 0,
 	t = Text:new{
 		font = 12,
 		text = "",
@@ -43,13 +42,11 @@ Ressource = Tile:extend
 		--print("NEW RESSOURCE", self.x, self.y, self.width, self.height)
 		the.app.view.layers.characters:add(self)
 				
-		self.wFactor = self.width / self.maxPain
-		
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
 			dx = 0, dy = self.height,
 			currentValue = self.currentPain, maxValue = self.maxPain, 
-			wFactor = self.wFactor,
+			width = self.width,
 		}
 		drawDebugWrapper(self)
 		

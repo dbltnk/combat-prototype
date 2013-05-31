@@ -7,13 +7,19 @@ Character = Animation:extend
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
-		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", "team", "invul", "dmgModified", "marked"},
+		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", 
+		"team", "invul", "dmgModified", "marked", "maxPainOverdrive"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
-		"velocity", "alive", "incapacitated", "hidden", "isInCombat", "invul", "width", "height", "rotation", "dmgModified", "marked"},
-	sync_low = {"image", "level", "name", "weapon", "armor", "team"},			
+		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
+		"invul", "width", "height", "rotation", "dmgModified", "marked",
+		"maxPainOverdrive"},
+		
+	sync_low = {"image", "level", "name", "weapon", "armor", "team"},
 	
 	maxPain = config.maxPain, 
+	-- 1 = 100% health bar, 1.2 is 20% longer
+	maxPainOverdrive = 1,
 	currentPain = 0,
 	maxEnergy = config.maxEnergy, 
 	currentEnergy = config.maxEnergy, 
@@ -23,7 +29,6 @@ Character = Animation:extend
 	levelCap = config.levelCap,
 	tempMaxxed = false,
 	incapacitated = false,
-	wFactor = 0,	
 	hidden = false,
 	isInCombat = false,	
 	name = nil,
@@ -100,7 +105,6 @@ Character = Animation:extend
 		self:mixin(GameObject)
 		
 		the.app.view.layers.characters:add(self)
-		self.wFactor = self.width / self.maxPain * 2		
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
 		-- fill up skill bar with missing skills
 		for i = 1,8 do 
@@ -158,16 +162,20 @@ Character = Animation:extend
 		end
 		drawDebugWrapper(self)
 		
+		local barWidth = 52
+		
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
 			dx = 0, dy = self.height,
-			currentValue = self.currentPain, maxValue = self.maxPain, inc = false, wFactor = self.wFactor
+			currentValue = self.currentPain, maxValue = self.maxPain, inc = false,
+			width = barWidth,
 		}
 		
 		self.nameLevel = NameLevel:new{
 			x = self.x, y = self.y, 
 			level = self.level, name = self.name,
-			weapon = self.weapon, armor = self.armor, team = self.team
+			weapon = self.weapon, armor = self.armor, team = self.team,
+			width = barWidth,
 		}	
 	
 		local goSelf = self
@@ -423,7 +431,6 @@ Character = Animation:extend
 			end							
 		end
 		self.maxPain = config.maxPain *	(1 + config.strIncreaseFactor * self.level) 
-		self.painBar.wFactor = self.painBar.originalWidth / self.painBar.maxValue		
 	end,
 	
 	showDamage = function (self, str)
@@ -709,10 +716,12 @@ Character = Animation:extend
 		elseif message_name == "buff_max_pain" then
 			local str, duration, source_oid = ...
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			self.maxPainOverdrive = 1 + str / self.maxPain
 			self.maxPain = self.maxPain + str
 			the.app.view.timer:after(duration, function()
 				if self.currentPain >= self.maxPain - str then self:setIncapacitation(true) end
 				self.maxPain = self.maxPain - str
+				self.maxPainOverdrive = 1 - str / self.maxPain
 			end)	
 		elseif message_name == "invul" then
 			local duration, source_oid = ...
@@ -872,8 +881,9 @@ Character = Animation:extend
 		end	
 
 		-- update pain bar
-		self.painBar.currentValue = self.currentPain
-		self.painBar.maxValue = self.maxPain
+		local normalMaxPain = self.maxPain / self.maxPainOverdrive
+		self.painBar.currentValue = self.currentPain / normalMaxPain
+		self.painBar.maxValue = 1
 
 		self.painBar:updateBar()
 		self.painBar.x = self.x - 10

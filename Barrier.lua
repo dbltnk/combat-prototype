@@ -12,7 +12,6 @@ Barrier = Tile:extend
 	image = '/assets/graphics/barrier.png',
 	currentPain = 0,
 	maxPain = config.barrierHealth,
-	wFactor = 0,
 	highscore = {},
 	teamscore = {},
 	owner = 0,
@@ -33,13 +32,12 @@ Barrier = Tile:extend
 		self:updateQuad()
 		--print("NEW BARRIER", self.x, self.y, self.width, self.height)
 		the.app.view.layers.characters:add(self)
-		self.wFactor = self.width / self.maxPain
 		
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
 			dx = 0, dy = self.height,
 			currentValue = self.currentPain, maxValue = self.maxPain, 
-			wFactor = self.wFactor,
+			width = self.width
 		}
 		
 		drawDebugWrapper(self)

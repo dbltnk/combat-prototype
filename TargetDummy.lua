@@ -17,7 +17,6 @@ TargetDummy = Animation:extend
 	damagerTable = {},	
 	finalDamage = 0,
 	alive = true,
-	wFactor = 0,	
 	timeOfDeath = 0,	
 	owner = 0,
 	targetable = true,
@@ -70,11 +69,11 @@ TargetDummy = Animation:extend
 		object_manager.create(self)
 		--print("NEW DUMMY", self.x, self.y, self.width, self.height)
 		the.app.view.layers.characters:add(self)
-		self.wFactor = self.width / self.maxPain			
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
 			dx = 0, dy = self.height,
-			currentValue = self.currentPain, maxValue = self.maxPain, wFactor = self.wFactor
+			currentValue = self.currentPain, maxValue = self.maxPain,
+			width = self.width,
 		}
 		
 		drawDebugWrapper(self)
@@ -350,7 +349,8 @@ TargetDummy = Animation:extend
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
 			dx = 0, dy = self.height,
-			currentValue = self.currentPain, maxValue = self.maxPain, wFactor = self.wFactor
+			currentValue = self.currentPain, maxValue = self.maxPain,
+			width = self.width,
 		}			
 		for k,v in pairs(self.dmgReceived) do k = nil v = nil end
 		for k,v in pairs(self.damagerTable) do  k = nil v = nil end		
