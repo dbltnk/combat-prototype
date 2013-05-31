@@ -1,32 +1,29 @@
-# Controls:
+## About this repository
 
-* Press F5 to toggle the highscore display
-* Press F10 to togle fullscreen/windowed
-* Press F11 to print out rendering debug information
-* Press F12 to draw collision debug frames
-* Press ESC to exit the game
+This is the combat prototype for our upcoming Sandbox PvP game "Das Tal". It's a very rough and volatile in-progress draft of what we plan to make into the core gameplay of the full game. Feel free to play the game, check out the source and give us feedback on it via <alexander.zacher@googlemail.com>.
 
-## Mouse & keyboard control scheme:
+## How to play the game
 
-* Move your character: Press WASD.
-* Move the cursor: Move the mouse.
-* Use action 1: press left mouse button
-* Use action 2: press right mouse button
-* Use action 3: press 1
-* Use action 4: press 2
-* Use action 5: press 3
-* Use action 6: press 4
-* Target yourself: keep left shift pressed
+All your questions about how how to play the game - and many more - will be answered in our beautiful [readme document on hackpad][1].
 
-# License
-Character Graphics by 
-Sithjester: http://untamed.wild-refuge.net/rpgxp.php (slightly modified)
+## License
 
-Environment Graphics by
-Daniel Cook: http://www.lostgarden.com/2006/07/more-free-game-graphics.html
-Leonard Pabin: http://opengameart.org/content/whispers-of-avalon-grassland-tileset
-Hyptosis: http://opengameart.org/content/mage-city-arcanos
-Guillaume Lecollinet: http://opengameart.org/content/browserquest-sprites-and-tiles (slightly modified)
+### Character Graphics by 
+- [Sithjester][2] (slightly modified)
 
-Skill Icons by
-Lorc, Delapuite et al.: http://game-icons.net/about.html (slightly modified)
+### Environment Graphics by
+- [Daniel Cook][3]
+- [Leonard Pabin][4]
+- [Hyptosis][5]
+- [Guillaume Lecollinet][6]
+
+### Skill Icons by
+- [Lorc, Delapuite et al.][7] (slightly modified)
+
+[1]: https://hackpad.com/Das-Tal-Combat-Prototype-Readme-Tutorial-si94075Ora6
+[2]: http://untamed.wild-refuge.net/rpgxp.php
+[3]: http://www.lostgarden.com/2006/07/more-free-game-graphics.html
+[4]: http://opengameart.org/content/whispers-of-avalon-grassland-tileset
+[5]: http://opengameart.org/content/mage-city-arcanos
+[6]: http://opengameart.org/content/browserquest-sprites-and-tiles (slightly modified)
+[7]: http://game-icons.net/about.html
