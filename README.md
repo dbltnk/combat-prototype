@@ -6,7 +6,7 @@ This is the combat prototype for our upcoming Sandbox PvP game "Das Tal". It's a
 
 All your questions about how how to play the game - and many more - will be answered in our beautiful [readme document on hackpad][1].
 
-## License
+## Attributions
 
 ### Character Graphics by 
 - [Sithjester][2] (slightly modified)
@@ -27,3 +27,24 @@ All your questions about how how to play the game - and many more - will be answ
 [5]: http://opengameart.org/content/mage-city-arcanos
 [6]: http://opengameart.org/content/browserquest-sprites-and-tiles (slightly modified)
 [7]: http://game-icons.net/about.html
+
+## License
+
+Attribution-ShareAlike 3.0 Unported
+http://creativecommons.org/licenses/by-sa/3.0/deed.en_US
+
+Attribution by README or credits
+
+## Others
+
+- lua-enet (MIT) : http://leafo.net/lua-enet/
+- libzoetrope (zlib/libpng license) : http://libzoetrope.org/
+- djkson (some kind of MIT?) : David Kolf's JSON module for Lua 5.1/5.2
+
+## Used stuff
+
+- löve2d
+- libzoetrope
+- node.js
+- enet
+- other node.js modules (see server/package.json)
