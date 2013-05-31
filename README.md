@@ -17,3 +17,7 @@
 * Use action 5: press 3
 * Use action 6: press 4
 * Target yourself: keep left shift pressed
+
+# License
+Character graphics by Sithjester - slightly adapted
+http://untamed.wild-refuge.net/rpgxp.php
