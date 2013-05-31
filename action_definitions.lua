@@ -323,24 +323,24 @@ action_definitions = {
 		},
 	},	
 	-- -----------------------------------------------------------------------------------
-	staff_heal_other = {
-		name = "Heal Other",
+	staff_healing_orb = {
+		name = "Healing Orb",
 		description = "Shoot a projectile that heals one target.",
 		icon = nil,
 		sound = nil,				
-		cast_time = 1.5,
-		timeout = 3,
+		cast_time = 2,
+		timeout = 5,
 		energy = 20,
 		on_the_run = false,
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_heal_other.png"},
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_healing_orb.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
 					effects = {
-						{effect_type = "healOnlyOthers", str = 50, },
+						{effect_type = "heal", str = 50, },
 					},
 				}},
 			},
@@ -702,7 +702,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "changeSize", str = 150, duration = 30},
+				{effect_type = "changeSize", str = 200, duration = 30},
 			},
 		},	
 	},	
