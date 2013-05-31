@@ -19,5 +19,14 @@
 * Target yourself: keep left shift pressed
 
 # License
-Character graphics by Sithjester - slightly adapted
-http://untamed.wild-refuge.net/rpgxp.php
+Character Graphics by 
+Sithjester: http://untamed.wild-refuge.net/rpgxp.php (slightly modified)
+
+Environment Graphics by
+Daniel Cook: http://www.lostgarden.com/2006/07/more-free-game-graphics.html
+Leonard Pabin: http://opengameart.org/content/whispers-of-avalon-grassland-tileset
+Hyptosis: http://opengameart.org/content/mage-city-arcanos
+Guillaume Lecollinet: http://opengameart.org/content/browserquest-sprites-and-tiles (slightly modified)
+
+Skill Icons by
+Lorc, Delapuite et al.: http://game-icons.net/about.html (slightly modified)
