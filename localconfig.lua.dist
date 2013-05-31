@@ -74,5 +74,10 @@ elseif localconfig.armor == "splint_mail" then -- The following lines are the si
 	-- table.insert(localconfig.skills,"splint_mail_shout") -- Makes a lot of targets in the area around you unable to use actions for a brief time.
 	-- table.insert(localconfig.skills,"splint_mail_invulnerability") -- Renders you invulnerable to damage for a short amount of time.
 end
+
+
+
+localconfig.spectator = false
+
 		
 return localconfig

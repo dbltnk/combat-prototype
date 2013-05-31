@@ -119,13 +119,17 @@ GameView = View:extend
 		self:add(self.layers.ui)
 		self:add(self.layers.debug)
 		
-		-- setup player
-		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, 
-			name = localconfig.playerName, 
-			armor = localconfig.armor, 
-			weapon = localconfig.weapon,
-			team = localconfig.team,
-		 }
+		if localconfig.spectator then
+			the.player = Ghost:new{}
+		else
+			-- setup player
+			the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, 
+				name = localconfig.playerName, 
+				armor = localconfig.armor, 
+				weapon = localconfig.weapon,
+				team = localconfig.team,
+			}
+		end
 		
     -- place ontop
 		self:remove(self.trees)
@@ -147,7 +151,11 @@ GameView = View:extend
 		the.focusSprite = FocusSprite:new{ x = 0, y = 0 }
 		self:add(the.focusSprite)
 		
-		self.focus = the.focusSprite
+		if not localconfig.spectator then
+			self.focus = the.focusSprite
+		else
+			self.focus = the.player
+		end
 		
 		-- TODO obsolete? use self.layers instead?
 		the.hud = UiGroup:new()
@@ -167,45 +175,50 @@ GameView = View:extend
 		the.debuffDisplay = DebuffDisplay:new{}
 		the.hud:add(the.debuffDisplay)
 		
-		the.skillbar = SkillBar:new()
-		-- set skillbar images
-		local skills = {}
-		for k,v in pairs(the.player.skills) do
-			table.insert(skills, action_definitions[v.id].icon)
-		end
-		the.skillbar:setSkills(skills)
+		if not localconfig.spectator then
+			the.skillbar = SkillBar:new()
+			-- set skillbar images
+			local skills = {}
+			for k,v in pairs(the.player.skills) do
+				table.insert(skills, action_definitions[v.id].icon)
+			end
+			the.skillbar:setSkills(skills)
 		
-		--the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
-		--self.layers.ui:add(the.playerDetails)
-		
-		the.controlUI = ControlUI:new{}
-		the.hud:add(the.controlUI)
-		
-		the.energyUIBG = EnergyUIBG:new{}
-		the.hud:add(the.energyUIBG)		
-		the.energyUI = EnergyUI:new{}
-		the.hud:add(the.energyUI)
-		
-		the.painUIBG = PainUIBG:new{}
-		the.hud:add(the.painUIBG)		
-		the.painUI = PainUI:new{}
-		the.hud:add(the.painUI)		
-		
-		the.experienceUIBG = ExperienceUIBG:new{}
-		the.hud:add(the.experienceUIBG)
-		the.experienceUI = ExperienceUI:new{}
-		the.hud:add(the.experienceUI)	
+			--the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
+			--self.layers.ui:add(the.playerDetails)
+			
+			the.controlUI = ControlUI:new{}
+			the.hud:add(the.controlUI)
+			
+			the.energyUIBG = EnergyUIBG:new{}
+			the.hud:add(the.energyUIBG)		
+			the.energyUI = EnergyUI:new{}
+			the.hud:add(the.energyUI)
+			
+			the.painUIBG = PainUIBG:new{}
+			the.hud:add(the.painUIBG)		
+			the.painUI = PainUI:new{}
+			the.hud:add(the.painUI)		
+			
+			the.experienceUIBG = ExperienceUIBG:new{}
+			the.hud:add(the.experienceUIBG)
+			the.experienceUI = ExperienceUI:new{}
+			the.hud:add(the.experienceUI)	
 
-		for i = 0, config.levelCap - 1 do
-			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / config.levelCap
-			if i >= the.player.level then 
-				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i} 
-				the.hud:add(the.levelUI)	
-			else
-				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
-				the.hud:add(the.levelUI)			
-			end							
+			for i = 0, config.levelCap - 1 do
+				local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / config.levelCap
+				if i >= the.player.level then 
+					the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i} 
+					the.hud:add(the.levelUI)	
+				else
+					the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
+					the.hud:add(the.levelUI)			
+				end							
+			end
+		
 		end
+		
+		
 		audio.init()
 	
 		self.covers = {}
@@ -265,9 +278,13 @@ GameView = View:extend
 		-- show debug geometry?
 		self.layers.debug.visible = config.draw_debug_info
     
-		profile.start("update.skillbar")
-		the.skillbar:onUpdate(elapsed)
-		profile.stop()
+		if not localconfig.spectator then
+			profile.start("update.skillbar")
+			the.skillbar:onUpdate(elapsed)
+			profile.stop()
+		else
+			the.player:onUpdate(elapsed)
+		end
 		
 		profile.start("update.displace")
 		
@@ -278,10 +295,12 @@ GameView = View:extend
 			self.water:subdisplace(dummy)		
 		end
 		
-		self.collision:displace(the.player)
-		self.layers.characters:displace(the.player)
-		self.landscape:subdisplace(the.player)
-		self.water:subdisplace(the.player)
+		if not localconfig.spectator then
+			self.collision:displace(the.player)
+			self.layers.characters:displace(the.player)
+			self.landscape:subdisplace(the.player)
+			self.water:subdisplace(the.player)
+		end
 		
 		profile.stop()
 		
