@@ -107,80 +107,49 @@ Character = Animation:extend
 			if not self.skills[i] then self.skills[i] = "bow_shot" end
 		end
 		
-		-- TODO: remove this ugly hack
+		local skill_names = {
+			bow_shot = true,
+			bow_puncture = true,
+			bow_snare = true,
+			bow_expose = true,
+			bow_root = true,
+			bow_mark_target = true,
+			scythe_sweep = true,
+			scythe_pirouette = true,
+			scythe_jump = true,
+			scythe_harpoon = true,
+			scythe_stun = true,
+			scythe_gank = true,
+			staff_life_leech = true,
+			staff_poison = true,
+			staff_fireball = true,
+			staff_healing_orb = true,
+			staff_healing_breeze = true,
+			staff_mezz = true,
+			robe_bandage = true,
+			robe_shrink = true,
+			robe_sonic_boom = true,
+			robe_hide = true,
+			robe_quake = true,
+			robe_gust = true,
+			hide_armor_sprint = true,
+			hide_armor_sneak = true,
+			hide_armor_freedom = true,
+			hide_armor_mend_wounds = true,
+			hide_armor_regenerate = true,
+			hide_armor_second_wind = true,
+			splint_mail_absorb = true,
+			splint_mail_ignore_pain = true,
+			splint_mail_clarity = true,
+			splint_mail_grow = true,
+			splint_mail_shout = true,
+			splint_mail_invulnerability = true,
+		}
+		
+		-- overwrite invalid skills
 		for k,v in pairs(self.skills) do
-			if self.skills[k] ~= "bow_shot" then
-				if self.skills[k] ~= "bow_puncture" then
-					if self.skills[k] ~= "bow_snare" then
-						if self.skills[k] ~= "bow_expose" then
-							if self.skills[k] ~= "bow_root" then
-								if self.skills[k] ~= "bow_mark_target" then
-									if self.skills[k] ~= "scythe_sweep" then
-										if self.skills[k] ~= "scythe_pirouette" then
-											if self.skills[k] ~= "scythe_jump" then
-												if self.skills[k] ~= "scythe_harpoon" then
-													if self.skills[k] ~= "scythe_stun" then
-														if self.skills[k] ~= "scythe_gank" then
-															if self.skills[k] ~= "staff_life_leech" then
-																if self.skills[k] ~= "staff_poison" then
-																	if self.skills[k] ~= "staff_fireball" then
-																		if self.skills[k] ~= "staff_healing_orb" then
-																			if self.skills[k] ~= "staff_healing_breeze" then
-																				if self.skills[k] ~= "staff_mezz" then
-																					if self.skills[k] ~= "robe_bandage" then
-																						if self.skills[k] ~= "robe_shrink" then
-																							if self.skills[k] ~= "robe_sonic_boom" then
-																								if self.skills[k] ~= "robe_hide" then
-																									if self.skills[k] ~= "robe_quake" then
-																										if self.skills[k] ~= "robe_gust" then
-																											if self.skills[k] ~= "hide_armor_sprint" then
-																												if self.skills[k] ~= "hide_armor_sneak" then
-																													if self.skills[k] ~= "hide_armor_freedom" then
-																														if self.skills[k] ~= "hide_armor_mend_wounds" then
-																															if self.skills[k] ~= "hide_armor_regenerate" then
-																																if self.skills[k] ~= "hide_armor_second_wind" then
-																																	if self.skills[k] ~= "splint_mail_absorb" then
-																																		if self.skills[k] ~= "splint_mail_ignore_pain" then
-																																			if self.skills[k] ~= "splint_mail_clarity" then
-																																				if self.skills[k] ~= "splint_mail_grow" then
-																																					if self.skills[k] ~= "splint_mail_shout" then
-																																						if self.skills[k] ~= "splint_mail_invulnerability" then
-																																							self.skills[k] = "bow_puncture"
-																																						end 
-																																					end
-																																				end
-																																			end
-																																		end
-																																	end
-																																end
-																															end
-																														end
-																													end
-																												end
-																											end
-																										end
-																									end
-																								end
-																							end
-																						end
-																					end
-																				end
-																			end
-																		end
-																	end
-																end
-															end
-														end
-													end
-												end
-											end
-										end
-									end				
-								end
-							end
-						end
-					end
-				end
+			if not skill_names[v] then
+				self.skills[k] = "bow_shot"
 			end
 		end
 
