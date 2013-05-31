@@ -70,6 +70,8 @@ Character = Animation:extend
 	
 	-- 32x48, 4 per row, 4 rows
 	
+	pain_bar_size = 52,
+	
 	width = 26,
 	height = 26,
 	--~ image = '/assets/graphics/player_characters/robe_bow.png',
@@ -162,20 +164,18 @@ Character = Animation:extend
 		end
 		drawDebugWrapper(self)
 		
-		local barWidth = 52
-		
 		self.painBar = UiBar:new{
 			x = self.x, y = self.y, 
 			dx = 0, dy = self.height,
 			currentValue = self.currentPain, maxValue = self.maxPain, inc = false,
-			width = barWidth,
+			width = self.pain_bar_size,
 		}
 		
 		self.nameLevel = NameLevel:new{
 			x = self.x, y = self.y, 
 			level = self.level, name = self.name,
 			weapon = self.weapon, armor = self.armor, team = self.team,
-			width = barWidth,
+			width = self.pain_bar_size,
 		}	
 	
 		local goSelf = self
@@ -881,10 +881,10 @@ Character = Animation:extend
 		end	
 
 		-- update pain bar
-		local normalMaxPain = self.maxPain / self.maxPainOverdrive
-		self.painBar.currentValue = self.currentPain / normalMaxPain
-		self.painBar.maxValue = 1
-
+		self.painBar.currentValue = self.currentPain
+		self.painBar.maxValue = self.maxPain
+		self.painBar.width = self.pain_bar_size * self.maxPainOverdrive
+		
 		self.painBar:updateBar()
 		self.painBar.x = self.x - 10
 		self.painBar.y = self.y + 5
