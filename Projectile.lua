@@ -28,7 +28,7 @@ Projectile = Tile:extend
 			self:die()
 		end
 		
-		if the.keys:pressed ("shift") then self.target.x, self.target.y = self.start.x, self.start.y end
+		if the.keys:pressed (localconfig.targetSelf) then self.target.x, self.target.y = self.start.x, self.start.y end
 	end,
 	
 	onDieBoth = function (self)

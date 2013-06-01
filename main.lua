@@ -99,7 +99,7 @@ the.app = App:new
 		--~ if the.keys:justPressed ("f3") then print("input mode: touch") input.setMode (input.MODE_TOUCH) end	
 		
 		-- show the highscore table 
-		if the.keys:justPressed ("f5") then the.barrier:showHighscore() end	
+		if the.keys:justPressed (localconfig.showHighscore) then the.barrier:showHighscore() end	
 
 		-- resync
 		if the.keys:justPressed ("f7") then the.app.view:resyncAllLocalObjects() end					
@@ -108,14 +108,14 @@ the.app = App:new
 		-- show Fog of War
 		--~ if the.keys:justPressed ("f9") then config.show_fog_of_war = true the.app.view:fogOn() end					
 		-- toggle fullscreen
-		if the.keys:justPressed ("f10") then self:toggleFullscreen() end
+		if the.keys:justPressed (localconfig.toggleFullscreen) then self:toggleFullscreen() end
 		-- toggle profile
 		if the.keys:justPressed ("f11") then config.show_profile_info = not config.show_profile_info end
 		-- toggle debug draw
 		if the.keys:justPressed ("f12") then config.draw_debug_info = not config.draw_debug_info end
 
 		-- easy exit
-		if the.keys:pressed('escape') then 
+		if the.keys:pressed(localconfig.quitGame) then 
 			--~ profiler.stop()
 			network.send({channel = "server", cmd = "bye"})
 			-- wait a little bit to ensure bye delivery

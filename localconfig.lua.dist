@@ -1,5 +1,6 @@
 local localconfig = {}
 localconfig.skills = {}
+localconfig.spectator = false
 
 -- ### Step 1: Set up your screen resolution. ###
 localconfig.fullscreen = false -- Set this to "true" for fullscreen.
@@ -75,9 +76,23 @@ elseif localconfig.armor == "splint_mail" then -- The following lines are the si
 	-- table.insert(localconfig.skills,"splint_mail_invulnerability") -- Renders you invulnerable to damage for a short amount of time.
 end
 
+-- ### Step 7: Customize your keyboard layout (if you want). ###
+-- ### Note: "l" means the left mouse button, "r" means the right one. You cannot use those keyboard keys. ###
+-- ### Movement is hard-coded to WASD and they arrow keys for now. ###
+-- ### You can find a list of all valid key names at http://love2d.org/wiki/KeyConstant. ###
+localconfig.skillOne = "l"
+localconfig.skillTwo = "r"
+localconfig.skillThree = "1"
+localconfig.skillFour = "2"
+localconfig.skillFive = "3"
+localconfig.skillSix = "4"
+localconfig.skillSeven = "q"
+localconfig.skillEight = "e"
+localconfig.targetSelf = "shift"
+localconfig.showHighscore = "f5"
+localconfig.toggleFullscreen = "f10"
+localconfig.quitGame = "escape"
 
-
-localconfig.spectator = false
-
-		
+	
+	
 return localconfig

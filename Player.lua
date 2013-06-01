@@ -101,22 +101,31 @@ Player = Character:extend
 			
 			
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
-			if the.mouse:pressed('l') then shootSkillNr = 1 doShoot = true end
-			if the.mouse:pressed('r') then shootSkillNr = 2 doShoot = true end
-			if the.keys:pressed('1') then shootSkillNr = 3 doShoot = true end
-			if the.keys:pressed('2') then shootSkillNr = 4 doShoot = true end
-			if the.keys:pressed('3') then shootSkillNr = 5 doShoot = true end
-			if the.keys:pressed('4') then shootSkillNr = 6 doShoot = true end
-			if the.keys:pressed('q') then shootSkillNr = 7 doShoot = true end
-			if the.keys:pressed('e') then shootSkillNr = 8 doShoot = true end
+		
+			local skill_keys = {
+				[1] = localconfig.skillOne,
+				[2] = localconfig.skillTwo,
+				[3] = localconfig.skillThree,
+				[4] = localconfig.skillFour,
+				[5] = localconfig.skillFive,
+				[6] = localconfig.skillSix,
+				[7] = localconfig.skillSeven,
+				[8] = localconfig.skillEight,
+			}
+			
+			for k,v in pairs(skill_keys) do
+				if v == "l" or v == "r" then
+					if the.mouse:pressed(v) then shootSkillNr = k doShoot = true end
+				else
+					if the.keys:pressed(v) then shootSkillNr = k doShoot = true end
+				end
+			end
 
 			if the.keys:pressed('left', 'a') then movex = -1 end
 			if the.keys:pressed('right', 'd') then movex = 1 end
 			if the.keys:pressed('up', 'w') then movey = -1 end
 			if the.keys:pressed('down', 's') then movey = 1 end
 			
-			-- if the.keys:pressed('shift') then speed = 1 else speed = 0 end -- to-do: in eine fähigkeit umwandeln (hotbar)
-
 			input.cursor.x = the.mouse.x
 			input.cursor.y = the.mouse.y
 		elseif input.getMode() == input.MODE_TOUCH then
