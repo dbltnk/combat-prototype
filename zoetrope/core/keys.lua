@@ -208,7 +208,12 @@ Keys = Sprite:extend{
 	keyPressed = function (self, key, unicode)
 		self._thisFrame[key] = true
 		if unicode and unicode >= 0x20 and unicode ~= 127 and unicode < 0x3000 then
-			self.typed = self.typed .. string.char(unicode)
+			local c = nil
+			if pcall(function() 
+				c = string.char(unicode)
+			end) then
+				self.typed = self.typed .. c
+			end
 		end
 
 		-- aliases for modifiers

@@ -884,7 +884,6 @@ Character = Animation:extend
 		self.painBar.currentValue = self.currentPain
 		self.painBar.maxValue = self.maxPain
 		self.painBar.width = self.pain_bar_size * self.maxPainOverdrive
-		print("xxxxxxxxxxxxxxxxxxxxxx", self.maxPain, self.maxPainOverdrive, self.painBar.currentValue, self.painBar.maxValue)
 
 		self.painBar:updateBar()
 		self.painBar.x = self.x - 10
