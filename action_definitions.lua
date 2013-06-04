@@ -416,7 +416,7 @@ action_definitions = {
 	-- -----------------------------------------------------------------------------------
 	robe_shrink = {
 		name = "Shrink",
-		description = "Decrease your body size for some time.",
+		description = "Decrease your body size for some time but makes you take more damage.",
 		icon = nil,
 		sound = nil,				
 		cast_time = .1,
@@ -429,6 +429,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
 				{effect_type = "changeSize", str = 75, duration = 15},
+				{effect_type = "dmgModifier", str = 125, duration = 15},
 			},
 		},	
 	},		
@@ -627,7 +628,7 @@ action_definitions = {
 	-- -----------------------------------------------------------------------------------
 	splint_mail_absorb = {
 		name = "Absorb",
-		description = "Drains the health of a lot of targets around you and absorbs incoming damage for some time.",
+		description = "Drains the health of a lot of targets around you.",
 		icon = nil,
 		sound = nil,				
 		cast_time = 2,
@@ -639,7 +640,6 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "dmgModifier", str = 75, duration = 10},
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_splint_mail},
 					effects = {
@@ -690,7 +690,7 @@ action_definitions = {
 	-- -----------------------------------------------------------------------------------
 	splint_mail_grow = {
 		name = "Grow",
-		description = "Increase your body size for some time.",
+		description = "Increase your body size for some time and decreases the damage you take.",
 		icon = nil,
 		sound = nil,				
 		cast_time = .1,
@@ -703,6 +703,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
 				{effect_type = "changeSize", str = 200, duration = 30},
+				{effect_type = "dmgModifier", str = 75, duration = 30},
 			},
 		},	
 	},	

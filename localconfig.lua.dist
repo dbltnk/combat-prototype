@@ -53,7 +53,7 @@ localconfig.armor = "pick_one" -- You can decide between "robe", "hide_armor" an
 
 if localconfig.armor == "robe" then -- The following lines are the six robe skills.
 	table.insert(localconfig.skills,"robe_bandage") -- Heal yourself instantly.
-	table.insert(localconfig.skills,"robe_shrink") -- Decrease your body size for some time.
+	table.insert(localconfig.skills,"robe_shrink") -- Decrease your body size for some time but makes you take more damage.
 	table.insert(localconfig.skills,"robe_sonic_boom") -- Stuns a lot of targets in the area around you for a brief time.
 	table.insert(localconfig.skills,"robe_hide") -- Renders you invisible if you stand still.
 	-- table.insert(localconfig.skills,"robe_quake") -- Damages a lot of targets in the area around you.
@@ -68,10 +68,10 @@ elseif localconfig.armor == "hide_armor" then -- The following lines are the six
 	-- table.insert(localconfig.skills,"hide_armor_second_wind") -- Instantly decreases your fatigue a little.
 
 elseif localconfig.armor == "splint_mail" then -- The following lines are the six splint mail skills.
-	table.insert(localconfig.skills,"splint_mail_absorb") -- Drains the health of a lot of targets around you and absorbs incoming damage for some time..
+	table.insert(localconfig.skills,"splint_mail_absorb") -- Drains the health of a lot of targets around you.
 	table.insert(localconfig.skills,"splint_mail_ignore_pain") -- Increases your pain resistance for some time.
 	table.insert(localconfig.skills,"splint_mail_clarity") -- Break all stun, mezz and powerblock effects in a large area around you.
-	table.insert(localconfig.skills,"splint_mail_grow") -- Increase your body size for some time.
+	table.insert(localconfig.skills,"splint_mail_grow") -- Increase your body size for some time and decreases the damage you take.
 	-- table.insert(localconfig.skills,"splint_mail_shout") -- Makes a lot of targets in the area around you unable to use actions for a brief time.
 	-- table.insert(localconfig.skills,"splint_mail_invulnerability") -- Renders you invulnerable to damage for a short amount of time.
 end
