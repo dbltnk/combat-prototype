@@ -342,12 +342,12 @@ GameView = View:extend
 					local o = object_manager.get(m.oid)
 					
 					if not o then
-						print("NEW REMOTE OBJECT", m.oid, m.owner, m.class)
+						--~ print("NEW REMOTE OBJECT", m.oid, m.owner, m.class)
 						m.created_via_network = true
 						o = _G[m.class]:new(m)
 					end
 				elseif m.cmd == "delete" then
-					print("DELETE OBJ REQUEST", m.oid)
+					--~ print("DELETE OBJ REQUEST", m.oid)
 					local o = object_manager.get(m.oid)
 					
 					if o then
@@ -358,7 +358,7 @@ GameView = View:extend
 				elseif m.cmd == "request" then
 					local o = object_manager.get(m.oid)
 					if o and o.netCreate then
-						print("NEW OBJECT REQUESTED")
+						--~ print("NEW OBJECT REQUESTED")
 						o:netCreate()
 					end
 				elseif m.cmd == "msg" then
