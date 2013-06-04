@@ -16,6 +16,8 @@ Barrier = Tile:extend
 	teamscore = {},
 	owner = 0,
 	targetable = true,
+	
+	frame = nil,
 
 	-- UiBar
 	painBar = nil,
@@ -110,13 +112,20 @@ Barrier = Tile:extend
 	end,	
 	
 	showHighscore = function (self, title)
-		if loveframes.GetState() == "none" then loveframes.SetState("highscore") else loveframes.SetState("none") end
-				
-		local frame = loveframes.Create("frame")
-		frame:SetSize(400, 400)
-		frame:Center()
-		frame:SetName(title or "Highscore")
-		frame:SetState("highscore")
+		if self.frame then self.frame:Remove() self.frame = nil end
+	
+		if loveframes.GetState() == "none" then 
+			loveframes.SetState("highscore")
+		else 
+			loveframes.SetState("none")
+		end
+		
+		local frm = loveframes.Create("frame")
+		self.frame = frm
+		frm:SetSize(400, 400)
+		frm:Center()
+		frm:SetName(title or "Highscore")
+		frm:SetState("highscore")
 		
         for _,v in pairs(self.teamscore) do
 			v = math.floor(v * 10000) / 10000
@@ -128,7 +137,7 @@ Barrier = Tile:extend
         :select(function (a) return {k=a, v=self.teamscore[a]} end)        -- und gibt eine liste zurück mit k und v einträge
         :done() -- l3 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
 		
-		local upperList = loveframes.Create("list", frame)
+		local upperList = loveframes.Create("list", frm)
 		upperList:SetPos(5, 30)
 		upperList:SetSize(390, 85)
 		upperList:SetDisplayType("vertical")
@@ -170,7 +179,7 @@ Barrier = Tile:extend
         :select(function (a) return {k=a, v=self.highscore[a]} end)        -- und gibt eine liste zurück mit k und v einträge
         :done() -- l2 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
 
-		local lowerList = loveframes.Create("list", frame)
+		local lowerList = loveframes.Create("list", frm)
 		lowerList:SetPos(5, 120)
 		lowerList:SetSize(390, 275)
 		lowerList:SetDisplayType("vertical")
