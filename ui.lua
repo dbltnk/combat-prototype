@@ -414,3 +414,26 @@ DebuffDisplay = Text:extend
 		end
 	end
 }
+
+--~ ------------------------------------
+
+InputText = Text:extend
+{
+	font = 20,
+	text = "",
+	x = 0,
+	y = 0, 
+	width = 250,
+	tint = {1,0.1,0.1},
+	
+	onUpdate = function (self)
+		--~ if the.keys:justPressed
+	end
+}
+
+
+
+
+function showChatText (from, text, time)
+	print("CHAT FROM", from, text, time)
+end

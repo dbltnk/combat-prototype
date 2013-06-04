@@ -949,7 +949,8 @@ Character = Animation:extend
 		
 		self:applyMovement(elapsed, ipt)
 		
-		if self.armor == "robe" then
+		-- TODO hack
+		if self.armor == "robe" and not the.ignorePlayerCharacterInputs then
 			if the.keys:justPressed ("w") then self.hidden = false end	
 			if the.keys:justPressed ("a") then self.hidden = false end	
 			if the.keys:justPressed ("s") then self.hidden = false end	
@@ -1008,13 +1009,15 @@ Character = Animation:extend
 			self.reminder:die() 
 		end
 		
-		-- check if we're in combat		
+		-- check if we're in combat
 		self.isInCombat = false
 		for k,v in pairs(self.skills) do
 			self.isInCombat = self.isInCombat or (v:isOutOfCombat() == false)
 		end
 		
-		if the.keys:pressed(' ') and self.incapacitated then object_manager.send(self.oid, "gank") end
+		if not the.ignorePlayerCharacterInputs and the.keys:pressed(' ') and self.incapacitated then 
+			object_manager.send(self.oid, "gank") 
+		end
 	end,
 
 }

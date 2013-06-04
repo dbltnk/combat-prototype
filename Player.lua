@@ -117,14 +117,16 @@ Player = Character:extend
 				if v == "l" or v == "r" then
 					if the.mouse:pressed(v) then shootSkillNr = k doShoot = true end
 				else
-					if the.keys:pressed(v) then shootSkillNr = k doShoot = true end
+					if not the.ignorePlayerCharacterInputs and the.keys:pressed(v) then shootSkillNr = k doShoot = true end
 				end
 			end
 
-			if the.keys:pressed('left', 'a') then movex = -1 end
-			if the.keys:pressed('right', 'd') then movex = 1 end
-			if the.keys:pressed('up', 'w') then movey = -1 end
-			if the.keys:pressed('down', 's') then movey = 1 end
+			if not the.ignorePlayerCharacterInputs then
+				if the.keys:pressed('left', 'a') then movex = -1 end
+				if the.keys:pressed('right', 'd') then movex = 1 end
+				if the.keys:pressed('up', 'w') then movey = -1 end
+				if the.keys:pressed('down', 's') then movey = 1 end
+			end
 			
 			input.cursor.x = the.mouse.x
 			input.cursor.y = the.mouse.y

@@ -175,6 +175,8 @@ GameView = View:extend
 		the.debuffDisplay = DebuffDisplay:new{}
 		the.hud:add(the.debuffDisplay)
 		
+		the.ignorePlayerCharacterInputs = false
+		
 		if not localconfig.spectator then
 			the.skillbar = SkillBar:new()
 			-- set skillbar images
@@ -263,6 +265,24 @@ GameView = View:extend
 		end
 
 		self:setupNetworkHandler()
+		
+		-- text chat input
+		the.frameChatInput = loveframes.Create("textinput")
+		the.frameChatInput:SetPos(5, love.graphics.getHeight() - 90)
+		the.frameChatInput:SetWidth(love.graphics.getWidth() - 10)
+		the.frameChatInput:SetVisible(false)
+		the.frameChatInput:SetFocus(false)
+		the.frameChatInput.OnEnter = function (self, text)
+			print("CHAT", self.visible, text)
+			network.send({channel = "chat", cmd = "text", from = localconfig.playerName, text = text, time = network.time})
+			showChatText(localconfig.playerName, text, network.time)
+			the.app.view.timer:after(0.1, function() 
+				self:SetVisible(false)
+				self:SetFocus(false)
+				self:SetText("")
+			end)
+		end
+
     end,
     
     fogOn = function(self)
@@ -275,6 +295,16 @@ GameView = View:extend
 	end,
 
     onUpdate = function (self, elapsed)
+		-- handle chat
+		if the.keys:justPressed("return") then
+			print(the.frameChatInput.visible, the.frameChatInput.focus)
+			if not the.frameChatInput.visible then
+				the.frameChatInput:SetVisible(true)
+				the.frameChatInput:SetFocus(true)
+			end
+			the.ignorePlayerCharacterInputs = the.frameChatInput.visible
+		end
+    
 		-- show debug geometry?
 		self.layers.debug.visible = config.draw_debug_info
     
@@ -336,6 +366,12 @@ GameView = View:extend
 	setupNetworkHandler = function (self)
 		table.insert(network.on_message, function(m) 
 			--~ print ("RECEIVED", json.encode(m))
+			
+			if m.channel == "chat" then
+				if m.cmd == "text" then
+					showChatText(m.from, m.text, m.time)					
+				end
+			end
 			
 			if m.channel == "game" then
 				if m.cmd == "create" then
