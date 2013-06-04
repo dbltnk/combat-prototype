@@ -280,6 +280,7 @@ GameView = View:extend
 				self:SetVisible(false)
 				self:SetFocus(false)
 				self:SetText("")
+				the.ignorePlayerCharacterInputs = false
 			end)
 		end
 
@@ -301,8 +302,8 @@ GameView = View:extend
 			if not the.frameChatInput.visible then
 				the.frameChatInput:SetVisible(true)
 				the.frameChatInput:SetFocus(true)
+				the.ignorePlayerCharacterInputs = true
 			end
-			the.ignorePlayerCharacterInputs = the.frameChatInput.visible
 		end
     
 		-- show debug geometry?
