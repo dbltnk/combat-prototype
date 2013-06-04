@@ -39,8 +39,8 @@ config.dummyMaxPain = 90
 
 -- visuals
 config.show_fog_of_war = true
-config.sightDistanceFar = 600
-config.sightDistanceNear = 300
+config.sightDistanceFar = 800
+config.sightDistanceNear = 400
 config.footStepVisibility = 15 -- beware: large numbers will be bad for performance
 config.AEShowTime = 4
 

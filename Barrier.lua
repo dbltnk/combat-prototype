@@ -224,5 +224,7 @@ Barrier = Tile:extend
 		self.painBar.x = self.x
 		self.painBar.y = self.y
 		self:updateFogAlpha()
+		self.painBar.bar.alpha = self.alpha
+		self.painBar.background.alpha = self.alpha
 	end,	
 }
