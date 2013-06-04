@@ -27,6 +27,16 @@ function object_manager.count ()
 	return c
 end
 
+-- returns the value stored in a objects (oid) field or defaultValue if the oid does not exist
+function object_manager.get_field (oid, field, defaultValue)
+	local o = object_manager.objects[oid]
+	if o and o[field] then
+		return o[field]
+	else
+		return defaultValue or nil
+	end
+end
+
 function object_manager.get (oid)
 	oid = tonumber(oid)
 	if object_manager.objects[oid] then

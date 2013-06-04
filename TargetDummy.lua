@@ -5,7 +5,7 @@ TargetDummy = Animation:extend
 	class = "TargetDummy",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "velocity", "creation_time",
-		"maxPain", "xpWorth", "finalDamage", "focused_target" },			
+		"maxPain", "xpWorth", "finalDamage", "focused_target", "deaths"},			
 	sync_high = {"x", "y", "currentPain", "alive"},
 	sync_low = {"focused_target"},
 	
@@ -18,6 +18,7 @@ TargetDummy = Animation:extend
 	finalDamage = 0,
 	alive = true,
 	timeOfDeath = 0,	
+	deaths = 0,
 	owner = 0,
 	targetable = true,
 	attackPossible = true,
@@ -213,6 +214,7 @@ TargetDummy = Animation:extend
 		end
 	
 		self.timeOfDeath = love.timer.getTime()
+		self.deaths = self.deaths + 1
 		the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
 	end,
 	

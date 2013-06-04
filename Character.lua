@@ -8,14 +8,14 @@ Character = Animation:extend
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
 		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", 
-		"team", "invul", "dmgModified", "marked", "maxPainOverdrive"},
+		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
 		"invul", "width", "height", "rotation", "dmgModified", "marked",
 		"maxPainOverdrive"},
 		
-	sync_low = {"image", "level", "name", "weapon", "armor", "team"},
+	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths"},
 	
 	maxPain = config.maxPain, 
 	-- 1 = 100% health bar, 1.2 is 20% longer
@@ -547,14 +547,26 @@ Character = Animation:extend
 				self.rooted = false
 			end
 		elseif message_name == "transfer" then
+			--~ print("TRANSFER", self.oid)
 			local str, duration, ticks, source_oid, targetOids, eff = ...
+			
+			-- collect initial death counts
+			local ownDeaths = self.deaths
+			local targetDeaths = {}
+			for k,oid in pairs(targetOids) do targetDeaths[oid] = object_manager.get_field(oid, "deaths", 0) end
+			
 			--~ utils.vardump(targetOids)
 			local strPerTargetPerTick = str / #targetOids
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if not self.incapacitated then  
 						for k,v in pairs(targetOids) do
-							if v ~= self.oid then 
+							-- only send messages if none of the pair died
+							--~ print("OTHER", v, targetDeaths[v], object_manager.get_field(v, "deaths", 0))
+							--~ print("OWN", ownDeaths, self.deaths)
+							if v ~= self.oid and self.deaths == ownDeaths and 
+								targetDeaths[v] == object_manager.get_field(v, "deaths", 0)
+							then 
 								object_manager.send(v, "damage", strPerTargetPerTick, self.oid) 
 								object_manager.send(self.oid, "heal", eff * strPerTargetPerTick, self.oid) 
 							end
