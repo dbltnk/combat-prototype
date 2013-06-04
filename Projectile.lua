@@ -40,6 +40,7 @@ Projectile = Tile:extend
 	
 	onNew = function (self)
 		self:mixin(GameObject)
+		self:mixin(FogOfWarObject)
 		
 		the.app.view.layers.projectiles:add(self)
 		-- stores an projectile reference, projectiles get stored in the key
@@ -55,5 +56,9 @@ Projectile = Tile:extend
 		
 		-- scythe_jump is allowed to bypass all collision
 		if self.image == "/assets/graphics/action_projectiles/scythe_jump.png" then self.solid = false end
+	end,
+	
+	onUpdateBoth = function (self)
+		self:updateFogAlpha()
 	end,
 }

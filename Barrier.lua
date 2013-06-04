@@ -26,6 +26,7 @@ Barrier = Tile:extend
 		the.barrier = self
 		
 		self:mixin(GameObject)
+		self:mixin(FogOfWarObject)
 		
 		self.width = 96
 		self.height = 192
@@ -222,5 +223,6 @@ Barrier = Tile:extend
 		self.painBar:updateBar()
 		self.painBar.x = self.x
 		self.painBar.y = self.y
+		self:updateFogAlpha()
 	end,	
 }

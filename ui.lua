@@ -308,6 +308,7 @@ ScrollingText = Text:extend
 	tint = {1,1,1},
 	
 	onNew = function (self)
+		self:mixin(FogOfWarObject)
 		self.x = self.x - self.width / 2
 		GameView.layers.ui:add(self)
 		self.y = self.y - math.random(-10,10)
@@ -315,8 +316,9 @@ ScrollingText = Text:extend
 	
 	onUpdate = function (self)
 		self.y = self.y - 0.5
-		self.alpha = self.alpha - 0.01
-		if self.alpha <= 0.1 then self:die() end
+		self.alphaWithoutFog = self.alphaWithoutFog - 0.01
+		if self.alphaWithoutFog <= 0.1 then self:die() end
+		self:updateFogAlpha()
 	end,
 	
 	onDie = function (self)

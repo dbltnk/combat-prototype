@@ -27,7 +27,9 @@ Effect = Sprite:extend
 			image = "/assets/graphics/particle.png",
 			width = 100,
 			height = 100,
+			
 			onNew = function (self)
+				self:mixin(FogOfWarObject)
 				local ps = self.system
 				ps:setColors(objSelf.r, objSelf.g, objSelf.b, 128)
 				ps:setEmissionRate(100)
@@ -52,6 +54,8 @@ Effect = Sprite:extend
 				if o then
 					self.x, self.y = o.x + o.width / 2, o.y + o.height / 2
 				end
+				
+				self:updateFogAlpha()
 			end,
 		}
 	end,

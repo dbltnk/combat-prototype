@@ -105,6 +105,7 @@ Character = Animation:extend
 	
 	onNew = function (self)
 		self:mixin(GameObject)
+		self:mixin(FogOfWarObject)
 		
 		the.app.view.layers.characters:add(self)
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
@@ -238,6 +239,8 @@ Character = Animation:extend
 				self.visible = goSelf.visible
 
 				self:play(goSelf.anim_name)
+				
+				self.alpha = goSelf.alpha
 			end,
 		}
 		
@@ -254,6 +257,10 @@ Character = Animation:extend
 			
 			onDie = function(self)
 				the.app.view.layers.characters:remove(self)
+			end,
+			
+			onUpdate = function(self)
+				self.alpha = goSelf.alpha
 			end,
 		}
 		
@@ -866,6 +873,8 @@ Character = Animation:extend
 		self.nameLevel.level = self.level
 		self.nameLevel.team = self.team
 		
+		self.nameLevel.alpha = self.alpha
+		
 		if self.hidden then
 			self.visible = false
 			self.painBar.visible = false
@@ -883,6 +892,8 @@ Character = Animation:extend
 		-- update pain bar
 		self.painBar.currentValue = self.currentPain
 		self.painBar.maxValue = self.maxPain
+		self.painBar.bar.alpha = self.alpha
+		self.painBar.background.alpha = self.alpha
 		self.painBar.width = self.pain_bar_size * self.maxPainOverdrive
 
 		self.painBar:updateBar()
@@ -918,6 +929,8 @@ Character = Animation:extend
 		end
 		self.markedSprite.x = self.x
 		self.markedSprite.y = self.y - 32
+		
+		self:updateFogAlpha()
 	end,
 	
 	onUpdateLocal = function (self, elapsed)

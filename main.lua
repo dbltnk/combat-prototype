@@ -53,6 +53,7 @@ require 'network'
 require 'debug_utils'
 
 require 'GameObject'
+require 'FogOfWarObject'
 require 'MonitorChanges'
 require 'Buffs'
 require 'Skill'

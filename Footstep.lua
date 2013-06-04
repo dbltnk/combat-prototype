@@ -4,14 +4,12 @@ Footstep = Tile:extend
 {
 	class = "Footstep",
 
-	props = {"x", "y", "rotation", "image", "width", "height", },			
+	props = {"x", "y", "rotation", "image", "width", "height", "alphaWithoutFog"},
 	
 	width = 32,
 	height = 32,
 	image = '/assets/graphics/footsteps.png',
 	
-	fogAlpha = 1,
-	fadeAlpha = 1,
 	duration = config.footStepVisibility,
 
 	owner = 0,
@@ -20,6 +18,7 @@ Footstep = Tile:extend
 	
 	onNew = function (self)
 		self:mixin(GameObject)
+		self:mixin(FogOfWarObject)
 		the.app.view.layers.ground:add(self)
 		self.dieAtTime = network.time + self.duration
 		drawDebugWrapper(self)
@@ -32,8 +31,8 @@ Footstep = Tile:extend
 	end,
 
 	onUpdateBoth = function (self, elapsed)
-		self.fadeAlpha = utils.mapIntoRange (network.time, self.dieAtTime - self.duration, self.dieAtTime, 1, 0)		
-		self.alpha = math.min(self.fadeAlpha, self.fogAlpha)
+		self.alphaWithoutFog = utils.mapIntoRange (network.time, self.dieAtTime - self.duration, self.dieAtTime, 1, 0)		
+		self:updateFogAlpha()
 	end,
 	
 	onDieBoth = function (self)

@@ -60,6 +60,7 @@ TargetDummy = Animation:extend
 
 	onNew = function (self)
 		self:mixin(GameObject)
+		self:mixin(FogOfWarObject)
 		
 		the.targetDummies[self] = true
 		
@@ -336,10 +337,14 @@ TargetDummy = Animation:extend
 				--~ self:freeze() -- todo: freeze animation
 			end
 		end)
+		
+		self:updateFogAlpha()
 	end,	
 	
 	respawn = function (self)
+		-- TODO is this really a good idea?
 		self:mixin(GameObject)
+		
 		the.targetDummies[self] = true	
 		self.currentPain = 0
 		self.alive = true

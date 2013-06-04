@@ -35,6 +35,7 @@ Ressource = Tile:extend
 	
 	onNew = function (self)
 		self:mixin(GameObject)
+		self:mixin(FogOfWarObject)
 		self.width = 64
 		self.height = 64
 		self:updateQuad()
@@ -181,6 +182,8 @@ Ressource = Tile:extend
 	onUpdateBoth = function (self)	
 		self.painBar.currentValue = self.currentPain
 		self.painBar:updateBar()
+		self.painBar.bar.alpha = self.alpha
+		self.painBar.background.alpha = self.alpha		
 		self.painBar.x = self.x
 		self.painBar.y = self.y
 		
@@ -191,7 +194,9 @@ Ressource = Tile:extend
 		self.t.text = "Owned by: " .. name
 		self.t.x = self.x - self.width /4
 		self.t.y = self.y - self.t.height
+		self.t.alpha = self.alpha
 		self.t.width = 120	
 		the.ressources[self.description] = name or "none"
+		self:updateFogAlpha()
 	end,	
 }
