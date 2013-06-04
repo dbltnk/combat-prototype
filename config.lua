@@ -42,6 +42,7 @@ config.show_fog_of_war = true
 config.sightDistanceFar = 800
 config.sightDistanceNear = 400
 config.footStepVisibility = 15 -- beware: large numbers will be bad for performance
+config.minPlayerNumberToDecreaseFootstepsAmount = 4
 config.AEShowTime = 4
 
 -- audio

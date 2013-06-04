@@ -22,6 +22,8 @@ Footstep = Tile:extend
 		the.app.view.layers.ground:add(self)
 		self.dieAtTime = network.time + self.duration
 		drawDebugWrapper(self)
+		duration = math.min(config.footStepVisibility, config.footStepVisibility * config.minPlayerNumberToDecreaseFootstepsAmount / network.connected_client_count)
+		print(duration)
 	end,
 	
 	onUpdateLocal = function (self)
