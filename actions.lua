@@ -217,7 +217,7 @@ end)
 -- has: application
 action_handling.register_effect("spawn", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
-	utils.vardump(target)
+	--~ utils.vardump(target)
 	action_handling.start(effect.application, target, source_oid, source_oid)
 end)
 

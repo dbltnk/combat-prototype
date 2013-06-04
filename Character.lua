@@ -469,23 +469,20 @@ Character = Animation:extend
 			end
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
-			--print("CHARACTER DAMAGE_OVER_TIME", str, duration, ticks)
 			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
-						if not self.invul then
-							if not self.incapacitated then 
-								if self.dmgModified then
-									self:showDamage(str / 100 * self.dmgModified)
-								else
-									self:showDamage(str) 
-								end 
+						if not self.incapacitated and not self.invul then  
+							if self.dmgModified then
+								self:showDamage(str / 100 * self.dmgModified)
+							else
+								self:showDamage(str) 
 							end
 						end
 					end
-				end)
-			end
+				end)				
+			end	
 		elseif message_name == "heal_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("CHARACTER HEAL_OVER_TIME", str, duration, ticks)
@@ -590,7 +587,7 @@ Character = Animation:extend
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
-						if not self.incapacitated then  
+						if not self.incapacitated and not self.invul then  
 							if self.dmgModified then
 								self:gainPain(str / 100 * self.dmgModified)  
 							else
