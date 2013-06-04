@@ -215,6 +215,7 @@ TargetDummy = Animation:extend
 	
 		self.timeOfDeath = love.timer.getTime()
 		self.deaths = self.deaths + 1
+		--~ print("MOB DEATH", self.deaths)
 		the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
 	end,
 	

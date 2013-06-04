@@ -362,7 +362,8 @@ Character = Animation:extend
 	updatePain = function (self)
 	--print("Player ", self.oid, " is incapacitated:", self.incapacitated)
 		if self.currentPain >= self.maxPain then 
-			self:setIncapacitation(true) 
+			self:setIncapacitation(true)
+			self.deaths = self.deaths + 1
 		end
 		
 		self.currentPain = utils.clamp(self.currentPain, 0, self.maxPain)
@@ -390,7 +391,6 @@ Character = Animation:extend
 		self.speedOverride = 0
 		self.markedSprite.scale = 1
 		self.charSprite.scale = 1
-		self.deaths = self.deaths + 1
 	end,	
 	
 	gainXP = function (self, str)
@@ -553,7 +553,7 @@ Character = Animation:extend
 			-- collect initial death counts
 			local ownDeaths = self.deaths
 			local targetDeaths = {}
-			for k,oid in pairs(targetOids) do targetDeaths[oid] = object_manager.get_field(oid, "deaths", 0) end
+			for k,oid in pairs(targetOids) do targetDeaths[oid] = object_manager.get_field(oid, "deaths", -1) end
 			
 			--~ utils.vardump(targetOids)
 			local strPerTargetPerTick = str / #targetOids
@@ -562,10 +562,10 @@ Character = Animation:extend
 					if not self.incapacitated then  
 						for k,v in pairs(targetOids) do
 							-- only send messages if none of the pair died
-							--~ print("OTHER", v, targetDeaths[v], object_manager.get_field(v, "deaths", 0))
+							--~ print("OTHER", v, targetDeaths[v], object_manager.get_field(v, "deaths", -1))
 							--~ print("OWN", ownDeaths, self.deaths)
 							if v ~= self.oid and self.deaths == ownDeaths and 
-								targetDeaths[v] == object_manager.get_field(v, "deaths", 0)
+								targetDeaths[v] == object_manager.get_field(v, "deaths", -1)
 							then 
 								object_manager.send(v, "damage", strPerTargetPerTick, self.oid) 
 								object_manager.send(self.oid, "heal", eff * strPerTargetPerTick, self.oid) 
