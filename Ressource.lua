@@ -110,23 +110,23 @@ Ressource = Tile:extend
 		--print(self.oid, "receives message", message_name, "with", ...)
 		if message_name == "damage" then
 			local str, source_oid = ...
-			--print("RESSOURCE DAMANGE", str)
-			self:gainPain(str)
+			--~ print("RESSOURCE DAMANGE", str, source_oid)
 			self:controllerChanger(source_oid)
+			self:gainPain(str)
 		elseif message_name == "heal" then
 			local str, source_oid = ...
 			--print("RESSOURCE HEAL", -str)
-			self:gainPain(-str)
 			self:controllerChanger(source_oid)
+			self:gainPain(-str)
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
-			--print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks)
+			--~ print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks, source_oid)
 			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
-						self:gainPain(str)
 						self:controllerChanger(source_oid)
+						self:gainPain(str)
 					end
 				end)
 			end
@@ -137,8 +137,8 @@ Ressource = Tile:extend
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
-						self:gainPain(-str)
 						self:controllerChanger(source_oid)
+						self:gainPain(-str)
 					end
 				end)
 			end	
@@ -152,6 +152,7 @@ Ressource = Tile:extend
 		else 
 			self.nextController = "unknown"
 		end
+		--~ print("CONTROLLER CHANGE", source_oid, self.nextController)
 	end,
 	
 	updatePain = function (self)
@@ -164,6 +165,7 @@ Ressource = Tile:extend
 	end,
 	
 	changeController = function(self)
+		--~ print("REALLY CHANGE CONTROLLER", self.nextController)
 		self.controller = self.nextController
 		self.currentPain = 0
 		self.deaths = self.deaths + 1
