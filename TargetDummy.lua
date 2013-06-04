@@ -115,10 +115,10 @@ TargetDummy = Animation:extend
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
 			local oldDeaths = self.deaths
-		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
+			--~ print("DAMAGE_OVER_TIME", str, duration, ticks, oldDeaths, self.deaths)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.alive and self.deaths == oldDeaths then 
+					if object_manager.get(self.oid) and self.alive and self.deaths == oldDeaths then 
 						self:showDamage(str / 100 * self.dmgModified) 
 					end
 				end)
