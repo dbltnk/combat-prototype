@@ -114,10 +114,11 @@ TargetDummy = Animation:extend
 			self:showDamage(str / 100 * self.dmgModified) 
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
+			local oldDeaths = self.deaths
+		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.alive then 
-						self:trackDamage(source_oid, str / 100 * self.dmgModified) 
+					if self.alive and self.deaths == oldDeaths then 
 						self:showDamage(str / 100 * self.dmgModified) 
 					end
 				end)
@@ -140,10 +141,11 @@ TargetDummy = Animation:extend
 			self.y = y
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
+			local oldDeaths = self.deaths
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.alive then 
+					if self.alive and self.deaths == oldDeaths then 
 						self:trackDamage(source_oid, str / 100 * self.dmgModified) 
 						self:gainPain(str / 100 * self.dmgModified) 
 						self.mezzed = false	

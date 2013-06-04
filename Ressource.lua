@@ -83,8 +83,8 @@ Ressource = Tile:extend
 			self:showDamage(-str)	
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
-			local oldDeaths = self.deaths			
-			--print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks)
+			--~ print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks, source_oid)
+			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
