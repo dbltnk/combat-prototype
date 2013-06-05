@@ -130,9 +130,9 @@ action_definitions = {
 		description = "Sweeping blow that hits several targets in front of you.",
 		icon = nil,
 		sound = nil,
-		cast_time = .75,
-		timeout = 3,
-		energy = 15,
+		cast_time = .5,
+		timeout = 2,
+		energy = 10,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
 		
@@ -141,7 +141,7 @@ action_definitions = {
 				gfx_radius = 100, gfx = "assets/graphics/melee_radians/120_200.png",
 				range = 100, cone = 120, piercing_number = 6},
 			effects = {
-				{effect_type = "damageOnlyOthers", str = 30},
+				{effect_type = "damageOnlyOthers", str = 20},
 			},
 		},	
 	},	
