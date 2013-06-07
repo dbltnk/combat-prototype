@@ -97,6 +97,7 @@ GameView = View:extend
 		
 		-- first client -> setup "new" world
 		if is_server then
+			PhaseManager:new{}
 			self.game_start_time = network.time
 			network.set("game", {
 				start_time = self.game_start_time
@@ -151,7 +152,7 @@ GameView = View:extend
 		the.focusSprite = FocusSprite:new{ x = 0, y = 0 }
 		self:add(the.focusSprite)
 		
-		if not localconfig.spectator then
+		if the.player and the.player.class ~= "Ghost" then
 			self.focus = the.focusSprite
 		else
 			self.focus = the.player
@@ -182,47 +183,44 @@ GameView = View:extend
 		the.chatText.x = 10
 		the.chatText.y = love.graphics.getHeight() - 120
 		
-		if not localconfig.spectator then
-			the.skillbar = SkillBar:new()
-			-- set skillbar images
-			local skills = {}
-			for k,v in pairs(the.player.skills) do
-				table.insert(skills, action_definitions[v.id].icon)
-			end
-			the.skillbar:setSkills(skills)
+		the.skillbar = SkillBar:new()
+		-- set skillbar images
+		local skills = {}
+		for k,v in pairs(the.player.skills) do
+			table.insert(skills, action_definitions[v.id].icon)
+		end
+		the.skillbar:setSkills(skills)
+	
+		--the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
+		--self.layers.ui:add(the.playerDetails)
 		
-			--the.playerDetails = PlayerDetails:new{ x = 0, y = 0 }
-			--self.layers.ui:add(the.playerDetails)
-			
-			the.controlUI = ControlUI:new{}
-			the.hud:add(the.controlUI)
-			
-			the.energyUIBG = EnergyUIBG:new{}
-			the.hud:add(the.energyUIBG)		
-			the.energyUI = EnergyUI:new{}
-			the.hud:add(the.energyUI)
-			
-			the.painUIBG = PainUIBG:new{}
-			the.hud:add(the.painUIBG)		
-			the.painUI = PainUI:new{}
-			the.hud:add(the.painUI)		
-			
-			the.experienceUIBG = ExperienceUIBG:new{}
-			the.hud:add(the.experienceUIBG)
-			the.experienceUI = ExperienceUI:new{}
-			the.hud:add(the.experienceUI)	
+		the.controlUI = ControlUI:new{}
+		the.hud:add(the.controlUI)
+		
+		the.energyUIBG = EnergyUIBG:new{}
+		the.hud:add(the.energyUIBG)		
+		the.energyUI = EnergyUI:new{}
+		the.hud:add(the.energyUI)
+		
+		the.painUIBG = PainUIBG:new{}
+		the.hud:add(the.painUIBG)		
+		the.painUI = PainUI:new{}
+		the.hud:add(the.painUI)		
+		
+		the.experienceUIBG = ExperienceUIBG:new{}
+		the.hud:add(the.experienceUIBG)
+		the.experienceUI = ExperienceUI:new{}
+		the.hud:add(the.experienceUI)	
 
-			for i = 0, config.levelCap - 1 do
-				local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / config.levelCap
-				if i >= the.player.level then 
-					the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i} 
-					the.hud:add(the.levelUI)	
-				else
-					the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
-					the.hud:add(the.levelUI)			
-				end							
-			end
-		
+		for i = 0, config.levelCap - 1 do
+			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / config.levelCap
+			if i >= the.player.level then 
+				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i} 
+				the.hud:add(the.levelUI)	
+			else
+				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
+				the.hud:add(the.levelUI)			
+			end							
 		end
 		
 		
@@ -324,7 +322,7 @@ GameView = View:extend
 		-- show debug geometry?
 		self.layers.debug.visible = config.draw_debug_info
     
-		if not localconfig.spectator then
+		if the.player and the.player.class ~= "Ghost" then
 			profile.start("update.skillbar")
 			the.skillbar:onUpdate(elapsed)
 			profile.stop()
@@ -341,7 +339,7 @@ GameView = View:extend
 			self.water:subdisplace(dummy)		
 		end
 		
-		if not localconfig.spectator then
+		if the.player and the.player.class ~= "Ghost" then
 			self.collision:displace(the.player)
 			self.layers.characters:displace(the.player)
 			self.landscape:subdisplace(the.player)
@@ -455,3 +453,25 @@ GameView = View:extend
 		end)	
 	end,
 }
+
+
+function switchBetweenGhostAndPlayer()
+	if the.player then
+		if the.player.class == "Ghost" then
+			the.player:die()
+			the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, 
+				name = localconfig.playerName, 
+				armor = localconfig.armor, 
+				weapon = localconfig.weapon,
+				team = localconfig.team,
+			}
+			-- set spawn position
+			the.player.x = the.spawnpoint.x
+			the.player.y = the.spawnpoint.y
+		else
+			the.player:die()
+			the.player.deaths = the.player.deaths + 1
+			the.player = Ghost:new{}
+		end
+	end
+end

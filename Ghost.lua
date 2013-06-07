@@ -1,7 +1,8 @@
 -- Ghost
 
-Ghost = Class:extend
+Ghost = Sprite:extend
 {
+	class = "Ghost",
 	skills = {},
 	x = 0,
 	y = 0,
@@ -9,6 +10,17 @@ Ghost = Class:extend
 	height = 0,
 	speed = 1000,
 	
+	maxPain = 1,
+	maxPainOverdrive = 1,
+	currentPain = 1,
+	maxEnergy = 1,
+	currentEnergy = 1,
+	xp = 0,
+	xpCap = 0,
+	level = 0,
+	levelCap = 0,
+
+
 	jumpToPlayer = function (self, number)
 		print("jump to character", number)
 		local index = 0
