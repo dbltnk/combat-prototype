@@ -132,7 +132,7 @@ action_definitions = {
 		sound = nil,
 		cast_time = .5,
 		timeout = 2,
-		energy = 10,
+		energy = 15,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
 		
@@ -213,8 +213,8 @@ action_definitions = {
 		icon = nil,
 		sound = nil,
 		cast_time = 0.1,
-		timeout = 9,
-		energy = 12,
+		timeout = 12,
+		energy = 24,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
 		
@@ -224,7 +224,7 @@ action_definitions = {
 				range = 100, cone = 120, piercing_number = 3},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 15},
-				{effect_type = "stunOnlyOthers", duration = 3},
+				{effect_type = "stunOnlyOthers", duration = 2},
 			},
 		},	
 	},	
@@ -496,16 +496,16 @@ action_definitions = {
 		description = "Push away a lot of targets in the area around you.",
 		icon = nil,
 		sound = nil,				
-		cast_time = .5,
+		cast_time = .1,
 		timeout = 15,
 		energy = 60,
 		on_the_run = false,
 		cast_particle_color = color_robe,		
 		
 		application = {
-			target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_robe},
+			target_selection = {target_selection_type = "ae", range = 200, piercing_number = 20, explosion_color = color_robe},
 				effects = {
-					{effect_type = "moveAwayFromMe", str = 150},
+					{effect_type = "moveAwayFromMe", str = 200},
 					{effect_type = "damageOnlyOthers", str = 15},
 				},
 		},	
