@@ -373,6 +373,18 @@ Character = Animation:extend
 	--print("Player ", self.oid, " is incapacitated:", self.incapacitated)
 		self.currentEnergy = utils.clamp(self.currentEnergy, 0, self.maxEnergy)
 	end,
+	
+	resetCooldowns = function (self)	
+		for _,skill in pairs(self.skills) do
+			--~ self.skills[k] = Skill:new { nr = k, id = v, character = self }
+			--~ print(k,v)
+			--~ utils.vardump(v)
+			for k,v in pairs(skill) do
+				--~ print(k,v)
+				if k == "lastUsed" then skill[k] = -100000 end
+			end
+		end
+	end,
 		
 	respawn = function (self)
 		self.x, self.y = the.respawnpoint.x, the.respawnpoint.y
@@ -391,6 +403,7 @@ Character = Animation:extend
 		self.speedOverride = 0
 		self.markedSprite.scale = 1
 		self.charSprite.scale = 1
+		self:resetCooldowns()
 	end,	
 	
 	gainXP = function (self, str)
