@@ -412,28 +412,80 @@ DebuffDisplay = Text:extend
 		else 
 			self.text = "" 
 		end
-	end
+	end,
 }
 
 --~ ------------------------------------
 
-InputText = Text:extend
+ChatText = Group:extend
 {
 	font = 20,
-	text = "",
 	x = 0,
 	y = 0, 
-	width = 250,
-	tint = {1,0.1,0.1},
+	dx = 0,
+	dy = -16,
+	max_lines = localconfig.max_chat_lines or 10,
+	
+	-- text, ui, 
+	entries = {},
+	
+	onNew = function (self)
+	end,
 	
 	onUpdate = function (self)
-		--~ if the.keys:justPressed
-	end
+		self:recalc()
+	end,
+	
+	addLine = function (self, from, text, time)
+		local ui = Text:new{ width = love.graphics.getWidth() - 50, text = "<" .. from .. "> " .. text, tint = {0,0,0,}}
+		self:add(ui)
+		table.insert(self.entries, {
+			text = text,
+			from = from,
+			time = time,
+			ui = ui,
+		})
+
+		-- remove old entries
+		if list.count_iterator(self.entries) > self.max_lines then
+			local l = list.process_values(self.entries)
+				:orderby(function(a,b) return a.time < b.time end)
+				:take(1)
+				:done()
+
+			for k,v in pairs(self.entries) do
+				if v == l[1] then 
+					self.entries[k] = nil 
+					v.ui:die()
+					self:remove(v.ui)
+				end
+			end
+		end
+		
+		self:recalc()
+	end,
+	
+	recalc = function (self)
+		local px = self.x
+		local py = self.y
+		
+		local l = list.process_values(self.entries)
+			:orderby(function(a,b) return a.time > b.time end)
+			:done()
+		
+		for k,v in pairs(l) do
+			v.ui.x = px
+			v.ui.y = py
+			py = py + self.dy
+			px = px + self.dx
+		end
+	end,
 }
 
 
 
 
 function showChatText (from, text, time)
-	print("CHAT FROM", from, text, time)
+	--~ print("CHAT FROM", from, text, time)
+	the.chatText:addLine(from, text, time)
 end

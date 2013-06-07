@@ -119,6 +119,14 @@ function list.count (l)
 	return #l
 end
 
+-- l: any list
+-- returns amount of elements
+function list.count_iterator (l)
+	local c = 0
+	for k,v in pairs(l) do c = c + 1 end
+	return c
+end
+
 -- l: ipair list
 -- just prints the list
 function list.print (l)

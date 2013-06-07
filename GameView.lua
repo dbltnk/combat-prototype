@@ -177,6 +177,11 @@ GameView = View:extend
 		
 		the.ignorePlayerCharacterInputs = false
 		
+		the.chatText = ChatText:new{}
+		the.hud:add(the.chatText)
+		the.chatText.x = 10
+		the.chatText.y = love.graphics.getHeight() - 120
+		
 		if not localconfig.spectator then
 			the.skillbar = SkillBar:new()
 			-- set skillbar images
@@ -266,6 +271,13 @@ GameView = View:extend
 
 		self:setupNetworkHandler()
 		
+		local chatInfo = Text:new{
+			x = 5, y = love.graphics.getHeight() - 90, width = 500, tint = {0,0,0}, 
+			text = "Press enter to chat",
+		}
+		the.hud:add(chatInfo)
+		
+		
 		-- text chat input
 		the.frameChatInput = loveframes.Create("textinput")
 		the.frameChatInput:SetPos(5, love.graphics.getHeight() - 90)
@@ -273,14 +285,17 @@ GameView = View:extend
 		the.frameChatInput:SetVisible(false)
 		the.frameChatInput:SetFocus(false)
 		the.frameChatInput.OnEnter = function (self, text)
-			print("CHAT", self.visible, text)
-			network.send({channel = "chat", cmd = "text", from = localconfig.playerName, text = text, time = network.time})
-			showChatText(localconfig.playerName, text, network.time)
+			if text:len() > 0 then
+				--~ print("CHAT", self.visible, text)
+				network.send({channel = "chat", cmd = "text", from = localconfig.playerName, text = text, time = network.time})
+				showChatText(localconfig.playerName, text, network.time)
+			end
 			the.app.view.timer:after(0.1, function() 
 				self:SetVisible(false)
 				self:SetFocus(false)
 				self:SetText("")
 				the.ignorePlayerCharacterInputs = false
+				-- TODO keep focus if one clicks of close on click on screen
 			end)
 		end
 
