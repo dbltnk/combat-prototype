@@ -443,12 +443,8 @@ end)
 action_handling.register_effect("moveAwayFromMe", function (target, effect, source_oid)
 	local sx,sy = action_handling.get_target_position(object_manager.get(source_oid))
 	local tx,ty = action_handling.get_target_position(target)
-	local dx, dy = 0, 0
-	if tx < sx and ty < sy then dx, dy = sx - effect.str, sy - effect.str end
-	if tx > sx and ty > sy then dx, dy = sx + effect.str, sy + effect.str end
-	if tx < sx and ty > sy then dx, dy = sx - effect.str, sy + effect.str end
-	if tx > sx and ty < sy then dx, dy = sx + effect.str, sy - effect.str end	
-	if target.oid ~= source_oid then object_manager.send(target.oid, "moveSelfTo", dx,dy) end
+	local dx, dy = vector.fromToWithLen(sx,sy, tx,ty, effect.str)
+	if target.oid ~= source_oid then object_manager.send(target.oid, "moveSelfTo", tx+dx, ty+dy) end
 end)
 
 -- effect: buff_max_pain ----------------------------------------------------------
