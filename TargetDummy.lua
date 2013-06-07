@@ -1,5 +1,9 @@
 -- TargetDummy
 
+function SpawnMobAt (x,y)
+	TargetDummy:new{x=x, y=y}
+end
+
 TargetDummy = Animation:extend
 {
 	class = "TargetDummy",
@@ -219,12 +223,13 @@ TargetDummy = Animation:extend
 		self.deaths = self.deaths + 1
 		self.dmgReceived = {}
 		--~ print("MOB DEATH", self.deaths)
-		the.app.view.timer:after(config.dummyRespawn,function() self:revive() self:respawn() end)
+		the.app.view.timer:after(config.dummyRespawn, function() SpawnMobAt(self.x, self.y) end)
 	end,
 	
 	onDieBoth = function (self)
 		self.painBar:die()
 		the.targetDummies[self] = nil		
+		the.app.view.layers.characters:remove(self)
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
@@ -345,25 +350,5 @@ TargetDummy = Animation:extend
 		end)
 		
 		self:updateFogAlpha()
-	end,	
-	
-	respawn = function (self)
-		-- TODO is this really a good idea?
-		self:mixin(GameObject)
-		
-		the.targetDummies[self] = true	
-		self.currentPain = 0
-		self.alive = true
-		self.timeOfDeath = 0
-		self.finalDamage = 0
-		self.painBar:revive()	
-		self.painBar = UiBar:new{
-			x = self.x, y = self.y, 
-			dx = 0, dy = self.height,
-			currentValue = self.currentPain, maxValue = self.maxPain,
-			width = self.width,
-		}			
-		for k,v in pairs(self.dmgReceived) do k = nil v = nil end
-		for k,v in pairs(self.damagerTable) do  k = nil v = nil end		
 	end,
 }
