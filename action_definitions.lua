@@ -596,7 +596,7 @@ action_definitions = {
 		icon = nil,
 		sound = nil,				
 		cast_time = 2,
-		timeout = 13,
+		timeout = 15,
 		energy = 35,
 		on_the_run = false,
 		cast_particle_color = color_hide_armor,		
@@ -604,7 +604,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "heal_over_time", ticks = 3, duration = 15, str = 30},
+				{effect_type = "heal_over_time", ticks = 3, duration = 15, str = 25},
 			},
 		},		
 	},		
