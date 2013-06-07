@@ -89,6 +89,7 @@ the.app = App:new
 	running = true,
 
 	onUpdate = function (self, elapsed)
+		collectgarbage("step", 1)
 		profile.start("network.update")
 		network.update(elapsed)
 		profile.stop()

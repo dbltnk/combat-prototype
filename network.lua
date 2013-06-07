@@ -108,7 +108,8 @@ function network.update (dt)
 	
 	if not host then return end
 	
-	if love.timer.getTime() - network.last_time_update > 5 then
+	profile.start("network.ping")
+	if love.timer.getTime() - network.last_time_update > 1 then
 		local t0 = love.timer.getTime()
 		network.send_request({channel = "server", cmd = "time"}, function(fin, result)
 			local t1 = love.timer.getTime()
@@ -117,8 +118,12 @@ function network.update (dt)
 			network.last_server_time = network.time
 		end)
 		network.last_time_update = t0
+		
+		--~ network.send({channel = "stats", cmd = "lag", time = network.time, from = network.client_id})
 	end
+	profile.stop()
 	
+	profile.start("network.messages")
 	while true do
 		local event = host:service(1)
 		if event == nil then break end
@@ -136,6 +141,7 @@ function network.update (dt)
 					m = network.patch_message(m, network_message_keywords_short_to_long)
 				
 					stats.in_messages = stats.in_messages + 1
+					stats.in_bytes = stats.in_bytes + event.data:len()
 			
 					-- is this a reply?
 					local seq = m.seq or nil
@@ -185,7 +191,9 @@ function network.update (dt)
 			end
 		end
     end
+    profile.stop()
     
+    profile.start("network.stats")
 	-- refresh stats
 	if love.timer.getTime() - stats_last_time > stats_timeout then
 		stats_last_time = love.timer.getTime()
@@ -244,6 +252,7 @@ function network.update (dt)
 			out_messages = 0,
 		}
 	end
+	profile.stop()
 end
 
 function network.shutdown()
