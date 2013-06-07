@@ -93,6 +93,7 @@ localconfig.showHighscore = "f5"
 localconfig.toggleFullscreen = "f10"
 localconfig.quitGame = "escape"
 
+localconfig.adminPassword = "lala"
 
 localconfig.max_chat_lines = 10
 	

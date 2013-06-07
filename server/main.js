@@ -9,6 +9,7 @@ var net = require("net");
 var os = require("os");
 var enet = require("enet");
 var toobusy = require('toobusy');
+var config = require('./config.js');
 
 // -> [message|null, buffer]
 function tryToParseBuffer (buffer) {
@@ -167,20 +168,23 @@ host.on('connect', function(peer, data) {
 			} else if (message.cmd == "restart") {
 				console.log("RESTART");
 				
-				send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 3 sec", time: os.uptime()}, null, clients);
-				setTimeout(function(){
-					send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 2 sec", time: os.uptime()}, null, clients);
-				}, 1000);
-				setTimeout(function(){
-					send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 1 sec", time: os.uptime()}, null, clients);
-				}, 2000);
-				setTimeout(function(){
-					send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 0 sec", time: os.uptime()}, null, clients);
-					send_to_other({channel: "server", cmd: "disconnect"}, null, clients);
-				}, 3000);
-				setTimeout(function(){
-					process.exit();
-				}, 4000);
+				if (message.password == config.adminPassword)
+				{			
+					send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 3 sec", time: os.uptime()}, null, clients);
+					setTimeout(function(){
+						send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 2 sec", time: os.uptime()}, null, clients);
+					}, 1000);
+					setTimeout(function(){
+						send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 1 sec", time: os.uptime()}, null, clients);
+					}, 2000);
+					setTimeout(function(){
+						send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 0 sec", time: os.uptime()}, null, clients);
+						send_to_other({channel: "server", cmd: "disconnect"}, null, clients);
+					}, 3000);
+					setTimeout(function(){
+						process.exit();
+					}, 4000);
+				}
 			} else if (message.cmd == "ping") {
 				console.log("PING");
 				send_to_one({seq: message.seq, time: message.time, lag: toobusy.lag(), fin: true}, client);

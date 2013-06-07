@@ -7,3 +7,4 @@ localconfig.lua
 build
 changelog.txt
 Thumbs.db
+server/config.js

@@ -115,7 +115,7 @@ the.app = App:new
 		-- toggle debug draw
 		if the.keys:justPressed ("f12") then config.draw_debug_info = not config.draw_debug_info end
 		if the.keys:pressed("lctrl") and the.keys:justPressed ("f12") then
-			network.send({channel = "server", cmd = "restart"})
+			network.send({channel = "server", cmd = "restart", password = localconfig.adminPassword })
 		end
 
 		-- easy exit
