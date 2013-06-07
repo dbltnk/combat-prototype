@@ -133,6 +133,8 @@ function network.update (dt)
 				local m = json.decode(event.data)
 				
 				if type(m) == "table" then
+					m = network.patch_message(m, network_message_keywords_short_to_long)
+				
 					stats.in_messages = stats.in_messages + 1
 			
 					-- is this a reply?
@@ -263,17 +265,89 @@ function network.send_request (message, response_callback)
 	network.send(message)
 end
 
+network_message_keywords = {
+  "incapacitated", 
+  "description", 
+  "oid", 
+  "class", 
+  "currentPain", 
+  "image", 
+  "key", 
+  "team", 
+  "level", 
+  "focused_target", 
+  "nils", 
+  "isInCombat", 
+  "hidden", 
+  "rotation", 
+  "name", 
+  "height", 
+  "xpWorth", 
+  "seq", 
+  "anim_speed", 
+  "velocity", 
+  "marked", 
+  "teamscore", 
+  "time", 
+  "dmgModified", 
+  "alive", 
+  "deaths", 
+  "anim_name", 
+  "armor", 
+  "highscore", 
+  "owner", 
+  "maxPainOverdrive", 
+  "width", 
+  "invul", 
+  "cmd", 
+  "finalDamage", 
+  "channel", 
+  "controller", 
+  "value", 
+  "maxPain", 
+  "weapon", 
+}
+
+network_message_keywords_long_to_short = {}
+network_message_keywords_short_to_long = {}
+
+for k,v in pairs(network_message_keywords) do
+	network_message_keywords_long_to_short[v] = "p" .. k
+	network_message_keywords_short_to_long["p" .. k] = v
+end
+
+network_message_keywords = {}
+
+function network.patch_message (message, patch_map)
+	local m = {}
+	for k,v in pairs(message) do
+		if patch_map[k] then m[patch_map[k]] = v else m[k] = v end
+	end
+	return m
+end
+
 function network.send (message)
 	if not server then return end
 	
+	-- shorten non server messages
+	if message.channel ~= "server" then
+		message = network.patch_message(message, network_message_keywords_long_to_short)
+	end
+	
 	-- round to save space
 	for k,v in pairs(message) do
+		if k:len() > 2 and not network_message_keywords_short_to_long[k] and not network_message_keywords_long_to_short[k] then 
+			network_message_keywords[k] = true 
+		end
+		
 		if type(v) == "number" then
 			local f = 1000
 			message[k] = math.floor(v * f) / f
 			--~ print("round", k,v,message[k])
 		end
 	end
+	
+	--~ utils.vardump(network_message_keywords)
 	
 	local m = json.encode(message)
 	--~ print("SEND", server, m:len(), m)

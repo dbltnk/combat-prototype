@@ -957,6 +957,13 @@ Character = Animation:extend
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
+		-- move back into map if outside
+		local px,py = self.x+self.width/2, self.y+self.height/2
+		if px < 0 or px > 3200 or py < 0 or py > 3200 then
+			local dx,dy = vector.fromToWithLen(px,py,3200/2,3200/2,200)
+			self.x, self.y = self.x+dx,self.y+dy
+		end
+	
 		self:onUpdateRegeneration(elapsed)
 		
 		local ipt = self:readInput(self.activeSkillNr)
