@@ -389,6 +389,7 @@ Character = Animation:extend
 	respawn = function (self)
 		self.x, self.y = the.respawnpoint.x, the.respawnpoint.y
 		self.currentPain = 0
+		self.currentEnergy = 300
 		self:setIncapacitation(false)
 		self.rooted = false
 		self.stunned = false
