@@ -114,6 +114,9 @@ the.app = App:new
 		if the.keys:justPressed ("f11") then config.show_profile_info = not config.show_profile_info end
 		-- toggle debug draw
 		if the.keys:justPressed ("f12") then config.draw_debug_info = not config.draw_debug_info end
+		if the.keys:pressed("lctrl") and the.keys:justPressed ("f12") then
+			network.send({channel = "server", cmd = "restart"})
+		end
 
 		-- easy exit
 		if the.keys:pressed(localconfig.quitGame) then 
