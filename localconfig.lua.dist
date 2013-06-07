@@ -97,5 +97,6 @@ localconfig.adminPassword = "lala"
 
 localconfig.max_chat_lines = 10
 	
-	
+localconfig.is_bot = false
+
 return localconfig

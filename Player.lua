@@ -139,6 +139,13 @@ Player = Character:extend
 		-- mouse -> player vector
 		viewx, viewy = worldMouseX, worldMouseY
 
+		if localconfig.is_bot and not the.keys:allPressed() then
+			return { speed = speed, 
+				movex = math.random(-1,1), movey = math.random(-1,1), 
+				viewx = self.x + math.random(-1,1) * 200, viewy = self.y + math.random(-1,1) * 200, 
+				doShoot = math.random(-1,1) > 0, shootSkillNr = math.floor(math.random(1,8)), } 
+		end
+
 		return { speed = speed, 
 			movex = movex, movey = movey, 
 			viewx = viewx, viewy = viewy, 
