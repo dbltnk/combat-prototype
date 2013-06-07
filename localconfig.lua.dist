@@ -24,9 +24,9 @@ if localconfig.weapon == "bow" then -- The following lines are the six bow skill
 	table.insert(localconfig.skills,"bow_shot") -- Shoot a projectile that damages one target.
 	table.insert(localconfig.skills,"bow_puncture") -- Shoot a fast projectile that pierces several targets and makes them bleed.
 	table.insert(localconfig.skills,"bow_snare") -- Shoot a projectile that slows down one target.
-	table.insert(localconfig.skills,"bow_expose") -- Shoot a projectile that exposes a target so it receives more damage.
+	table.insert(localconfig.skills,"bow_blunt_arrow") -- Shoot a projectile that pushes one target away from you.
 	-- table.insert(localconfig.skills,"bow_root") -- Shoot a projectile that roots one target.
-	-- table.insert(localconfig.skills,"bow_mark_target") -- Shoot a projectile that hightlights one target.
+	-- table.insert(localconfig.skills,"bow_mark_target") -- Shoot a projectile that hightlights one target and exposes it so it receives more damage.
 
 elseif localconfig.weapon == "scythe" then -- The following lines are the six scythe skills.
 	table.insert(localconfig.skills,"scythe_sweep") -- Sweeping blow that hits several targets in front of you.

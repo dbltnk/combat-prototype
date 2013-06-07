@@ -68,21 +68,22 @@ action_definitions = {
 		},	
 	},		
 	-- -----------------------------------------------------------------------------------
-	bow_expose = {
-		name = "Expose",
-		description = "Shoot a projectile that exposes a target so it receives more damage.",
+	bow_mark_target = {
+		name = "Mark Target",
+		description = "Shoot a projectile that hightlights one target and exposes it so it receives more damage.",
 		icon = nil,
 		sound = nil,				
-		cast_time = 1,
+		cast_time = .5,
 		timeout = 9,
 		energy = 12,
 		on_the_run = false,
 		cast_particle_color = color_bow,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_expose.png"},
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_mark_target.png"},
 			effects = {
-				{effect_type = "dmgModifier", str = 125, duration = 20},
+				{effect_type = "dmgModifier", str = 125, duration = 30},
+				{effect_type = "mark", duration = 30},
 			},
 		},		
 	},	
@@ -106,21 +107,22 @@ action_definitions = {
 		},
 	},	
 	-- -----------------------------------------------------------------------------------
-	bow_mark_target = {
-		name = "Mark Target",
-		description = "Shoot a projectile that hightlights one target.",
+	bow_blunt_arrow = {
+		name = "Blunt Arrow",
+		description = "Shoot a projectile that pushes one target away from you.",
 		icon = nil,
 		sound = nil,				
-		cast_time = .1,
-		timeout = 3,
-		energy = 5,
+		cast_time = 1.5,
+		timeout = 12,
+		energy = 24,
 		on_the_run = true,
 		cast_particle_color = color_bow,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_mark_target.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_blunt_arrow.png"},
 			effects = {
-				{effect_type = "mark", duration = 60},
+				{effect_type = "moveAwayFromMe", str = 200},
+				{effect_type = "damage", str = 50},
 			},
 		},
 	},		
