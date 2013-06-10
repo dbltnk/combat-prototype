@@ -12,8 +12,8 @@ Character = Animation:extend
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
-		"invul", "width", "height", "rotation", "dmgModified", "marked",
-		"maxPainOverdrive"},
+		"invul", "width", "height", "rotation", "dmgModified", "marked", "rooted", "snared", "mezzed", "stunned", "powerblocked",
+		"maxPainOverdrive"},	
 		
 	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths"},
 	
@@ -84,6 +84,7 @@ Character = Animation:extend
 	-- UiBar
 	painBar = nil,
 	nameLevel = nil,
+	charDebuffDisplay = nil,
 		
 	-- if > 0 the player is not allowed to move
 	freezeMovementCounter = 0,
@@ -178,6 +179,11 @@ Character = Animation:extend
 			weapon = self.weapon, armor = self.armor, team = self.team,
 			width = self.pain_bar_size,
 		}	
+		
+		self.charDebuffDisplay = CharDebuffDisplay:new{
+			x = self.x, y = self.y, 
+			width = self.pain_bar_size,
+		}
 	
 		local goSelf = self
 
@@ -895,21 +901,34 @@ Character = Animation:extend
 		self.nameLevel.y = self.y - 28
 		self.nameLevel.level = self.level
 		self.nameLevel.team = self.team
-		
 		self.nameLevel.alpha = self.alpha
+		
+		self.charDebuffDisplay.x = self.x - 5
+		self.charDebuffDisplay.y = self.y - 28
+		self.charDebuffDisplay.alpha = self.alpha
+		
+		if self.rooted then self.charDebuffDisplay.rooted = "rooted" else self.charDebuffDisplay.rooted = "" end
+		if self.stunned then self.charDebuffDisplay.stunned = "stunned" else self.charDebuffDisplay.stunned = "" end		
+		if self.mezzed then self.charDebuffDisplay.mezzed = "mezzed" else self.charDebuffDisplay.mezzed = "" end	
+		if self.snared then self.charDebuffDisplay.snared = "snared" else self.charDebuffDisplay.snared = "" end			
+		if self.powerblocked then self.charDebuffDisplay.powerblocked = "pb'ed" else self.charDebuffDisplay.powerblocked = "" end	
+		if self.dmgModified == 125 then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
+		if self.invul then self.charDebuffDisplay.invul = "invul" else self.charDebuffDisplay.invul = "" end			
 		
 		if self.hidden then
 			self.visible = false
 			self.painBar.visible = false
 			self.painBar.bar.visible = false
 			self.painBar.background.visible = false	
-			self.nameLevel.visible = false					
+			self.nameLevel.visible = false	
+			self.charDebuffDisplay.visible = false										
 		else
 			self.visible = true
 			self.painBar.visible = true
 			self.painBar.bar.visible = true
 			self.painBar.background.visible = true						
 			self.nameLevel.visible = true
+			self.charDebuffDisplay.visible = true
 		end	
 
 		-- update pain bar
@@ -934,6 +953,7 @@ Character = Animation:extend
 			self.painBar.bar.visible = false
 			self.painBar.background.visible = false	
 			self.nameLevel.visible = false
+			self.charDebuffDisplay.visible = false	
 		end
 		
 		-- local hidden image

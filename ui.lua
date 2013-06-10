@@ -263,6 +263,39 @@ NameLevel = Text:extend
 	end
 }
 
+CharDebuffDisplay = Text:extend
+{
+	font = 12,
+	text = "nixda",
+	width = 80,
+	level = 0,
+	name = "",
+	tint = {0.1,0.1,0.1},
+	rooted = "",
+	stunned = "",
+	mezzed = "",
+	snared = "",
+	powerblocked = "",
+	exposed = "",
+	invul = "",
+	
+	onUpdate = function (self)
+		self.y = self.y + 65			
+		if self.rooted ~= "" or self.stunned ~= "" or self.mezzed ~= "" or self.snared ~= "" or self.powerblocked ~= "" or self.exposed ~= "" or self.invul ~= "" then 
+			self.text = self.rooted .. " " .. self.stunned .. " " .. self.mezzed .. " " .. self.snared .. " " .. self.powerblocked .. " " .. self.exposed .. " " .. self.invul
+			--~ print(self.text)
+		else 
+			self.text = "" 
+		end
+		--~ print(self.x,self.y,self.alpha,self.visible)
+		--~ print(self.rooted,self.stunned,self.mezzed,self.snared,self.powerblocked,self.exposed)
+	end,
+	
+	onNew = function (self)
+		the.app.view.layers.ui:add(self)
+	end
+}
+
 UiGroup = Group:extend
 {
 	solid = false,
@@ -383,37 +416,37 @@ RessourceDisplay = Text:extend
 	end,
 }
 
-DebuffDisplay = Text:extend
-{
-	font = 20,
-	text = "",
-	x = 0,
-	y = 0, 
-	width = 250,
-	tint = {1,0.1,0.1},
-	rooted = "",
-	stunned = "",
-	mezzed = "",
-	snared = "",
-	powerblocked = "",
-	exposed = "",
-	
-	onUpdate = function (self)
-		self.x = (love.graphics.getWidth() - self.width) / 2
-		self.y = love.graphics.getHeight() - 80
-		if the.player.rooted == true then self.rooted = "rooted" else self.rooted = "" end
-		if the.player.stunned == true then self.stunned = "stunned" else self.stunned = "" end		
-		if the.player.mezzed == true then self.mezzed = "mezzed" else self.mezzed = "" end	
-		if the.player.snared == true then self.snared = "snared" else self.snared = "" end			
-		if the.player.powerblocked == true then self.powerblocked = "pb'ed" else self.powerblocked = "" end	
-		if the.player.dmgModified == 125 then self.exposed = "exposed" else self.exposed = "" end				
-		if self.rooted ~= "" or self.stunned ~= "" or self.mezzed ~= "" or self.snared ~= "" or self.powerblocked ~= "" or self.exposed ~= "" then 
-			self.text = self.rooted .. " " .. self.stunned .. " " .. self.mezzed .. " " .. self.snared .. " " .. self.powerblocked .. " " .. self.exposed
-		else 
-			self.text = "" 
-		end
-	end,
-}
+--~ DebuffDisplay = Text:extend
+--~ {
+	--~ font = 20,
+	--~ text = "",
+	--~ x = 0,
+	--~ y = 0, 
+	--~ width = 250,
+	--~ tint = {1,0.1,0.1},
+	--~ rooted = "",
+	--~ stunned = "",
+	--~ mezzed = "",
+	--~ snared = "",
+	--~ powerblocked = "",
+	--~ exposed = "",
+	--~ 
+	--~ onUpdate = function (self)
+		--~ self.x = (love.graphics.getWidth() - self.width) / 2
+		--~ self.y = love.graphics.getHeight() - 80
+		--~ if the.player.rooted == true then self.rooted = "rooted" else self.rooted = "" end
+		--~ if the.player.stunned == true then self.stunned = "stunned" else self.stunned = "" end		
+		--~ if the.player.mezzed == true then self.mezzed = "mezzed" else self.mezzed = "" end	
+		--~ if the.player.snared == true then self.snared = "snared" else self.snared = "" end			
+		--~ if the.player.powerblocked == true then self.powerblocked = "pb'ed" else self.powerblocked = "" end	
+		--~ if the.player.dmgModified == 125 then self.exposed = "exposed" else self.exposed = "" end				
+		--~ if self.rooted ~= "" or self.stunned ~= "" or self.mezzed ~= "" or self.snared ~= "" or self.powerblocked ~= "" or self.exposed ~= "" then 
+			--~ self.text = self.rooted .. " " .. self.stunned .. " " .. self.mezzed .. " " .. self.snared .. " " .. self.powerblocked .. " " .. self.exposed
+		--~ else 
+			--~ self.text = "" 
+		--~ end
+	--~ end,
+--~ }
 
 --~ ------------------------------------
 
