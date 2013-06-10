@@ -10,7 +10,7 @@ TargetDummy = Animation:extend
 
 	props = {"x", "y", "rotation", "image", "width", "height", "velocity", "creation_time",
 		"maxPain", "xpWorth", "finalDamage", "focused_target", "deaths"},			
-	sync_high = {"x", "y", "currentPain", "alive"},
+	sync_high = {"x", "y", "currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified"},
 	sync_low = {"focused_target"},
 	
 	image = '/assets/graphics/dummy_full.png',
@@ -84,6 +84,9 @@ TargetDummy = Animation:extend
 		
 		drawDebugWrapper(self)
 		--if (math.random(-1, 1) > 0) then self.movable = true end
+		self.charDebuffDisplay = CharDebuffDisplay:new{
+			x = self.x, y = self.y
+		}
 	end,
 	
 	gainPain = function (self, str)
@@ -350,5 +353,16 @@ TargetDummy = Animation:extend
 		end)
 		
 		self:updateFogAlpha()
+		
+		self.charDebuffDisplay.alpha = self.alpha
+		self.charDebuffDisplay.x = self.x
+		self.charDebuffDisplay.y = self.y		
+		if self.rooted then self.charDebuffDisplay.rooted = "rooted" else self.charDebuffDisplay.rooted = "" end
+		if self.stunned then self.charDebuffDisplay.stunned = "stunned" else self.charDebuffDisplay.stunned = "" end		
+		if self.mezzed then self.charDebuffDisplay.mezzed = "mezzed" else self.charDebuffDisplay.mezzed = "" end	
+		if self.snared then self.charDebuffDisplay.snared = "snared" else self.charDebuffDisplay.snared = "" end			
+		if self.powerblocked then self.charDebuffDisplay.powerblocked = "pb'ed" else self.charDebuffDisplay.powerblocked = "" end	
+		if self.dmgModified == 125 then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
+		--~ print(self.charDebuffDisplay.mezzed,self.charDebuffDisplay.x,self.charDebuffDisplay.y)
 	end,
 }
