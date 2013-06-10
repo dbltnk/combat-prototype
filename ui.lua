@@ -331,6 +331,34 @@ TimerDisplay = Text:extend
 	end
 }
 
+XpTimerDisplay = Text:extend
+{
+	font = 12,
+	text = "",
+	x = 0,
+	y = 0, 
+	time = 0,
+	width = 200,
+	tint = {0.1,0.1,0.1},
+	
+	onUpdate = function (self)
+		self.x = (love.graphics.getWidth() - self.width) / 2
+		self.y = 25		
+		local runningTime = network.time - the.app.view.game_start_time
+		self.time = config.roundTime - math.floor(runningTime)
+		local minutes = math.floor(self.time / 60)
+		local seconds = (self.time - minutes * 60)
+		local xpMinutes = math.floor((self.time % config.xpCapTimer)/ 60)
+		local xpSeconds = (self.time % config.xpCapTimer - xpMinutes * 60)
+		if xpSeconds >= 10 then 
+			self.text = "Next XP cap reset in " .. xpMinutes .. ":" .. xpSeconds
+		elseif xpSeconds < 10 then
+			self.text = "Next XP cap reset in " .. xpMinutes .. ":0" .. xpSeconds
+		end
+	end
+}
+
+
 ScrollingText = Text:extend
 {
 	font = 20,
