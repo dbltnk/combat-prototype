@@ -128,6 +128,9 @@ Player = Character:extend
 				if the.keys:pressed('down', 's') then movey = 1 end
 			end
 			
+			-- change weapon sets
+			if the.keys:justPressed(localconfig.changeWeapon) then the.player:changeWeapon() end
+			
 			input.cursor.x = the.mouse.x
 			input.cursor.y = the.mouse.y
 		elseif input.getMode() == input.MODE_TOUCH then

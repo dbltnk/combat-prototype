@@ -13,7 +13,7 @@ Character = Animation:extend
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
 		"invul", "width", "height", "rotation", "dmgModified", "marked", "rooted", "snared", "mezzed", "stunned", "powerblocked",
-		"maxPainOverdrive"},	
+		"maxPainOverdrive", "weaponSet"},	
 		
 	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths"},
 	
@@ -45,6 +45,9 @@ Character = Animation:extend
 	marked = false,
 	interrupted = false,
 	deaths = 0,
+	weaponSet = "first",
+	lastChangedWeapons = 0,
+	oldTimers = {},
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -381,13 +384,65 @@ Character = Animation:extend
 	end,
 	
 	resetCooldowns = function (self)	
-		for _,skill in pairs(self.skills) do
-			--~ self.skills[k] = Skill:new { nr = k, id = v, character = self }
-			--~ print(k,v)
-			--~ utils.vardump(v)
+		for number,skill in pairs(self.skills) do
+			--~ print(number,skill)
+			--~ utils.vardump(skill)
 			for k,v in pairs(skill) do
 				--~ print(k,v)
 				if k == "lastUsed" then skill[k] = -100000 end
+			end
+		end
+	end,
+	
+	canChangeWeapons = function (self)
+		return love.timer.getTime() - self.lastChangedWeapons >= config.weaponChangeTimeout
+	end,
+	
+	changeWeapon = function (self)
+		if self:canChangeWeapons() then
+			for identifier,time in pairs(self.oldTimers) do
+				print(identifier,time)
+			end
+			self.lastChangedWeapons = love.timer.getTime()
+			if self.weaponSet == "first" then 
+				self.weaponSet = "second"
+				for k,v in pairs(localconfig.secondWeaponSkills) do
+					localconfig.skills[k] = v
+				end
+			else 
+				self.weaponSet = "first" 
+				for k,v in pairs(localconfig.weaponSkills) do
+					localconfig.skills[k] = v
+				end
+			end
+			
+			for k,v in pairs(localconfig.skills) do
+				--~ print(k,v)
+				for number,skill in pairs(self.skills) do
+					for k,v in pairs(skill) do
+						--~ print(k,v)
+						if k == "lastUsed" and v > 0 then self.oldTimers[skill.id] = v end
+					end
+					self.skills[k] = nil
+					self.skills[k] = Skill:new { nr = k, id = v, character = self }
+					for k,v in pairs(skill) do
+						--~ print(k,v)
+						for identifier,time in pairs(self.oldTimers) do
+							--~ print(identifier,time)
+							if skill.id == identifier then 
+								skill.lastUsed = time
+							end
+						end
+					end
+				end
+				the.skillbar = nil		
+				the.skillbar = SkillBar:new()
+				-- set skillbar images
+				local skills = {}
+				for k,v in pairs(the.player.skills) do
+					table.insert(skills, action_definitions[v.id].icon)
+				end
+				the.skillbar:setSkills(skills)
 			end
 		end
 	end,
