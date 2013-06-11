@@ -4,7 +4,7 @@ This is the combat prototype for our upcoming Sandbox PvP game "Das Tal". It's a
 
 ## How to play the game
 
-All your questions about how how to play the game - and many more - will be answered in our beautiful [readme document on hackpad][1].
+All your questions about how how to play the game - and many more - will be answered in our beautiful [readme document on our web site][1].
 
 ## License
 This prototype is being released unter the ["Attribution-ShareAlike 3.0 Unported" license][8]. Attribution by readme or credits.
@@ -36,7 +36,7 @@ This prototype is being released unter the ["Attribution-ShareAlike 3.0 Unported
 - [node.js & some node.js modules][12] (see server/package.json)
 - [enet][13]
 
-[1]: https://hackpad.com/Das-Tal-Combat-Prototype-Readme-Tutorial-si94075Ora6
+[1]: http://combat-prototype.tumblr.com/readme
 [2]: http://untamed.wild-refuge.net/rpgxp.php
 [3]: http://www.lostgarden.com/2006/07/more-free-game-graphics.html
 [4]: http://opengameart.org/content/whispers-of-avalon-grassland-tileset
