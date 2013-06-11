@@ -1,5 +1,8 @@
 local localconfig = {}
 localconfig.skills = {}
+localconfig.weaponSkills = {}
+localconfig.secondWeaponSkills = {}
+localconfig.armorSkills = {}
 localconfig.spectator = false
 
 -- ### Step 1: Set up your screen resolution. ###
@@ -45,6 +48,31 @@ elseif localconfig.weapon == "staff" then -- The following lines are the six sta
 	-- table.insert(localconfig.skills,"staff_mezz") -- Shoot a projectile that mesmerizes one target for some time. Breaks on damage.
 end	
 
+if localconfig.secondWeapon == "bow" then -- The following lines are the six bow skills.
+	table.insert(localconfig.secondWeaponSkills,"bow_shot") -- Shoot a projectile that damages one target.
+	table.insert(localconfig.secondWeaponSkills,"bow_puncture") -- Shoot a fast projectile that pierces several targets and makes them bleed.
+	table.insert(localconfig.secondWeaponSkills,"bow_snare") -- Shoot a projectile that slows down one target.
+	table.insert(localconfig.secondWeaponSkills,"bow_blunt_arrow") -- Shoot a projectile that pushes one target away from you.
+	--table.insert(localconfig.secondWeaponSkills,"bow_root") -- Shoot a projectile that roots one target.
+	--table.insert(localconfig.secondWeaponSkills,"bow_mark_target") -- Shoot a projectile that hightlights one target and exposes it so it receives more damage.
+
+elseif localconfig.secondWeapon == "scythe" then -- The following lines are the six scythe skills.
+	table.insert(localconfig.secondWeaponSkills,"scythe_sweep") -- Sweeping blow that hits several targets in front of you.
+	table.insert(localconfig.secondWeaponSkills,"scythe_pirouette") -- Sweeping blow that hits a lot of targets all around you.
+	table.insert(localconfig.secondWeaponSkills,"scythe_jump") -- Jump to your target location.
+	table.insert(localconfig.secondWeaponSkills,"scythe_harpoon") -- Shoots a projectile that pulls one target to your location. 
+	--table.insert(localconfig.secondWeaponSkills,"scythe_stun") -- Stun one target in front of you.
+	--table.insert(localconfig.secondWeaponSkills,"scythe_gank") -- Gank one target in front of you.
+
+elseif localconfig.secondWeapon == "staff" then -- The following lines are the six staff skills.
+	table.insert(localconfig.secondWeaponSkills,"staff_life_leech") -- Shoot a projectile that drains one targets life while healing you.
+	table.insert(localconfig.secondWeaponSkills,"staff_poison") -- Shoot a projectile that slowly decreases one targets life.
+	table.insert(localconfig.secondWeaponSkills,"staff_fireball") -- Shoot a projectile that explodes on impact and damages a lot of targets in the area.
+	table.insert(localconfig.secondWeaponSkills,"staff_healing_orb") -- Shoot a projectile that heals one target.
+	--table.insert(localconfig.secondWeaponSkills,"staff_healing_breeze") -- Shoot a projectile that heals one target slowly over time.
+	--table.insert(localconfig.secondWeaponSkills,"staff_mezz") -- Shoot a projectile that mesmerizes one target for some time. Breaks on damage.
+end 
+
 -- ### Step 5: Now pick your armor of choice. ###
 localconfig.armor = "pick_one" -- You can decide between "robe", "hide_armor" and "splint_mail".
 
@@ -74,6 +102,14 @@ elseif localconfig.armor == "splint_mail" then -- The following lines are the si
 	table.insert(localconfig.skills,"splint_mail_grow") -- Increase your body size for some time and decreases the damage you take.
 	-- table.insert(localconfig.skills,"splint_mail_shout") -- Makes a lot of targets in the area around you unable to use actions for a brief time.
 	-- table.insert(localconfig.skills,"splint_mail_invulnerability") -- Renders you invulnerable to damage for a short amount of time.
+end
+
+for k,v in pairs(localconfig.weaponSkills) do 
+	table.insert(localconfig.skills, v)
+end
+
+for k,v in pairs(localconfig.armorSkills) do 
+	table.insert(localconfig.skills, v)
 end
 
 -- ### Step 7: Customize your keyboard layout (if you want). ###
