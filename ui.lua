@@ -365,16 +365,20 @@ WeaponChangeTimerDisplay = Text:extend
 	x = 0,
 	y = 0, 
 	time = 0,
-	width = 200,
+	width = 288,
 	tint = {0.1,0.1,0.1},
 	timer = 0,
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
-		self.y = love.graphics.getHeight() - 80
+		self.y = love.graphics.getHeight() - 70
 		local roundedTimer = math.floor(config.weaponChangeTimeout - self.timer)
 		roundedTimer = math.max(0, roundedTimer)
-		self.text = "Next weapon change possible in " .. roundedTimer .. "seconds"
+		if roundedTimer > 0 then
+			self.text = "Next weapon change possible in " .. roundedTimer .. " seconds."
+		else 
+			self.text = "Press " .. localconfig.changeWeapon .. " to change your weapon."
+		end
 	end
 }
 

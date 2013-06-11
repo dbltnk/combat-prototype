@@ -397,13 +397,14 @@ Character = Animation:extend
 	canChangeWeapons = function (self)
 		local timer = love.timer.getTime() - self.lastChangedWeapons
 		return timer
+		
 	end,
 	
 	changeWeapon = function (self)
 		if self:canChangeWeapons() >= config.weaponChangeTimeout then
-			for identifier,time in pairs(self.oldTimers) do
-				print(identifier,time)
-			end
+			--~ for identifier,time in pairs(self.oldTimers) do
+				--~ print(identifier,time)
+			--~ end
 			self.lastChangedWeapons = love.timer.getTime()
 			if self.weaponSet == "first" then 
 				self.weaponSet = "second"
