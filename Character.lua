@@ -395,11 +395,12 @@ Character = Animation:extend
 	end,
 	
 	canChangeWeapons = function (self)
-		return love.timer.getTime() - self.lastChangedWeapons >= config.weaponChangeTimeout
+		local timer = love.timer.getTime() - self.lastChangedWeapons
+		return timer
 	end,
 	
 	changeWeapon = function (self)
-		if self:canChangeWeapons() then
+		if self:canChangeWeapons() >= config.weaponChangeTimeout then
 			for identifier,time in pairs(self.oldTimers) do
 				print(identifier,time)
 			end
@@ -1114,6 +1115,9 @@ Character = Animation:extend
 		if not the.ignorePlayerCharacterInputs and the.keys:pressed(' ') and self.incapacitated then 
 			object_manager.send(self.oid, "gank") 
 		end
+		
+		print(self:canChangeWeapons())
+		the.weaponChangeTimerDisplay.timer = self:canChangeWeapons()
 	end,
 
 }

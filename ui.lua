@@ -358,6 +358,25 @@ XpTimerDisplay = Text:extend
 	end
 }
 
+WeaponChangeTimerDisplay = Text:extend
+{
+	font = 12,
+	text = "",
+	x = 0,
+	y = 0, 
+	time = 0,
+	width = 200,
+	tint = {0.1,0.1,0.1},
+	timer = 0,
+	
+	onUpdate = function (self)
+		self.x = (love.graphics.getWidth() - self.width) / 2
+		self.y = love.graphics.getHeight() - 80
+		local roundedTimer = math.floor(config.weaponChangeTimeout - self.timer)
+		roundedTimer = math.max(0, roundedTimer)
+		self.text = "Next weapon change possible in " .. roundedTimer .. "seconds"
+	end
+}
 
 ScrollingText = Text:extend
 {

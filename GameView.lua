@@ -173,6 +173,9 @@ GameView = View:extend
 		the.xpTimerDisplay = XpTimerDisplay:new{ x = 0, y = 0 }
 		the.hud:add(the.xpTimerDisplay)	
 		
+		the.weaponChangeTimerDisplay = WeaponChangeTimerDisplay:new{ x = 0, y = 0 }
+		the.hud:add(the.weaponChangeTimerDisplay)	
+		
 		the.networkDisplay = NetworkDisplay:new{ x = 0, y = 0 }
 		the.hud:add(the.networkDisplay)	
 		
