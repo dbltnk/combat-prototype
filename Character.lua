@@ -13,9 +13,9 @@ Character = Animation:extend
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
 		"invul", "width", "height", "rotation", "dmgModified", "marked", "rooted", "snared", "mezzed", "stunned", "powerblocked",
-		"maxPainOverdrive", "weaponSet"},	
+		"maxPainOverdrive", "weaponSet", "recentlyChangedWeapon", "weapon", "armor"},	
 		
-	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths"},
+	sync_low = {"image", "level", "name", "team", "deaths"},
 	
 	maxPain = config.maxPain, 
 	-- 1 = 100% health bar, 1.2 is 20% longer
@@ -48,6 +48,7 @@ Character = Animation:extend
 	weaponSet = "first",
 	lastChangedWeapons = 0,
 	oldTimers = {},
+	recentlyChangedWeapon = false,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -246,9 +247,7 @@ Character = Animation:extend
 				self.x = goSelf.x
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
-
 				self:play(goSelf.anim_name)
-				
 				self.alpha = goSelf.alpha
 			end,
 		}
@@ -408,11 +407,15 @@ Character = Animation:extend
 			self.lastChangedWeapons = love.timer.getTime()
 			if self.weaponSet == "first" then 
 				self.weaponSet = "second"
+				self.weapon = localconfig.secondWeapon
+				self.recentlyChangedWeapon = true
 				for k,v in pairs(localconfig.secondWeaponSkills) do
 					localconfig.skills[k] = v
 				end
 			else 
 				self.weaponSet = "first" 
+				self.weapon = localconfig.weapon
+				self.recentlyChangedWeapon = true
 				for k,v in pairs(localconfig.weaponSkills) do
 					localconfig.skills[k] = v
 				end
@@ -946,6 +949,11 @@ Character = Animation:extend
 	end,
 	
 	onUpdateBoth = function (self, elapsed)
+		if self.recentlyChangedWeapon then
+			self.charSprite.image = '/assets/graphics/player_characters/' .. self.armor .. "_" .. self.weapon .. ".png"
+			self.recentlyChangedWeapon = false
+		end		
+	
 		if self.incapacitated then
 			self.tint = {0.5,0.5,0.5}
 			self.charSprite.tint = {0.5,0.5,0.5}
@@ -1116,8 +1124,7 @@ Character = Animation:extend
 		if not the.ignorePlayerCharacterInputs and the.keys:pressed(' ') and self.incapacitated then 
 			object_manager.send(self.oid, "gank") 
 		end
-		
-		print(self:canChangeWeapons())
+	
 		the.weaponChangeTimerDisplay.timer = self:canChangeWeapons()
 	end,
 
