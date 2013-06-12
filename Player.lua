@@ -102,6 +102,16 @@ Player = Character:extend
 			
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
 		
+			
+			if the.mouse:pressed("l") then 
+				shootSkillNr = the.player.selectedSkill 
+				doShoot = true 
+				the.player.selectedSkill = 1 
+			end
+			if the.mouse:pressed("r") then 
+				the.player.selectedSkill = 1 
+			end
+		
 			local skill_keys = {
 				[1] = localconfig.skillOne,
 				[2] = localconfig.skillTwo,
@@ -114,11 +124,11 @@ Player = Character:extend
 			}
 			
 			for k,v in pairs(skill_keys) do
-				if v == "l" or v == "r" then
-					if the.mouse:pressed(v) then shootSkillNr = k doShoot = true end
-				else
-					if not the.ignorePlayerCharacterInputs and the.keys:pressed(v) then shootSkillNr = k doShoot = true end
-				end
+				--~ if v == "l" or v == "r" then
+					--~ if the.mouse:pressed(v) then shootSkillNr = k doShoot = true end
+				--~ else
+					if not the.ignorePlayerCharacterInputs and the.keys:pressed(v) then the.player.selectedSkill = k end
+				--~ end
 			end
 
 			if not the.ignorePlayerCharacterInputs then

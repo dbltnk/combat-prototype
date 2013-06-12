@@ -45,6 +45,7 @@ Character = Animation:extend
 	marked = false,
 	interrupted = false,
 	deaths = 0,
+	selectedSkill = 1,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
