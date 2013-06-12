@@ -37,8 +37,22 @@ Arrow = Fill:extend
 		local distanceToCursor = vector.lenFromTo(worldCursorX, worldCursorY,the.player.x, the.player.y)
 		self.height = math.min(distanceToCursor, self.maxHeight)
 		
+		--~  erster versuch
+		--~ local playerCenterX = the.player.x - the.player.width / 2
+		--~ local playerCenterY = the.player.y - the.player.height / 2
+		--~ local dx, dy = vector.fromToWithLen(the.player.x, the.player.y, worldCursorX, worldCursorY, self.height)
+		--~ self.x, self.y = the.player.x + dx, the.player.y + dy
+
+		--~ zweiter versuch
+		--~ self.x = the.player.x + (the.player.x - worldCursorX) / 2 -- - self.width / 2
+		--~ self.y = the.player.y + (the.player.y - worldCursorY) / 2 -- - self.height / 2		
+		
+		--~ notlösung
 		self.x = the.focusSprite.x - self.width / 2
 		self.y = the.focusSprite.y - self.height / 2
+		
+		--~ print(the.player.x, worldCursorX, self.x, the.player.y, worldCursorY, self.y)
+		
 		self.rotation = the.player.rotation
 	end,
 	
