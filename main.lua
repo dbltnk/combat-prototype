@@ -76,6 +76,7 @@ require 'ConnectView'
 require 'Effect'
 require 'EffectCircle'
 require 'EffectImage'
+require 'Arrow'
 require 'ui' 
 require 'loveframes'
 

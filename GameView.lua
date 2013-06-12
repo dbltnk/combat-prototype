@@ -152,6 +152,8 @@ GameView = View:extend
 		the.focusSprite = FocusSprite:new{ x = 0, y = 0 }
 		self:add(the.focusSprite)
 		
+		the.arrow = Arrow:new{ x = 0, y = 0 }
+		
 		if the.player and the.player.class ~= "Ghost" then
 			self.focus = the.focusSprite
 		else
