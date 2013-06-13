@@ -314,19 +314,16 @@ TimerDisplay = Text:extend
 	x = 0,
 	y = 0, 
 	time = 0,
-	width = 200,
+	width = 300,
 	tint = {0.1,0.1,0.1},
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
-		local runningTime = network.time - the.app.view.game_start_time
-		self.time = config.roundTime - math.floor(runningTime)
-		local minutes = math.floor(self.time / 60)
-		local seconds = (self.time - minutes * 60)
-		if seconds >= 10 then 
-			self.text = minutes .. ":" .. seconds .. " remaining"
-		elseif seconds < 10 then
-			self.text = minutes .. ":0" .. seconds .. " remaining"
+		
+		if the.phaseManager then
+			self.text = the.phaseManager:getTimeText()
+		else
+			self.text = "???"
 		end
 	end
 }

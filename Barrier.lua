@@ -219,12 +219,10 @@ Barrier = Tile:extend
 	
 	onDieBoth = function (self)
 		self.painBar:die()
-		if the.app.running then
-			local text = "The players won, here's how you did:"
-			self:showHighscore(text)
-			the.app.running = false
-			the.app.timeScale = 0
-		end
+	end,
+	
+	onDieLocal = function (self)
+		
 	end,
 	
 	onUpdateBoth = function (self)	
