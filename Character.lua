@@ -177,7 +177,7 @@ Character = Animation:extend
 			x = self.x, y = self.y, 
 			level = self.level, name = self.name,
 			weapon = self.weapon, armor = self.armor, team = self.team,
-			width = self.pain_bar_size,
+			width = self.pain_bar_size * 2,
 		}	
 		
 		self.charDebuffDisplay = CharDebuffDisplay:new{

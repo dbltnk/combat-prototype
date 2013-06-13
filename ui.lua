@@ -253,7 +253,7 @@ NameLevel = Text:extend
 	
 	onUpdate = function (self)
 		self.text = self.name .. " (" .. self.level .. ")\n" .. "[" .. self.team .. "]"
-		--~ self.x = self.x - 20
+		self.x = self.x - 20
 		self.y = self.y - 30
 		--~ self:centerAround(self.x,self.y,"horizontal")
 	end,
