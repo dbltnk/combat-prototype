@@ -1,6 +1,6 @@
 -- SkillBar
 
-SkillBar = Class:extend
+SkillBar = Sprite:extend
 {
 	-- skill nrs
 	skills = {
@@ -118,6 +118,21 @@ SkillBar = Class:extend
 					timeout.text = string.format("%0.1f", t)
 				end
 			end
+		end
+	end,
+	
+	onDie = function (self)
+		for k, v in pairs(self.skillIcons) do
+			the.hud:remove(v)
+			v:die()
+		end
+		for k, v in pairs(self.skillInactiveIcons) do
+			the.hud:remove(v)
+			v:die()
+		end
+		for k, v in pairs(self.skillTimerText) do
+			the.hud:remove(v)
+			v:die()
 		end
 	end,
 }

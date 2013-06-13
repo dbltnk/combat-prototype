@@ -440,6 +440,7 @@ Character = Animation:extend
 						end
 					end
 				end
+				the.skillbar:die()
 				the.skillbar = nil		
 				the.skillbar = SkillBar:new()
 				-- set skillbar images
