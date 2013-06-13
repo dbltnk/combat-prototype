@@ -115,17 +115,13 @@ GameView = View:extend
 		self:add(self.layers.ui)
 		self:add(self.layers.debug)
 		
-		if localconfig.spectator then
-			the.player = Ghost:new{}
-		else
-			-- setup player
-			the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, 
-				name = localconfig.playerName, 
-				armor = localconfig.armor, 
-				weapon = localconfig.weapon,
-				team = localconfig.team,
-			}
-		end
+		-- setup player
+		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, 
+			name = localconfig.playerName, 
+			armor = localconfig.armor, 
+			weapon = localconfig.weapon,
+			team = localconfig.team,
+		}
 		
 		-- place ontop
 		self:remove(self.trees)
