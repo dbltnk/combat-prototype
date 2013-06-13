@@ -144,9 +144,9 @@ Player = Character:extend
 			if the.mouse:pressed("l") then 
 				shootSkillNr = the.player.selectedSkill 
 				doShoot = true 
-				the.player.selectedSkill = 1 
+				--~ the.player.selectedSkill = 1 
 			end
-			if the.mouse:pressed("r") then 
+			if the.mouse:pressed("r") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
 				the.player.selectedSkill = 1 
 			end
 			
