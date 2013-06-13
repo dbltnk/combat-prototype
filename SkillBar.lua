@@ -117,7 +117,7 @@ SkillBar = Class:extend
 			if the.player and the.player.skills and the.player.skills[index] then
 				local skill = the.player.skills[index]
 				--~ overlay.visible = skill:isCasting() == false and skill:isPossibleToUse() == false
-				print(skill)
+				--~ print(skill)
 				if index == the.player.selectedSkill then
 					overlay.visible = true
 				else
