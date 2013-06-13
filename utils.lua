@@ -1,6 +1,28 @@
 
 local utils = {}
 
+-- eg. utils.get_by_path({a={b=1}}, "a.b")
+function utils.get_by_path(tbl, path, default)
+	local l = str.split("%.", path)
+	
+	if tbl == nil then return default end
+	if #l == 0 then return default end
+
+	local t = tbl
+	
+	--~ utils.vardump(t)
+	for i = 1, #l do
+		local k = l[i]
+		-- try to use key as number type if possible
+		local kn = tonumber(k)
+		if kn then t = t[kn] else t = t[k] end
+		--~ print(i,k,t,#l)
+		if t == nil then print("key " .. i .. " not found: " .. k) return default end
+	end
+	
+	return t
+end
+
 function utils.vardump(value, max_depth)
 	utils.vardump_rec(max_depth or 1, value)
 end

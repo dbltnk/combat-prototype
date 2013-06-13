@@ -34,6 +34,7 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 require 'zoetrope'
 
 vector = require 'vector'
+str = require 'str'
 collision = require 'collision'
 utils = require 'utils'
 input = require 'input'
