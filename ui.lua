@@ -352,6 +352,8 @@ XpTimerDisplay = Text:extend
 		elseif xpSeconds < 10 then
 			self.text = "Next XP cap reset in " .. xpMinutes .. ":0" .. xpSeconds
 		end
+		
+		self.visible = the.phaseManager and the.phaseManager.phase == "playing"
 	end
 }
 
