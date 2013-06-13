@@ -97,13 +97,13 @@ PhaseManager = Sprite:extend
 			return "init in progress..."
 		elseif self.phase == "warmup" then
 			local dt = self.round_start_time - network.time
-			return "warmup, " .. self:formatSeconds(dt) .. " remaining"
+			return "The game starts in " .. self:formatSeconds(dt) .. "."
 		elseif self.phase == "playing" then
 			local dt = self.round_end_time - network.time
-			return "playing, " .. self:formatSeconds(dt) .. " remaining"
+			return self:formatSeconds(dt) .. " until the game ends."
 		elseif self.phase == "after" then
 			local dt = (self.round_end_time + config.afterTime) - network.time
-			return "after, " .. self:formatSeconds(dt) .. " remaining"
+			return "Game over. Restart in " .. self:formatSeconds(dt) .. "."
 		end
 	end,
 	

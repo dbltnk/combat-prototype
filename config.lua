@@ -15,9 +15,9 @@ config.getUpPain = 0.5 -- in percent
 -- progression and round time
 config.timecompression = 2
 config.barrierHealth = 50000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
-config.warmupTime = 10 --30
-config.roundTime = 20 --60 --3600 / config.timecompression -- in seconds
-config.afterTime = 10 --30 --60 / config.timecompression -- in seconds
+config.warmupTime = 180 -- in seconds
+config.roundTime = 3600 / config.timecompression -- in seconds
+config.afterTime = 60 -- in seconds
 config.xpCap = 1000
 config.levelCap = 10
 config.dummyXPWorth = 50
