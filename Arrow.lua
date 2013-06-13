@@ -34,7 +34,7 @@ Arrow = Fill:extend
 		
 		self.maxHeight = utils.get_by_path(skillObject, "definition.application.target_selection.range", 9999)
 
-		if self.maxHeight == 9999 then self.maxHeight = 0 end
+		if self.maxHeight == 9999 or utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type", 9999) ~= "projectile" then self.maxHeight = 0 end
 		local distanceToCursor = vector.lenFromTo(worldCursorX, worldCursorY,the.player.x, the.player.y)
 		self.height = math.min(distanceToCursor, self.maxHeight)
 		
