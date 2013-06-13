@@ -87,7 +87,7 @@ Ressource = Tile:extend
 			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.alive and self.deaths == oldDeaths then
+					if self.deaths == oldDeaths then
 						self:showDamage(str)
 					end
 				end)
@@ -98,7 +98,7 @@ Ressource = Tile:extend
 			--print("RESSOURCE HEAL_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.alive and self.deaths == oldDeaths then
+					if self.deaths == oldDeaths then
 						self:showDamage(-str)
 					end
 				end)
@@ -124,7 +124,7 @@ Ressource = Tile:extend
 			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.alive and self.deaths == oldDeaths then
+					if self.deaths == oldDeaths then
 						self:controllerChanger(source_oid)
 						self:gainPain(str)
 					end
@@ -136,7 +136,7 @@ Ressource = Tile:extend
 			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.alive and self.deaths == oldDeaths then
+					if self.deaths == oldDeaths then
 						self:controllerChanger(source_oid)
 						self:gainPain(-str)
 					end

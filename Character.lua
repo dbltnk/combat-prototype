@@ -493,7 +493,7 @@ Character = Animation:extend
 			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.deaths == oldDeaths and self.alive then
+					if self.deaths == oldDeaths then
 						if not self.incapacitated and not self.invul then  
 							if self.dmgModified then
 								self:showDamage(str / 100 * self.dmgModified)
@@ -509,7 +509,7 @@ Character = Animation:extend
 			--print("CHARACTER HEAL_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if not self.incapacitated and self.alive then self:showDamage(-str) end
+					if not self.incapacitated then self:showDamage(-str) end
 				end)
 			end	
 		elseif message_name == "changeSize" then
@@ -517,10 +517,8 @@ Character = Animation:extend
 			self.charSprite.scale = self.charSprite.scale / 100 * str
 			self.markedSprite.scale = self.charSprite.scale / 100 * str
 			the.app.view.timer:after(duration, function()
-				if self.alive then
-					self.markedSprite.scale = 1
-					self.charSprite.scale = 1
-				end
+				self.markedSprite.scale = 1
+				self.charSprite.scale = 1
 			end)
 		elseif message_name == "mark" then
 			local duration, source_oid = ...
@@ -579,31 +577,29 @@ Character = Animation:extend
 			local strPerTargetPerTick = str / #targetOids
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.alive then
-						if not self.incapacitated then  
-							for k,v in pairs(targetOids) do
-								-- only send messages if none of the pair died
-								--~ print("OTHER", v, targetDeaths[v], object_manager.get_field(v, "deaths", -1))
-								--~ print("OWN", ownDeaths, self.deaths)
-								if v ~= self.oid and self.deaths == ownDeaths and 
-									targetDeaths[v] == object_manager.get_field(v, "deaths", -1)
-								then 
-									object_manager.send(v, "damage", strPerTargetPerTick, self.oid) 
-									object_manager.send(self.oid, "heal", eff * strPerTargetPerTick, self.oid) 
-								end
+					if not self.incapacitated then  
+						for k,v in pairs(targetOids) do
+							-- only send messages if none of the pair died
+							--~ print("OTHER", v, targetDeaths[v], object_manager.get_field(v, "deaths", -1))
+							--~ print("OWN", ownDeaths, self.deaths)
+							if v ~= self.oid and self.deaths == ownDeaths and 
+								targetDeaths[v] == object_manager.get_field(v, "deaths", -1)
+							then 
+								object_manager.send(v, "damage", strPerTargetPerTick, self.oid) 
+								object_manager.send(self.oid, "heal", eff * strPerTargetPerTick, self.oid) 
 							end
 						end
-						if self.mezzed then
-							self:unfreezeMovement()
-							self:unfreezeCasting()
-							self.mezzed = false
-						end
-						if self.rooted then
-							self:unfreezeMovement()
-							self.rooted = false
-						end
-						if self.hidden then self.hidden = false self.speedOverride = 0 end
 					end
+					if self.mezzed then
+						self:unfreezeMovement()
+						self:unfreezeCasting()
+						self.mezzed = false
+					end
+					if self.rooted then
+						self:unfreezeMovement()
+						self.rooted = false
+					end
+					if self.hidden then self.hidden = false self.speedOverride = 0 end						
 				end)				
 			end		
 		elseif message_name == "damage_over_time" then
@@ -611,7 +607,7 @@ Character = Animation:extend
 			local oldDeaths = self.deaths
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if self.deaths == oldDeaths and self.alive then
+					if self.deaths == oldDeaths then
 						if not self.incapacitated and not self.invul then  
 							if self.dmgModified then
 								self:gainPain(str / 100 * self.dmgModified)  
@@ -637,7 +633,7 @@ Character = Animation:extend
 			local str, duration, ticks, source_oid = ...
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					if not self.incapacitated and self.alive then  
+					if not self.incapacitated then  
 						self:gainPain(-str)
 						object_manager.send(source_oid, "xp", str * config.combatHealXP)
 					end
@@ -653,11 +649,9 @@ Character = Animation:extend
 			self.interrupted = true
 			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
 			the.app.view.timer:after(duration, function()
-				if self.alive then
-					self:unfreezeMovement()
-					self:unfreezeCasting()
-					self.stunned = false
-				end
+				self:unfreezeMovement()
+				self:unfreezeCasting()
+				self.stunned = false
 			end)
 		elseif message_name == "mezz" then
 			local duration, source_oid = ...
@@ -696,10 +690,8 @@ Character = Animation:extend
 			self.interrupted = true			
 			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
 			the.app.view.timer:after(duration, function()
-				if self.alive then
-					self:unfreezeCasting()
-					self.powerblocked = false
-				end
+				self:unfreezeCasting()
+				self.powerblocked = false
 			end)									
 		elseif message_name == "runspeed" then
 			local str, duration, source_oid = ...
@@ -743,10 +735,8 @@ Character = Animation:extend
 			self:freezeMovement()
 			self.rooted = true
 			the.app.view.timer:after(duration, function() 
-				if self.alive then
-					self:unfreezeMovement()
-					self.rooted = false
-				end
+				self:unfreezeMovement()
+				self.rooted = false
 			end)		
 		elseif message_name == "root_break" then
 			local duration, source_oid = ...
@@ -766,11 +756,9 @@ Character = Animation:extend
 			self.maxPainOverdrive = 1 + str / self.maxPain
 			self.maxPain = self.maxPain + str
 			the.app.view.timer:after(duration, function()
-				if self.alive then
-					if self.currentPain >= self.maxPain - str then self:setIncapacitation(true) end
-					self.maxPain = self.maxPain - str
-					self.maxPainOverdrive = 1
-				end
+				if self.currentPain >= self.maxPain - str then self:setIncapacitation(true) end
+				self.maxPain = self.maxPain - str
+				self.maxPainOverdrive = 1
 			end)	
 		elseif message_name == "invul" then
 			local duration, source_oid = ...
