@@ -19,6 +19,29 @@ local Circle = Fill:extend
 	end,
 }
 
+local Crescent = Sprite:extend
+{
+	x = 0, 
+	y = 0, 
+	width = 0, 
+	height = 0,
+	tint = {0,0,0,0},
+	image = nil,
+	rotation = 0,
+	
+	onNew = function(self)
+		the.app.view.layers.ui:add(self)
+	end,
+	
+	onUpdate = function (self)
+	
+	end,
+	
+	onDie = function(self)
+		the.app.view.layers.ui:remove(self)
+	end,
+}
+
 Arrow = Fill:extend 
 {
 	width = 6,
