@@ -47,8 +47,8 @@ Arrow = Fill:extend
 		self.rotation = vector.toVisualRotation(dx,dy)
 
 		--~ utils.vardump(utils.get_by_path(skillObject, "definition.application.effects"))
-		self.circle.width = utils.get_by_path(skillObject, "definition.application.effects.1.application.target_selection.range", 9999) * 2
-		self.circle.height = utils.get_by_path(skillObject, "definition.application.effects.1.application.target_selection.range", 9999) * 2
+		self.circle.width = utils.get_by_path(skillObject, "definition.application.effects.1.application.target_selection.range", 0) * 2
+		self.circle.height = utils.get_by_path(skillObject, "definition.application.effects.1.application.target_selection.range", 0) * 2
 
 		self.circle.x, self.circle.y = playerCenterX + dx - self.circle.width / 2, playerCenterY + dy - self.circle.height / 2
 	end,

@@ -17,7 +17,7 @@ function utils.get_by_path(tbl, path, default)
 		local kn = tonumber(k)
 		if kn then t = t[kn] else t = t[k] end
 		--~ print(i,k,t,#l)
-		if t == nil then print("key " .. i .. " not found: " .. k) return default end
+		if t == nil then return default end -- print("key " .. i .. " not found: " .. k) return default end
 	end
 	
 	return t

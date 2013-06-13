@@ -98,11 +98,9 @@ Player = Character:extend
 --~ 			if the.gamepads[1].axes[5] > 0.2 then print("axes 5:  " .. the.gamepads[1].axes[5]) end		
 		--	if the.gamepads[1].axes[6] > 0.2 then print("axes 6:  " .. the.gamepads[1].axes[6]) end
 			
-			
-			
+	
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
-		
-		
+
 			local skill_keys = {
 				[1] = localconfig.skillOne,
 				[2] = localconfig.skillTwo,
@@ -116,33 +114,20 @@ Player = Character:extend
 			
 			-- select a skill
 			for k,v in pairs(skill_keys) do
-				if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs then
+				if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs and the.player.skills[k]:isPossibleToUse() then
 					the.player.selectedSkill = k
 				end
 			end
 			
 			self.selfTargetingSkill = false 
 			-- find out if the currently selected skill targets self
-			for k,v in pairs(the.player.skills[the.player.selectedSkill]) do 
-				if k == "definition" then
-					for key, value in pairs(v) do
-						if key == "application" then
-							for o, p in pairs(value) do
-								if o == "target_selection" then
-									for h,j in pairs(p) do
-										if h == "target_selection_type" then
-											if p[h] == "self" then 
-												self.selfTargetingSkill = true 
-											end
-										end
-									end
-								end
-							end
-						end
-					end
-				end 
+					
+			local skillObject = the.player.skills[the.player.selectedSkill]
+			if utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type", false) == "self" then
+				self.selfTargetingSkill = true 
 			end
 			
+
 			for k,v in pairs(skill_keys) do
 				if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs then
 					-- use the skill if it targets self
@@ -153,6 +138,7 @@ Player = Character:extend
 					end
 				end
 			end
+
 
 			-- in all other cases only cast it on click
 			if the.mouse:pressed("l") then 
