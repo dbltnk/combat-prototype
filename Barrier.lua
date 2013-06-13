@@ -70,7 +70,7 @@ Barrier = Tile:extend
 			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					self:showDamage(str)
+					if self.alive then self:showDamage(str) end
 				end)
 			end
 		end
@@ -88,8 +88,10 @@ Barrier = Tile:extend
 			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				the.app.view.timer:after(duration / ticks * i, function()
-					self:gainPain(str)
-					self:updateHighscore(source_oid,str)
+					if self.alive then
+						self:gainPain(str)
+						self:updateHighscore(source_oid,str)
+					end
 				end)
 			end
 		end
