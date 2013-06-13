@@ -39,15 +39,6 @@ PhaseManager = Sprite:extend
 			if the.barrier and the.barrier.alive == false then
 				object_manager.send(self.oid, "barrier_died")
 			end
-			
-			local remainingTime = self.round_end_time - network.time
-			if remainingTime <= 0 and self.round_start_time > 0 then 
-				if self.highscore_displayed == false then
-					local text = "The players lost, here's how you did:"
-					the.barrier:showHighscore(text)
-					self.highscore_displayed = true
-				end
-			end
 
 			if network.time > self.round_end_time then
 				self:changePhaseToAfter()
@@ -61,6 +52,14 @@ PhaseManager = Sprite:extend
 
 	onUpdateBoth = function (self, elapsed)
 		the.app.view.game_start_time = self.round_start_time
+		
+		if self.phase == "after" then
+			if self.highscore_displayed == false then
+				local text = "The players lost, here's how you did:"
+				the.barrier:showHighscore(text)
+				self.highscore_displayed = true
+			end
+		end
 	end,
 	
 	onDieBoth = function (self)
@@ -97,6 +96,7 @@ PhaseManager = Sprite:extend
 	end,
 	
 	receiveBoth = function (self, message_name, ...)
+		print("############ receiveBoth", message_name)
 		if message_name == "barrier_died" then
 			if self.highscore_displayed == false then
 				local text = "The players won, here's how you did:"
@@ -112,6 +112,7 @@ PhaseManager = Sprite:extend
 	end,
 	
 	receiveLocal = function (self, message_name, ...)
+		print("############ receiveLocal", message_name)
 		if message_name == "reset_game" then
 			-- destroy non player stuff
 			local l = object_manager.find_where(function(oid, o) 
