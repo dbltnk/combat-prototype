@@ -475,6 +475,8 @@ function switchToGhost()
 	if the.player then the.player:die() end
 	the.player.deaths = (the.player.deaths or 0) + 1
 	the.player = Ghost:new{}
+	the.player.x = the.spawnpoint.x
+	the.player.y = the.spawnpoint.y
 end
 
 function switchBetweenGhostAndPlayer()
