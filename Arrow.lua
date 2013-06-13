@@ -10,13 +10,7 @@ Arrow = Fill:extend
 	
 	onUpdate = function (self)
 		local worldCursorX, worldCursorY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
-		--~ local x,y = 0,0
-		--~ -- weighted average
-		--~ x,y = vector.add(x,y, vector.mul(worldCursorX, worldCursorY, 0.45))
-		--~ x,y = vector.add(x,y, vector.mul(the.player.x, the.player.y, 0.55))
-		--~ self.x = utils.clamp(x,love.graphics.getWidth() / 2, 3200 - love.graphics.getWidth() / 2) -- TODO: make this dynamic, map size currently 3200x3200
-		--~ self.y = utils.clamp(y,love.graphics.getHeight() / 2, 3200 - love.graphics.getHeight() / 2) -- TODO: make this dynamic, map size currently 3200x3200 
-		
+
 		for k,v in pairs(the.player.skills[the.player.selectedSkill]) do 
 			if k == "definition" then
 				for key, value in pairs(v) do
@@ -37,23 +31,13 @@ Arrow = Fill:extend
 		local distanceToCursor = vector.lenFromTo(worldCursorX, worldCursorY,the.player.x, the.player.y)
 		self.height = math.min(distanceToCursor, self.maxHeight)
 		
-		--~  erster versuch
-		--~ local playerCenterX = the.player.x - the.player.width / 2
-		--~ local playerCenterY = the.player.y - the.player.height / 2
-		--~ local dx, dy = vector.fromToWithLen(the.player.x, the.player.y, worldCursorX, worldCursorY, self.height)
-		--~ self.x, self.y = the.player.x + dx, the.player.y + dy
-
-		--~ zweiter versuch
-		--~ self.x = the.player.x + (the.player.x - worldCursorX) / 2 -- - self.width / 2
-		--~ self.y = the.player.y + (the.player.y - worldCursorY) / 2 -- - self.height / 2		
+		local playerCenterX = the.player.x + the.player.width / 2
+		local playerCenterY = the.player.y + the.player.height / 2
+		local dx, dy = vector.fromToWithLen(playerCenterX, playerCenterY, worldCursorX, worldCursorY, self.height)
+		local rx,ry = playerCenterX + dx / 2, playerCenterY + dy / 2
+		self.x, self.y = vector.sub(rx,ry, self.width/2, self.height/2)
 		
-		--~ notlösung
-		self.x = the.focusSprite.x - self.width / 2
-		self.y = the.focusSprite.y - self.height / 2
-		
-		--~ print(the.player.x, worldCursorX, self.x, the.player.y, worldCursorY, self.y)
-		
-		self.rotation = the.player.rotation
+		self.rotation = vector.toVisualRotation(dx,dy)
 	end,
 	
 	onNew = function (self)
