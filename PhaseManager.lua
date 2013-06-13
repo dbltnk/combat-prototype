@@ -152,7 +152,6 @@ PhaseManager = Sprite:extend
 	
 	changePhaseToAfter = function (self)
 		self.phase = "after"
-		self.highscore_displayed = true
 		print("changePhaseToAfter", self.phase, self.round)	
 	end,
 }
