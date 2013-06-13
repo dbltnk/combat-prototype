@@ -102,15 +102,6 @@ Player = Character:extend
 			
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
 		
-			
-			if the.mouse:pressed("l") then 
-				shootSkillNr = the.player.selectedSkill 
-				doShoot = true 
-				the.player.selectedSkill = 1 
-			end
-			if the.mouse:pressed("r") then 
-				the.player.selectedSkill = 1 
-			end
 		
 			local skill_keys = {
 				[1] = localconfig.skillOne,
@@ -123,6 +114,14 @@ Player = Character:extend
 				[8] = localconfig.skillEight,
 			}
 			
+			-- select a skill
+			for k,v in pairs(skill_keys) do
+				if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs then
+					the.player.selectedSkill = k
+				end
+			end
+			
+			self.selfTargetingSkill = false 
 			-- find out if the currently selected skill targets self
 			for k,v in pairs(the.player.skills[the.player.selectedSkill]) do 
 				if k == "definition" then
@@ -131,13 +130,9 @@ Player = Character:extend
 							for o, p in pairs(value) do
 								if o == "target_selection" then
 									for h,j in pairs(p) do
-										--~ self.maxHeight = p.range
 										if h == "target_selection_type" then
-											--~ print(p[h])
 											if p[h] == "self" then 
 												self.selfTargetingSkill = true 
-											else
-												self.selfTargetingSkill = false 
 											end
 										end
 									end
@@ -155,13 +150,20 @@ Player = Character:extend
 						shootSkillNr = k 
 						doShoot = true
 						self.selfTargetingSkill = false
-					-- if not then just select it so you can sue it on click	
-					else 
-						the.player.selectedSkill = k
 					end
 				end
 			end
 
+			-- in all other cases only cast it on click
+			if the.mouse:pressed("l") then 
+				shootSkillNr = the.player.selectedSkill 
+				doShoot = true 
+				the.player.selectedSkill = 1 
+			end
+			if the.mouse:pressed("r") then 
+				the.player.selectedSkill = 1 
+			end
+			
 			if not the.ignorePlayerCharacterInputs then
 				if the.keys:pressed('left', 'a') then movex = -1 end
 				if the.keys:pressed('right', 'd') then movex = 1 end
