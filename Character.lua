@@ -309,6 +309,7 @@ Character = Animation:extend
 	onDieBoth = function (self)
 		the.app.view.layers.characters:remove(self)
 		self.painBar:die()
+		if self.reminder then self.reminder:die() end
 	end,
 	
 	freezeCasting = function (self)
