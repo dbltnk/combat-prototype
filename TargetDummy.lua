@@ -124,7 +124,7 @@ TargetDummy = Animation:extend
 			local oldDeaths = self.deaths
 			--~ print("DAMAGE_OVER_TIME", str, duration, ticks, oldDeaths, self.deaths)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if object_manager.get(self.oid) and self.alive and self.deaths == oldDeaths then 
 						self:showDamage(str / 100 * self.dmgModified) 
 					end
@@ -151,7 +151,7 @@ TargetDummy = Animation:extend
 			local oldDeaths = self.deaths
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.alive and self.deaths == oldDeaths then 
 						self:trackDamage(source_oid, str / 100 * self.dmgModified) 
 						self:gainPain(str / 100 * self.dmgModified) 
@@ -163,38 +163,38 @@ TargetDummy = Animation:extend
 		elseif message_name == "runspeed" then
 			local str, duration = ...
 			self.snared = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.snared = false
 			end)	
 		elseif message_name == "root" then
 			local duration = ...
 			self.rooted = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.rooted = false
 			end)	
 		elseif message_name == "stun" then
 			local duration = ...
 			self.stunned = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.stunned = false
 			end)
 		elseif message_name == "mezz" then
 			local duration = ...
 			self.mezzed = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.mezzed = false
 			end)
 		elseif message_name == "powerblock" then
 			local duration = ...
 			self.powerblocked = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.powerblocked = false
 			end)	
 		elseif message_name == "dmgModifier" then
 			local str, duration, source_oid = ...
 			--print("dmgModifier", str, duration)
 			self.dmgModified = str
-			the.app.view.timer:after(duration, function() 
+			self:after(duration, function() 
 					self.dmgModified = 100
 			end)					
 		end
@@ -226,7 +226,7 @@ TargetDummy = Animation:extend
 		self.deaths = self.deaths + 1
 		self.dmgReceived = {}
 		--~ print("MOB DEATH", self.deaths)
-		the.app.view.timer:after(config.dummyRespawn, function() SpawnMobAt(self.x, self.y) end)
+		self:after(config.dummyRespawn, function() SpawnMobAt(self.x, self.y) end)
 	end,
 	
 	onDieBoth = function (self)
@@ -317,7 +317,7 @@ TargetDummy = Animation:extend
 					if dist <= config.mobAttackRange and obj.name and not obj.hidden then 
 						object_manager.send(obj.oid, "damage", config.mobDamage) 	
 						self.attackPossible = false					
-						the.app.view.timer:after(config.mobAttackTimer, function()
+						self:after(config.mobAttackTimer, function()
 							self.attackPossible = true
 						end)
 					end	

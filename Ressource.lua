@@ -51,7 +51,7 @@ Ressource = Tile:extend
 		}
 		drawDebugWrapper(self)
 		
-		the.app.view.timer:every(config.xpGainsEachNSeconds, function() 
+		self:every(config.xpGainsEachNSeconds, function() 
 			if self:isLocal() then self:giveXP() end
 		end)
 	end,
@@ -86,7 +86,7 @@ Ressource = Tile:extend
 			--~ print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks, source_oid)
 			local oldDeaths = self.deaths
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						self:showDamage(str)
 					end
@@ -97,7 +97,7 @@ Ressource = Tile:extend
 			local oldDeaths = self.deaths			
 			--print("RESSOURCE HEAL_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						self:showDamage(-str)
 					end
@@ -123,7 +123,7 @@ Ressource = Tile:extend
 			--~ print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks, source_oid)
 			local oldDeaths = self.deaths
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						self:controllerChanger(source_oid)
 						self:gainPain(str)
@@ -135,7 +135,7 @@ Ressource = Tile:extend
 			--print("RESSOURCE HEAL_OVER_TIME", str, duration, ticks)
 			local oldDeaths = self.deaths
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						self:controllerChanger(source_oid)
 						self:gainPain(-str)

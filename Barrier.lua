@@ -69,7 +69,7 @@ Barrier = Tile:extend
 			local str, duration, ticks, source_oid = ...
 			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					self:showDamage(str)
 				end)
 			end
@@ -87,7 +87,7 @@ Barrier = Tile:extend
 			local str, duration, ticks, source_oid = ...
 			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					self:gainPain(str)
 					self:updateHighscore(source_oid,str)
 				end)
