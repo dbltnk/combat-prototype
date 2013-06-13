@@ -45,9 +45,6 @@ config.footStepVisibility = 15 -- beware: large numbers will be bad for performa
 config.minPlayerNumberToDecreaseFootstepsAmount = 4
 config.AEShowTime = 4
 
--- audio
-config.volume = 0.3
-
 -- gamepad
 config.gamepad_cursor_speed_near = 300
 config.gamepad_cursor_speed_far = 800
