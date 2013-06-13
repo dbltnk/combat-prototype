@@ -100,7 +100,12 @@ the.app = App:new
 		if the.keys:justPressed ("f2") then
 			switchBetweenGhostAndPlayer()
 		end
-		--~ if the.keys:justPressed ("f3") then print("input mode: touch") input.setMode (input.MODE_TOUCH) end	
+		if the.keys:justPressed ("f3") then 
+			local l = object_manager.find_where(function(oid, o) 
+				return o.class and NetworkSyncedObjects[o.class]
+			end)
+			for _,o in pairs(l) do o:die() end
+		end	
 		
 		-- show the highscore table 
 		if the.keys:justPressed (localconfig.showHighscore) then the.barrier:showHighscore() end	

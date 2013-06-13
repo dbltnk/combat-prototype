@@ -200,5 +200,13 @@ Ressource = Tile:extend
 		self.t.width = 120	
 		the.ressources[self.description] = name or "none"
 		self:updateFogAlpha()
-	end,	
+	end,
+	
+	onDieBoth = function (self)
+		self.painBar:die()
+		self.painBar = nil
+		
+		self.t:die()
+		self.t = nil
+	end,
 }
