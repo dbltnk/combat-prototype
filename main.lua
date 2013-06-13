@@ -97,9 +97,9 @@ the.app = App:new
 		
 		-- set input mode
 		if the.keys:justPressed ("f1") then print("input mode: mouse+keyboard") input.setMode (input.MODE_MOUSE_KEYBOARD) end
-		--~ if the.keys:justPressed ("f2") then
-			--~ switchBetweenGhostAndPlayer()
-		--~ end
+		if the.keys:justPressed ("f2") then
+			switchBetweenGhostAndPlayer()
+		end
 		--~ if the.keys:justPressed ("f3") then print("input mode: touch") input.setMode (input.MODE_TOUCH) end	
 		
 		-- show the highscore table 

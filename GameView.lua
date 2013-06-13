@@ -22,7 +22,7 @@ GameView = View:extend
 	
 	game_start_time = 0,
 	
-	on = false,
+	fogEnabled = nil,
 
 	loadMap = function (self, file, filter)
 		local ok, data = pcall(loadstring(Cached:text(file)))
@@ -262,7 +262,7 @@ GameView = View:extend
 		})
 	
 		if config.show_fog_of_war then	
-			self:fogOn()
+			self:setupFog()
 		end
 
 		self:setupNetworkHandler()
@@ -298,14 +298,23 @@ GameView = View:extend
 		switchToGhost()
     end,
     
-    fogOn = function(self)
-		if self.on == false then
+    setFogEnabled = function (self, enabled)
+		if self.fogEnabled ~= enabled then
+			self.fogEnabled = enabled
+			
 			for _,v in pairs(self.covers) do
-				self.layers.ui:add(v)
+				v.visible = enabled
 			end
-			self.on = true
+			
+			self.fogEnabled = enabled
 		end
 	end,
+	
+	setupFog = function(self)
+		for _,v in pairs(self.covers) do
+			self.layers.ui:add(v)
+		end
+    end,
 
     onUpdate = function (self, elapsed)
 		-- handle chat
@@ -467,6 +476,7 @@ function switchToPlayer()
 			-- set spawn position
 			the.player.x = the.spawnpoint.x
 			the.player.y = the.spawnpoint.y
+			the.app.view:setFogEnabled(true)
 		end
 	end
 end
@@ -477,6 +487,7 @@ function switchToGhost()
 	the.player = Ghost:new{}
 	the.player.x = the.spawnpoint.x
 	the.player.y = the.spawnpoint.y
+	the.app.view:setFogEnabled(false)
 end
 
 function switchBetweenGhostAndPlayer()
