@@ -46,11 +46,17 @@ Arrow = Fill:extend
 		
 		self.rotation = vector.toVisualRotation(dx,dy)
 
-		--~ utils.vardump(utils.get_by_path(skillObject, "definition.application.effects"))
-		self.circle.width = utils.get_by_path(skillObject, "definition.application.effects.1.application.target_selection.range", 0) * 2
-		self.circle.height = utils.get_by_path(skillObject, "definition.application.effects.1.application.target_selection.range", 0) * 2
-
-		self.circle.x, self.circle.y = playerCenterX + dx - self.circle.width / 2, playerCenterY + dy - self.circle.height / 2
+		-- circle for PBAEs
+		if utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type", "") == "ae" then
+			self.circle.width = utils.get_by_path(skillObject, "definition.application.target_selection.range", 0) * 2
+			self.circle.height = utils.get_by_path(skillObject, "definition.application.target_selection.range", 0) * 2
+			self.circle.x, self.circle.y = playerCenterX - self.circle.width / 2, playerCenterY - self.circle.height / 2
+		else
+			-- circle for projectile AEs
+			self.circle.width = utils.get_by_path(skillObject, "definition.application.effects.1.application.target_selection.range", 0) * 2
+			self.circle.height = utils.get_by_path(skillObject, "definition.application.effects.1.application.target_selection.range", 0) * 2
+			self.circle.x, self.circle.y = playerCenterX + dx - self.circle.width / 2, playerCenterY + dy - self.circle.height / 2
+		end
 	end,
 	
 	onNew = function (self)
