@@ -8,6 +8,7 @@ PhaseManager = Sprite:extend
 	sync_low = {"phase", "round", "round_start_time", "round_end_time"},
 	phase = "init_needed", -- "init_needed", "warmup", "playing", "after"
 	round = 0,
+	owner = 0,
 	
 	round_start_time = 0,
 	round_end_time = 0,
@@ -25,6 +26,17 @@ PhaseManager = Sprite:extend
 		the.app.view.layers.management:add(self)
 		
 		if self.phase == "warmup" and localconfig.spectator == false then switchToPlayer() end
+	end,
+	
+	forceNextPhase = function (self)
+		if self.phase == "warmup" then
+			self.round_start_time = network.time
+			self.round_end_time = network.time + config.roundTime
+		elseif self.phase == "playing" then
+			self.round_end_time = network.time
+		elseif self.phase == "after" then
+			self.round_end_time = network.time - config.afterTime
+		end
 	end,
 	
 	onUpdateLocal = function (self)
@@ -106,6 +118,9 @@ PhaseManager = Sprite:extend
 		elseif message_name == "reset_game" then
 			switchToGhost()
 			if localconfig.spectator == false then switchToPlayer() end
+		elseif message_name == "set_phase" then
+			local phase_name = ...
+			if the.barrier and phase_name == "warmup" then the.barrier:hideHighscore() end
 		elseif message_name == "ghost_all_players" then
 			switchToGhost()
 		end
@@ -123,6 +138,8 @@ PhaseManager = Sprite:extend
 			-- recreate map objects
 			local mapFile = '/assets/maps/desert/desert.lua'
 			the.app.view:loadMap(mapFile, function (o) return o.name and NetworkSyncedObjects[o.name] end)
+		elseif message_name == "force_next_phase" then
+			self:forceNextPhase()
 		end
 	end,
 	
@@ -139,6 +156,7 @@ PhaseManager = Sprite:extend
 		self.round_end_time = self.round_start_time  + config.roundTime
 		self.highscore_displayed = false
 		self.phase = "warmup"
+		object_manager.send(self.oid, "set_phase", self.phase)
 		self.round = self.round + 1
 		print("changePhaseToWarmup", self.phase, self.round)	
 		self:resetGame()
@@ -146,12 +164,14 @@ PhaseManager = Sprite:extend
 	
 	changePhaseToPlaying = function (self)
 		self.phase = "playing"	
+		object_manager.send(self.oid, "set_phase", self.phase)
 		self:resetGame()
 		print("changePhaseToPlaying", self.phase, self.round)	
 	end,
 	
 	changePhaseToAfter = function (self)
 		self.phase = "after"
+		object_manager.send(self.oid, "set_phase", self.phase)
 		print("changePhaseToAfter", self.phase, self.round)	
 	end,
 }

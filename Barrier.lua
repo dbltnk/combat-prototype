@@ -111,6 +111,11 @@ Barrier = Tile:extend
 		self.teamscore[object_manager.get(source_oid).team] = self.teamscore[object_manager.get(source_oid).team] + score
 	end,	
 	
+	hideHighscore = function (self)
+		if self.frame then self.frame:Remove() self.frame = nil end
+		loveframes.SetState("none")
+	end,
+	
 	showHighscore = function (self, title)
 		if self.frame then self.frame:Remove() self.frame = nil end
 	
