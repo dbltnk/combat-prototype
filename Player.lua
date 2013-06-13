@@ -123,12 +123,43 @@ Player = Character:extend
 				[8] = localconfig.skillEight,
 			}
 			
+			-- find out if the currently selected skill targets self
+			for k,v in pairs(the.player.skills[the.player.selectedSkill]) do 
+				if k == "definition" then
+					for key, value in pairs(v) do
+						if key == "application" then
+							for o, p in pairs(value) do
+								if o == "target_selection" then
+									for h,j in pairs(p) do
+										--~ self.maxHeight = p.range
+										if h == "target_selection_type" then
+											--~ print(p[h])
+											if p[h] == "self" then 
+												self.selfTargetingSkill = true 
+											else
+												self.selfTargetingSkill = false 
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end 
+			end
+			
 			for k,v in pairs(skill_keys) do
-				--~ if v == "l" or v == "r" then
-					--~ if the.mouse:pressed(v) then shootSkillNr = k doShoot = true end
-				--~ else
-					if not the.ignorePlayerCharacterInputs and the.keys:pressed(v) then the.player.selectedSkill = k end
-				--~ end
+				if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs then
+					-- use the skill if it targets self
+					if self.selfTargetingSkill then
+						shootSkillNr = k 
+						doShoot = true
+						self.selfTargetingSkill = false
+					-- if not then just select it so you can sue it on click	
+					else 
+						the.player.selectedSkill = k
+					end
+				end
 			end
 
 			if not the.ignorePlayerCharacterInputs then
