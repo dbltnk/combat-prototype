@@ -11,6 +11,7 @@ config.healthreg = 3
 config.maxPain = 200
 config.maxEnergy = 300
 config.getUpPain = 0.5 -- in percent
+config.dmgUnmodified = 100
 
 -- progression and round time
 config.timecompression = 2

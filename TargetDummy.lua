@@ -31,7 +31,7 @@ TargetDummy = Animation:extend
 	stunned = false,
 	mezzed = false,
 	powerblocked = false,
-	dmgModified = 100,
+	dmgModified = config.dmgUnmodified,
 	
 	-- oid that this mob is focused on
 	focused_target = 0,
@@ -111,7 +111,6 @@ TargetDummy = Animation:extend
 	receiveBoth = function (self, message_name, ...)
 		if message_name == "damage" then
 			local str, source_oid  = ...
-			self:trackDamage(source_oid, str / 100 * self.dmgModified) 
 			self:showDamage(str / 100 * self.dmgModified) 
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
@@ -136,6 +135,7 @@ TargetDummy = Animation:extend
 			--print("DUMMY DAMANGE", str)
 			self:gainPain(str / 100 * self.dmgModified) 
 			self.mezzed = false
+			self.rooted = false
 		elseif message_name == "moveSelfTo" then
 			local x,y = ...
 			self.x = x
@@ -147,10 +147,7 @@ TargetDummy = Animation:extend
 			for i=0,ticks do
 				self:after(duration / ticks * i, function()
 					if self.alive and self.deaths == oldDeaths then 
-						self:trackDamage(source_oid, str / 100 * self.dmgModified) 
-						self:gainPain(str / 100 * self.dmgModified) 
-						self.mezzed = false	
-						--~ print("LLLLLLLLLLLLLLLLLLLLLLLLLL")
+						self:receiveLocal("damage", str, source_oid)
 					end
 				end)
 			end
@@ -189,8 +186,8 @@ TargetDummy = Animation:extend
 			--print("dmgModifier", str, duration)
 			self.dmgModified = str
 			self:after(duration, function() 
-					self.dmgModified = 100
-			end)					
+				self.dmgModified = config.dmgUnmodified
+			end)
 		end
 	end,
 	

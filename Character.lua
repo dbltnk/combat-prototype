@@ -37,7 +37,7 @@ Character = Animation:extend
 	team = "none",
 	rooted = false,
 	stunned = false,
-	dmgModified = 100,
+	dmgModified = config.dmgUnmodified,
 	invul = false,
 	mezzed = false,
 	snared = false,
@@ -402,7 +402,7 @@ Character = Animation:extend
 		self:setIncapacitation(false)
 		self.rooted = false
 		self.stunned = false
-		self.dmgModified = 100
+		self.dmgModified = config.dmgUnmodified
 		self.invul = false
 		self.mezzed = false
 		self.snared = false
@@ -724,7 +724,7 @@ Character = Animation:extend
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self.dmgModified = str
 			self:after(duration, function() 
-					self.dmgModified = 100
+					self.dmgModified = config.dmgUnmodified
 			end)
 		elseif message_name == "root" then
 			local duration, source_oid = ...
@@ -910,7 +910,7 @@ Character = Animation:extend
 		if self.mezzed then self.charDebuffDisplay.mezzed = "mezzed" else self.charDebuffDisplay.mezzed = "" end	
 		if self.snared then self.charDebuffDisplay.snared = "snared" else self.charDebuffDisplay.snared = "" end			
 		if self.powerblocked then self.charDebuffDisplay.powerblocked = "pb'ed" else self.charDebuffDisplay.powerblocked = "" end	
-		if self.dmgModified == 125 then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
+		if self.dmgModified > config.dmgUnmodified then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
 		if self.invul then self.charDebuffDisplay.invul = "invul" else self.charDebuffDisplay.invul = "" end			
 		
 		if self.hidden then
