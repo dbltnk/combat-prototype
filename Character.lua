@@ -106,6 +106,7 @@ Character = Animation:extend
 	
 	onNew = function (self)
 		self:mixin(GameObject)
+		self:mixin(GameObjectCommons)
 		self:mixin(FogOfWarObject)
 		
 		the.app.view.layers.characters:add(self)
@@ -426,7 +427,7 @@ Character = Animation:extend
 			self:updateLevel()							
 		end		
 		if math.floor(str) > 0 then 
-			str = math.floor(str * 10) / 10
+			str = tools.floor1(str)
 			if not self.hidden or self == the.player then
 				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,1,0}, yOffset = 50}
 			end
@@ -463,13 +464,8 @@ Character = Animation:extend
 	end,
 	
 	showDamage = function (self, str)
-		str = math.floor(str * 10) / 10
 		if not self.hidden or self == the.player then
-			if str >= 0 then
-				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}, yOffset = 50}
-			else
-				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}, yOffset = 50}
-			end
+			self:showDamageWithOffset (str, 50)
 		end
 	end,
 	

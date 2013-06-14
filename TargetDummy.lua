@@ -9,7 +9,7 @@ TargetDummy = Animation:extend
 	class = "TargetDummy",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "velocity", "creation_time",
-		"maxPain", "xpWorth", "finalDamage", "focused_target", "deaths"},			
+		"maxPain", "xpWorth", "finalDamage", "focused_target", "deaths"},
 	sync_high = {"x", "y", "currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified"},
 	sync_low = {"focused_target"},
 	
@@ -41,16 +41,14 @@ TargetDummy = Animation:extend
 	-- UiBar
 	painBar = nil,
 	
-	movable = false,
-	
-	lastFootstep = 0,
+	lastFootstepTime = 0,
 	
 	footstepsPossible = function (self)
-		return love.timer.getTime() - self.lastFootstep >= .75
+		return love.timer.getTime() - self.lastFootstepTime >= .75
 	end,
 	
 	makeFootstep = function (self)
-		self.lastFootstep = love.timer.getTime()
+		self.lastFootstepTime = love.timer.getTime()
 	end,
 	
 	animName = nil,
@@ -66,6 +64,7 @@ TargetDummy = Animation:extend
 	onNew = function (self)
 		self:mixin(GameObject)
 		self:mixin(FogOfWarObject)
+		self:mixin(GameObjectCommons)
 		
 		the.targetDummies[self] = true
 		
@@ -83,7 +82,7 @@ TargetDummy = Animation:extend
 		}
 		
 		drawDebugWrapper(self)
-		--if (math.random(-1, 1) > 0) then self.movable = true end
+
 		self.charDebuffDisplay = CharDebuffDisplay:new{
 			x = self.x, y = self.y
 		}
@@ -96,12 +95,7 @@ TargetDummy = Animation:extend
 	end,
 
 	showDamage = function (self, str)
-		str = math.floor(str * 10) / 10
-		if str >= 0 then
-			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}, yOffset = 20}
-		else
-			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}, yOffset = 20}
-		end
+		self:showDamageWithOffset (str, 20)
 	end,
 	
 	trackDamage = function (self, source_oid, str)
@@ -231,6 +225,7 @@ TargetDummy = Animation:extend
 	
 	onDieBoth = function (self)
 		self.painBar:die()
+		self.charDebuffDisplay:die()
 		the.targetDummies[self] = nil		
 		the.app.view.layers.characters:remove(self)
 	end,

@@ -293,7 +293,11 @@ CharDebuffDisplay = Text:extend
 	
 	onNew = function (self)
 		the.app.view.layers.ui:add(self)
-	end
+	end,
+	
+	onDie = function (self)
+		the.app.view.layers.ui:remove(self)
+	end,
 }
 
 UiGroup = Group:extend

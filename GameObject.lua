@@ -28,6 +28,11 @@ GameObject = {
 		if self.sync_low then
 			self.changeMonitorLow = MonitorChanges:new{ timeout = config.sync_low, obj = self, keys = self.sync_low }
 		end
+		
+		-- TODO sync -> prop
+		--~ for _,v in pairs(self.sync_low) do
+			--~ 
+		--~ end
 	end,
 	
 	onUpdate = function (self, ...)

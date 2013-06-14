@@ -35,6 +35,7 @@ Ressource = Tile:extend
 	
 	onNew = function (self)
 		self:mixin(GameObject)
+		self:mixin(GameObjectCommons)
 		self:mixin(FogOfWarObject)
 		self.width = 64
 		self.height = 64
@@ -63,12 +64,7 @@ Ressource = Tile:extend
 	end,
 	
 	showDamage = function (self, str)
-		str = math.floor(str * 10) / 10
-		if str >= 0 then
-			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}, yOffset = 30}
-		else
-			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}, yOffset = 30}
-		end
+		self:showDamageWithOffset (str, 30)
 	end,	
 	
 	receiveBoth = function (self, message_name, ...)
