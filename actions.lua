@@ -104,7 +104,7 @@ action_handling.register_target_selection("projectile", function (start_target, 
 	
 	local vx,vy = action_handling.get_view(start_target)
 	local dx,dy = cx - vx, cy - vy
-	
+
 	if vector.len(dx,dy) == 0 then
 		print("ERROR it is not possible to shoot a projectile without a view/destination position")
 		return
