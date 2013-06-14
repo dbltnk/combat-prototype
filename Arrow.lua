@@ -23,14 +23,15 @@ local Circle = Fill:extend
 	end,
 }
 
-local Crescent = Sprite:extend
+local Crescent = Tile:extend
 {
 	x = 0, 
 	y = 0, 
-	width = 0, 
-	height = 0,
-	tint = {0,0,0,0},
-	image = nil,
+	width = 200, 
+	height = 200,
+	tint = {0,0,1},
+	alpha = .25,
+	image = "assets/graphics/melee_radians/120_200.png", -- TODO: remove hard-coded path
 	rotation = 0,
 	
 	onNew = function(self)
@@ -38,7 +39,7 @@ local Crescent = Sprite:extend
 	end,
 	
 	onUpdate = function (self)
-	
+		--~ print(self.rotation)
 	end,
 	
 	onDie = function(self)
@@ -59,6 +60,7 @@ Arrow = Fill:extend
 		the.app.view.layers.ui:add(self)
 		local worldCursorX, worldCursorY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 		self.circle = Circle:new{fill = self.fill}
+		self.crescent = Crescent:new{}
 	end,
 	
 	onUpdate = function (self)
@@ -89,23 +91,35 @@ Arrow = Fill:extend
 
 			-- circle for PBAEs (at arrow start)
 			if utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type") == "ae" then
+				self.crescent.visible = false
+				self.circle.visible = true				
 				local range = utils.get_by_path(skillObject, "definition.application.target_selection.range", 0)
 				self.circle.width = range * 2
 				self.circle.height = range * 2
 				self.circle.x, self.circle.y = playerCenterX - self.circle.width / 2, playerCenterY - self.circle.height / 2
+			elseif utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type") == "cone" then				
+				-- crescent for melee attacks
+				self.crescent.visible = true
+				self.circle.visible = false
+				self.crescent.x, self.crescent.y = playerCenterX - self.crescent.width / 2, playerCenterY - self.crescent.height / 2
+				self.crescent.rotation = the.player.rotation
+				--~ print(self.crescent.x, self.crescent.y,playerCenterX, playerCenterY,self.crescent.visible, self.crescent.alpha, self.crescent.image, self.crescent.width, self.crescent.height)
+				--~ utils.vardump(self.crescent.tint)
 			else
 				-- circle for projectile AEs (at arrow end)
+				self.crescent.visible = false
+				self.circle.visible = true				
 				local range = utils.get_by_path(skillObject, "definition.application.effects.1.application.target_selection.range", 0)
 				self.circle.width = range * 2
 				self.circle.height = range * 2
 				self.circle.x, self.circle.y = playerCenterX + dx - self.circle.width / 2, playerCenterY + dy - self.circle.height / 2
 			end
-		
 		end
 	end,
 	
 	onDie = function (self)
 		the.app.view.layers.ui:remove(self)
 		self.circle:die()
+		self.crescent:die()
 	end,
 }
