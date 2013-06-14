@@ -54,6 +54,7 @@ require 'network'
 require 'debug_utils'
 
 require 'GameObject'
+require 'GameObjectCommons'
 require 'FogOfWarObject'
 require 'MonitorChanges'
 require 'Buffs'
@@ -102,7 +103,12 @@ the.app = App:new
 		--~ if the.keys:justPressed ("f2") then
 			--~ switchBetweenGhostAndPlayer()
 		--~ end
-		--~ if the.keys:justPressed ("f3") then print("input mode: touch") input.setMode (input.MODE_TOUCH) end	
+		--~ if the.keys:justPressed ("f3") then 
+			--~ local l = object_manager.find_where(function(oid, o) 
+				--~ return o.class and NetworkSyncedObjects[o.class]
+			--~ end)
+			--~ for _,o in pairs(l) do o:die() end
+		--~ end	
 		
 		-- show the highscore table 
 		if the.keys:justPressed (localconfig.showHighscore) then the.barrier:showHighscore() end	
@@ -116,9 +122,14 @@ the.app = App:new
 		-- toggle fullscreen
 		if the.keys:justPressed (localconfig.toggleFullscreen) then self:toggleFullscreen() end
 		-- toggle profile
-		if the.keys:justPressed ("f11") then config.show_profile_info = not config.show_profile_info end
+		if not the.keys:pressed("lctrl") and the.keys:justPressed ("f11") then config.show_profile_info = not config.show_profile_info end
 		-- toggle debug draw
-		if the.keys:justPressed ("f12") then config.draw_debug_info = not config.draw_debug_info end
+		if not the.keys:pressed("lctrl") and the.keys:justPressed ("f12") then config.draw_debug_info = not config.draw_debug_info end
+		
+		-- admin
+		if the.keys:pressed("lctrl") and the.keys:justPressed ("f11") then 
+			if the.phaseManager then object_manager.send(the.phaseManager.oid, "force_next_phase") end
+		end
 		if the.keys:pressed("lctrl") and the.keys:justPressed ("f12") then
 			network.send({channel = "server", cmd = "restart", password = localconfig.adminPassword })
 		end
@@ -134,19 +145,6 @@ the.app = App:new
 			end
 			network.shutdown()
 			os.exit() 
-		end
-		
-		-- game ends, players lost
-		if the.app.view.game_start_time then
-			local remainingTime = (the.app.view.game_start_time + config.roundTime) - network.time
-			if remainingTime <= 0 and the.app.view.game_start_time > 0 then 
-				if self.running then
-					local text = "The players lost, here's how you did:"
-					the.barrier:showHighscore(text)
-					self.running = false
-					self.timeScale = 0
-				end
-			end
 		end
 	end,
 

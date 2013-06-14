@@ -11,15 +11,18 @@ config.healthreg = 3
 config.maxPain = 200
 config.maxEnergy = 300
 config.getUpPain = 0.5 -- in percent
+config.dmgUnmodified = 100
 
 -- progression and round time
 config.timecompression = 2
 config.barrierHealth = 50000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.warmupTime = 180 -- in seconds
 config.roundTime = 3600 / config.timecompression -- in seconds
+config.afterTime = 60 -- in seconds
 config.xpCap = 1000
 config.levelCap = 10
 config.dummyXPWorth = 50
-config.dummyRespawn = 180 -- seconds
+config.dummyRespawn = 10 -- seconds
 config.xpCapTimer = config.roundTime / config.levelCap
 config.ressourceHealth = 300
 config.xpGainsEachNSeconds = 10
@@ -44,9 +47,6 @@ config.sightDistanceNear = 400
 config.footStepVisibility = 15 -- beware: large numbers will be bad for performance
 config.minPlayerNumberToDecreaseFootstepsAmount = 4
 config.AEShowTime = 4
-
--- audio
-config.volume = 0.3
 
 -- gamepad
 config.gamepad_cursor_speed_near = 300

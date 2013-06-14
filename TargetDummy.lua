@@ -9,7 +9,7 @@ TargetDummy = Animation:extend
 	class = "TargetDummy",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "velocity", "creation_time",
-		"maxPain", "xpWorth", "finalDamage", "focused_target", "deaths"},			
+		"maxPain", "xpWorth", "finalDamage", "focused_target", "deaths"},
 	sync_high = {"x", "y", "currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified"},
 	sync_low = {"focused_target"},
 	
@@ -21,7 +21,6 @@ TargetDummy = Animation:extend
 	damagerTable = {},	
 	finalDamage = 0,
 	alive = true,
-	timeOfDeath = 0,	
 	deaths = 0,
 	owner = 0,
 	targetable = true,
@@ -31,7 +30,7 @@ TargetDummy = Animation:extend
 	stunned = false,
 	mezzed = false,
 	powerblocked = false,
-	dmgModified = 100,
+	dmgModified = config.dmgUnmodified,
 	
 	-- oid that this mob is focused on
 	focused_target = 0,
@@ -41,16 +40,14 @@ TargetDummy = Animation:extend
 	-- UiBar
 	painBar = nil,
 	
-	movable = false,
-	
-	lastFootstep = 0,
+	lastFootstepTime = 0,
 	
 	footstepsPossible = function (self)
-		return love.timer.getTime() - self.lastFootstep >= .75
+		return love.timer.getTime() - self.lastFootstepTime >= .75
 	end,
 	
 	makeFootstep = function (self)
-		self.lastFootstep = love.timer.getTime()
+		self.lastFootstepTime = love.timer.getTime()
 	end,
 	
 	animName = nil,
@@ -61,11 +58,16 @@ TargetDummy = Animation:extend
 				walk_left = { frames = {5,6,7,8}, fps = config.mobAnimSpeed },
 				walk_right = { frames = {9,10,11,12}, fps = config.mobAnimSpeed },
 				walk_up = { frames = {13,14,15,16}, fps = config.mobAnimSpeed },
+				freeze_down = { frames = {1}, fps = config.mobAnimSpeed },
+				freeze_left = { frames = {5}, fps = config.mobAnimSpeed },
+				freeze_right = { frames = {9}, fps = config.mobAnimSpeed },
+				freeze_up = { frames = {13}, fps = config.mobAnimSpeed },
 			},
 
 	onNew = function (self)
 		self:mixin(GameObject)
 		self:mixin(FogOfWarObject)
+		self:mixin(GameObjectCommons)
 		
 		the.targetDummies[self] = true
 		
@@ -83,7 +85,7 @@ TargetDummy = Animation:extend
 		}
 		
 		drawDebugWrapper(self)
-		--if (math.random(-1, 1) > 0) then self.movable = true end
+
 		self.charDebuffDisplay = CharDebuffDisplay:new{
 			x = self.x, y = self.y
 		}
@@ -96,35 +98,27 @@ TargetDummy = Animation:extend
 	end,
 
 	showDamage = function (self, str)
-		str = math.floor(str * 10) / 10
-		if str >= 0 then
-			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
-		else
-			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
-		end
+		self:showDamageWithOffset (str, 20)
 	end,
 	
 	trackDamage = function (self, source_oid, str)
 		-- zero values
-		if not self.dmgReceived[self.oid] then self.dmgReceived[self.oid] = {} end
-		local myDmgReceived = self.dmgReceived[self.oid]
-		if not myDmgReceived[source_oid] then myDmgReceived[source_oid] = 0 end
+		if not self.dmgReceived[source_oid] then self.dmgReceived[source_oid] = 0 end
 		
 		-- interesting case
-		myDmgReceived[source_oid] = myDmgReceived[source_oid] + str
+		self.dmgReceived[source_oid] = self.dmgReceived[source_oid] + str
 	end,
 	
 	receiveBoth = function (self, message_name, ...)
 		if message_name == "damage" then
 			local str, source_oid  = ...
-			self:trackDamage(source_oid, str / 100 * self.dmgModified) 
 			self:showDamage(str / 100 * self.dmgModified) 
 		elseif message_name == "damage_over_time" then 
 			local str, duration, ticks, source_oid = ...
 			local oldDeaths = self.deaths
 			--~ print("DAMAGE_OVER_TIME", str, duration, ticks, oldDeaths, self.deaths)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if object_manager.get(self.oid) and self.alive and self.deaths == oldDeaths then 
 						self:showDamage(str / 100 * self.dmgModified) 
 					end
@@ -142,6 +136,7 @@ TargetDummy = Animation:extend
 			--print("DUMMY DAMANGE", str)
 			self:gainPain(str / 100 * self.dmgModified) 
 			self.mezzed = false
+			self.rooted = false
 		elseif message_name == "moveSelfTo" then
 			local x,y = ...
 			self.x = x
@@ -151,52 +146,49 @@ TargetDummy = Animation:extend
 			local oldDeaths = self.deaths
 		--	print("DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.alive and self.deaths == oldDeaths then 
-						self:trackDamage(source_oid, str / 100 * self.dmgModified) 
-						self:gainPain(str / 100 * self.dmgModified) 
-						self.mezzed = false	
-						--~ print("LLLLLLLLLLLLLLLLLLLLLLLLLL")
+						self:receiveLocal("damage", str, source_oid)
 					end
 				end)
 			end
 		elseif message_name == "runspeed" then
 			local str, duration = ...
 			self.snared = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.snared = false
 			end)	
 		elseif message_name == "root" then
 			local duration = ...
 			self.rooted = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.rooted = false
 			end)	
 		elseif message_name == "stun" then
 			local duration = ...
 			self.stunned = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.stunned = false
 			end)
 		elseif message_name == "mezz" then
 			local duration = ...
 			self.mezzed = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.mezzed = false
 			end)
 		elseif message_name == "powerblock" then
 			local duration = ...
 			self.powerblocked = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.powerblocked = false
 			end)	
 		elseif message_name == "dmgModifier" then
 			local str, duration, source_oid = ...
 			--print("dmgModifier", str, duration)
 			self.dmgModified = str
-			the.app.view.timer:after(duration, function() 
-					self.dmgModified = 100
-			end)					
+			self:after(duration, function() 
+				self.dmgModified = config.dmgUnmodified
+			end)
 		end
 	end,
 	
@@ -211,26 +203,23 @@ TargetDummy = Animation:extend
 	
 	onDieLocal = function (self)	
 		-- find out how much xp which player gets and tell him
-		local myDmgReceived = self.dmgReceived[self.oid]
-		if myDmgReceived then
-		  for damager, value in pairs(myDmgReceived) do
+		for damager, value in pairs(self.dmgReceived) do
 			self.finalDamage = self.finalDamage + value
-		  end
-		  
-		  for damager, value in pairs(myDmgReceived) do
+		end
+
+		for damager, value in pairs(self.dmgReceived) do
 			object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
-		  end
 		end
 	
-		self.timeOfDeath = love.timer.getTime()
 		self.deaths = self.deaths + 1
 		self.dmgReceived = {}
-		--~ print("MOB DEATH", self.deaths)
-		the.app.view.timer:after(config.dummyRespawn, function() SpawnMobAt(self.x, self.y) end)
+		
+		self:after(config.dummyRespawn, function() SpawnMobAt(self.x, self.y) end)
 	end,
 	
 	onDieBoth = function (self)
 		self.painBar:die()
+		self.charDebuffDisplay:die()
 		the.targetDummies[self] = nil		
 		the.app.view.layers.characters:remove(self)
 	end,
@@ -263,7 +252,7 @@ TargetDummy = Animation:extend
 			self.last_refocus_time = love.timer.getTime()
 		end
 
-		local obj = object_manager.objects[self.focused_target]
+		local obj = object_manager.get(self.focused_target)
 		
 		-- lets act
 		if obj then	
@@ -279,18 +268,13 @@ TargetDummy = Animation:extend
 			end
 			
 			-- make mobs move towards the player
-			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name and not obj.hidden then 
-				if self.x < obj.x then -- todo: find better movement code for this
-					self.x = self.x + speed* elapsed
-				else
-					self.x = self.x - speed * elapsed
-				end	
+			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.class == "Character" and not obj.hidden then 
+				local cx,cy = tools.object_center(self)
+				local px,py = tools.object_center(obj)
 				
-				if self.y < obj.y then
-					self.y = self.y + speed * elapsed
-				else
-					self.y = self.y - speed * elapsed
-				end	
+				local dx,dy = vector.fromToWithLen(cx,cy, px,py, speed * elapsed)
+				
+				self.x, self.y = vector.add(self.x, self.y, dx,dy)
 				
 				--~ -- let them set some footsteps
 				--~ if self:footstepsPossible() then 
@@ -311,13 +295,26 @@ TargetDummy = Animation:extend
 	attack = function(self)
 		if not self.stunned and not self.mezzed and not self.powerblocked then 
 			if self.attackPossible then
-				local obj = object_manager.objects[self.focused_target]
+				local obj = object_manager.get(self.focused_target)
 				if obj then
-					local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
-					if dist <= config.mobAttackRange and obj.name and not obj.hidden then 
-						object_manager.send(obj.oid, "damage", config.mobDamage) 	
-						self.attackPossible = false					
-						the.app.view.timer:after(config.mobAttackTimer, function()
+					local cx,cy = tools.object_center(self)
+					local ox,oy = tools.object_center(obj)
+					
+					local dist = vector.lenFromTo(ox, oy, cx, cy)
+					if dist <= config.mobAttackRange and obj.class == "Character" and not obj.hidden then 
+						-- really hurt someone
+						object_manager.send(obj.oid, "damage", config.mobDamage)
+						
+						-- visual
+						local rotation = vector.toVisualRotation(vector.fromTo(cx, cy, ox, oy))
+						
+						local img = "assets/graphics/melee_radians/90_120.png"
+						EffectImage:new{ x = cx, y = cy, r = 60, image = img, 
+							rotation = rotation, color = {0.5,0.5,0.5,0.5}, }
+						
+						-- reset
+						self.attackPossible = false
+						self:after(config.mobAttackTimer, function()
 							self.attackPossible = true
 						end)
 					end	
@@ -327,42 +324,44 @@ TargetDummy = Animation:extend
 	end,
 	
 	onUpdateBoth = function (self)
+		self:play(self.anim_name)
+		
+		-- look at current focus
+		local obj = object_manager.get(self.focused_target)
+		if obj then
+			local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
+
+			-- make mobs move towards the player
+			local rot = vector.toVisualRotation(vector.fromTo (self.x ,self.y, obj.x, obj.y))
+			local ddx,ddy = vector.fromVisualRotation(rot, 1)
+			local dir = vector.dirFromVisualRotation(ddx,ddy)
+
+			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
+				-- set rotation and animation
+				self.anim_name = "walk_" .. dir	
+			else
+				self.anim_name = "freeze_" .. dir
+			end
+		end
+		
+		self:updateFogAlpha()
+		
 		self.painBar.currentValue = self.currentPain
 		self.painBar:updateBar()
 		self.painBar.x = self.x
 		self.painBar.y = self.y	
 		self.painBar.bar.alpha = self.alpha
-		self.painBar.background.alpha = self.alpha		
-		
-		self:play(self.anim_name)
-		
-		-- find a player close by
-		object_manager.visit(function(oid,obj) 
-			local dist = vector.lenFromTo(obj.x, obj.y, self.x, self.y)
-			-- make mobs move towards the player
-			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
-				-- set rotation and animation
-				self.rotation = vector.toVisualRotation(vector.fromTo (self.x ,self.y, obj.x, obj.y))	
-				local ddx,ddy = vector.fromVisualRotation(self.rotation, 1)
-				local dir = vector.dirFromVisualRotation(ddx,ddy)
-				self.anim_name = "walk_" .. dir	
-				self.rotation = 0
-			else
-				--~ self:freeze() -- todo: freeze animation
-			end
-		end)
-		
-		self:updateFogAlpha()
+		self.painBar.background.alpha = self.alpha
 		
 		self.charDebuffDisplay.alpha = self.alpha
 		self.charDebuffDisplay.x = self.x
-		self.charDebuffDisplay.y = self.y		
+		self.charDebuffDisplay.y = self.y
+		
 		if self.rooted then self.charDebuffDisplay.rooted = "rooted" else self.charDebuffDisplay.rooted = "" end
 		if self.stunned then self.charDebuffDisplay.stunned = "stunned" else self.charDebuffDisplay.stunned = "" end		
 		if self.mezzed then self.charDebuffDisplay.mezzed = "mezzed" else self.charDebuffDisplay.mezzed = "" end	
 		if self.snared then self.charDebuffDisplay.snared = "snared" else self.charDebuffDisplay.snared = "" end			
 		if self.powerblocked then self.charDebuffDisplay.powerblocked = "pb'ed" else self.charDebuffDisplay.powerblocked = "" end	
-		if self.dmgModified == 125 then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
-		--~ print(self.charDebuffDisplay.mezzed,self.charDebuffDisplay.x,self.charDebuffDisplay.y)
+		if self.dmgModified > config.dmgUnmodified then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
 	end,
 }

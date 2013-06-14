@@ -1,8 +1,16 @@
 -- GameView
-
+NetworkSyncedObjects = {
+	TargetDummy = true,
+	Npc = true,
+	Barrier = true,
+	Ressource = true,
+}
+		
+		
 GameView = View:extend
 {
 	layers = {
+		management = Group:new(),
 		ground = Group:new(),
 		particles = Group:new(),
 		characters = Group:new(),
@@ -14,9 +22,9 @@ GameView = View:extend
 	
 	game_start_time = 0,
 	
-	on = false,
+	fogEnabled = nil,
 
-	loadMap = function (self, file, objectNamesToIgnore)
+	loadMap = function (self, file, filter)
 		local ok, data = pcall(loadstring(Cached:text(file)))
 
 		if ok then
@@ -42,7 +50,7 @@ GameView = View:extend
 
 						local spr
 						
-						if not objectNamesToIgnore or not objectNamesToIgnore[obj.name]  then
+						if not filter or filter(obj) then
 							
 							if obj.name and rawget(_G, obj.name) then
 								obj.properties.x = obj.x
@@ -85,33 +93,20 @@ GameView = View:extend
 		self:loadLayers(mapFile, true, {objects = true, })
 		
 		local is_server = network.is_first and network.connected_client_count == 1
-		print("XXXXXXXXX", network.is_first, network.connected_client_count)
-		
-		local networkSyncedObjects = {
-			TargetDummy = true,
-			Npc = true,
-			Barrier = true,
-			Ressource = true,
-		}
-		self:loadMap(mapFile, not is_server and networkSyncedObjects or nil)
+		print("startup", network.is_first, network.connected_client_count)
+
+		self:loadMap(mapFile, function (o) return not (o.name and NetworkSyncedObjects[o.name]) end)
 		
 		-- first client -> setup "new" world
 		if is_server then
 			PhaseManager:new{}
-			self.game_start_time = network.time
-			network.set("game", {
-				start_time = self.game_start_time
-			})
-		else
-			network.get("game", function(data)
-				self.game_start_time = data and data.start_time or 0
-			end)
 		end
 		
 		self.collision.visible = false
 		self.collision.static = true
 		
 		-- specify render order
+		self:add(self.layers.management)
 		self:add(self.layers.ground)
 		self:add(self.layers.particles)
 		self:add(self.layers.characters)
@@ -120,19 +115,15 @@ GameView = View:extend
 		self:add(self.layers.ui)
 		self:add(self.layers.debug)
 		
-		if localconfig.spectator then
-			the.player = Ghost:new{}
-		else
-			-- setup player
-			the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, 
-				name = localconfig.playerName, 
-				armor = localconfig.armor, 
-				weapon = localconfig.weapon,
-				team = localconfig.team,
-			}
-		end
+		-- setup player
+		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, 
+			name = localconfig.playerName, 
+			armor = localconfig.armor, 
+			weapon = localconfig.weapon,
+			team = localconfig.team,
+		}
 		
-    -- place ontop
+		-- place ontop
 		self:remove(self.trees)
 		self:remove(self.buildings)
 		self:remove(self.vegetation)
@@ -269,7 +260,7 @@ GameView = View:extend
 		})
 	
 		if config.show_fog_of_war then	
-			self:fogOn()
+			self:setupFog()
 		end
 
 		self:setupNetworkHandler()
@@ -302,16 +293,26 @@ GameView = View:extend
 			end)
 		end
 
+		switchToGhost()
     end,
     
-    fogOn = function(self)
-		if self.on == false then
+    setFogEnabled = function (self, enabled)
+		if self.fogEnabled ~= enabled then
+			self.fogEnabled = enabled
+			
 			for _,v in pairs(self.covers) do
-				self.layers.ui:add(v)
+				v.visible = enabled
 			end
-			self.on = true
+			
+			self.fogEnabled = enabled
 		end
 	end,
+	
+	setupFog = function(self)
+		for _,v in pairs(self.covers) do
+			self.layers.ui:add(v)
+		end
+    end,
 
     onUpdate = function (self, elapsed)
 		-- handle chat
@@ -460,7 +461,7 @@ GameView = View:extend
 }
 
 
-function switchBetweenGhostAndPlayer()
+function switchToPlayer()
 	if the.player then
 		if the.player.class == "Ghost" then
 			the.player:die()
@@ -473,10 +474,26 @@ function switchBetweenGhostAndPlayer()
 			-- set spawn position
 			the.player.x = the.spawnpoint.x
 			the.player.y = the.spawnpoint.y
+			the.app.view:setFogEnabled(true)
+		end
+	end
+end
+
+function switchToGhost()
+	if the.player then the.player:die() end
+	the.player.deaths = (the.player.deaths or 0) + 1
+	the.player = Ghost:new{}
+	the.player.x = the.spawnpoint.x
+	the.player.y = the.spawnpoint.y
+	the.app.view:setFogEnabled(false)
+end
+
+function switchBetweenGhostAndPlayer()
+	if the.player then
+		if the.player.class == "Ghost" then
+			switchToPlayer()			
 		else
-			the.player:die()
-			the.player.deaths = the.player.deaths + 1
-			the.player = Ghost:new{}
+			switchToGhost()
 		end
 	end
 end

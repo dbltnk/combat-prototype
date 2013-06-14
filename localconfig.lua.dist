@@ -1,6 +1,8 @@
 local localconfig = {}
 localconfig.skills = {}
 localconfig.spectator = false
+localconfig.adminPassword = "lala"
+localconfig.is_bot = false
 
 -- ### Step 1: Set up your screen resolution. ###
 localconfig.fullscreen = false -- Set this to "true" for fullscreen.
@@ -93,10 +95,7 @@ localconfig.showHighscore = "f5"
 localconfig.toggleFullscreen = "f10"
 localconfig.quitGame = "escape"
 
-localconfig.adminPassword = "lala"
-
 localconfig.max_chat_lines = 10
-	
-localconfig.is_bot = false
+localconfig.audioVolume = 20 -- 0 = off, 100 = very loud
 
 return localconfig

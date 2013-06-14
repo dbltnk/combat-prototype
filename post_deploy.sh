@@ -14,6 +14,9 @@ mv changelog.txt unixfile.txt
 perl -p -e 's/\n/\r\n/' < unixfile.txt > changelog.txt
 rm unixfile.txt
 
+echo patching config
+sed -i 's#t.console = true#t.console = false#g' conf.lua
+
 echo build client win
 rm -rf buildtmp
 mkdir buildtmp

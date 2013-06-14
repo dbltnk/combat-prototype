@@ -253,7 +253,7 @@ NameLevel = Text:extend
 	
 	onUpdate = function (self)
 		self.text = self.name .. " (" .. self.level .. ")\n" .. "[" .. self.team .. "]"
-		--~ self.x = self.x - 20
+		self.x = self.x - 20
 		self.y = self.y - 30
 		--~ self:centerAround(self.x,self.y,"horizontal")
 	end,
@@ -293,7 +293,11 @@ CharDebuffDisplay = Text:extend
 	
 	onNew = function (self)
 		the.app.view.layers.ui:add(self)
-	end
+	end,
+	
+	onDie = function (self)
+		the.app.view.layers.ui:remove(self)
+	end,
 }
 
 UiGroup = Group:extend
@@ -314,19 +318,16 @@ TimerDisplay = Text:extend
 	x = 0,
 	y = 0, 
 	time = 0,
-	width = 200,
+	width = 300,
 	tint = {0.1,0.1,0.1},
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
-		local runningTime = network.time - the.app.view.game_start_time
-		self.time = config.roundTime - math.floor(runningTime)
-		local minutes = math.floor(self.time / 60)
-		local seconds = (self.time - minutes * 60)
-		if seconds >= 10 then 
-			self.text = minutes .. ":" .. seconds .. " remaining"
-		elseif seconds < 10 then
-			self.text = minutes .. ":0" .. seconds .. " remaining"
+		
+		if the.phaseManager then
+			self.text = the.phaseManager:getTimeText()
+		else
+			self.text = "???"
 		end
 	end
 }
@@ -355,6 +356,8 @@ XpTimerDisplay = Text:extend
 		elseif xpSeconds < 10 then
 			self.text = "Next XP cap reset in " .. xpMinutes .. ":0" .. xpSeconds
 		end
+		
+		self.visible = the.phaseManager and the.phaseManager.phase == "playing"
 	end
 }
 
@@ -367,12 +370,13 @@ ScrollingText = Text:extend
 	y = 0, 
 	width = 6,
 	tint = {1,1,1},
+	yOffset = 0,
 	
 	onNew = function (self)
 		self:mixin(FogOfWarObject)
 		self.x = self.x - self.width / 2
 		GameView.layers.ui:add(self)
-		self.y = self.y - math.random(-10,10)
+		self.y = self.y - self.yOffset - math.random(-10,10)
 	end,
 	
 	onUpdate = function (self)
