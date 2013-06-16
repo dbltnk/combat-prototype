@@ -48,6 +48,12 @@ cp -r build_material/lovemacosx/* buildtmp
 mv buildtmp/game.love buildtmp/combat-prototype.app/Contents/Resources/combat-prototype.love
 cp changelog.txt buildtmp
 rm -rf build/combat-prototype.app
-mv buildtmp/combat-prototype.app build
+rm -rf build/osx
+mkdir -p build/osx
+cp -r buildtmp/* build/osx
+rm -rf build/combat-prototype-osx.zip 
+cd build/osx
+zip -r ../combat-prototype-osx.zip .
+cd ../..
 rm -rf buildtmp
 
