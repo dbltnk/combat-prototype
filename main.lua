@@ -3,20 +3,46 @@ DEBUG = true
 
 config = require 'config'
 
+configBaseDir = {}
+table.insert(configBaseDir, "./");
+table.insert(configBaseDir, love.filesystem.getSaveDirectory() .. "/");
+
+--assert(false, love.filesystem.getSaveDirectory())
+
+function findFile(file, dirs)
+    if file then
+        for k,v in pairs(dirs) do
+            local f = v .. file
+            if f then
+                local h = io.open(f)
+                if h then
+                    io.close(h)
+                    return f
+                end
+            end
+        end
+    end
+
+    return nil
+end
+
 function readConfig(file)
-	local f = file and io.open(file)
-	if not f then 
-		file = "localconfig.lua"
-	end
-	
-	print("using config file", file)
-	
-	return dofile(file)
+        local f = findFile(file, configBaseDir)
+        if not f then f = findFile("localconfig.lua", configBaseDir) end
+
+        assert(f, "no config found, please place your config at:\n" .. love.filesystem.getSaveDirectory() .. "/localconfig.lua")
+
+        print("using config file", f)
+
+        local h = io.open(f)
+        local s = h:read("*a")
+        io.close(h)
+        return loadstring(s)()
 end
 
 localconfig = readConfig(arg[2])
 
-require "enet"
+--require "enet"
 
 love.graphics.setMode(localconfig.screenWidth, localconfig.screenHeight, localconfig.fullscreen)
 
