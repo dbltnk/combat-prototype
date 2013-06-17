@@ -37,3 +37,23 @@ mv dastal_proto1 build
 mv dastal_proto1.zip build
 rm -rf buildtmp
 
+echo build client for mac
+rm -rf buildtmp
+mkdir buildtmp
+cp localconfig.lua.dist buildtmp
+cp README.md buildtmp/readme.txt
+zip -r buildtmp.zip . -x@build_material/buildexclude.txt -x server\* -x build_material\* -x buildtmp\* -x .git\* -x build\*
+mv buildtmp.zip buildtmp/game.love
+cp -r build_material/lovemacosx/* buildtmp
+mv buildtmp/game.love buildtmp/combat-prototype.app/Contents/Resources/combat-prototype.love
+cp changelog.txt buildtmp
+rm -rf build/combat-prototype.app
+rm -rf build/osx
+mkdir -p build/osx
+cp -r buildtmp/* build/osx
+rm -rf build/combat-prototype-osx.zip 
+cd build/osx
+zip -r ../combat-prototype-osx.zip .
+cd ../..
+rm -rf buildtmp
+
