@@ -216,7 +216,7 @@ end)
 -- eg. {effect_type = "spawn", application = ...},
 -- has: application
 action_handling.register_effect("spawn", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	--~ utils.vardump(target)
 	action_handling.start(effect.application, target, source_oid, source_oid)
 end)
@@ -239,7 +239,7 @@ end)
 -- eg. {effect_type = "sneak"},
 -- has: duration, speedPenalty
 action_handling.register_effect("sneak", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "sneak", effect.duration * increase, effect.speedPenalty, source_oid)
 end)
 
@@ -254,7 +254,7 @@ end)
 -- eg. {effect_type = "heal", str = 60},
 -- has: str
 action_handling.register_effect("heal", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "heal", effect.str * increase, source_oid)
 end)
 
@@ -262,7 +262,7 @@ end)
 -- eg. {effect_type = "heal", str = 60},
 -- has: str
 action_handling.register_effect("healOnlyOthers", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	if target.oid ~= source_oid then object_manager.send(target.oid, "heal", effect.str * increase, source_oid) end
 end)
 
@@ -270,7 +270,7 @@ end)
 -- eg. {effect_type = "heal_over_time", ticks = 5, duration = 20, str = 5},
 -- has: str
 action_handling.register_effect("heal_over_time", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "heal_over_time", effect.str * increase, effect.duration, effect.ticks, source_oid)
 end)
 
@@ -278,7 +278,7 @@ end)
 -- eg. {effect_type = "stamHeal", str = 60},
 -- has: str
 action_handling.register_effect("stamHeal", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "stamHeal", effect.str * increase, source_oid)
 	--print("actions",effect.str)
 end)
@@ -287,7 +287,7 @@ end)
 -- eg. {effect_type = "damage", str = 60},
 -- has: str
 action_handling.register_effect("damage", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "damage", effect.str * increase, source_oid)
 end)
 
@@ -295,7 +295,7 @@ end)
 -- eg. {effect_type = "damage", str = 60},
 -- has: str
 action_handling.register_effect("damageOnlyOthers", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	if target.oid ~= source_oid then object_manager.send(target.oid, "damage", effect.str * increase, source_oid) end
 end)
 
@@ -303,7 +303,7 @@ end)
 -- eg. {effect_type = "damage_over_time", ticks = 5, duration = 20, str = 5},
 -- has: str
 action_handling.register_effect("damage_over_time", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "damage_over_time", effect.str * increase, effect.duration, effect.ticks, source_oid)
 end)
 
@@ -311,7 +311,7 @@ end)
 -- eg. {effect_type = "runspeed", str = 100, duration = 10},
 -- has: str, duration
 action_handling.register_effect("runspeed", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "runspeed", effect.str, effect.duration * increase, source_oid)
 end)
 
@@ -326,7 +326,7 @@ end)
 -- eg. {effect_type = "stun", duration = 10},
 -- has: duration
 action_handling.register_effect("stun", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "stun", effect.duration * increase, source_oid)
 end)
 
@@ -334,7 +334,7 @@ end)
 -- eg. {effect_type = "stun", duration = 10},
 -- has: duration
 action_handling.register_effect("stunOnlyOthers", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	if target.oid ~= source_oid then object_manager.send(target.oid, "stun", effect.duration * increase, source_oid) end
 end)
 
@@ -349,7 +349,7 @@ end)
 -- eg. {effect_type = "powerblock", duration = 10},
 -- has: powerblock
 action_handling.register_effect("powerblock", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "powerblock", effect.duration * increase, source_oid)
 end)
 
@@ -357,7 +357,7 @@ end)
 -- eg. {effect_type = "powerblockOnlyOthers", duration = 10},
 -- has: powerblock
 action_handling.register_effect("powerblockOnlyOthers", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	if target.oid ~= source_oid then object_manager.send(target.oid, "powerblock", effect.duration * increase, source_oid) end
 end)
 
@@ -365,7 +365,7 @@ end)
 -- eg. {effect_type = "mezz", duration = 10},
 -- has: duration
 action_handling.register_effect("mezz", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "mezz", effect.duration * increase, source_oid)
 end)
 
@@ -380,7 +380,7 @@ end)
 -- eg. {effect_type = "root", duration = 10},
 -- has: duration
 action_handling.register_effect("root", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "root", effect.duration * increase, source_oid)
 end)
 
@@ -402,7 +402,7 @@ end)
 -- eg. {effect_type = "dmgModifier", duration = 10},
 -- has: str, duration
 action_handling.register_effect("dmgModifier", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "dmgModifier", effect.str, effect.duration * increase, source_oid)
 end)
 
@@ -411,7 +411,7 @@ end)
 -- has: duration, ticks, duration, str, eff
 action_handling.register_effect_multitarget("transfer", function (targets, effect, source_oid) --TODO:  * increase
 	--~ object_manager.send(target.oid, "stun", effect.duration, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	local targetOids = list.process(targets)
 		:where(function(t) return t.oid end)
 		:select(function(t) return t.oid end)
@@ -451,7 +451,7 @@ end)
 -- eg. {effect_type = "buff_max_pain", str = 100, duration = 15},
 -- has: str, duration
 action_handling.register_effect("buff_max_pain", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "buff_max_pain", effect.str, effect.duration * increase, source_oid)
 end)
 
@@ -459,7 +459,7 @@ end)
 -- eg. {effect_type = "invul", duration = 15},
 -- has: duration
 action_handling.register_effect("invul", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "invul", effect.duration * increase, source_oid)
 end)
 
@@ -467,7 +467,7 @@ end)
 -- eg. {effect_type = "changeSize", str = 150, duration = 15},
 -- has: str, duration
 action_handling.register_effect("changeSize", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "changeSize", effect.str, effect.duration * increase, source_oid)
 end)
 
@@ -475,6 +475,6 @@ end)
 -- eg. {effect_type = "mark", duration = 15},
 -- has: duration
 action_handling.register_effect("mark", function (target, effect, source_oid)
-	local increase = (1 + config.strIncreaseFactor * object_manager.get(source_oid).level)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "mark", effect.duration * increase, source_oid)
 end)

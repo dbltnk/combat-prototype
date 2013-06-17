@@ -9,6 +9,9 @@ GameObject = {
 	-- changeMonitorHigh
 	-- changeMonitorLow
 	
+	-- counts object destructions to be able to kill running tickers (eg. after)
+	die_counter = 0,
+	
 	onMixin = function (self)
 		--~ print("GO MIXIN")
 		
@@ -25,6 +28,11 @@ GameObject = {
 		if self.sync_low then
 			self.changeMonitorLow = MonitorChanges:new{ timeout = config.sync_low, obj = self, keys = self.sync_low }
 		end
+		
+		-- TODO sync -> prop
+		--~ for _,v in pairs(self.sync_low) do
+			--~ 
+		--~ end
 	end,
 	
 	onUpdate = function (self, ...)
@@ -42,7 +50,23 @@ GameObject = {
 		if self.onUpdateBoth then self:onUpdateBoth(...) end
 	end,
 	
+	after = function (self, duration, fun)
+		local starting_die_counter = self.die_counter
+		the.app.view.timer:after(duration, function()
+			if self.die_counter == starting_die_counter then fun() end
+		end)
+	end,
+	
+	every = function (self, duration, fun)
+		local starting_die_counter = self.die_counter
+		the.app.view.timer:every(duration, function()
+			if self.die_counter == starting_die_counter then fun() end
+		end)
+	end,
+	
 	onDie = function (self, ...)
+		self.die_counter = self.die_counter + 1
+	
 		if self:isLocal() then
 			if self.onDieLocal then self:onDieLocal(...) end
 			network.send({channel = "game", cmd = "delete", oid = self.oid, })

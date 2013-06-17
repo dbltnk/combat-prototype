@@ -37,7 +37,7 @@ Character = Animation:extend
 	team = "none",
 	rooted = false,
 	stunned = false,
-	dmgModified = 100,
+	dmgModified = config.dmgUnmodified,
 	invul = false,
 	mezzed = false,
 	snared = false,
@@ -110,6 +110,7 @@ Character = Animation:extend
 	
 	onNew = function (self)
 		self:mixin(GameObject)
+		self:mixin(GameObjectCommons)
 		self:mixin(FogOfWarObject)
 		
 		the.app.view.layers.characters:add(self)
@@ -181,7 +182,7 @@ Character = Animation:extend
 			x = self.x, y = self.y, 
 			level = self.level, name = self.name,
 			weapon = self.weapon, armor = self.armor, team = self.team,
-			width = self.pain_bar_size,
+			width = self.pain_bar_size * 2,
 		}	
 		
 		self.charDebuffDisplay = CharDebuffDisplay:new{
@@ -311,6 +312,8 @@ Character = Animation:extend
 	onDieBoth = function (self)
 		the.app.view.layers.characters:remove(self)
 		self.painBar:die()
+		if self.reminder then self.reminder:die() end
+		if self.markedSprite then self.markedSprite:die() end
 	end,
 	
 	freezeCasting = function (self)
@@ -460,7 +463,7 @@ Character = Animation:extend
 		self:setIncapacitation(false)
 		self.rooted = false
 		self.stunned = false
-		self.dmgModified = 100
+		self.dmgModified = config.dmgUnmodified
 		self.invul = false
 		self.mezzed = false
 		self.snared = false
@@ -485,9 +488,9 @@ Character = Animation:extend
 			self:updateLevel()							
 		end		
 		if math.floor(str) > 0 then 
-			str = math.floor(str * 10) / 10
+			str = tools.floor1(str)
 			if not self.hidden or self == the.player then
-				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,1,0}}
+				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,1,0}, yOffset = 50}
 			end
 		end	
 	end,	
@@ -522,13 +525,8 @@ Character = Animation:extend
 	end,
 	
 	showDamage = function (self, str)
-		str = math.floor(str * 10) / 10
 		if not self.hidden or self == the.player then
-			if str >= 0 then
-				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
-			else
-				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
-			end
+			self:showDamageWithOffset (str, 50)
 		end
 	end,
 	
@@ -552,7 +550,7 @@ Character = Animation:extend
 			local str, duration, ticks, source_oid = ...
 			local oldDeaths = self.deaths
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						if not self.incapacitated and not self.invul then  
 							if self.dmgModified then
@@ -568,7 +566,7 @@ Character = Animation:extend
 			local str, duration, ticks, source_oid = ...
 			--print("CHARACTER HEAL_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if not self.incapacitated then self:showDamage(-str) end
 				end)
 			end	
@@ -576,7 +574,7 @@ Character = Animation:extend
 			local str, duration, source_oid = ...
 			self.charSprite.scale = self.charSprite.scale / 100 * str
 			self.markedSprite.scale = self.charSprite.scale / 100 * str
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.markedSprite.scale = 1
 				self.charSprite.scale = 1
 			end)
@@ -584,7 +582,7 @@ Character = Animation:extend
 			local duration, source_oid = ...
 			object_manager.send(source_oid, "xp", duration / 8 * config.crowdControlXP)
 				self.marked = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.marked = false
 			end)						
 		end	
@@ -636,7 +634,7 @@ Character = Animation:extend
 			--~ utils.vardump(targetOids)
 			local strPerTargetPerTick = str / #targetOids
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if not self.incapacitated then  
 						for k,v in pairs(targetOids) do
 							-- only send messages if none of the pair died
@@ -666,7 +664,7 @@ Character = Animation:extend
 			local str, duration, ticks, source_oid = ...
 			local oldDeaths = self.deaths
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						if not self.incapacitated and not self.invul then  
 							if self.dmgModified then
@@ -692,7 +690,7 @@ Character = Animation:extend
 		elseif message_name == "heal_over_time" then
 			local str, duration, ticks, source_oid = ...
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if not self.incapacitated then  
 						self:gainPain(-str)
 						object_manager.send(source_oid, "xp", str * config.combatHealXP)
@@ -708,7 +706,7 @@ Character = Animation:extend
 			self.stunned = true
 			self.interrupted = true
 			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self:unfreezeMovement()
 				self:unfreezeCasting()
 				self.stunned = false
@@ -721,7 +719,7 @@ Character = Animation:extend
 			self.mezzed = true
 			self.interrupted = true			
 			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self:unfreezeMovement()
 				self:unfreezeCasting()
 				self.mezzed = false
@@ -749,7 +747,7 @@ Character = Animation:extend
 			self.powerblocked = true
 			self.interrupted = true			
 			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self:unfreezeCasting()
 				self.powerblocked = false
 			end)									
@@ -758,7 +756,7 @@ Character = Animation:extend
 			--print("SPEED", str, duration)
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self.speedOverride = str
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.speedOverride = 0
 			end)
 		elseif message_name == "xp" then
@@ -777,7 +775,7 @@ Character = Animation:extend
 			local duration, speedPenalty, source_oid = ...
 			self.hidden = true
 			self.speedOverride = config.walkspeed * speedPenalty
-			the.app.view.timer:after(duration, function() self.hidden = false self.speedOverride = 0 end)
+			self:after(duration, function() self.hidden = false self.speedOverride = 0 end)
 		elseif message_name == "hide" then
 			local duration, speedPenalty, source_oid = ...
 			self.hidden = true			
@@ -786,15 +784,15 @@ Character = Animation:extend
 			--print("dmgModifier", str, duration)
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self.dmgModified = str
-			the.app.view.timer:after(duration, function() 
-					self.dmgModified = 100
+			self:after(duration, function() 
+					self.dmgModified = config.dmgUnmodified
 			end)
 		elseif message_name == "root" then
 			local duration, source_oid = ...
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self:freezeMovement()
 			self.rooted = true
-			the.app.view.timer:after(duration, function() 
+			self:after(duration, function() 
 				self:unfreezeMovement()
 				self.rooted = false
 			end)		
@@ -815,7 +813,7 @@ Character = Animation:extend
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self.maxPainOverdrive = 1 + str / self.maxPain
 			self.maxPain = self.maxPain + str
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				if self.currentPain >= self.maxPain - str then self:setIncapacitation(true) end
 				self.maxPain = self.maxPain - str
 				self.maxPainOverdrive = 1
@@ -824,7 +822,7 @@ Character = Animation:extend
 			local duration, source_oid = ...
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self.invul = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.invul = false
 			end)	
 		elseif message_name == "changeSize" then
@@ -832,7 +830,7 @@ Character = Animation:extend
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
 			self.width = self.width / 100 * str
 			self.height = self.height / 100 * str
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.width = self.width / str * 100 
 				self.height = self.height / str * 100
 			end)	
@@ -978,7 +976,7 @@ Character = Animation:extend
 		if self.mezzed then self.charDebuffDisplay.mezzed = "mezzed" else self.charDebuffDisplay.mezzed = "" end	
 		if self.snared then self.charDebuffDisplay.snared = "snared" else self.charDebuffDisplay.snared = "" end			
 		if self.powerblocked then self.charDebuffDisplay.powerblocked = "pb'ed" else self.charDebuffDisplay.powerblocked = "" end	
-		if self.dmgModified == 125 then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
+		if self.dmgModified > config.dmgUnmodified then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
 		if self.invul then self.charDebuffDisplay.invul = "invul" else self.charDebuffDisplay.invul = "" end			
 		
 		if self.hidden then
