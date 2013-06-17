@@ -1,6 +1,6 @@
 
 local config = {}
-
+ 
 -- combat balancing
 config.walkspeed = 150
 config.runspeed = 300
