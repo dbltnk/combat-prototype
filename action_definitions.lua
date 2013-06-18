@@ -5,7 +5,7 @@ local color_scythe = {128,128,128}
 local color_staff = {255,64,0}
 local color_robe = {0,0,255}
 local color_hide_armor = {0,255,64}
-local color_splint_mail = {255,255,0}
+local color_splint_mail = {128,0,255}
 
 action_definitions = {
 	-- -----------------------------------------------------------------------------------
