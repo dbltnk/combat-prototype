@@ -802,7 +802,12 @@ Character = Animation:extend
 				regenerating = false
 			end
 		end
-		if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed end
+		if self.incapacitated then
+			if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed / 2 end
+		else
+			if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed end
+		end	
+			
 		if self.currentPain < 0 then self.currentPain = 0 end
 		if self.currentPain > self.maxPain then self.currentPain = self.maxPain end
 		
