@@ -15,15 +15,15 @@ action_definitions = {
 		icon = nil,
 		sound = nil,
 		cast_time = .5,
-		timeout = 2,
-		energy = 10,
+		timeout = 1,
+		energy = 6,
 		on_the_run =  true,
 		cast_particle_color = color_bow,
 		
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 800, speed = 400, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_shot.png"},
 			effects = {
-				{effect_type = "damage", str = 25},
+				{effect_type = "damage", str = 15},
 			},
 		},	
 	},
@@ -133,8 +133,8 @@ action_definitions = {
 		icon = nil,
 		sound = nil,
 		cast_time = .5,
-		timeout = 2,
-		energy = 15,
+		timeout = 1,
+		energy = 5,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
 		
@@ -143,7 +143,7 @@ action_definitions = {
 				gfx_radius = 100, gfx = "assets/graphics/melee_radians/120_200.png",
 				range = 100, cone = 120, piercing_number = 6},
 			effects = {
-				{effect_type = "damageOnlyOthers", str = 20},
+				{effect_type = "damageOnlyOthers", str = 12},
 			},
 		},	
 	},	
@@ -252,6 +252,54 @@ action_definitions = {
 		},		
 	},	
 	-- -----------------------------------------------------------------------------------
+	staff_magic_bolt = {
+		name = "Magic Bolt",
+		description = "Shoot a small projectile that explodes on impact and damages a few targets in a small area.",
+		icon = nil,
+		sound = nil,
+		cast_time = .5,
+		timeout = 1,
+		energy = 4,
+		on_the_run =  false,
+		cast_particle_color = color_staff,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_magic_bolt.png"},
+			effects = {
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 75, piercing_number = 3, explosion_color = color_staff},
+					effects = {
+						{effect_type = "damage", str = 10},
+					},
+				}},	
+			},
+		},	
+	},	
+	-- -----------------------------------------------------------------------------------
+	staff_poison = {
+		name = "Poison",
+		description = "Shoot a projectile that slowly decreases one targets life.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 1,
+		timeout = 5,
+		energy = 30,
+		on_the_run = false,
+		cast_particle_color = color_staff,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_poison.png"},
+			effects = {
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
+					effects = {
+						{effect_type = "damage_over_time", ticks = 3, duration = 15, str = 20}
+					},
+				}},	
+			},
+		},	
+	},	
+-- -----------------------------------------------------------------------------------	
 	staff_life_leech = {
 		name = "Life Leech",
 		description = "Shoot a projectile that drains one targets life while healing you.",
@@ -274,31 +322,6 @@ action_definitions = {
 				}},	
 			},
 		},
-	},	
-	-- -----------------------------------------------------------------------------------
-	staff_poison = {
-		name = "Poison",
-		description = "Shoot a projectile that slowly decreases one targets life.",
-		icon = nil,
-		sound = nil,				
-		cast_time = 1,
-		timeout = 5,
-		energy = 30,
-		on_the_run = false,
-		cast_particle_color = color_staff,		
-		
-		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_poison.png"},
-			effects = {
-				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
-					effects = {
-						{effect_type = "damage", str = 20},
-						{effect_type = "damage_over_time", ticks = 3, duration = 15, str = 15}
-					},
-				}},	
-			},
-		},	
 	},	
 	-- -----------------------------------------------------------------------------------
 	staff_fireball = {

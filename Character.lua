@@ -129,6 +129,7 @@ Character = Animation:extend
 			scythe_harpoon = true,
 			scythe_stun = true,
 			scythe_gank = true,
+			staff_magic_bolt = true,
 			staff_life_leech = true,
 			staff_poison = true,
 			staff_fireball = true,
