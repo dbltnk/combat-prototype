@@ -86,14 +86,14 @@ end
 -- ### Note: "l" means the left mouse button, "r" means the right one. You cannot use those keyboard keys. ###
 -- ### Movement is hard-coded to WASD and they arrow keys for now. ###
 -- ### You can find a list of all valid key names at http://love2d.org/wiki/KeyConstant. ###
-localconfig.skillOne = "l"
-localconfig.skillTwo = "r"
-localconfig.skillThree = "1"
-localconfig.skillFour = "2"
-localconfig.skillFive = "3"
-localconfig.skillSix = "4"
-localconfig.skillSeven = "q"
-localconfig.skillEight = "e"
+localconfig.skillOne = "0"
+localconfig.skillTwo = "1"
+localconfig.skillThree = "2"
+localconfig.skillFour = "3"
+localconfig.skillFive = "4"
+localconfig.skillSix = "5"
+localconfig.skillSeven = "6"
+localconfig.skillEight = "7"
 localconfig.targetSelf = "shift"
 localconfig.showHighscore = "f5"
 localconfig.toggleFullscreen = "f10"
