@@ -42,12 +42,13 @@ elseif localconfig.weapon == "scythe" then -- The following lines are the six sc
 	-- table.insert(localconfig.weaponSkills,"scythe_gank") -- Gank one target in front of you.
 
 elseif localconfig.weapon == "staff" then -- The following lines are the six staff skills.
-	table.insert(localconfig.weaponSkills,"staff_life_leech") -- Shoot a projectile that drains one targets life while healing you.
-	table.insert(localconfig.weaponSkills,"staff_poison") -- Shoot a projectile that slowly decreases one targets life.
-	table.insert(localconfig.weaponSkills,"staff_fireball") -- Shoot a projectile that explodes on impact and damages a lot of targets in the area.
-	table.insert(localconfig.weaponSkills,"staff_healing_orb") -- Shoot a projectile that heals one target.
-	-- table.insert(localconfig.weaponSkills,"staff_healing_breeze") -- Shoot a projectile that heals one target slowly over time.
-	-- table.insert(localconfig.weaponSkills,"staff_mezz") -- Shoot a projectile that mesmerizes one target for some time. Breaks on damage.
+	table.insert(localconfig.skills,"staff_magic_bolt") -- Shoot a small projectile that explodes on impact and damages a few targets in a small area.
+	table.insert(localconfig.skills,"staff_poison") -- Shoot a projectile that slowly decreases one targets life.
+	table.insert(localconfig.skills,"staff_life_leech") -- Shoot a projectile that drains one targets life while healing you.
+	table.insert(localconfig.skills,"staff_fireball") -- Shoot a projectile that explodes on impact and damages a lot of targets in the area.
+	-- table.insert(localconfig.skills,"staff_healing_orb") -- Shoot a projectile that heals one target.
+	-- table.insert(localconfig.skills,"staff_healing_breeze") -- Shoot a projectile that heals one target slowly over time.
+	-- table.insert(localconfig.skills,"staff_mezz") -- Shoot a projectile that mesmerizes one target for some time. Breaks on damage.
 end	
 
 -- ### Step 5: Now choose which skills you want to use in your second weapon class. ###
@@ -74,12 +75,13 @@ elseif localconfig.secondWeapon == "scythe" then -- The following lines are the 
 	--table.insert(localconfig.secondWeaponSkills,"scythe_gank") -- Gank one target in front of you.
 
 elseif localconfig.secondWeapon == "staff" then -- The following lines are the six staff skills.
-	table.insert(localconfig.secondWeaponSkills,"staff_life_leech") -- Shoot a projectile that drains one targets life while healing you.
-	table.insert(localconfig.secondWeaponSkills,"staff_poison") -- Shoot a projectile that slowly decreases one targets life.
-	table.insert(localconfig.secondWeaponSkills,"staff_fireball") -- Shoot a projectile that explodes on impact and damages a lot of targets in the area.
-	table.insert(localconfig.secondWeaponSkills,"staff_healing_orb") -- Shoot a projectile that heals one target.
-	--table.insert(localconfig.secondWeaponSkills,"staff_healing_breeze") -- Shoot a projectile that heals one target slowly over time.
-	--table.insert(localconfig.secondWeaponSkills,"staff_mezz") -- Shoot a projectile that mesmerizes one target for some time. Breaks on damage.
+	table.insert(localconfig.skills,"staff_magic_bolt") -- Shoot a small projectile that explodes on impact and damages a few targets in a small area.
+	table.insert(localconfig.skills,"staff_poison") -- Shoot a projectile that slowly decreases one targets life.
+	table.insert(localconfig.skills,"staff_life_leech") -- Shoot a projectile that drains one targets life while healing you.
+	table.insert(localconfig.skills,"staff_fireball") -- Shoot a projectile that explodes on impact and damages a lot of targets in the area.
+	-- table.insert(localconfig.skills,"staff_healing_orb") -- Shoot a projectile that heals one target.
+	-- table.insert(localconfig.skills,"staff_healing_breeze") -- Shoot a projectile that heals one target slowly over time.
+	-- table.insert(localconfig.skills,"staff_mezz") -- Shoot a projectile that mesmerizes one target for some time. Breaks on damage.
 end 
 
 -- ### Step 6: Now pick your armor of choice. ###
