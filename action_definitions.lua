@@ -155,7 +155,7 @@ action_definitions = {
 		sound = nil,
 		cast_time = 1,
 		timeout = 5,
-		energy = 25,
+		energy = 30,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
 		
@@ -163,7 +163,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "ae", 
 				range = 100, piercing_number = 12},
 			effects = {
-				{effect_type = "damageOnlyOthers", str = 40},
+				{effect_type = "damageOnlyOthers", str = 50},
 			},
 		},	
 	},	
@@ -434,7 +434,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "heal", str = 75},
+				{effect_type = "heal", str = 60},
 			},
 		},
 	},
@@ -627,7 +627,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "heal_over_time", ticks = 3, duration = 15, str = 25},
+				{effect_type = "heal_over_time", ticks = 3, duration = 15, str = 15},
 			},
 		},		
 	},		
@@ -668,7 +668,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_splint_mail},
 					effects = {
-						{effect_type = "transfer", eff = 1, ticks = 1, duration = 10, str = 75}
+						{effect_type = "transfer", eff = 1, ticks = 1, duration = 5, str = 100}
 					},
 				}},
 			},	
