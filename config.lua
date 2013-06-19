@@ -7,14 +7,14 @@ config.runspeed = 300
 config.animspeed = 4 * config.walkspeed / 50
 config.projectilespeed = 500
 config.energyreg = 8
-config.healthreg = 3
-config.maxPain = 200
+config.healthreg = 4
+config.maxPain = 300
 config.maxEnergy = 300
 config.getUpPain = 0.5 -- in percent
 config.dmgUnmodified = 100
 
 -- progression and round time
-config.timecompression = 2
+config.timecompression = 4
 config.barrierHealth = 50000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
 config.warmupTime = 180 -- in seconds
 config.roundTime = 3600 / config.timecompression -- in seconds
