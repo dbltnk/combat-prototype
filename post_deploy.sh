@@ -22,6 +22,12 @@ rm -rf buildtmp
 mkdir buildtmp
 cp localconfig.lua.dist buildtmp
 cp README.md buildtmp/readme.txt
+
+pushd buildtmp
+ls *.txt | xargs -n1 todos
+ls *.dist | xargs -n1 todos
+popd
+
 zip -r buildtmp.zip . -x@build_material/buildexclude.txt -x server\* -x build_material\* -x buildtmp\* -x .git\* -x build\*
 mv buildtmp.zip buildtmp/game.love
 cp build_material/lovewin32/* buildtmp
