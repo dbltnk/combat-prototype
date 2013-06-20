@@ -306,6 +306,7 @@ Character = Animation:extend
 			--~ self.anim_freeze = index
 		--~ end
 	
+		self:refreshLevelBar()
 	end,
 	
 	onDieBoth = function (self)
@@ -444,6 +445,14 @@ Character = Animation:extend
 		end
 	end,
 	
+	refreshLevelBar = function (self)
+		if the.levelUI then
+			for k,v in pairs(the.levelUI) do
+				v.activated = self.level >= v.level
+			end
+		end
+	end,
+	
 	updateLevel = function (self, elapsed)
 		self.level = self.level +1
 		self.nameLevel.level = self.level
@@ -454,13 +463,9 @@ Character = Animation:extend
 		local particleTime = 3
 		Effect:new{r=255, g=255, b=0, duration=particleTime, follow_oid=self.oid}
 		--	print("update reveived! character level = ",  self.level)
-		for i = 0, config.levelCap - 1 do
-			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / 10
-			if self.level == i then  
-				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * (i - 1), fill = {255,255,0,255}} 
-				the.hud:add(the.levelUI)			
-			end							
-		end
+
+		self:refreshLevelBar()
+		
 		self.maxPain = config.maxPain *	(1 + config.strIncreaseFactor * self.level) 
 	end,
 	
@@ -536,6 +541,8 @@ Character = Animation:extend
 			self:gainPain(-str)
 			object_manager.send(source_oid, "xp", str * config.combatHealXP)
 			if self.hidden then self.hidden = false self.speedOverride = 0 end			
+		elseif message_name == "reset_xp" then
+			self:resetXP()
 		elseif message_name == "stamHeal" then
 			local str, source_oid = ...
 		--	print("STAMHEAL", str)
@@ -1004,16 +1011,6 @@ Character = Animation:extend
 			if the.keys:justPressed ("down") then self.hidden = false end	
 			if the.keys:justPressed ("left") then self.hidden = false end	
 			if the.keys:justPressed ("right") then self.hidden = false end	
-		end
-		
-		local done = {}
-		for i = 1, 10 do 
-			local remainingTime = (the.app.view.game_start_time + config.roundTime) - network.time
-			--~ print(math.floor(love.timer.getTime()), config.xpCapTimer, i, math.floor(remainingTime))
-			if (math.floor(remainingTime) == config.xpCapTimer * i) and done[i] == nil then
-				self:resetXP()
-				done[i] = true
-			end
 		end
 		
 		if self.speedOverride > 1 and self.speedOverride < config.walkspeed then 

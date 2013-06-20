@@ -152,11 +152,19 @@ LevelUI = Fill:extend
 {
 	width = 1,
 	height = 20,
-	fill = {128,128,128,255},	
+	fill = {128,128,128,255},
 	border = {0,0,0,255},
+	level = 0,
+    
+    activated = false,
     
 	onUpdate = function (self)
 		self.y = love.graphics.getHeight() - self.height * 2 - 10
+		if self.activated then
+			self.fill = {255,255,0,255}
+		else
+			self.fill = {128,128,128,255}
+		end
 	end
 }
 
@@ -345,8 +353,9 @@ XpTimerDisplay = Text:extend
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
 		self.y = 25		
-		local runningTime = network.time - the.app.view.game_start_time
-		self.time = config.roundTime - math.floor(runningTime)
+
+		self.time = the.phaseManager and math.floor(the.phaseManager.next_xp_reset_time - network.time) or 0
+
 		local minutes = math.floor(self.time / 60)
 		local seconds = (self.time - minutes * 60)
 		local xpMinutes = math.floor((self.time % config.xpCapTimer)/ 60)
