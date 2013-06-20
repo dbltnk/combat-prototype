@@ -196,7 +196,8 @@ TargetDummy = Animation:extend
 		if self.currentPain < 0 then self.currentPain = 0 end
 		if ((self.currentPain > self.maxPain) and self.alive == true) then 
 			self.currentPain = self.maxPain
-			self.alive = false					
+			self.alive = false
+			self:after(config.dummyRespawn, function() SpawnMobAt(self.x, self.y) end)
 			self:die()
 		end	
 	end,
@@ -213,8 +214,6 @@ TargetDummy = Animation:extend
 	
 		self.deaths = self.deaths + 1
 		self.dmgReceived = {}
-		
-		self:after(config.dummyRespawn, function() SpawnMobAt(self.x, self.y) end)
 	end,
 	
 	onDieBoth = function (self)
