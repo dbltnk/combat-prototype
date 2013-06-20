@@ -47,6 +47,7 @@ config.sightDistanceNear = 400
 config.footStepVisibility = 15 -- beware: large numbers will be bad for performance
 config.minPlayerNumberToDecreaseFootstepsAmount = 4
 config.AEShowTime = 4
+config.focusSpriteMaxRange = 2.5
 
 -- gamepad
 config.gamepad_cursor_speed_near = 300

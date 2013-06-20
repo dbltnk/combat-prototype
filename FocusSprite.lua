@@ -12,8 +12,22 @@ FocusSprite = Sprite:extend
 		-- weighted average
 		x,y = vector.add(x,y, vector.mul(worldCursorX, worldCursorY, 0.45))
 		x,y = vector.add(x,y, vector.mul(the.player.x, the.player.y, 0.55))
+		-- don't go beyond the map borders
 		self.x = utils.clamp(x,love.graphics.getWidth() / 2, 3200 - love.graphics.getWidth() / 2) -- TODO: make this dynamic, map size currently 3200x3200
 		self.y = utils.clamp(y,love.graphics.getHeight() / 2, 3200 - love.graphics.getHeight() / 2) -- TODO: make this dynamic, map size currently 3200x3200 
+		-- equal sight range in both x and y directions
+		local px, py = tools.object_center (the.player)
+		local cap = math.min(love.graphics.getWidth(), love.graphics.getHeight()) / config.focusSpriteMaxRange
+		local widthToHeightRatio = love.graphics.getWidth() / love.graphics.getHeight()
+		if widthToHeightRatio >= 1 then
+			-- widescreen monitor
+			self.x = utils.clamp(self.x, px - cap / widthToHeightRatio, px + cap / widthToHeightRatio)
+			self.y = utils.clamp(self.y, py - cap, py + cap)
+		else
+			-- you turned your monitor by 90 degrees
+			self.x = utils.clamp(self.x, px - cap, px + cap)
+			self.y = utils.clamp(self.y, py - cap * widthToHeightRatio, py + cap * widthToHeightRatio)
+		end
 	end,
 	
 	__tostring = function (self)
