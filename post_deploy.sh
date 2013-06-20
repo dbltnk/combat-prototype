@@ -1,10 +1,12 @@
 #!/bin/bash
 
+# --------------------------------------
 echo update server
 cd server
 npm install
 cd ..
 
+# --------------------------------------
 echo changelog
 echo -n `git log --pretty=oneline|wc -l` > changelog.txt
 echo " commits" >> changelog.txt
@@ -14,9 +16,11 @@ mv changelog.txt unixfile.txt
 perl -p -e 's/\n/\r\n/' < unixfile.txt > changelog.txt
 rm unixfile.txt
 
+# --------------------------------------
 echo patching config
 sed -i 's#t.console = true#t.console = false#g' conf.lua
 
+# --------------------------------------
 echo build client win
 rm -rf buildtmp
 mkdir buildtmp
@@ -43,6 +47,7 @@ mv dastal_proto1 build
 mv dastal_proto1.zip build
 rm -rf buildtmp
 
+# --------------------------------------
 echo build client for mac
 rm -rf buildtmp
 mkdir buildtmp
