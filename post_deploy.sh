@@ -43,9 +43,12 @@ mkdir buildtmp
 cp localconfig.lua.dist buildtmp
 cp README.md buildtmp/readme.txt
 zip -r buildtmp.zip . -x@build_material/buildexclude.txt -x server\* -x build_material\* -x buildtmp\* -x .git\* -x build\*
-mv buildtmp.zip buildtmp/game.love
+mkdir -p buildtmp/combat-prototype
+cd buildtmp/combat-prototype
+unzip ../../buildtmp.zip
+rm ../../buildtmp.zip
+cd ../..
 cp -r build_material/lovemacosx/* buildtmp
-mv buildtmp/game.love buildtmp/combat-prototype.app/Contents/Resources/combat-prototype.love
 cp changelog.txt buildtmp
 rm -rf build/combat-prototype.app
 rm -rf build/osx
