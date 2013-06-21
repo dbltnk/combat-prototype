@@ -61,6 +61,7 @@ network.loss_send = 0
 network.loss_recv = 0
 
 local open_requests = {}
+local open_requests_payload = {}
 local unprocessed = ""
 local bytes_read = 0
 local out_buff = ""
@@ -109,6 +110,8 @@ function network.update_lowest_client_id ()
 end
 
 function network.update (dt)
+	for k,v in pairs(open_requests_payload) do print(k,v) end
+
 	-- update time and keep in sync
 	network.time = network.time + dt
 	
@@ -153,7 +156,10 @@ function network.update (dt)
 		local event = host:service(1)
 		if event == nil then break end
 		
-		network.messages_received = network.messages_received + 1
+		-- count reliable
+		if event.channel == 1 then 
+			network.messages_received = network.messages_received + 1
+		end
 		
 		if event then
 			if event.type == "connect" then
@@ -179,6 +185,7 @@ function network.update (dt)
 							local fin = m.fin or false
 							if fin then 
 								open_requests[seq] = nil 
+								open_requests_payload[seq] = nil
 								network.open_request_count = network.open_request_count - 1
 							end
 							cb(fin, m)
@@ -291,14 +298,16 @@ end
 
 -- seq gets added to the message, fin terminates the message
 -- response_callback(finished, reply)
+local reqs = {}
 function network.send_request (message, response_callback)
 	if not server then return end
 	local seq = next_seq
 	message.seq = seq
 	next_seq = next_seq + 1
 	open_requests[seq] = response_callback
+	open_requests_payload[seq] = json.encode(message)
 	network.open_request_count = network.open_request_count + 1
-	network.send(message)
+	network.send(message, true)
 end
 
 network_message_keywords = {
@@ -362,8 +371,11 @@ function network.patch_message (message, patch_map)
 	return m
 end
 
-function network.send (message)
+function network.send (message, reliable)
 	if not server then return end
+	
+	if reliable == nil then reliable = true end
+	--~ print ("reliable", reliable)
 	
 	-- shorten non server messages
 	if message.channel ~= "server" then
@@ -386,22 +398,26 @@ function network.send (message)
 	--~ utils.vardump(network_message_keywords)
 	
 	local m = json.encode(message)
-	--~ print("SEND", server, m:len(), m)
-	server:send(m)
+	print("SEND", server, m:len(), m, reliable and "TRUE" or "FALSE")
+	local channel = reliable and 1 or 0
+	local flag = reliable and "reliable" or "unsequenced"
+	server:send(m, channel, flag)
 	
-	network.messages_send = network.messages_send + 1
+	if reliable then
+		network.messages_send = network.messages_send + 1
+	end
 
 	stats.out_messages = stats.out_messages + 1
 	stats.out_bytes = stats.out_bytes + string.len(m)
 end
 
 function network.connect (_host, _port)
-        require "enet"
-	
-        print("luasocket version", socket._VERSION)
+	require "enet"
+
+	print("luasocket version", socket._VERSION)
 
 	host = enet.host_create()
-	server = host:connect(_host .. ":" .. _port)
+	server = host:connect(_host .. ":" .. _port, 2)
 	
 	print(host,server)
 end

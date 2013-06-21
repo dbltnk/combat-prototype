@@ -137,7 +137,7 @@ GameObject = {
 			msg[prop] = self[prop] 
 		end
 		msg.nils = nils
-		network.send (msg)
+		network.send (msg, false)
 	end,
 	
 	propsToString = function (self)

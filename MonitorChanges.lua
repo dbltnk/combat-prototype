@@ -39,7 +39,7 @@ MonitorChanges = Class:extend
 			msg[key] = obj[key] 
 		end
 		msg.nils = nils
-		network.send (msg)
+		network.send (msg, false)
 	end,
 	
 	checkAndSend = function (self)
