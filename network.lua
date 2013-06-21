@@ -57,8 +57,8 @@ network.connected_client_count = 0
 network.lowest_client_id = nil
 network.open_request_count = 0
 
-network.loss_percent_send = 0
-network.loss_percent_recv = 0
+network.loss_send = 0
+network.loss_recv = 0
 
 local open_requests = {}
 local unprocessed = ""
@@ -134,14 +134,14 @@ function network.update (dt)
 			--~ print("NETWORK MSG STATS", "ls", msg_send, "lr", msg_recv, "rs", server_send, "rr", server_recv)
 			
 			local send_loss = math.abs(server_recv - msg_send)
-			if msg_send > 0 then send_loss = send_loss / msg_send end
+			--~ if msg_send > 0 then send_loss = send_loss / msg_send end
 			
 			local recv_loss = math.abs(server_send - msg_recv)
-			if server_send > 0 then recv_loss = recv_loss / server_send end
+			--~ if server_send > 0 then recv_loss = recv_loss / server_send end
 			
-			network.loss_percent_send = send_loss
-			network.loss_percent_recv = recv_loss
-			--~ print("NETWORK LOSS send", math.floor(send_loss * 100), "recv", math.floor(recv_loss * 100))
+			network.loss_send = send_loss
+			network.loss_recv = recv_loss
+			print("NETWORK LOSS send", math.floor(send_loss * 100), "recv", math.floor(recv_loss * 100))
 		end)
 		
 		--~ network.send({channel = "stats", cmd = "lag", time = network.time, from = network.client_id})
@@ -237,7 +237,7 @@ function network.update (dt)
 		network.stats = "\nTIME " .. math.floor(network.time) .. " (" .. timeout .. ")" .. timeoutWarning .. "\n" .. 
 			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s " .. in_msg_size .. " b\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s " .. out_msg_size .. " b\n" ..
-			"LAG " .. network.lag .. " LOSS SEND " .. tools.floor1(network.loss_percent_send) .. " RECV " .. tools.floor1(network.loss_percent_recv) .. "\n" ..
+			"LAG " .. network.lag .. " LOSS SEND " .. tools.floor1(network.loss_send) .. " RECV " .. tools.floor1(network.loss_recv) .. "\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
 				" OUTBUFF " .. out_buff:len() .. " REQS " .. network.open_request_count
 		
