@@ -57,6 +57,7 @@ function send_to_other_raw(data, client, clients) {
 function send_to_one_raw(data, client) {
 	var packet = new enet.Packet(data, enet.Packet.FLAG_RELIABLE);
 	console.log("SEND DATA TO", client.id, data);
+	client.messages_send = client.messages_send + 1;
 	client.peer.send(0, packet); // channel number, packet.
 }
 
@@ -134,6 +135,8 @@ host.on('connect', function(peer, data) {
 	client.id = client_id;
 	client.peer = peer;
 	clients.push(client);
+	client.messages_send = 0;
+	client.messages_received = 0;
 	
 	client.last_active = os.uptime();
 	
@@ -158,6 +161,8 @@ host.on('connect', function(peer, data) {
 		var message = JSON.parse(packet.data().toString());
 		//~ console.log(message);
 		
+		client.messages_received = client.messages_received + 1;
+
 		client.last_active = os.uptime();
 		
 		if (message.channel == "server") {
@@ -165,6 +170,9 @@ host.on('connect', function(peer, data) {
 				console.log("WHO");
 				var ids = _.map(clients, function(c) { return c.id; });
 				send_to_one({seq: message.seq, ids: ids, fin: true}, client);
+			} else if (message.cmd == "msg") {
+				console.log("MSG")
+				send_to_one({seq: message.seq, send: client.messages_send, recv: client.messages_received}, client);
 			} else if (message.cmd == "restart") {
 				console.log("RESTART");
 				

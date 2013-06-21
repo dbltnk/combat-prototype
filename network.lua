@@ -40,6 +40,9 @@ local stats = {
 	out_messages = 0,
 }
 
+network.messages_send = 0
+network.messages_received = 0
+
 local stats_timeout = 1
 local stats_last_time = 0
 
@@ -53,6 +56,9 @@ network.connected_client_id_map = {}
 network.connected_client_count = 0
 network.lowest_client_id = nil
 network.open_request_count = 0
+
+network.loss_percent_send = 0
+network.loss_percent_recv = 0
 
 local open_requests = {}
 local unprocessed = ""
@@ -119,6 +125,25 @@ function network.update (dt)
 		end)
 		network.last_time_update = t0
 		
+		local msg_send = network.messages_send
+		local msg_recv = network.messages_received
+		network.send_request({channel = "server", cmd = "msg", send = msg_send, recv = msg_recv}, function(fin, result)
+			local server_send = result.send
+			local server_recv = result.recv
+			
+			--~ print("NETWORK MSG STATS", "ls", msg_send, "lr", msg_recv, "rs", server_send, "rr", server_recv)
+			
+			local send_loss = math.abs(server_recv - msg_send)
+			if msg_send > 0 then send_loss = send_loss / msg_send end
+			
+			local recv_loss = math.abs(server_send - msg_recv)
+			if server_send > 0 then recv_loss = recv_loss / server_send end
+			
+			network.loss_percent_send = send_loss
+			network.loss_percent_recv = recv_loss
+			--~ print("NETWORK LOSS send", math.floor(send_loss * 100), "recv", math.floor(recv_loss * 100))
+		end)
+		
 		--~ network.send({channel = "stats", cmd = "lag", time = network.time, from = network.client_id})
 	end
 	profile.stop()
@@ -127,6 +152,8 @@ function network.update (dt)
 	while true do
 		local event = host:service(1)
 		if event == nil then break end
+		
+		network.messages_received = network.messages_received + 1
 		
 		if event then
 			if event.type == "connect" then
@@ -210,7 +237,7 @@ function network.update (dt)
 		network.stats = "\nTIME " .. math.floor(network.time) .. " (" .. timeout .. ")" .. timeoutWarning .. "\n" .. 
 			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s " .. in_msg_size .. " b\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s " .. out_msg_size .. " b\n" ..
-			"LAG " .. network.lag .. "\n" ..
+			"LAG " .. network.lag .. " LOSS SEND " .. tools.floor1(network.loss_percent_send) .. " RECV " .. tools.floor1(network.loss_percent_recv) .. "\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
 				" OUTBUFF " .. out_buff:len() .. " REQS " .. network.open_request_count
 		
@@ -361,6 +388,8 @@ function network.send (message)
 	local m = json.encode(message)
 	--~ print("SEND", server, m:len(), m)
 	server:send(m)
+	
+	network.messages_send = network.messages_send + 1
 
 	stats.out_messages = stats.out_messages + 1
 	stats.out_bytes = stats.out_bytes + string.len(m)
