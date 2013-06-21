@@ -92,7 +92,9 @@ GameObject = {
 			if self.receiveRemote then self:receiveRemote(message_name, ...) end
 		end
 		
-		if self.receiveBoth then self:receiveBoth(message_name, ...) end	
+		if self.receiveBoth then self:receiveBoth(message_name, ...) end
+		
+		self:sendResync()
 	end,
 	
 	receive = function (self, message_name, ...)

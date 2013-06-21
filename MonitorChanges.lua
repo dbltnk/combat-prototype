@@ -42,6 +42,11 @@ MonitorChanges = Class:extend
 		network.send (msg, false)
 	end,
 	
+	forceSend = function (self)
+		send:send()
+		self.last_time = love.timer.getTime()
+	end,
+	
 	checkAndSend = function (self)
 		if self:changed() then
 			self:send()

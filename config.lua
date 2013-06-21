@@ -66,7 +66,7 @@ config.show_prints = true
 config.server_hostname = "buffy.leenox.de"
 --~ config.server_hostname = "localhost"
 config.server_port = 9998
-config.sync_high = 1 / 20
+config.sync_high = 1 / 15
 config.sync_low = 1
 
 return config
