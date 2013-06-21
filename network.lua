@@ -110,7 +110,7 @@ function network.update_lowest_client_id ()
 end
 
 function network.update (dt)
-	for k,v in pairs(open_requests_payload) do print(k,v) end
+	--~ for k,v in pairs(open_requests_payload) do print(k,v) end
 
 	-- update time and keep in sync
 	network.time = network.time + dt
@@ -398,7 +398,7 @@ function network.send (message, reliable)
 	--~ utils.vardump(network_message_keywords)
 	
 	local m = json.encode(message)
-	print("SEND", server, m:len(), m, reliable and "TRUE" or "FALSE")
+	--~ print("SEND", server, m:len(), m, reliable and "TRUE" or "FALSE")
 	local channel = reliable and 1 or 0
 	local flag = reliable and "reliable" or "unsequenced"
 	server:send(m, channel, flag)
