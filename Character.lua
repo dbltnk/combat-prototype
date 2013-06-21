@@ -246,7 +246,7 @@ Character = Animation:extend
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
 
-				self:play(goSelf.anim_name)
+				if goSelf.anim_name then self:play(goSelf.anim_name) end
 				
 				self.alpha = goSelf.alpha
 			end,
