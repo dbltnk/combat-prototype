@@ -55,7 +55,8 @@ function send_to_other_raw(data, client, clients) {
 }
 
 function send_to_one_raw(data, client) {
-	var packet = new enet.Packet(data, enet.Packet.FLAG_RELIABLE);
+	// FIXME enet.Packet.FLAG_RELIABLE should be 1 but seems to be broken (undefined)
+	var packet = new enet.Packet(data, 1);
 	console.log("SEND DATA TO", client.id, data);
 	client.messages_send = client.messages_send + 1;
 	client.peer.send(0, packet); // channel number, packet.
