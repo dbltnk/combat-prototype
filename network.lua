@@ -141,7 +141,7 @@ function network.update (dt)
 			
 			network.loss_send = send_loss
 			network.loss_recv = recv_loss
-			print("NETWORK LOSS send", math.floor(send_loss * 100), "recv", math.floor(recv_loss * 100))
+			print("NETWORK LOSS send", math.floor(send_loss), "recv", math.floor(recv_loss))
 		end)
 		
 		--~ network.send({channel = "stats", cmd = "lag", time = network.time, from = network.client_id})
