@@ -569,7 +569,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "sneak", duration = 30, speedPenalty = 0.5},
+				{effect_type = "sneak", duration = 30, speedPenalty = 0.75},
 			},
 		},	
 	},	

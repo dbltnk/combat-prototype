@@ -2,8 +2,8 @@
 local config = {}
  
 -- combat balancing
-config.walkspeed = 150
-config.runspeed = 300
+config.walkspeed = 200
+config.runspeed = 250
 config.animspeed = 4 * config.walkspeed / 50
 config.projectilespeed = 500
 config.energyreg = 8
