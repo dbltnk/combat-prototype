@@ -139,7 +139,7 @@ Character = Animation:extend
 			robe_bandage = true,
 			robe_shrink = true,
 			robe_sonic_boom = true,
-			robe_hide = true,
+			robe_fade = true,
 			robe_quake = true,
 			robe_gust = true,
 			hide_armor_sprint = true,
@@ -1001,17 +1001,17 @@ Character = Animation:extend
 		
 		self:applyMovement(elapsed, ipt)
 		
-		-- TODO hack
-		if self.armor == "robe" and not the.ignorePlayerCharacterInputs then
-			if the.keys:justPressed ("w") then self.hidden = false end	
-			if the.keys:justPressed ("a") then self.hidden = false end	
-			if the.keys:justPressed ("s") then self.hidden = false end	
-			if the.keys:justPressed ("d") then self.hidden = false end	
-			if the.keys:justPressed ("up") then self.hidden = false end	
-			if the.keys:justPressed ("down") then self.hidden = false end	
-			if the.keys:justPressed ("left") then self.hidden = false end	
-			if the.keys:justPressed ("right") then self.hidden = false end	
-		end
+		--~ -- TODO hack
+		--~ if self.armor == "robe" and not the.ignorePlayerCharacterInputs then
+			--~ if the.keys:justPressed ("w") then self.hidden = false end	
+			--~ if the.keys:justPressed ("a") then self.hidden = false end	
+			--~ if the.keys:justPressed ("s") then self.hidden = false end	
+			--~ if the.keys:justPressed ("d") then self.hidden = false end	
+			--~ if the.keys:justPressed ("up") then self.hidden = false end	
+			--~ if the.keys:justPressed ("down") then self.hidden = false end	
+			--~ if the.keys:justPressed ("left") then self.hidden = false end	
+			--~ if the.keys:justPressed ("right") then self.hidden = false end	
+		--~ end
 		
 		if self.speedOverride > 1 and self.speedOverride < config.walkspeed then 
 			self.snared = true 

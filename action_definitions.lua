@@ -478,21 +478,22 @@ action_definitions = {
 		},		
 	},		
 	-- -----------------------------------------------------------------------------------
-	robe_hide = {
-		name = "Hide",
-		description = "Renders you invisible if you stand still.",
+	robe_fade = {
+		name = "Fade",
+		description = "Renders you invisible and invulnerable for a very short time.",
 		icon = nil,
 		sound = nil,				
-		cast_time = 3,
-		timeout = 60,
+		cast_time = .1,
+		timeout = 30,
 		energy = 30,
-		on_the_run = false,
+		on_the_run = true,
 		cast_particle_color = color_robe,		
 		
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "hide"},
+				{effect_type = "invul", duration = 3},			
+				{effect_type = "sneak", duration = 3, speedPenalty = 0.5},
 			},
 		},	
 	},		
