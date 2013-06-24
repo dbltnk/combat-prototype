@@ -176,11 +176,11 @@ action_definitions = {
 		cast_time = 1.5,
 		timeout = 12,
 		energy = 40,
-		on_the_run = false,
+		on_the_run = true,
 		cast_particle_color = color_scythe,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 400, speed = 1200, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_jump.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 1200, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_jump.png"},
 			effects = {
 				{effect_type = "moveSelfTo"},	
 			},
