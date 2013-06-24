@@ -193,10 +193,10 @@ action_definitions = {
 		description = "Shoots a projectile that pulls one target to your location.",
 		icon = nil,
 		sound = nil,				
-		cast_time = 1,
+		cast_time = 1.5,
 		timeout = 9,
 		energy = 50,
-		on_the_run = false,
+		on_the_run = true,
 		cast_particle_color = color_scythe,		
 		
 		application = {
