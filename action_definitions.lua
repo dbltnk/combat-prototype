@@ -413,7 +413,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
 					effects = {
-						{effect_type = "mezz", duration = 10},
+						{effect_type = "mezz", duration = 7},
 					},
 				}},
 			},
