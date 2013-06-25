@@ -4,13 +4,14 @@ PhaseManager = Sprite:extend
 {
 	class = "PhaseManager",
 
-	props = {"x", "y", "width", "height", "phase", "round", "round_start_time", "round_end_time"},
-	sync_low = {"phase", "round", "round_start_time", "round_end_time"},
+	props = {"x", "y", "width", "height", "phase", "round", "round_start_time", "round_end_time", "next_xp_reset_time"},
+	sync_low = {"phase", "round", "round_start_time", "round_end_time", "next_xp_reset_time"},
 	phase = "init_needed", -- "init_needed", "warmup", "playing", "after"
 	round = 0,
 	owner = 0,
 	
 	round_start_time = 0,
+	next_xp_reset_time = 0,
 	round_end_time = 0,
 	highscore_displayed = false,
 
@@ -55,6 +56,16 @@ PhaseManager = Sprite:extend
 			if network.time > self.round_end_time then
 				self:changePhaseToAfter()
 			end	
+			
+			-- reset xp
+			if network.time > self.next_xp_reset_time then
+				self.next_xp_reset_time = self.next_xp_reset_time + config.xpCapTimer
+				object_manager.visit(function(oid,o)
+					if o.class == "Character" then
+						object_manager.send(oid, "reset_xp")
+					end
+				end)
+			end
 		elseif self.phase == "after" then
 			if network.time > self.round_end_time + config.afterTime then
 				self:changePhaseToWarmup()
@@ -164,6 +175,7 @@ PhaseManager = Sprite:extend
 	
 	changePhaseToPlaying = function (self)
 		self.phase = "playing"	
+		self.next_xp_reset_time = network.time + config.xpCapTimer
 		object_manager.send(self.oid, "set_phase", self.phase)
 		self:resetGame()
 		print("changePhaseToPlaying", self.phase, self.round)	

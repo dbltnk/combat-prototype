@@ -61,7 +61,7 @@ if localconfig.armor == "robe" then -- The following lines are the six robe skil
 	table.insert(localconfig.skills,"robe_bandage") -- Heal yourself instantly.
 	table.insert(localconfig.skills,"robe_shrink") -- Decrease your body size for some time but makes you take more damage.
 	table.insert(localconfig.skills,"robe_sonic_boom") -- Stuns a lot of targets in the area around you for a brief time.
-	table.insert(localconfig.skills,"robe_hide") -- Renders you invisible if you stand still.
+	table.insert(localconfig.skills,"robe_fade") -- Renders you invisible and invulnerable for a very short time.
 	-- table.insert(localconfig.skills,"robe_quake") -- Damages a lot of targets in the area around you.
 	-- table.insert(localconfig.skills,"robe_gust") -- Push away a lot of targets in the area around you.
 

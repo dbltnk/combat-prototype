@@ -48,26 +48,29 @@ function encode_message(message) {
 	return JSON.stringify(message);
 }
 
-function send_to_other_raw(data, client, clients) {
+function send_to_other_raw(data, client, clients, reliable) {
 	_.each(clients, function(c) {
-		if (c != client) send_to_one_raw(data, c);
+		if (c != client) send_to_one_raw(data, c, reliable);
 	});
 }
 
-function send_to_one_raw(data, client) {
-	var packet = new enet.Packet(data, enet.Packet.FLAG_RELIABLE);
-	console.log("SEND DATA TO", client.id, data);
-	client.peer.send(0, packet); // channel number, packet.
+function send_to_one_raw(data, client, reliable) {
+	reliable = typeof reliable !== 'undefined' ? reliable : true;
+	// FIXME enet.Packet.FLAG_RELIABLE should be 1 but seems to be broken (undefined)
+	var packet = new enet.Packet(data, reliable ? 1 : 0);
+	//~ console.log("SEND DATA TO", client.id, data);
+	if (reliable) client.messages_send = client.messages_send + 1;
+	client.peer.send(reliable ? 1 : 0, packet); // channel number, packet.
 }
 
-function send_to_one(message, client) {
+function send_to_one(message, client, reliable) {
 	var JSON = encode_message(message);
-	send_to_one_raw(JSON, client);
+	send_to_one_raw(JSON, client, reliable);
 }
 
-function send_to_other(message, client, clients) {
+function send_to_other(message, client, clients, reliable) {
 	var JSON = encode_message(message);
-	send_to_other_raw(JSON, client, clients);
+	send_to_other_raw(JSON, client, clients, reliable);
 }
 
 function disconnect(client, clients) {
@@ -119,8 +122,16 @@ var storage = {};
 var next_free_client_id = 1;
 
 var bindaddr = new enet.Address('0.0.0.0', 9998);
-var host = new enet.Host(bindaddr, 32); // bind addr, number of peers to allow at once
-host.on('connect', function(peer, data) {
+
+var server = enet.createServer({
+    address: bindaddr, /* the enet.Address to bind the server host to */
+    peers:32, /* allow up to 32 clients and/or outgoing connections */
+    channels:2, /* allow up to 2 channels to be used, 0 and 1 */
+    down:0, /* assume any amount of incoming bandwidth */
+    up:0 /* assume any amount of outgoing bandwidth */
+});
+
+server.on('connect', function(peer, data) {
     // Peer connected.
     // data is an integer with out-of-band data
     console.log("CONNECT", peer, data);
@@ -134,6 +145,8 @@ host.on('connect', function(peer, data) {
 	client.id = client_id;
 	client.peer = peer;
 	clients.push(client);
+	client.messages_send = 0;
+	client.messages_received = 0;
 	
 	client.last_active = os.uptime();
 	
@@ -148,74 +161,82 @@ host.on('connect', function(peer, data) {
     var client = client_by_peer(clients, peer);
     console.log(client);
     disconnect(client, clients);
-}).on('message', function(peer, packet, channel, data)
+}).on('message', function(peer, packet, channel)
 {
     // Peer sent a message to us in `packet' on `channel'.
 	var client = client_by_peer(clients, peer);
-	//~ console.log("DATA", packet, channel, peer, data);
+	//~ console.log("DATA", packet, peer, channel);
 	
 	try {
 		var message = JSON.parse(packet.data().toString());
 		//~ console.log(message);
 		
+		var reliable = channel == 1;
+		
+		// only count reliable
+		if (reliable) client.messages_received = client.messages_received + 1;
+
 		client.last_active = os.uptime();
 		
 		if (message.channel == "server") {
 			if (message.cmd == "who") {
 				console.log("WHO");
 				var ids = _.map(clients, function(c) { return c.id; });
-				send_to_one({seq: message.seq, ids: ids, fin: true}, client);
+				send_to_one({seq: message.seq, ids: ids, fin: true}, client, reliable);
+			} else if (message.cmd == "msg") {
+				//~ console.log("MSG")
+				send_to_one({seq: message.seq, send: client.messages_send, recv: client.messages_received, fin: true}, client, reliable);
 			} else if (message.cmd == "restart") {
 				console.log("RESTART");
 				
 				if (message.password == config.adminPassword)
 				{			
-					send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 3 sec", time: os.uptime()}, null, clients);
+					send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 3 sec", time: os.uptime()}, null, clients, reliable);
 					setTimeout(function(){
-						send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 2 sec", time: os.uptime()}, null, clients);
+						send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 2 sec", time: os.uptime()}, null, clients, reliable);
 					}, 1000);
 					setTimeout(function(){
-						send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 1 sec", time: os.uptime()}, null, clients);
+						send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 1 sec", time: os.uptime()}, null, clients, reliable);
 					}, 2000);
 					setTimeout(function(){
-						send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 0 sec", time: os.uptime()}, null, clients);
-						send_to_other({channel: "server", cmd: "disconnect"}, null, clients);
+						send_to_other({channel: "chat", cmd: "text", from: "SERVER", text: "restart in 0 sec", time: os.uptime()}, null, clients, reliable);
+						send_to_other({channel: "server", cmd: "disconnect"}, null, clients, reliable);
 					}, 3000);
 					setTimeout(function(){
 						process.exit();
 					}, 4000);
 				}
 			} else if (message.cmd == "ping") {
-				console.log("PING");
-				send_to_one({seq: message.seq, time: message.time, lag: toobusy.lag(), fin: true}, client);
+				//~ console.log("PING");
+				send_to_one({seq: message.seq, time: message.time, lag: toobusy.lag(), fin: true}, client, reliable);
 			} else if (message.cmd == "bye") {
 				console.log("BYE");
 				console.log(client);
 				disconnect(client, clients);
 			} else if (message.cmd == "time") {
-				console.log("TIME");
-				send_to_one({seq: message.seq, time: os.uptime(), fin: true}, client);
+				//~ console.log("TIME");
+				send_to_one({seq: message.seq, time: os.uptime(), fin: true}, client, reliable);
 			} else if (message.cmd == "get") {
 				var key = message.key;
 				var value = storage[key];
 				if (value === undefined) value = null;
 				console.log("GET", key, value);
-				send_to_one({seq: message.seq, value: value, fin: true}, client);
+				send_to_one({seq: message.seq, value: value, fin: true}, client, reliable);
 			} else if (message.cmd == "set") {
 				var key = message.key;
 				var value = message.value;
 				console.log("SET", key, value);
 				if (key) { storage[key] = value; }
-				send_to_one({seq: message.seq, fin: true}, client);
+				send_to_one({seq: message.seq, fin: true}, client, reliable);
 			}
 		} else {
 			//~ console.log("DELIVER TO OTHERS");
-			send_to_other(message, client, clients);
+			send_to_other(message, client, clients, reliable);
 		}
 	}
 	catch(e){}
 });
 
-host.start_watcher();
+server.start();
 
 console.log("TCP echo server listening on port 9998");

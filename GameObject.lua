@@ -92,7 +92,9 @@ GameObject = {
 			if self.receiveRemote then self:receiveRemote(message_name, ...) end
 		end
 		
-		if self.receiveBoth then self:receiveBoth(message_name, ...) end	
+		if self.receiveBoth then self:receiveBoth(message_name, ...) end
+		
+		self:sendResync()
 	end,
 	
 	receive = function (self, message_name, ...)
@@ -137,7 +139,7 @@ GameObject = {
 			msg[prop] = self[prop] 
 		end
 		msg.nils = nils
-		network.send (msg)
+		network.send (msg, false)
 	end,
 	
 	propsToString = function (self)

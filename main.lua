@@ -185,5 +185,15 @@ the.app = App:new
 		
 		-- setup connect view
 		self.view = ConnectView:new()
-    end
+		
+		-- overload to disable drawing
+		local oldDraw = self.draw 
+		self.draw = function()
+			if localconfig.is_bot and not config.draw_debug_info then 
+				-- nop
+			else
+				oldDraw(self)
+			end
+		end		
+    end,
 }

@@ -208,17 +208,15 @@ GameView = View:extend
 		the.experienceUI = ExperienceUI:new{}
 		the.hud:add(the.experienceUI)	
 
+		the.levelUI = {}
+
 		for i = 0, config.levelCap - 1 do
 			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / config.levelCap
-			if i >= the.player.level then 
-				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i} 
-				the.hud:add(the.levelUI)	
-			else
-				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
-				the.hud:add(the.levelUI)			
-			end							
+			local ui = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i} 
+			ui.level = i + 1
+			the.hud:add(ui)	
+			table.insert(the.levelUI, ui)
 		end
-		
 		
 		audio.init()
 	

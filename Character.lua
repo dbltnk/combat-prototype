@@ -141,7 +141,7 @@ Character = Animation:extend
 			robe_bandage = true,
 			robe_shrink = true,
 			robe_sonic_boom = true,
-			robe_hide = true,
+			robe_fade = true,
 			robe_quake = true,
 			robe_gust = true,
 			hide_armor_sprint = true,
@@ -248,7 +248,7 @@ Character = Animation:extend
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
 
-				self:play(goSelf.anim_name)
+				if goSelf.anim_name then self:play(goSelf.anim_name) end
 				
 				self.alpha = goSelf.alpha
 			end,
@@ -308,6 +308,7 @@ Character = Animation:extend
 			--~ self.anim_freeze = index
 		--~ end
 	
+		self:refreshLevelBar()
 	end,
 	
 	onDieBoth = function (self)
@@ -446,6 +447,14 @@ Character = Animation:extend
 		end
 	end,
 	
+	refreshLevelBar = function (self)
+		if the.levelUI then
+			for k,v in pairs(the.levelUI) do
+				v.activated = self.level >= v.level
+			end
+		end
+	end,
+	
 	updateLevel = function (self, elapsed)
 		self.level = self.level +1
 		self.nameLevel.level = self.level
@@ -456,13 +465,9 @@ Character = Animation:extend
 		local particleTime = 3
 		Effect:new{r=255, g=255, b=0, duration=particleTime, follow_oid=self.oid}
 		--	print("update reveived! character level = ",  self.level)
-		for i = 0, config.levelCap - 1 do
-			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / 10
-			if self.level == i then  
-				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * (i - 1), fill = {255,255,0,255}} 
-				the.hud:add(the.levelUI)			
-			end							
-		end
+
+		self:refreshLevelBar()
+		
 		self.maxPain = config.maxPain *	(1 + config.strIncreaseFactor * self.level) 
 	end,
 	
@@ -538,6 +543,8 @@ Character = Animation:extend
 			self:gainPain(-str)
 			object_manager.send(source_oid, "xp", str * config.combatHealXP)
 			if self.hidden then self.hidden = false self.speedOverride = 0 end			
+		elseif message_name == "reset_xp" then
+			self:resetXP()
 		elseif message_name == "stamHeal" then
 			local str, source_oid = ...
 		--	print("STAMHEAL", str)
@@ -804,7 +811,12 @@ Character = Animation:extend
 				regenerating = false
 			end
 		end
-		if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed end
+		if self.incapacitated then
+			if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed / 2 end
+		else
+			if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed end
+		end	
+			
 		if self.currentPain < 0 then self.currentPain = 0 end
 		if self.currentPain > self.maxPain then self.currentPain = self.maxPain end
 		
@@ -991,27 +1003,17 @@ Character = Animation:extend
 		
 		self:applyMovement(elapsed, ipt)
 		
-		-- TODO hack
-		if self.armor == "robe" and not the.ignorePlayerCharacterInputs then
-			if the.keys:justPressed ("w") then self.hidden = false end	
-			if the.keys:justPressed ("a") then self.hidden = false end	
-			if the.keys:justPressed ("s") then self.hidden = false end	
-			if the.keys:justPressed ("d") then self.hidden = false end	
-			if the.keys:justPressed ("up") then self.hidden = false end	
-			if the.keys:justPressed ("down") then self.hidden = false end	
-			if the.keys:justPressed ("left") then self.hidden = false end	
-			if the.keys:justPressed ("right") then self.hidden = false end	
-		end
-		
-		local done = {}
-		for i = 1, 10 do 
-			local remainingTime = (the.app.view.game_start_time + config.roundTime) - network.time
-			--~ print(math.floor(love.timer.getTime()), config.xpCapTimer, i, math.floor(remainingTime))
-			if (math.floor(remainingTime) == config.xpCapTimer * i) and done[i] == nil then
-				self:resetXP()
-				done[i] = true
-			end
-		end
+		--~ -- TODO hack
+		--~ if self.armor == "robe" and not the.ignorePlayerCharacterInputs then
+			--~ if the.keys:justPressed ("w") then self.hidden = false end	
+			--~ if the.keys:justPressed ("a") then self.hidden = false end	
+			--~ if the.keys:justPressed ("s") then self.hidden = false end	
+			--~ if the.keys:justPressed ("d") then self.hidden = false end	
+			--~ if the.keys:justPressed ("up") then self.hidden = false end	
+			--~ if the.keys:justPressed ("down") then self.hidden = false end	
+			--~ if the.keys:justPressed ("left") then self.hidden = false end	
+			--~ if the.keys:justPressed ("right") then self.hidden = false end	
+		--~ end
 		
 		if self.speedOverride > 1 and self.speedOverride < config.walkspeed then 
 			self.snared = true 
