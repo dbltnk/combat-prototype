@@ -103,8 +103,11 @@ Barrier = Tile:extend
 		if not self.highscore[source_oid] then self.highscore[source_oid] = 0 end
 		self.highscore[source_oid] = self.highscore[source_oid] + score
 		-- team highscore
-		if not self.teamscore[object_manager.get(source_oid).team] then self.teamscore[object_manager.get(source_oid).team] = 0 end
-		self.teamscore[object_manager.get(source_oid).team] = self.teamscore[object_manager.get(source_oid).team] + score
+		local src = object_manager.get(source_oid)
+		if src then
+			if not self.teamscore[src.team] then self.teamscore[src.team] = 0 end
+			self.teamscore[src.team] = self.teamscore[src.team] + score
+		end
 	end,	
 	
 	hideHighscore = function (self)

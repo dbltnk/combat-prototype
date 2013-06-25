@@ -40,6 +40,9 @@ local stats = {
 	out_messages = 0,
 }
 
+network.messages_send = 0
+network.messages_received = 0
+
 local stats_timeout = 1
 local stats_last_time = 0
 
@@ -54,7 +57,11 @@ network.connected_client_count = 0
 network.lowest_client_id = nil
 network.open_request_count = 0
 
+network.loss_send = 0
+network.loss_recv = 0
+
 local open_requests = {}
+local open_requests_payload = {}
 local unprocessed = ""
 local bytes_read = 0
 local out_buff = ""
@@ -103,6 +110,8 @@ function network.update_lowest_client_id ()
 end
 
 function network.update (dt)
+	--~ for k,v in pairs(open_requests_payload) do print(k,v) end
+
 	-- update time and keep in sync
 	network.time = network.time + dt
 	
@@ -119,6 +128,25 @@ function network.update (dt)
 		end)
 		network.last_time_update = t0
 		
+		local msg_send = network.messages_send
+		local msg_recv = network.messages_received
+		network.send_request({channel = "server", cmd = "msg", send = msg_send, recv = msg_recv}, function(fin, result)
+			local server_send = result.send
+			local server_recv = result.recv
+			
+			--~ print("NETWORK MSG STATS", "ls", msg_send, "lr", msg_recv, "rs", server_send, "rr", server_recv)
+			
+			local send_loss = math.abs(server_recv - msg_send)
+			--~ if msg_send > 0 then send_loss = send_loss / msg_send end
+			
+			local recv_loss = math.abs(server_send - msg_recv)
+			--~ if server_send > 0 then recv_loss = recv_loss / server_send end
+			
+			network.loss_send = send_loss
+			network.loss_recv = recv_loss
+			--~ print("NETWORK LOSS send", math.floor(send_loss), "recv", math.floor(recv_loss))
+		end)
+		
 		--~ network.send({channel = "stats", cmd = "lag", time = network.time, from = network.client_id})
 	end
 	profile.stop()
@@ -127,6 +155,11 @@ function network.update (dt)
 	while true do
 		local event = host:service(1)
 		if event == nil then break end
+		
+		-- count reliable
+		if event.channel == 1 then 
+			network.messages_received = network.messages_received + 1
+		end
 		
 		if event then
 			if event.type == "connect" then
@@ -152,6 +185,7 @@ function network.update (dt)
 							local fin = m.fin or false
 							if fin then 
 								open_requests[seq] = nil 
+								open_requests_payload[seq] = nil
 								network.open_request_count = network.open_request_count - 1
 							end
 							cb(fin, m)
@@ -210,7 +244,7 @@ function network.update (dt)
 		network.stats = "\nTIME " .. math.floor(network.time) .. " (" .. timeout .. ")" .. timeoutWarning .. "\n" .. 
 			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s " .. in_msg_size .. " b\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s " .. out_msg_size .. " b\n" ..
-			"LAG " .. network.lag .. "\n" ..
+			"LAG " .. network.lag .. " LOSS SEND " .. tools.floor1(network.loss_send) .. " RECV " .. tools.floor1(network.loss_recv) .. "\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
 				" OUTBUFF " .. out_buff:len() .. " REQS " .. network.open_request_count
 		
@@ -264,14 +298,16 @@ end
 
 -- seq gets added to the message, fin terminates the message
 -- response_callback(finished, reply)
+local reqs = {}
 function network.send_request (message, response_callback)
 	if not server then return end
 	local seq = next_seq
 	message.seq = seq
 	next_seq = next_seq + 1
 	open_requests[seq] = response_callback
+	open_requests_payload[seq] = json.encode(message)
 	network.open_request_count = network.open_request_count + 1
-	network.send(message)
+	network.send(message, true)
 end
 
 network_message_keywords = {
@@ -335,8 +371,11 @@ function network.patch_message (message, patch_map)
 	return m
 end
 
-function network.send (message)
+function network.send (message, reliable)
 	if not server then return end
+	
+	if reliable == nil then reliable = true end
+	--~ print ("reliable", reliable)
 	
 	-- shorten non server messages
 	if message.channel ~= "server" then
@@ -359,20 +398,26 @@ function network.send (message)
 	--~ utils.vardump(network_message_keywords)
 	
 	local m = json.encode(message)
-	--~ print("SEND", server, m:len(), m)
-	server:send(m)
+	--~ print("SEND", server, m:len(), m, reliable and "TRUE" or "FALSE")
+	local channel = reliable and 1 or 0
+	local flag = reliable and "reliable" or "unsequenced"
+	server:send(m, channel, flag)
+	
+	if reliable then
+		network.messages_send = network.messages_send + 1
+	end
 
 	stats.out_messages = stats.out_messages + 1
 	stats.out_bytes = stats.out_bytes + string.len(m)
 end
 
 function network.connect (_host, _port)
-        require "enet"
-	
-        print("luasocket version", socket._VERSION)
+	require "enet"
+
+	print("luasocket version", socket._VERSION)
 
 	host = enet.host_create()
-	server = host:connect(_host .. ":" .. _port)
+	server = host:connect(_host .. ":" .. _port, 2)
 	
 	print(host,server)
 end

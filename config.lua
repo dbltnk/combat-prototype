@@ -2,12 +2,12 @@
 local config = {}
  
 -- combat balancing
-config.walkspeed = 150
-config.runspeed = 300
+config.walkspeed = 200
+config.runspeed = 250
 config.animspeed = 4 * config.walkspeed / 50
 config.projectilespeed = 500
 config.energyreg = 8
-config.healthreg = 4
+config.healthreg = 8 -- 50% of that when incapacitated
 config.maxPain = 300
 config.maxEnergy = 300
 config.getUpPain = 0.5 -- in percent
@@ -15,7 +15,7 @@ config.weaponChangeTimeout = 15
 config.dmgUnmodified = 100
 
 -- progression and round time
-config.timecompression = 4
+config.timecompression = 2
 config.barrierHealth = 50000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
 config.warmupTime = 180 -- in seconds
 config.roundTime = 3600 / config.timecompression -- in seconds
@@ -48,6 +48,7 @@ config.sightDistanceNear = 400
 config.footStepVisibility = 15 -- beware: large numbers will be bad for performance
 config.minPlayerNumberToDecreaseFootstepsAmount = 4
 config.AEShowTime = 4
+config.focusSpriteMaxRange = 2.5
 
 -- gamepad
 config.gamepad_cursor_speed_near = 300

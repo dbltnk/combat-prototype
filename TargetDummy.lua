@@ -196,7 +196,9 @@ TargetDummy = Animation:extend
 		if self.currentPain < 0 then self.currentPain = 0 end
 		if ((self.currentPain > self.maxPain) and self.alive == true) then 
 			self.currentPain = self.maxPain
-			self.alive = false					
+			self.alive = false
+			local x,y = self.x, self.y
+			the.app.view.timer:after(config.dummyRespawn, function() SpawnMobAt(x, y) end)
 			self:die()
 		end	
 	end,
@@ -213,8 +215,6 @@ TargetDummy = Animation:extend
 	
 		self.deaths = self.deaths + 1
 		self.dmgReceived = {}
-		
-		self:after(config.dummyRespawn, function() SpawnMobAt(self.x, self.y) end)
 	end,
 	
 	onDieBoth = function (self)
