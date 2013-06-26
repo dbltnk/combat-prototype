@@ -307,6 +307,24 @@ Character = Animation:extend
 		--~ end
 	
 		self:refreshLevelBar()
+		
+		-- update zones
+		self:updateAndSendZones()
+		
+		self:every(1, function()
+			self:updateAndSendZones()
+		end)
+	end,
+	
+	updateAndSendZones = function (self)
+		self:calculateZones()
+		if the.player and the.player.oid == self.oid then
+			-- update zone on server
+			--~ print("SEND ZONE")
+			--~ utils.vardump(self.zones)
+			local msg = { channel = "server", cmd = "zones", zones = self.zones, }
+			network.send (msg, true)
+		end
 	end,
 	
 	onDieBoth = function (self)
@@ -990,8 +1008,8 @@ Character = Animation:extend
 	onUpdateLocal = function (self, elapsed)
 		-- move back into map if outside
 		local px,py = self.x+self.width/2, self.y+self.height/2
-		if px < 0 or px > 3200 or py < 0 or py > 3200 then
-			local dx,dy = vector.fromToWithLen(px,py,3200/2,3200/2,200)
+		if px < 0 or px > config.map_width or py < 0 or py > config.map_height then
+			local dx,dy = vector.fromToWithLen(px,py,config.map_width/2,config.map_height/2,200)
 			self.x, self.y = self.x+dx,self.y+dy
 		end
 	

@@ -7,6 +7,7 @@ MonitorChanges = Class:extend
 	last = {},
 	last_time = 0,
 	timeout = 1/10,
+	last_zoneless_time = 0,
 	
 	-- returns bool
 	changed = function  (self)
@@ -18,7 +19,6 @@ MonitorChanges = Class:extend
 		local t = love.timer.getTime()
 		
 		if t - self.last_time < self.timeout then return end
-		self.last_time = t
 		
 		local c = false
 		
@@ -27,19 +27,35 @@ MonitorChanges = Class:extend
 			if last[key] ~= s then c = true last[key] = s end
 		end
 		
+		if c then
+			self.last_time = t
+		end
+		
 		return c
 	end,
 	
 	send = function (self)
 		local nils = {}
 		local obj = self.obj
-		local msg = { channel = "game", cmd = "sync", oid = obj.oid, owner = obj.owner, time = network.time, }
+
+		local zone = obj.zone
+		
+		-- ensure that there are updates without a zone due to server takeover
+		local t = love.timer.getTime()
+		if t - self.last_zoneless_time > config.sync_zoneless_timeout then
+			self.last_zoneless_time = t
+			zone = nil
+			--~ print("ZONELESS UPDATE---------------------")
+		end
+		
+		local msg = { channel = "game", cmd = "sync", oid = obj.oid, zone = zone, owner = obj.owner, time = network.time, }
 		for _,key in pairs(self.keys) do 
 			if obj[key] == nil then table.insert(nils, key) end
 			msg[key] = obj[key] 
 		end
 		msg.nils = nils
 		network.send (msg, false)
+		--~ utils.vardump(msg)
 	end,
 	
 	forceSend = function (self)

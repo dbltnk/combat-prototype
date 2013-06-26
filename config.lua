@@ -63,10 +63,16 @@ config.show_prints = true
 
 -- network
 --~ config.server_hostname = "windegg"
-config.server_hostname = "buffy.leenox.de"
---~ config.server_hostname = "localhost"
+--~ config.server_hostname = "buffy.leenox.de"
+config.server_hostname = "localhost"
 config.server_port = 9998
 config.sync_high = 1 / 20
 config.sync_low = 1
+config.sync_zoneless_timeout = 3
+
+-- map
+config.map_width = 3200
+config.map_height = 3200
+config.zones = 10
 
 return config

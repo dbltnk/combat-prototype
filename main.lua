@@ -170,6 +170,10 @@ the.app = App:new
 			network.shutdown()
 			os.exit() 
 		end
+		
+		--~ if the.player then
+			--~ print("ZONE", the.player.zone, "ZONES", json.encode(the.player.zones))
+		--~ end
 	end,
 
     onRun = function (self)

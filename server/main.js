@@ -142,6 +142,7 @@ server.on('connect', function(peer, data) {
 	clients_count = clients_count + 1;
 	
 	client = {};
+	client.zones = {};
 	client.id = client_id;
 	client.peer = peer;
 	clients.push(client);
@@ -183,6 +184,9 @@ server.on('connect', function(peer, data) {
 				console.log("WHO");
 				var ids = _.map(clients, function(c) { return c.id; });
 				send_to_one({seq: message.seq, ids: ids, fin: true}, client, reliable);
+			} else if (message.cmd == "zones") {
+				client.zones = _.map(message.zones, function(z) { return parseInt(z); });
+				console.log("SET ZONES", client.id, client.zones);
 			} else if (message.cmd == "msg") {
 				//~ console.log("MSG")
 				send_to_one({seq: message.seq, send: client.messages_send, recv: client.messages_received, fin: true}, client, reliable);
@@ -230,8 +234,29 @@ server.on('connect', function(peer, data) {
 				send_to_one({seq: message.seq, fin: true}, client, reliable);
 			}
 		} else {
-			//~ console.log("DELIVER TO OTHERS");
-			send_to_other(message, client, clients, reliable);
+			//~ console.log("DELIVER TO OTHERS", JSON.stringify(message));
+			
+			if (message.zone)
+			{
+				//~ console.log("ZONE PRESENT");
+				var zone = parseInt(message.zone);
+				// spatial filter
+				_.each(clients, function(c) {
+					//~ console.log("CC", c.id, client.id);
+					if (c.id != client.id) {
+						if (_.contains(c.zones, zone)) {
+							//~ console.log("ZONE SEND", zone, c.id, c.zones, JSON.stringify(message));
+							send_to_one(message, c, reliable);	
+						}
+						//~ else console.log("ZONE SKIPPED", zone, c.id, c.zones);
+					}
+				});
+			}
+			else
+			{
+				// normal delivery
+				send_to_other(message, client, clients, reliable);
+			}
 		}
 	}
 	catch(e){}
