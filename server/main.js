@@ -11,6 +11,24 @@ var enet = require("enet");
 var toobusy = require('toobusy');
 var config = require('./config.js');
 
+
+function isNameReserved(name) {
+	if (name) {
+		if (name == "hagish") return true;
+	}
+	
+	return false;
+}
+
+function isAuthName(name, pass) {
+	if (name && pass) {
+		if (name == "hagish" && pass == "test123") return true;
+	}
+	
+	return false;
+}
+
+
 // -> [message|null, buffer]
 function tryToParseBuffer (buffer) {
 	var s = buffer.toString();
@@ -226,6 +244,24 @@ server.on('connect', function(peer, data) {
 				if (value === undefined) value = null;
 				console.log("GET", key, value);
 				send_to_one({seq: message.seq, value: value, fin: true}, client, reliable);
+			} else if (message.cmd == "auth") {
+				console.log("AUTH", message.name, message.pass);
+				if (isNameReserved(message.name)) {
+					console.log("AUTH RESERVED NAME");
+					if (!isAuthName(message.name, message.pass)) {
+						console.log("AUTH KICK");
+						// kick player
+						send_to_one({channel: "chat", cmd: "text", from: "SERVER", text: "your name is reserved and your password is wrong, bye bye", }, client, reliable);
+						setTimeout(function(){
+							send_to_one({channel: "server", cmd: "disconnect"}, client, reliable);
+						}, 3000);
+					} else {
+						// welcome player
+						console.log("AUTH WELCOME");
+						send_to_one({channel: "chat", cmd: "text", from: "SERVER", text: "welcome " + message.name + ", good to see you again", }, client, reliable);
+					}
+				}
+				send_to_one({seq: message.seq, fin: true}, client, reliable);
 			} else if (message.cmd == "set") {
 				var key = message.key;
 				var value = message.value;

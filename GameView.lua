@@ -261,6 +261,11 @@ GameView = View:extend
 
 		self:setupNetworkHandler()
 		
+		-- auth
+		network.send_request({channel = "server", cmd = "auth", 
+			name = localconfig.playerName, pass = localconfig.accountPassword, }, function(fin, result)			
+		end)
+
 		local chatInfo = Text:new{
 			x = 5, y = love.graphics.getHeight() - 90, width = 500, tint = {0,0,0}, 
 			text = "Press enter to chat",

@@ -425,6 +425,8 @@ function network.connect (_host, _port)
 	host = enet.host_create()
 	server = host:connect(_host .. ":" .. _port, 2)
 	
+	network.update(1)
+	
 	print(host,server)
 end
 
