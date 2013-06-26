@@ -95,7 +95,7 @@ function utils.keys (l)
 	r = {}
 	
 	for k,v in pairs(l) do
-		table.insert(k)
+		table.insert(r, k)
 	end
 	
 	return r
@@ -106,7 +106,7 @@ function utils.values (l)
 	r = {}
 	
 	for k,v in pairs(l) do
-		table.insert(v)
+		table.insert(r, v)
 	end
 	
 	return r
