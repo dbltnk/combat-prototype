@@ -57,12 +57,12 @@ Character = Animation:extend
 			
 	-- list of Skill
 	skills = localconfig.skills or {
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
+		"noskill",
+		"noskill",
+		"noskill",
+		"noskill",
+		"noskill",
+		"noskill",
 	},
 	
 
@@ -113,7 +113,7 @@ Character = Animation:extend
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
 		-- fill up skill bar with missing skills
 		for i = 1,8 do 
-			if not self.skills[i] then self.skills[i] = "bow_shot" end
+			if not self.skills[i] then self.skills[i] = "noskill" end
 		end
 		
 		local skill_names = {
@@ -159,7 +159,7 @@ Character = Animation:extend
 		-- overwrite invalid skills
 		for k,v in pairs(self.skills) do
 			if not skill_names[v] then
-				self.skills[k] = "bow_shot"
+				self.skills[k] = "noskill"
 			end
 		end
 
