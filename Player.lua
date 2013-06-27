@@ -150,14 +150,14 @@ Player = Character:extend
 			end
 			
 			-- sue the mouse wheel to change the selected skill
-			if the.mouse:justPressed("wd") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
+			if the.mouse:justReleased("wd") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
 				the.player.selectedSkill = the.player.selectedSkill + 1
-				print("MOUSE WHEEL DOWN!")
+				--~ print("MOUSE WHEEL DOWN!")
 			end 
 			
-			if the.mouse:justPressed("wu") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
+			if the.mouse:justReleased("wu") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
 				the.player.selectedSkill = the.player.selectedSkill - 1
-				print("MOUSE WHEEL UP!")
+				--~ print("MOUSE WHEEL UP!")
 			end 
 			if the.player.selectedSkill < 0 then the.player.selectedSkill = 8 end
 			if the.player.selectedSkill > 8 then the.player.selectedSkill = 0 end
