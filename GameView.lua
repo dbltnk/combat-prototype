@@ -164,6 +164,9 @@ GameView = View:extend
 		the.xpTimerDisplay = XpTimerDisplay:new{ x = 0, y = 0 }
 		the.hud:add(the.xpTimerDisplay)	
 		
+		the.playtestTimerDisplay = PlaytestTimerDisplay:new{ x = 0, y = 0 }
+		the.hud:add(the.playtestTimerDisplay)	
+		
 		the.networkDisplay = NetworkDisplay:new{ x = 0, y = 0 }
 		the.hud:add(the.networkDisplay)	
 		

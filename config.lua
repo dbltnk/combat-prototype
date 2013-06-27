@@ -13,6 +13,9 @@ config.maxEnergy = 300
 config.getUpPain = 0.5 -- in percent
 config.dmgUnmodified = 100
 
+-- next playtest - http://www.epochconverter.com/
+config.nextPlaytestAt = 1372960800
+
 -- progression and round time
 config.timecompression = 4
 config.barrierHealth = 50000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
