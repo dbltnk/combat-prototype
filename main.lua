@@ -60,6 +60,7 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 require 'zoetrope'
 
 vector = require 'vector'
+storage = require 'storage'
 collision = require 'collision'
 utils = require 'utils'
 input = require 'input'
@@ -106,7 +107,8 @@ require 'EffectImage'
 require 'ui' 
 require 'loveframes'
 
-
+--~ skills used
+--~ kills
 
 the.app = App:new
 {
@@ -168,6 +170,12 @@ the.app = App:new
 				network.update(1)
 			end
 			network.shutdown()
+			
+			if the.phaseManager and the.phaseManager.storePlayerState then
+				print("STORE STATE")
+				the.phaseManager:storePlayerState()
+			end
+			
 			os.exit() 
 		end
 		
