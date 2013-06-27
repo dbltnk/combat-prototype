@@ -46,15 +46,7 @@ MonitorChanges = Class:extend
 		local nils = {}
 		local obj = self.obj
 
-		local zone = obj.zone
-		
-		-- ensure that there are updates without a zone due to server takeover
-		local t = love.timer.getTime()
-		if t - self.last_zoneless_time > config.sync_zoneless_timeout then
-			self.last_zoneless_time = t
-			zone = nil
-			--~ print("ZONELESS UPDATE---------------------")
-		end
+		local zone = nil
 		
 		-- is complete update? even unchanged values?
 		

@@ -246,8 +246,9 @@ function network.update (dt)
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s " .. out_msg_size .. " b\n" ..
 			"LAG " .. network.lag .. " LOSS SEND " .. tools.floor1(network.loss_send) .. " RECV " .. tools.floor1(network.loss_recv) .. "\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
-				" OUTBUFF " .. out_buff:len() .. " REQS " .. network.open_request_count .. "\n" ..
-			"ZONES " .. json.encode(the.player and the.player.zones or {})
+				" OUTBUFF " .. out_buff:len() .. " REQS " .. network.open_request_count
+				 --~ .. "\n" ..
+			--~ "ZONES " .. json.encode(the.player and the.player.zones or {})
 		
 		-- groups
 		local objs = ""
