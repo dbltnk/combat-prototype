@@ -251,14 +251,14 @@ server.on('connect', function(peer, data) {
 					if (!isAuthName(message.name, message.pass)) {
 						console.log("AUTH KICK");
 						// kick player
-						send_to_one({channel: "chat", cmd: "text", from: "SERVER", text: "your name is reserved and your password is wrong, bye bye", }, client, reliable);
+						send_to_one({channel: "chat", cmd: "text", from: "SERVER", text: "your name is reserved and your password is wrong, bye bye", time: os.uptime()}, client, reliable);
 						setTimeout(function(){
 							send_to_one({channel: "server", cmd: "disconnect"}, client, reliable);
 						}, 3000);
 					} else {
 						// welcome player
 						console.log("AUTH WELCOME");
-						send_to_one({channel: "chat", cmd: "text", from: "SERVER", text: "welcome " + message.name + ", good to see you again", }, client, reliable);
+						send_to_one({channel: "chat", cmd: "text", from: "SERVER", text: "welcome " + message.name + ", good to see you again", time: os.uptime()}, client, reliable);
 					}
 				}
 				send_to_one({seq: message.seq, fin: true}, client, reliable);
