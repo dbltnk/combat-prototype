@@ -152,15 +152,13 @@ Player = Character:extend
 			-- sue the mouse wheel to change the selected skill
 			if the.mouse:justReleased("wd") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
 				the.player.selectedSkill = the.player.selectedSkill + 1
-				--~ print("MOUSE WHEEL DOWN!")
+				if the.player.selectedSkill > 8 then the.player.selectedSkill = 1 end
 			end 
 			
 			if the.mouse:justReleased("wu") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
 				the.player.selectedSkill = the.player.selectedSkill - 1
-				--~ print("MOUSE WHEEL UP!")
+				if the.player.selectedSkill < 1 then the.player.selectedSkill = 8 end								
 			end 
-			if the.player.selectedSkill < 0 then the.player.selectedSkill = 8 end
-			if the.player.selectedSkill > 8 then the.player.selectedSkill = 0 end
 			
 			if not the.ignorePlayerCharacterInputs then
 				if the.keys:pressed('left', 'a') then movex = -1 end
@@ -193,7 +191,7 @@ Player = Character:extend
 			doShoot = doShoot, shootSkillNr = shootSkillNr, }
 	end,
 	
-	--~ onUpdate = function (self, elapsed)
+	--~ onUpdateLocal = function (self, elapsed)
 		--~ self.prototype.prototype.onUpdate(self, elapsed)
 		--~ print(self, self.prototype, self.parent, self.lala)
 		--~ print(json.encode({x = self.x, y = self.y}))
