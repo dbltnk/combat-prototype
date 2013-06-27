@@ -927,13 +927,13 @@ Character = Animation:extend
 		end
 		
 		self.nameLevel.x = self.x - 5
-		self.nameLevel.y = self.y - 28
+		self.nameLevel.y = self.y - 8
 		self.nameLevel.level = self.level
 		self.nameLevel.team = self.team
 		self.nameLevel.alpha = self.alpha
 		
 		self.charDebuffDisplay.x = self.x - 5
-		self.charDebuffDisplay.y = self.y - 28
+		self.charDebuffDisplay.y = self.y - 8
 		self.charDebuffDisplay.alpha = self.alpha
 		
 		if self.rooted then self.charDebuffDisplay.rooted = "rooted" else self.charDebuffDisplay.rooted = "" end
