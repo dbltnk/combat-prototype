@@ -61,7 +61,7 @@ PhaseManager = Sprite:extend
 			local lastState = { gameId = self.gameId, props = {} }
 			
 			local propsToStore = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
-				"anim_speed", "velocity", "alive", "incapacitated", "name", "weapon", "armor", "team", "deaths"}
+				"anim_speed", "velocity", "alive", "incapacitated", "name", "weapon", "armor", "team", "deaths", "xp", }
 			
 			for _,v in pairs(propsToStore) do
 				lastState.props[v] = the.player[v]

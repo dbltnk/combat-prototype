@@ -8,14 +8,14 @@ Character = Animation:extend
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
 		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", 
-		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths"},
+		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", },
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
 		"invul", "width", "height", "rotation", "dmgModified", "marked", "rooted", "snared", "mezzed", "stunned", "powerblocked",
 		"maxPainOverdrive"},	
 		
-	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths"},
+	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths", "xp", },
 	
 	maxPain = config.maxPain, 
 	-- 1 = 100% health bar, 1.2 is 20% longer
