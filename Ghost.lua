@@ -19,7 +19,10 @@ Ghost = Sprite:extend
 	xpCap = 0,
 	level = 0,
 	levelCap = 0,
-
+	
+	onNew = function (self)
+		--~ print(debug.traceback())
+	end,
 
 	jumpToPlayer = function (self, number)
 		print("jump to character", number)

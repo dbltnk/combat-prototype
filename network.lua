@@ -247,6 +247,8 @@ function network.update (dt)
 			"LAG " .. network.lag .. " LOSS SEND " .. tools.floor1(network.loss_send) .. " RECV " .. tools.floor1(network.loss_recv) .. "\n" ..
 			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
 				" OUTBUFF " .. out_buff:len() .. " REQS " .. network.open_request_count
+				 --~ .. "\n" ..
+			--~ "ZONES " .. json.encode(the.player and the.player.zones or {})
 		
 		-- groups
 		local objs = ""
@@ -311,46 +313,51 @@ function network.send_request (message, response_callback)
 end
 
 network_message_keywords = {
-  "incapacitated", 
-  "description", 
-  "oid", 
-  "class", 
-  "currentPain", 
-  "image", 
-  "key", 
-  "team", 
-  "level", 
-  "focused_target", 
-  "nils", 
-  "isInCombat", 
-  "hidden", 
-  "rotation", 
-  "name", 
-  "height", 
-  "xpWorth", 
-  "seq", 
-  "anim_speed", 
-  "velocity", 
-  "marked", 
-  "teamscore", 
-  "time", 
-  "dmgModified", 
-  "alive", 
-  "deaths", 
-  "anim_name", 
-  "armor", 
-  "highscore", 
-  "owner", 
-  "maxPainOverdrive", 
-  "width", 
-  "invul", 
-  "cmd", 
-  "finalDamage", 
-  "channel", 
-  "controller", 
-  "value", 
-  "maxPain", 
-  "weapon", 
+	"incapacitated", 
+	"description", 
+	"oid", 
+	"class", 
+	"currentPain", 
+	"image", 
+	"key", 
+	"team", 
+	"level", 
+	"focused_target", 
+	"nils", 
+	"isInCombat", 
+	"hidden", 
+	"rotation", 
+	"name", 
+	"height", 
+	"xpWorth", 
+	"seq", 
+	"anim_speed", 
+	"velocity", 
+	"marked", 
+	"teamscore", 
+	"time", 
+	"dmgModified", 
+	"alive", 
+	"deaths", 
+	"anim_name", 
+	"armor", 
+	"highscore", 
+	"owner", 
+	"maxPainOverdrive", 
+	"width", 
+	"invul", 
+	"cmd", 
+	"finalDamage", 
+	"channel", 
+	"controller", 
+	"value", 
+	"maxPain", 
+	"weapon", 
+	"snared",
+	"powerblocked",
+	"rooted",
+	"mezzed",
+	"stunned",
 }
 
 network_message_keywords_long_to_short = {}
@@ -418,6 +425,8 @@ function network.connect (_host, _port)
 
 	host = enet.host_create()
 	server = host:connect(_host .. ":" .. _port, 2)
+	
+	network.update(1)
 	
 	print(host,server)
 end

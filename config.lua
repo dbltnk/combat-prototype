@@ -14,9 +14,9 @@ config.getUpPain = 0.5 -- in percent
 config.dmgUnmodified = 100
 
 -- progression and round time
-config.timecompression = 2
+config.timecompression = 4
 config.barrierHealth = 50000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
-config.warmupTime = 180 -- in seconds
+config.warmupTime = 600 -- in seconds
 config.roundTime = 3600 / config.timecompression -- in seconds
 config.afterTime = 60 -- in seconds
 config.xpCap = 1000
@@ -68,5 +68,12 @@ config.server_hostname = "buffy.leenox.de"
 config.server_port = 9998
 config.sync_high = 1 / 20
 config.sync_low = 1
+config.sync_zoneless_timeout = 3
+config.sync_complete_timeout = 1
+
+-- map
+config.map_width = 3200
+config.map_height = 3200
+config.zones = 10
 
 return config

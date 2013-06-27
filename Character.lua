@@ -8,14 +8,14 @@ Character = Animation:extend
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
 		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", 
-		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths"},
+		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", },
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
 		"invul", "width", "height", "rotation", "dmgModified", "marked", "rooted", "snared", "mezzed", "stunned", "powerblocked",
 		"maxPainOverdrive"},	
 		
-	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths"},
+	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths", "xp", },
 	
 	maxPain = config.maxPain, 
 	-- 1 = 100% health bar, 1.2 is 20% longer
@@ -59,12 +59,12 @@ Character = Animation:extend
 			
 	-- list of Skill
 	skills = localconfig.skills or {
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
+		"noskill",
+		"noskill",
+		"noskill",
+		"noskill",
+		"noskill",
+		"noskill",
 	},
 	
 
@@ -75,7 +75,7 @@ Character = Animation:extend
 	pain_bar_size = 52,
 	
 	width = 26,
-	height = 26,
+	height = 46,
 	--~ image = '/assets/graphics/player_characters/robe_bow.png',
 	image = nil,--'/assets/graphics/player_collision.png',
 
@@ -115,7 +115,7 @@ Character = Animation:extend
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
 		-- fill up skill bar with missing skills
 		for i = 1,8 do 
-			if not self.skills[i] then self.skills[i] = "bow_shot" end
+			if not self.skills[i] then self.skills[i] = "noskill" end
 		end
 		
 		local skill_names = {
@@ -161,7 +161,7 @@ Character = Animation:extend
 		-- overwrite invalid skills
 		for k,v in pairs(self.skills) do
 			if not skill_names[v] then
-				self.skills[k] = "bow_shot"
+				self.skills[k] = "noskill"
 			end
 		end
 
@@ -244,7 +244,7 @@ Character = Animation:extend
 			end,
 			
 			onUpdate = function(self)
-				self.x = goSelf.x
+				self.x = goSelf.x - 3
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
 
@@ -309,6 +309,24 @@ Character = Animation:extend
 		--~ end
 	
 		self:refreshLevelBar()
+		
+		-- update zones
+		self:updateAndSendZones()
+		
+		self:every(1, function()
+			self:updateAndSendZones()
+		end)
+	end,
+	
+	updateAndSendZones = function (self)
+		self:calculateZones()
+		if the.player and the.player.oid == self.oid then
+			-- update zone on server
+			--~ print("SEND ZONE")
+			--~ utils.vardump(self.zones)
+			local msg = { channel = "server", cmd = "zones", zones = self.zones, }
+			network.send (msg, true)
+		end
 	end,
 	
 	onDieBoth = function (self)
@@ -448,9 +466,15 @@ Character = Animation:extend
 	end,
 	
 	refreshLevelBar = function (self)
+		--~ if the.player then print("LALA", self.level, self.oid, the.player.level, the.player.oid, the.player.class, the.player == self) end
+		
 		if the.levelUI then
 			for k,v in pairs(the.levelUI) do
-				v.activated = self.level >= v.level
+				if the.player and the.player.class == "Character" and the.player.oid == self.oid then
+					v.activated = self.level >= v.level
+				else
+					v.activated = false
+				end
 			end
 		end
 	end,
@@ -911,13 +935,13 @@ Character = Animation:extend
 		end
 		
 		self.nameLevel.x = self.x - 5
-		self.nameLevel.y = self.y - 28
+		self.nameLevel.y = self.y - 8
 		self.nameLevel.level = self.level
 		self.nameLevel.team = self.team
 		self.nameLevel.alpha = self.alpha
 		
 		self.charDebuffDisplay.x = self.x - 5
-		self.charDebuffDisplay.y = self.y - 28
+		self.charDebuffDisplay.y = self.y - 8
 		self.charDebuffDisplay.alpha = self.alpha
 		
 		if self.rooted then self.charDebuffDisplay.rooted = "rooted" else self.charDebuffDisplay.rooted = "" end
@@ -961,13 +985,13 @@ Character = Animation:extend
 		end 
 		
 		-- hide pain bar when not in combat and at full health
-		if not self.isInCombat and self.currentPain == 0 then
-			self.painBar.visible = false
-			self.painBar.bar.visible = false
-			self.painBar.background.visible = false	
-			self.nameLevel.visible = false
-			self.charDebuffDisplay.visible = false	
-		end
+		--~ if not self.isInCombat and self.currentPain == 0 then
+			--~ self.painBar.visible = false
+			--~ self.painBar.bar.visible = false
+			--~ self.painBar.background.visible = false	
+			--~ self.nameLevel.visible = false
+			--~ self.charDebuffDisplay.visible = false	
+		--~ end
 		
 		-- local hidden image
 		if self.hidden and self == the.player then
@@ -990,10 +1014,12 @@ Character = Animation:extend
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
+		self:refreshLevelBar()
+		
 		-- move back into map if outside
 		local px,py = self.x+self.width/2, self.y+self.height/2
-		if px < 0 or px > 3200 or py < 0 or py > 3200 then
-			local dx,dy = vector.fromToWithLen(px,py,3200/2,3200/2,200)
+		if px < 0 or px > config.map_width or py < 0 or py > config.map_height then
+			local dx,dy = vector.fromToWithLen(px,py,config.map_width/2,config.map_height/2,200)
 			self.x, self.y = self.x+dx,self.y+dy
 		end
 	

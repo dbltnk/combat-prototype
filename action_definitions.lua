@@ -9,6 +9,21 @@ local color_splint_mail = {128,0,255}
 
 action_definitions = {
 	-- -----------------------------------------------------------------------------------
+	noskill = {
+		name = "no skill",
+		description = "This is now skill.",
+		icon = nil,
+		sound = nil,
+		cast_time = 0,
+		timeout = 999,
+		energy = 999,
+		on_the_run = true,
+		cast_particle_color = color_bow,
+		
+		application = {
+		},	
+	},
+	-- -----------------------------------------------------------------------------------
 	bow_shot = {
 		name = "Shot",
 		description = "Shoot a projectile that damages one target.",
@@ -258,10 +273,10 @@ action_definitions = {
 		description = "Shoot a small projectile that explodes on impact and damages a few targets in a small area.",
 		icon = nil,
 		sound = nil,
-		cast_time = .5,
-		timeout = 1,
+		cast_time = 0,
+		timeout = 1.5,
 		energy = 4,
-		on_the_run =  false,
+		on_the_run =  true,
 		cast_particle_color = color_staff,		
 		
 		application = {

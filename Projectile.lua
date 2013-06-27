@@ -9,8 +9,8 @@ Projectile = Tile:extend
 		"start", "target"},			
 	--~ sync_high = {"x", "y", "velocity", "creation_time"},
 			
-	width = 32,
-	height = 32,
+	width = 12,
+	height = 12,
 	--~ image = '/assets/graphics/action_projectiles/bow_shot_projectile.png',
     -- target.x target.y start.x start.y	
 
@@ -62,6 +62,33 @@ Projectile = Tile:extend
 		
 		-- scythe_jump is allowed to bypass all collision
 		if self.image == "/assets/graphics/action_projectiles/scythe_jump.png" then self.solid = false end
+		
+		-- this only displays the sprite
+		local goSelf = self
+		self.projectileSprite = Tile:new{
+			x = goSelf.x,
+			y = goSelf.y,
+			width = 32,
+			height = 32,
+			image = goSelf.image,
+			rotation = goSelf.rotation,
+			solid = false,
+			
+			onNew = function(self)
+				the.app.view.layers.projectiles:add(self)
+			end,
+			
+			onDie = function(self)
+				the.app.view.layers.projectiles:remove(self)
+			end,
+			
+			onUpdate = function(self)
+				self.x = goSelf.x + goSelf.width / 2 - self.width / 2
+				self.y = goSelf.y + goSelf.height / 2  -self.height / 2
+				self.visible = goSelf.visible
+				self.alpha = goSelf.alpha
+			end,
+		}
 	end,
 	
 	onUpdateBoth = function (self)

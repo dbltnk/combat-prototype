@@ -61,6 +61,7 @@ require 'zoetrope'
 
 vector = require 'vector'
 str = require 'str'
+storage = require 'storage'
 collision = require 'collision'
 utils = require 'utils'
 input = require 'input'
@@ -108,7 +109,8 @@ require 'Arrow'
 require 'ui' 
 require 'loveframes'
 
-
+--~ skills used
+--~ kills
 
 the.app = App:new
 {
@@ -161,17 +163,60 @@ the.app = App:new
 		end
 
 		-- easy exit
-		if the.keys:pressed(localconfig.quitGame) then 
-			--~ profiler.stop()
-			network.send({channel = "server", cmd = "bye"})
-			-- wait a little bit to ensure bye delivery
-			local t = love.timer.getTime()
-			while love.timer.getTime() - t < 1 do
-				network.update(1)
+		if the.keys:justPressed(localconfig.quitGame) then 
+			
+			if not the.quitGameButton then
+				-- make me a frame
+				the.buttonFrame = loveframes.Create("frame")
+				the.buttonFrame:SetSize(200, 50)
+				the.buttonFrame:Center()
+				the.buttonFrame:SetName("Do you really want to quit?")
+				-- make me a quit button			
+				the.quitGameButton = loveframes.Create("button")
+				the.quitGameButton:SetSize(100, 25)
+				the.quitGameButton:SetPos(love.graphics.getWidth() / 2 - 100, love.graphics.getHeight() / 2)
+				the.quitGameButton:SetText("Yes, quit the game")
+				the.quitGameButton.OnClick = function(object)
+					--~ profiler.stop()
+					network.send({channel = "server", cmd = "bye"})
+					-- wait a little bit to ensure bye delivery
+					local t = love.timer.getTime()
+					while love.timer.getTime() - t < 1 do
+						network.update(1)
+					end
+					network.shutdown()
+					if the.phaseManager and the.phaseManager.storePlayerState then
+						print("STORE STATE")
+						the.phaseManager:storePlayerState()
+					end
+					os.exit() 
+				end
+				-- make me a cancel button
+				the.cancelButton = loveframes.Create("button")
+				the.cancelButton:SetSize(100, 25)
+				the.cancelButton:SetPos(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+				the.cancelButton:SetText("Nope")
+				the.cancelButton.OnClick = function(object)
+					the.buttonFrame:Remove() 
+					the.buttonFrame = nil 
+					the.quitGameButton:Remove() 
+					the.quitGameButton = nil 
+					the.cancelButton:Remove() 
+					the.cancelButton = nil 
+				end
+			else 
+				the.buttonFrame:Remove() 
+				the.buttonFrame = nil 			
+				the.quitGameButton:Remove() 
+				the.quitGameButton = nil 
+				the.cancelButton:Remove() 
+				the.cancelButton = nil 
 			end
-			network.shutdown()
-			os.exit() 
 		end
+		
+		--~ if the.player then
+			--~ print("ZONE", the.player.zone, "ZONES", json.encode(the.player.zones))
+		--~ end
 	end,
 
     onRun = function (self)

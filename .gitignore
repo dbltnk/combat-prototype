@@ -8,3 +8,5 @@ build
 changelog.txt
 Thumbs.db
 server/config.js
+game.json
+

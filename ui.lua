@@ -544,7 +544,7 @@ ChatText = Group:extend
 		local py = self.y
 		
 		local l = list.process_values(self.entries)
-			:orderby(function(a,b) return a.time > b.time end)
+			:orderby(function(a,b) return a and b and a.time and b.time and a.time > b.time end)
 			:done()
 		
 		for k,v in pairs(l) do
