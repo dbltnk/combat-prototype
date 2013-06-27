@@ -104,17 +104,19 @@ PhaseManager = Sprite:extend
 	end,
 		
 	getTimeText = function (self)
+		local addendum = ""
+		if the.player.class == "Ghost" or localconfig.spectator then addendum = "\n You are spectating. Wait for the next game to start to join." else addendum = "" end
 		if self.phase == "init_needed" then
 			return "init in progress..."
 		elseif self.phase == "warmup" then
 			local dt = self.round_start_time - network.time
-			return "The game starts in " .. self:formatSeconds(dt) .. "."
+			return "The game starts in " .. self:formatSeconds(dt) .. "." .. addendum
 		elseif self.phase == "playing" then
 			local dt = self.round_end_time - network.time
-			return self:formatSeconds(dt) .. " until the game ends."
+			return self:formatSeconds(dt) .. " until the game ends." .. addendum
 		elseif self.phase == "after" then
 			local dt = (self.round_end_time + config.afterTime) - network.time
-			return "Game over. Restart in " .. self:formatSeconds(dt) .. "."
+			return "Game over. Restart in " .. self:formatSeconds(dt) .. "." .. addendum
 		end
 	end,
 	
