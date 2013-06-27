@@ -393,6 +393,7 @@ Character = Animation:extend
 		if self.currentPain >= self.maxPain then 
 			self:setIncapacitation(true)
 			self.deaths = self.deaths + 1
+			gameStatsInc("times_died")
 		end
 		
 		self.currentPain = utils.clamp(self.currentPain, 0, self.maxPain)

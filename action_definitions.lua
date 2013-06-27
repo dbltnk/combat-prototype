@@ -796,6 +796,7 @@ for k,v in pairs(action_definitions) do
 	if not v.icon then v.icon = "/assets/graphics/action_icons/" .. k ..".png" end
 	if not v.sound then v.sound = "/assets/audio/sfx/" .. k .. ".wav" end
 	if not love.filesystem.exists(v.sound) then v.sound = "/assets/audio/sfx/missing.wav" end
+	if not v.key then v.key = k end
 end		
 
 return action_definitions
