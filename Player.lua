@@ -114,7 +114,7 @@ Player = Character:extend
 			
 			-- select a skill
 			for k,v in pairs(skill_keys) do
-				if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs and the.player.skills[k]:isPossibleToUse() then
+				if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs then --and the.player.skills[k]:isPossibleToUse() then
 					the.player.selectedSkill = k
 				end
 			end

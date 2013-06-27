@@ -175,6 +175,12 @@ Cursor = Tile:extend
 	image = '/assets/graphics/cursor.png',
     
 	onUpdate = function (self)
+		if the.player.skills[the.player.selectedSkill]:isPossibleToUse() then
+			self.image = '/assets/graphics/cursor.png'
+		else
+			self.image = '/assets/graphics/cursor_cant_cast.png'
+		end
+		
 		self.x = input.cursor.x - self.width / 2
 		self.y = input.cursor.y - self.height / 2
 		self.x, self.y = tools.ScreenPosToWorldPos(self.x, self.y)
