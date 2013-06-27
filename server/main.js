@@ -14,7 +14,8 @@ var config = require('./config.js');
 
 function isNameReserved(name) {
 	if (name) {
-		if (name == "hagish") return true;
+		console.log(config);
+		if (config.accounts[name]) return true;
 	}
 	
 	return false;
@@ -22,7 +23,7 @@ function isNameReserved(name) {
 
 function isAuthName(name, pass) {
 	if (name && pass) {
-		if (name == "hagish" && pass == "test123") return true;
+		if (config.accounts[name] && pass == config.accounts[name]) return true;
 	}
 	
 	return false;
@@ -125,7 +126,7 @@ setInterval(function() {
 		var t = os.uptime();
 		_.each(clients, function(c) {
 			if (t - c.last_active > 20) {
-				console.log("TIMOUET CLIENT", c.id);	
+				console.log("TIMEOUT CLIENT", c.id);	
 				disconnect(c, clients);
 				return;
 			}
