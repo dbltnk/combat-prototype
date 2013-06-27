@@ -464,9 +464,15 @@ Character = Animation:extend
 	end,
 	
 	refreshLevelBar = function (self)
+		--~ if the.player then print("LALA", self.level, self.oid, the.player.level, the.player.oid, the.player.class, the.player == self) end
+		
 		if the.levelUI then
 			for k,v in pairs(the.levelUI) do
-				v.activated = self.level >= v.level
+				if the.player and the.player.class == "Character" and the.player.oid == self.oid then
+					v.activated = self.level >= v.level
+				else
+					v.activated = false
+				end
 			end
 		end
 	end,
