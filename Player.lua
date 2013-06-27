@@ -139,7 +139,6 @@ Player = Character:extend
 				end
 			end
 
-
 			-- in all other cases only cast it on click
 			if the.mouse:pressed("l") then 
 				shootSkillNr = the.player.selectedSkill 
@@ -149,6 +148,19 @@ Player = Character:extend
 			if the.mouse:pressed("r") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
 				the.player.selectedSkill = 1 
 			end
+			
+			-- sue the mouse wheel to change the selected skill
+			if the.mouse:justPressed("wd") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
+				the.player.selectedSkill = the.player.selectedSkill + 1
+				print("MOUSE WHEEL DOWN!")
+			end 
+			
+			if the.mouse:justPressed("wu") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
+				the.player.selectedSkill = the.player.selectedSkill - 1
+				print("MOUSE WHEEL UP!")
+			end 
+			if the.player.selectedSkill < 0 then the.player.selectedSkill = 8 end
+			if the.player.selectedSkill > 8 then the.player.selectedSkill = 0 end
 			
 			if not the.ignorePlayerCharacterInputs then
 				if the.keys:pressed('left', 'a') then movex = -1 end
