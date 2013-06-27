@@ -75,7 +75,8 @@ MonitorChanges = Class:extend
 		
 		--~ utils.vardump(changedKeys or {})
 		
-		local msg = { channel = "game", cmd = "sync", oid = obj.oid, zone = zone, owner = obj.owner, time = network.time, }
+		--~ local msg = { channel = "game", cmd = "sync", oid = obj.oid, zone = zone, owner = obj.owner, time = network.time, }
+		local msg = { channel = "game", cmd = "sync", oid = obj.oid, owner = obj.owner, time = network.time, }
 		for _,key in pairs(self.keys) do 
 			if changedKeys == nil or changedKeys[key] then
 				if obj[key] == nil then table.insert(nils, key) end
