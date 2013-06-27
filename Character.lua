@@ -73,7 +73,7 @@ Character = Animation:extend
 	pain_bar_size = 52,
 	
 	width = 26,
-	height = 26,
+	height = 46,
 	--~ image = '/assets/graphics/player_characters/robe_bow.png',
 	image = nil,--'/assets/graphics/player_collision.png',
 
@@ -242,7 +242,7 @@ Character = Animation:extend
 			end,
 			
 			onUpdate = function(self)
-				self.x = goSelf.x
+				self.x = goSelf.x - 3
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
 
