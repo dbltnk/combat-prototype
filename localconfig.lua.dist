@@ -11,6 +11,7 @@ localconfig.screenHeight = 600 -- Choose your screen height in pixels.
 
 -- ### Step 2: Set your player name and join one of the four teams. ###
 localconfig.playerName = "changeme" -- Just type your nickname in between the "".
+localconfig.accountPassword = "pass" -- Should you have a  pasword: enter it here. 
 localconfig.team = "pick_one" -- You can pick "alpha", "beta", "gamma" or "delta".
 
 -- ### Step 3: Pick your weapon of choice. ###
@@ -98,7 +99,5 @@ localconfig.quitGame = "escape"
 
 localconfig.max_chat_lines = 10
 localconfig.audioVolume = 20 -- 0 = off, 100 = very loud
-
---~ localconfig.accountPassword = "test123"
 
 return localconfig
