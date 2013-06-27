@@ -141,12 +141,13 @@ Player = Character:extend
 
 			-- in all other cases only cast it on click
 			if the.mouse:pressed("l") then 
-				shootSkillNr = the.player.selectedSkill 
+				shootSkillNr = 1 
 				doShoot = true 
 				--~ the.player.selectedSkill = 1 
 			end
 			if the.mouse:pressed("r") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
-				the.player.selectedSkill = 1 
+				shootSkillNr = the.player.selectedSkill 
+				doShoot = true 
 			end
 			
 			-- sue the mouse wheel to change the selected skill

@@ -87,7 +87,7 @@ end
 -- ### Note: "l" means the left mouse button, "r" means the right one. You cannot use those keyboard keys. ###
 -- ### Movement is hard-coded to WASD and they arrow keys for now. ###
 -- ### You can find a list of all valid key names at http://love2d.org/wiki/KeyConstant. ###
-localconfig.skillOne = "0"
+localconfig.skillOne = "0" -- this is your default attack
 localconfig.skillTwo = "1"
 localconfig.skillThree = "2"
 localconfig.skillFour = "3"
