@@ -977,13 +977,13 @@ Character = Animation:extend
 		end 
 		
 		-- hide pain bar when not in combat and at full health
-		if not self.isInCombat and self.currentPain == 0 then
-			self.painBar.visible = false
-			self.painBar.bar.visible = false
-			self.painBar.background.visible = false	
-			self.nameLevel.visible = false
-			self.charDebuffDisplay.visible = false	
-		end
+		--~ if not self.isInCombat and self.currentPain == 0 then
+			--~ self.painBar.visible = false
+			--~ self.painBar.bar.visible = false
+			--~ self.painBar.background.visible = false	
+			--~ self.nameLevel.visible = false
+			--~ self.charDebuffDisplay.visible = false	
+		--~ end
 		
 		-- local hidden image
 		if self.hidden and self == the.player then
