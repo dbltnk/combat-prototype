@@ -31,7 +31,7 @@ local Crescent = Tile:extend
 	height = 200,
 	tint = {0,0,1},
 	alpha = .25,
-	image = "assets/graphics/melee_radians/120_200.png", -- TODO: remove hard-coded path
+	image = "assets/graphics/melee_radians/90_200.png", -- TODO: remove hard-coded path
 	rotation = 0,
 	
 	onNew = function(self)
