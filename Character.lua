@@ -1012,6 +1012,8 @@ Character = Animation:extend
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
+		self:refreshLevelBar()
+		
 		-- move back into map if outside
 		local px,py = self.x+self.width/2, self.y+self.height/2
 		if px < 0 or px > config.map_width or py < 0 or py > config.map_height then
