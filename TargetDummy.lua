@@ -210,7 +210,7 @@ TargetDummy = Animation:extend
 		end
 
 		for damager, value in pairs(self.dmgReceived) do
-			object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value)
+			object_manager.send(damager, "xp", self.xpWorth / self.finalDamage * value, CHARACTER_XP_CREEPS)
 		end
 	
 		self.deaths = self.deaths + 1

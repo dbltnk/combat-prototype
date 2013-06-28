@@ -2,20 +2,25 @@
 
 characterMap = {}
 
+CHARACTER_XP_OTHER = 0
+CHARACTER_XP_CREEPS = 1
+CHARACTER_XP_RESOURCE = 2
+CHARACTER_XP_COMBAT = 3
+
 Character = Animation:extend
 {
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
 		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", 
-		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", },
+		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", "kills", },
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
 		"invul", "width", "height", "rotation", "dmgModified", "marked", "rooted", "snared", "mezzed", "stunned", "powerblocked",
 		"maxPainOverdrive"},	
 		
-	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths", "xp", },
+	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths", "xp", "kills", },
 	
 	maxPain = config.maxPain, 
 	-- 1 = 100% health bar, 1.2 is 20% longer
@@ -45,6 +50,12 @@ Character = Animation:extend
 	marked = false,
 	interrupted = false,
 	deaths = 0,
+	kills_player = 0,
+	xp_gained_from_creeps = 0,
+	xp_gained_from_resource = 0,
+	xp_gained_from_combat = 0,
+	barrier_dmg = 0,
+	resource_dmg = 0,
 	selectedSkill = 1,
 	selfTargetingSkill = false,
 
@@ -316,6 +327,39 @@ Character = Animation:extend
 		self:every(1, function()
 			self:updateAndSendZones()
 		end)
+		
+		-- send selected skills
+		for k,v in pairs(self.skills) do
+			local s = self.skills[k].definition
+			track(self.name, "skill_taken_" .. s.key)
+		end
+		
+		-- send config
+		track("config", self.name, self.team, localconfig.fullscreen, localconfig.screenWidth, localconfig.screenHeight,
+			localconfig.max_chat_lines, localconfig.audioVolume, 
+			localconfig.skillOne,
+			localconfig.skillTwo,
+			localconfig.skillThree,
+			localconfig.skillFour,
+			localconfig.skillFive,
+			localconfig.skillSix,
+			localconfig.skillSeven,
+			localconfig.skillEight,
+			localconfig.targetSelf,
+			localconfig.showHighscore,
+			localconfig.toggleFullscreen,
+			localconfig.quitGame
+		)
+
+		-- over time tracking
+		self:every(config.trackingOverTimeTimeout, function() 
+			if self:isLocal() and the.phaseManager and the.phaseManager.phase == "playing" then
+				track("player_ot", self.oid, self.name, self.level, self.xp, self.deaths, self.kills_player, 
+					self.xp_gained_from_combat, self.xp_gained_from_creeps, self.xp_gained_from_resource, 
+					self.barrier_dmg, self.resource_dmg
+					)
+			end
+		end)
 	end,
 	
 	updateAndSendZones = function (self)
@@ -360,13 +404,13 @@ Character = Animation:extend
 		end
 	end,
 	
-	gainPain = function (self, str)
+	gainPain = function (self, str, source_oid)
 		--print(self.oid, "gain pain", str)
 		if self.invul and str >= 0 then 
 			-- do nothing
 		else
 			self.currentPain = self.currentPain + str
-			self:updatePain()
+			self:updatePain(source_oid)
 		end
 	end,
 	
@@ -390,12 +434,25 @@ Character = Animation:extend
 		end
 	end,
 	
-	updatePain = function (self)
+	updatePain = function (self, source_oid)
 	--print("Player ", self.oid, " is incapacitated:", self.incapacitated)
 		if self.currentPain >= self.maxPain then 
 			self:setIncapacitation(true)
 			self.deaths = self.deaths + 1
 			gameStatsInc("times_died")
+			
+			-- kills tracking
+			local killer = object_manager.get(source_oid)
+			if killer then
+				if killer.class == "Character" then
+					killer.kills_player = killer.kills_player + 1
+					track("killed_by_player", self.oid, self.name, self.team, killer.oid, killer.name, killer.team)
+				else
+					track("killed_by_other", self.oid, self.name, self.team, killer.oid, killer.class)
+				end
+			else
+				track("killed_by_unknown", self.oid, self.name, self.team)
+			end
 		end
 		
 		self.currentPain = utils.clamp(self.currentPain, 0, self.maxPain)
@@ -439,12 +496,16 @@ Character = Animation:extend
 		self:resetCooldowns()
 	end,	
 	
-	gainXP = function (self, str)
-		--print(self.oid, "gain xp", str)
+	gainXP = function (self, str, xpType)
+		xpType = xpType or CHARACTER_XP_OTHER
+		--~ print(self.oid, "gain xp", str, xpType)
 		if self.tempMaxxed == false then
 			self.xp = self.xp + str
+			
+			if xpType == CHARACTER_XP_CREEPS then self.xp_gained_from_creeps = self.xp_gained_from_creeps + str end
+			if xpType == CHARACTER_XP_RESOURCE then self.xp_gained_from_resource = self.xp_gained_from_resource + str end
+			if xpType == CHARACTER_XP_COMBAT then self.xp_gained_from_combat = self.xp_gained_from_combat + str end
 		end
-		--self:updatePain()
 		--print(self.xp)
 		if self.tempMaxxed == false and self.xp >= 1000 then 
 			self:updateLevel()							
@@ -552,7 +613,7 @@ Character = Animation:extend
 			end)
 		elseif message_name == "mark" then
 			local duration, source_oid = ...
-			object_manager.send(source_oid, "xp", duration / 8 * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration / 8 * config.crowdControlXP, CHARACTER_XP_COMBAT)
 				self.marked = true
 			self:after(duration, function()
 				self.marked = false
@@ -565,8 +626,8 @@ Character = Animation:extend
 		if message_name == "heal" then
 			local str, source_oid = ...
 		--	print("HEAL", str)
-			self:gainPain(-str)
-			object_manager.send(source_oid, "xp", str * config.combatHealXP)
+			self:gainPain(-str, source_oid)
+			object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT)
 			if self.hidden then self.hidden = false self.speedOverride = 0 end			
 		elseif message_name == "reset_xp" then
 			self:resetXP()
@@ -574,17 +635,17 @@ Character = Animation:extend
 			local str, source_oid = ...
 		--	print("STAMHEAL", str)
 			self:gainFatigue(-str)
-			object_manager.send(source_oid, "xp", str * config.combatHealXP)	
+			object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT)	
 		elseif message_name == "damage" then
 			local str, source_oid = ...
 		--	print("DAMANGE", str)
 			if not self.incapacitated then 
 				if self.dmgModified then
-					self:gainPain(str / 100 * self.dmgModified) 
+					self:gainPain(str / 100 * self.dmgModified, source_oid) 
 				else
-					self:gainPain(str)
+					self:gainPain(str, source_oid)
 				end
-				if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
+				if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT) end
 			end
 			if self.hidden then self.hidden = false self.speedOverride = 0 end	
 			if self.mezzed then
@@ -642,11 +703,11 @@ Character = Animation:extend
 					if self.deaths == oldDeaths then
 						if not self.incapacitated and not self.invul then  
 							if self.dmgModified then
-								self:gainPain(str / 100 * self.dmgModified)  
+								self:gainPain(str / 100 * self.dmgModified, source_oid)  
 							else
-								self:gainPain(str)
+								self:gainPain(str, source_oid)
 							end
-							if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
+							if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT) end
 						end
 						if self.mezzed then
 							self:unfreezeMovement()
@@ -666,8 +727,8 @@ Character = Animation:extend
 			for i=0,ticks do
 				self:after(duration / ticks * i, function()
 					if not self.incapacitated then  
-						self:gainPain(-str)
-						object_manager.send(source_oid, "xp", str * config.combatHealXP)
+						self:gainPain(-str, source_oid)
+						object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT)
 					end
 				end)
 			end	
@@ -679,7 +740,7 @@ Character = Animation:extend
 			self:freezeCasting()
 			self.stunned = true
 			self.interrupted = true
-			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT) end
 			self:after(duration, function()
 				self:unfreezeMovement()
 				self:unfreezeCasting()
@@ -692,7 +753,7 @@ Character = Animation:extend
 			self:freezeCasting()
 			self.mezzed = true
 			self.interrupted = true			
-			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT) end
 			self:after(duration, function()
 				self:unfreezeMovement()
 				self:unfreezeCasting()
@@ -720,7 +781,7 @@ Character = Animation:extend
 			self:freezeCasting()
 			self.powerblocked = true
 			self.interrupted = true			
-			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT) end
 			self:after(duration, function()
 				self:unfreezeCasting()
 				self.powerblocked = false
@@ -728,15 +789,15 @@ Character = Animation:extend
 		elseif message_name == "runspeed" then
 			local str, duration, source_oid = ...
 			--print("SPEED", str, duration)
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self.speedOverride = str
 			self:after(duration, function()
 				self.speedOverride = 0
 			end)
 		elseif message_name == "xp" then
-			local str = ...
+			local str, xpType = ...
 			--print("XP", str)
-			self:gainXP(str)
+			self:gainXP(str, xpType)
 		elseif message_name == "moveSelfTo" then
 			local x,y = ...
 			self.x = x
@@ -756,14 +817,14 @@ Character = Animation:extend
 		elseif message_name == "dmgModifier" then
 			local str, duration, source_oid = ...
 			--print("dmgModifier", str, duration)
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self.dmgModified = str
 			self:after(duration, function() 
 					self.dmgModified = config.dmgUnmodified
 			end)
 		elseif message_name == "root" then
 			local duration, source_oid = ...
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self:freezeMovement()
 			self.rooted = true
 			self:after(duration, function() 
@@ -784,7 +845,7 @@ Character = Animation:extend
 			end		
 		elseif message_name == "buff_max_pain" then
 			local str, duration, source_oid = ...
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self.maxPainOverdrive = 1 + str / self.maxPain
 			self.maxPain = self.maxPain + str
 			self:after(duration, function()
@@ -794,14 +855,14 @@ Character = Animation:extend
 			end)	
 		elseif message_name == "invul" then
 			local duration, source_oid = ...
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self.invul = true
 			self:after(duration, function()
 				self.invul = false
 			end)	
 		elseif message_name == "changeSize" then
 			local str, duration, source_oid = ...
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self.width = self.width / 100 * str
 			self.height = self.height / 100 * str
 			self:after(duration, function()

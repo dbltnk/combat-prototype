@@ -55,12 +55,27 @@ Ressource = Tile:extend
 		self:every(config.xpGainsEachNSeconds, function() 
 			if self:isLocal() then self:giveXP() end
 		end)
+		
+		-- over time tracking
+		self:every(config.trackingOverTimeTimeout, function() 
+			if self:isLocal() and the.phaseManager and the.phaseManager.phase == "playing" then
+				track("resource_ot", self.oid, self.description, self.currentPain, self.controller)
+			end
+		end)
 	end,
 	
-	gainPain = function (self, str)
+	gainPain = function (self, str, source_oid)
 		--print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
 		self:updatePain()
+		
+		-- dmg tracking
+		local attacker = object_manager.get(source_oid)
+		if attacker then
+			if attacker.class == "Character" then
+				attacker.resource_dmg = attacker.resource_dmg + str
+			end
+		end
 	end,
 	
 	showDamage = function (self, str)
@@ -108,12 +123,12 @@ Ressource = Tile:extend
 			local str, source_oid = ...
 			--~ print("RESSOURCE DAMANGE", str, source_oid)
 			self:controllerChanger(source_oid)
-			self:gainPain(str)
+			self:gainPain(str, source_oid)
 		elseif message_name == "heal" then
 			local str, source_oid = ...
 			--print("RESSOURCE HEAL", -str)
 			self:controllerChanger(source_oid)
-			self:gainPain(-str)
+			self:gainPain(-str, source_oid)
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--~ print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks, source_oid)
@@ -122,7 +137,7 @@ Ressource = Tile:extend
 				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						self:controllerChanger(source_oid)
-						self:gainPain(str)
+						self:gainPain(str, source_oid)
 					end
 				end)
 			end
@@ -134,7 +149,7 @@ Ressource = Tile:extend
 				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						self:controllerChanger(source_oid)
-						self:gainPain(-str)
+						self:gainPain(-str, source_oid)
 					end
 				end)
 			end	
@@ -171,7 +186,7 @@ Ressource = Tile:extend
 		if self.controller then 
 			object_manager.visit(function(oid,obj) 
 				if obj.team and obj.team == self.controller then
-					object_manager.send(oid, "xp", config.xpPerRessourceTick)
+					object_manager.send(oid, "xp", config.xpPerRessourceTick, CHARACTER_XP_RESOURCE)
 				end
 			end)
 		end

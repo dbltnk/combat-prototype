@@ -34,6 +34,9 @@ config.strIncreaseFactor = 0.1 -- 10% stronger per lvl
 config.combatHealXP = 0.15 -- in % of damage / heal done
 config.crowdControlXP = 0.2 -- in % of duration in seconds
 
+-- tracking
+config.trackingOverTimeTimeout = 5
+
 -- mobs
 config.mobSightRange = 250
 config.mobMovementSpeed = 55

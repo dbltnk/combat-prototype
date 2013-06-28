@@ -101,6 +101,8 @@ function disconnect(client, clients) {
 	var index = clients.indexOf(client);
 	if( index != -1) clients.splice(index, 1);
 	
+	track("client_disconnect", client.id);
+	
 	// send leave message
 	var leaveMessage = encode_message({channel: "server", cmd: "left", id: client.id});
 	_.each(clients, function(c) {
@@ -217,7 +219,7 @@ server.on('connect', function(peer, data) {
     // Peer disconnected.
     console.log("DISCONNECT", peer, data);
     var client = client_by_peer(clients, peer);
-    console.log(client);
+	console.log(client);
     disconnect(client, clients);
 }).on('message', function(peer, packet, channel)
 {

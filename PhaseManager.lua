@@ -34,6 +34,7 @@ PhaseManager = Sprite:extend
 		if self:isLocal() == false and self.phase == "playing" then
 			network.get("gameId", function(gameId)
 				print("REJOIN", gameId)
+				track("rejoin")
 				
 				local lastState = storage.load("game.json")
 				
@@ -86,9 +87,12 @@ PhaseManager = Sprite:extend
 		--~ print("onUpdateLocal", self.phase)
 		if self.phase == "init_needed" then
 			self:changePhaseToWarmup()
+			track("phase_warmup")
 		elseif self.phase == "warmup" then
 			if network.time > self.round_start_time then
 				self:changePhaseToPlaying()
+				track("phase_playing")
+				track("game_start")
 			end
 		elseif self.phase == "playing" then
 			if the.barrier and the.barrier.alive == false then
@@ -97,6 +101,18 @@ PhaseManager = Sprite:extend
 
 			if network.time > self.round_end_time then
 				self:changePhaseToAfter()
+				track("game_end", the.barrier and the.barrier.alive == true)
+				if the.barrier then
+					for team, points in pairs(the.barrier.teamscore) do
+						track("game_end_score_team", team, points)
+					end
+					for oid, points in pairs(the.barrier.highscore) do
+						local name = object_manager.get_field(oid, "name", "?")
+						local team = object_manager.get_field(oid, "team", "?")
+						track("game_end_score_player", oid, name, team, points)
+					end
+				end
+				track("phase_after")
 			end	
 			
 			-- reset xp
@@ -111,6 +127,7 @@ PhaseManager = Sprite:extend
 		elseif self.phase == "after" then
 			if network.time > self.round_end_time + config.afterTime then
 				self:changePhaseToWarmup()
+				track("phase_warmup")
 			end
 		end
 	end,

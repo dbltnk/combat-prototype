@@ -45,6 +45,13 @@ Barrier = Tile:extend
 		}
 		
 		drawDebugWrapper(self)
+		
+		-- over time tracking
+		self:every(config.trackingOverTimeTimeout, function() 
+			if self:isLocal() and the.phaseManager and the.phaseManager.phase == "playing" then
+				track("barrier_ot", self.currentPain)
+			end
+		end)
 	end,
 	
 	gainPain = function (self, str)
@@ -107,6 +114,14 @@ Barrier = Tile:extend
 		if src then
 			if not self.teamscore[src.team] then self.teamscore[src.team] = 0 end
 			self.teamscore[src.team] = self.teamscore[src.team] + score
+		end
+		
+		-- dmg tracking
+		local attacker = object_manager.get(source_oid)
+		if attacker then
+			if attacker.class == "Character" then
+				attacker.barrier_dmg = attacker.barrier_dmg + score
+			end
 		end
 	end,	
 	

@@ -125,7 +125,7 @@ gameStatsInc("times_started")
 -- ------------------------------------
 
 function track(event, ...)
-	network.send({channel = "server", cmd = "track", event = event, params = list.concat({network.client_id}, ...)})
+	network.send({channel = "server", cmd = "track", event = event, params = list.concat({network.client_id}, {...})})
 end
 
 the.app = App:new
@@ -194,6 +194,7 @@ the.app = App:new
 				the.quitGameButton:SetText("Yes, quit the game")
 				the.quitGameButton.OnClick = function(object)
 					--~ profiler.stop()
+					track("client_quit")
 					network.send({channel = "server", cmd = "bye"})
 					-- wait a little bit to ensure bye delivery
 					local t = love.timer.getTime()

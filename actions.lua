@@ -225,7 +225,7 @@ end)
 -- eg. {effect_type = "xp", str = 60},
 -- has: str
 action_handling.register_effect("xp", function (target, effect, source_oid)
-	object_manager.send(target.oid, "xp", effect.str, source_oid)
+	object_manager.send(target.oid, "xp", effect.str, source_oid, CHARACTER_XP_COMBAT)
 end)
 
 -- effect: gank ----------------------------------------------------------
