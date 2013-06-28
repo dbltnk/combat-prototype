@@ -20,7 +20,8 @@ SkillBar = Class:extend
 	skillInactiveIcons = {},
 	-- timeout texts
 	skillTimerText = {},
-	
+	-- inactive overlay tiles
+	skillSelectedIcons = {},	
 	-- position
 	x = love.graphics.getWidth() / 2 - SkillIcon.width / 2 * 8 - 11, -- to-do: erste 6 ersetzen durch table.getn(skills) oder ähnliche zählmethode
 	y = love.graphics.getHeight()  - SkillIcon.height,
@@ -50,6 +51,13 @@ SkillBar = Class:extend
 			self.skillInactiveIcons[index] = overlay
 			the.hud:add(overlay)
 
+			-- yellow overlay for selected skills
+			local overlay_selected = Tile:new{
+				width = 32, height = 32, image = "/assets/graphics/skills_selected_overlay.png",
+			}
+			self.skillSelectedIcons[index] = overlay_selected
+			the.hud:add(overlay_selected)
+
 			-- timeout text
 			local t = Text:new{
 				tint = {1,1,0},
@@ -78,6 +86,9 @@ SkillBar = Class:extend
 			
 			self.skillInactiveIcons[index].x = skillIcon.x
 			self.skillInactiveIcons[index].y = skillIcon.y
+			
+			self.skillSelectedIcons[index].x = skillIcon.x
+			self.skillSelectedIcons[index].y = skillIcon.y
 
 			self.skillTimerText[index].x = skillIcon.x + 8
 			self.skillTimerText[index].y = skillIcon.y + 8
@@ -98,6 +109,20 @@ SkillBar = Class:extend
 			if the.player and the.player.skills and the.player.skills[index] then
 				local skill = the.player.skills[index]
 				overlay.visible = skill:isCasting() == false and skill:isPossibleToUse() == false
+			end
+		end
+		
+		-- mark selected skill as selected
+		for index, overlay in pairs(self.skillSelectedIcons) do
+			if the.player and the.player.skills and the.player.skills[index] then
+				local skill = the.player.skills[index]
+				--~ overlay.visible = skill:isCasting() == false and skill:isPossibleToUse() == false
+				--~ print(skill)
+				if index == the.player.selectedSkill then
+					overlay.visible = true
+				else
+					overlay.visible = false
+				end
 			end
 		end
 		

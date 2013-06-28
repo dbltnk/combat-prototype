@@ -21,10 +21,13 @@ Projectile = Tile:extend
 	
 	onUpdateLocal = function (self)
 		local totalDistance = vector.lenFromTo(self.start.x, self.start.y, self.target.x, self.target.y)
-		local distFromStart = vector.lenFromTo(self.start.x, self.start.y, self.x, self.y)
+		local cx,cy = tools.object_center(self)
+		local distFromStart = vector.lenFromTo(self.start.x, self.start.y, cx,cy)
 		
 		if distFromStart >= totalDistance then
 		--	self:particle(self.x, self.y)
+			self.x = self.target.x - self.width/2
+			self.y = self.target.y - self.height/2
 			self:die()
 		end
 		
@@ -53,6 +56,9 @@ Projectile = Tile:extend
 			self.x = self.x + self.velocity.x * dt
 			self.y = self.y + self.velocity.y * dt
 		end
+		
+		utils.vardump(self.start)
+		utils.vardump(self.target)
 		
 		-- scythe_jump is allowed to bypass all collision
 		if self.image == "/assets/graphics/action_projectiles/scythe_jump.png" then self.solid = false end

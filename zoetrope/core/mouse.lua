@@ -200,6 +200,7 @@ Mouse = Sprite:extend{
 	end,
 
 	mouseReleased = function (self, button)
+		if button == "wd" or button == "wu" then return end
 		self._thisFrame[button] = false
 	end,
 
@@ -208,6 +209,9 @@ Mouse = Sprite:extend{
 			self._lastFrame[key] = value
 		end
 	
+		self._thisFrame["wd"] = false
+		self._thisFrame["wu"] = false
+
 		self.x = love.mouse.getX() - the.app.inset.x
 		self.y = love.mouse.getY() - the.app.inset.y
 

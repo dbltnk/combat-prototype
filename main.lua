@@ -60,6 +60,7 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 require 'zoetrope'
 
 vector = require 'vector'
+str = require 'str'
 storage = require 'storage'
 collision = require 'collision'
 utils = require 'utils'
@@ -104,6 +105,7 @@ require 'ConnectView'
 require 'Effect'
 require 'EffectCircle'
 require 'EffectImage'
+require 'Arrow'
 require 'ui' 
 require 'loveframes'
 
