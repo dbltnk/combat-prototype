@@ -328,29 +328,31 @@ Character = Animation:extend
 			self:updateAndSendZones()
 		end)
 		
-		-- send selected skills
-		for k,v in pairs(self.skills) do
-			local s = self.skills[k].definition
-			track("skill_taken", self.name, s.key)
+		if self:isLocal() then
+			-- send selected skills
+			for k,v in pairs(self.skills) do
+				local s = self.skills[k].definition
+				track("skill_taken", self.name, s.key)
+			end
+			
+			-- send config
+			track("config", self.name, self.team, localconfig.fullscreen, localconfig.screenWidth, localconfig.screenHeight,
+				localconfig.max_chat_lines, localconfig.audioVolume, 
+				localconfig.skillOne,
+				localconfig.skillTwo,
+				localconfig.skillThree,
+				localconfig.skillFour,
+				localconfig.skillFive,
+				localconfig.skillSix,
+				localconfig.skillSeven,
+				localconfig.skillEight,
+				localconfig.targetSelf,
+				localconfig.showHighscore,
+				localconfig.toggleFullscreen,
+				localconfig.quitGame
+			)
 		end
 		
-		-- send config
-		track("config", self.name, self.team, localconfig.fullscreen, localconfig.screenWidth, localconfig.screenHeight,
-			localconfig.max_chat_lines, localconfig.audioVolume, 
-			localconfig.skillOne,
-			localconfig.skillTwo,
-			localconfig.skillThree,
-			localconfig.skillFour,
-			localconfig.skillFive,
-			localconfig.skillSix,
-			localconfig.skillSeven,
-			localconfig.skillEight,
-			localconfig.targetSelf,
-			localconfig.showHighscore,
-			localconfig.toggleFullscreen,
-			localconfig.quitGame
-		)
-
 		-- over time tracking
 		self:every(config.trackingOverTimeTimeout, function() 
 			if self:isLocal() and the.phaseManager and the.phaseManager.phase == "playing" then
@@ -445,7 +447,7 @@ Character = Animation:extend
 			local killer = object_manager.get(source_oid)
 			if killer then
 				if killer.class == "Character" then
-					killer.kills_player = killer.kills_player + 1
+					object_manager.send(source_oid, "inc", "kills_player", 1)
 					track("killed_by_player", self.oid, self.name, self.team, killer.oid, killer.name, killer.team)
 				else
 					track("killed_by_other", self.oid, self.name, self.team, killer.oid, killer.class)
@@ -629,6 +631,9 @@ Character = Animation:extend
 			self:gainPain(-str, source_oid)
 			object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT)
 			if self.hidden then self.hidden = false self.speedOverride = 0 end			
+		elseif message_name == "inc" then
+			local key, value = ...
+			if self[key] then self[key] = self[key] + value end
 		elseif message_name == "reset_xp" then
 			self:resetXP()
 		elseif message_name == "stamHeal" then

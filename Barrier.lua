@@ -117,12 +117,7 @@ Barrier = Tile:extend
 		end
 		
 		-- dmg tracking
-		local attacker = object_manager.get(source_oid)
-		if attacker then
-			if attacker.class == "Character" then
-				attacker.barrier_dmg = attacker.barrier_dmg + score
-			end
-		end
+		object_manager.send(source_oid, "inc", "barrier_dmg", score)
 	end,	
 	
 	hideHighscore = function (self)

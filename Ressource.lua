@@ -70,12 +70,7 @@ Ressource = Tile:extend
 		self:updatePain()
 		
 		-- dmg tracking
-		local attacker = object_manager.get(source_oid)
-		if attacker then
-			if attacker.class == "Character" then
-				attacker.resource_dmg = attacker.resource_dmg + str
-			end
-		end
+		object_manager.send(source_oid, "inc", "resource_dmg", str)
 	end,
 	
 	showDamage = function (self, str)
