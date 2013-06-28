@@ -71,3 +71,25 @@ zip -r ../combat-prototype-osx.zip .
 cd ../..
 rm -rf buildtmp
 
+# --------------------------------------
+echo build client for linux
+rm -rf buildtmp
+mkdir buildtmp
+cp localconfig.lua.dist buildtmp
+cp README.md buildtmp/readme.txt
+zip -r buildtmp.zip . -x@build_material/buildexclude.txt -x server\* -x build_material\* -x buildtmp\* -x .git\* -x build\*
+mkdir -p buildtmp/combat-prototype
+cd buildtmp/combat-prototype
+unzip ../../buildtmp.zip
+rm ../../buildtmp.zip
+cd ../..
+cp -r build_material/lovelinux/* buildtmp
+cp changelog.txt buildtmp
+rm -rf build/linux
+mkdir -p build/linux
+cp -r buildtmp/* build/linux
+rm -rf build/combat-prototype-linux.zip 
+cd build/linux
+zip -r ../combat-prototype-linux.zip .
+cd ../..
+rm -rf buildtmp
