@@ -346,6 +346,49 @@ TimerDisplay = Text:extend
 	end
 }
 
+
+PlaytestTimerDisplay = Text:extend
+{
+	font = 20,
+	text = "",
+	x = 0,
+	y = 0, 
+	time = 0,
+	width = 300,
+	tint = {0.1,0.1,0.1},
+	
+	onUpdate = function (self)
+		self.x = (love.graphics.getWidth() - self.width) / 2
+		self.y = 50
+
+		local t = os.time()
+		if config.nextPlaytestAt and config.nextPlaytestAt > t then
+			self.visible = true
+			
+			local dt = config.nextPlaytestAt - t
+			local days = math.floor(dt / 60/60/24)
+			dt = dt - days * 60*60*24
+			local hours = math.floor(dt / 60/60)
+			dt = dt - hours * 60*60
+			local minutes = math.floor(dt / 60)
+			dt = dt - minutes * 60
+			local seconds = math.floor(dt)
+
+			local d = ""
+			
+			if days > 0 then d = days .. " days"
+			elseif hours > 0 then d = hours .. " hours"
+			elseif minutes > 0 then d = minutes .. " minutes"
+			elseif seconds > 0 then d = seconds .. " seconds"
+			else d = "" end
+
+			self.text = "Next official playtest at\n" .. os.date(nil, config.nextPlaytestAt) .. "\n" .. "in " .. d
+		else
+			self.visible = false
+		end
+	end
+}
+
 XpTimerDisplay = Text:extend
 {
 	font = 12,

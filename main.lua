@@ -109,8 +109,20 @@ require 'Arrow'
 require 'ui' 
 require 'loveframes'
 
---~ skills used
---~ kills
+-- stats ----------------------------
+gameStats = storage.load("stats.json") or {}
+
+gameStatsInc = function (key, inc)
+	inc = inc or 1
+	gameStats[key] = (gameStats[key] or 0) + inc
+end
+
+gameStatsSet = function (key, val)
+	gameStats[key] = val
+end
+
+gameStatsInc("times_started")
+-- ------------------------------------
 
 the.app = App:new
 {
@@ -189,6 +201,7 @@ the.app = App:new
 						print("STORE STATE")
 						the.phaseManager:storePlayerState()
 					end
+					if gameStats then storage.save("stats.json", gameStats) end
 					os.exit() 
 				end
 				-- make me a cancel button
