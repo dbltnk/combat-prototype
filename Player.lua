@@ -112,6 +112,22 @@ Player = Character:extend
 				[8] = localconfig.skillEight,
 			}
 			
+			local skillNrTriggered = nil
+			-- which skill button was selected?
+			for k,v in pairs(skill_keys) do
+				if the.keys:justPressed(v) and not the.ignorePlayerCharacterInputs then --and the.player.skills[k]:isPossibleToUse() then
+					skillNrTriggered = k
+				end
+			end
+
+			self.selfTargetingSkill = false 
+			-- find out if the currently selected skill targets self
+					
+			local skillObject = the.player.skills[skillNrTriggered]
+			if utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type", false) == "self" then
+				self.selfTargetingSkill = true 
+			end
+
 			-- select a skill
 			for k,v in pairs(skill_keys) do
 				if the.keys:justPressed(v) and not the.ignorePlayerCharacterInputs then --and the.player.skills[k]:isPossibleToUse() then
@@ -119,19 +135,12 @@ Player = Character:extend
 						shootSkillNr = k 
 						doShoot = true
 					end
-					the.player.selectedSkill = k
+					if not self.selfTargetingSkill then 
+						the.player.selectedSkill = k
+					end
 				end
 			end
 			
-			self.selfTargetingSkill = false 
-			-- find out if the currently selected skill targets self
-					
-			local skillObject = the.player.skills[the.player.selectedSkill]
-			if utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type", false) == "self" then
-				self.selfTargetingSkill = true 
-			end
-			
-
 			for k,v in pairs(skill_keys) do
 				if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs then
 					-- use the skill if it targets self
