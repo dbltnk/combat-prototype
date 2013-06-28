@@ -84,7 +84,7 @@ Skill = Class:extend
 			-- call use after casttime timeout
 			the.app.view.timer:after(self.cast_time, function() 
 				-- finished casting	
-				the.player.selectedSkill = 1 
+				--~ the.player.selectedSkill = 1 
 				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
 				if player.interrupted == false then			
 					--print("SKILL", self.nr, "REALLY USE")
