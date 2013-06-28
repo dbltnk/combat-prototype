@@ -118,6 +118,8 @@ Character = Animation:extend
 	end,
 	
 	onNew = function (self)
+		print(self.oid, self.name, debug.traceback())
+		
 		self:mixin(GameObject)
 		self:mixin(GameObjectCommons)
 		self:mixin(FogOfWarObject)

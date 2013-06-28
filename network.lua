@@ -275,7 +275,7 @@ function network.update (dt)
 					end
 				end
 				local obj = "#" .. oid .. " " .. (o.class or "?") .. " " .. loc .. " " .. (o.propsToString and o:propsToString() or "") .. "\n"
-				objs = objs .. obj
+				if o.class == "Character" then objs = objs .. obj end
 			end)
 		end
 		
