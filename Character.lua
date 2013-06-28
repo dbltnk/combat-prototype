@@ -331,7 +331,7 @@ Character = Animation:extend
 		-- send selected skills
 		for k,v in pairs(self.skills) do
 			local s = self.skills[k].definition
-			track(self.name, "skill_taken_" .. s.key)
+			track("skill_taken", self.name, s.key)
 		end
 		
 		-- send config

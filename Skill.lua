@@ -81,7 +81,7 @@ Skill = Class:extend
 		
 		if self.onUse then 
 			gameStatsInc("times_skill_used_" .. self.definition.key)
-			track("skill_used_" .. self.definition.key)
+			track("skill_used", self.definition.key)
 			-- call use after casttime timeout
 			the.app.view.timer:after(self.cast_time, function() 
 				-- finished casting	
