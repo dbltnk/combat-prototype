@@ -114,7 +114,11 @@ Player = Character:extend
 			
 			-- select a skill
 			for k,v in pairs(skill_keys) do
-				if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs then --and the.player.skills[k]:isPossibleToUse() then
+				if the.keys:justPressed(v) and not the.ignorePlayerCharacterInputs then --and the.player.skills[k]:isPossibleToUse() then
+					if the.player.selectedSkill == k then
+						shootSkillNr = k 
+						doShoot = true
+					end
 					the.player.selectedSkill = k
 				end
 			end
