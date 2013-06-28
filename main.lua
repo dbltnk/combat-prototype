@@ -122,6 +122,10 @@ end
 gameStatsInc("times_started")
 -- ------------------------------------
 
+function track(event, ...)
+	network.send({channel = "server", cmd = "track", event = event, params = list.concat({network.client_id}, ...)})
+end
+
 the.app = App:new
 {
 	deactivateOnBlur = false,
