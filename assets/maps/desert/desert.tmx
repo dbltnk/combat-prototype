@@ -51,7 +51,7 @@
  <objectgroup name="objects" width="100" height="100">
   <object name="TargetDummy" x="466" y="2794" width="23" height="20"/>
   <object name="TargetDummy" x="518" y="2849" width="23" height="20"/>
-  <object name="TargetDummy" x="338" y="2153" width="23" height="20"/>
+  <object name="TargetDummy" x="554" y="1795" width="23" height="20"/>
   <object name="TargetDummy" x="461" y="2947" width="23" height="20"/>
   <object name="Barrier" x="3" y="2369" width="90" height="188">
    <properties>
@@ -96,7 +96,7 @@
   <object name="TargetDummy" x="2082" y="2951" width="23" height="20"/>
   <object name="TargetDummy" x="2040" y="2855" width="23" height="20"/>
   <object name="TargetDummy" x="2009" y="2755" width="23" height="20"/>
-  <object name="TargetDummy" x="482" y="2126" width="23" height="20"/>
+  <object name="TargetDummy" x="698" y="1768" width="23" height="20"/>
   <object name="TargetDummy" x="389" y="1896" width="23" height="20"/>
   <object name="TargetDummy" x="965" y="1998" width="23" height="20"/>
   <object name="TargetDummy" x="408" y="2008" width="23" height="20"/>
@@ -123,6 +123,7 @@
     <property name="_the" value="spawnpoint"/>
    </properties>
   </object>
+  <object name="TargetDummy" x="1344" y="1409" width="23" height="20"/>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
   <object x="1866" y="2484" width="138" height="105"/>

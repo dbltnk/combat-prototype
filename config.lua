@@ -17,19 +17,19 @@ config.dmgUnmodified = 100
 config.nextPlaytestAt = 1372960800
 
 -- progression and round time
-config.timecompression = 4
+config.timecompression = 1
 config.barrierHealth = 50000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
 config.warmupTime = 600 -- in seconds
 config.roundTime = 3600 / config.timecompression -- in seconds
 config.afterTime = 60 -- in seconds
 config.xpCap = 1000
 config.levelCap = 10
-config.dummyXPWorth = 50
+config.dummyXPWorth = 40 * config.timecompression 
 config.dummyRespawn = 180 -- seconds
 config.xpCapTimer = config.roundTime / config.levelCap
 config.ressourceHealth = 300
 config.xpGainsEachNSeconds = 10
-config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds / config.timecompression
+config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * config.xpGainsEachNSeconds / 4
 config.strIncreaseFactor = 0.1 -- 10% stronger per lvl
 config.combatHealXP = 0.15 -- in % of damage / heal done
 config.crowdControlXP = 0.2 -- in % of duration in seconds
@@ -39,9 +39,9 @@ config.trackingOverTimeTimeout = 5
 
 -- mobs
 config.mobSightRange = 250
-config.mobMovementSpeed = 55
+config.mobMovementSpeed = config.walkspeed * 0.70
 config.mobAttackRange = 60
-config.mobDamage = 10
+config.mobDamage = 20
 config.mobAnimSpeed = 3
 config.mobAttackTimer = 2
 config.dummyMaxPain = 90

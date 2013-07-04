@@ -805,8 +805,8 @@ return {
           name = "TargetDummy",
           type = "",
           shape = "rectangle",
-          x = 338,
-          y = 2153,
+          x = 554,
+          y = 1795,
           width = 23,
           height = 20,
           visible = true,
@@ -1048,8 +1048,8 @@ return {
           name = "TargetDummy",
           type = "",
           shape = "rectangle",
-          x = 482,
-          y = 2126,
+          x = 698,
+          y = 1768,
           width = 23,
           height = 20,
           visible = true,
@@ -1298,6 +1298,17 @@ return {
           properties = {
             ["_the"] = "spawnpoint"
           }
+        },
+        {
+          name = "TargetDummy",
+          type = "",
+          shape = "rectangle",
+          x = 1344,
+          y = 1409,
+          width = 23,
+          height = 20,
+          visible = true,
+          properties = {}
         }
       }
     },
