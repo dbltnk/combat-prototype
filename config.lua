@@ -25,7 +25,7 @@ config.afterTime = 60 -- in seconds
 config.xpCap = 1000
 config.levelCap = 10
 config.dummyXPWorth = 40 * config.timecompression 
-config.dummyRespawn = 180 -- seconds
+config.dummyRespawn = 300 -- seconds
 config.xpCapTimer = config.roundTime / config.levelCap
 config.ressourceHealth = 300
 config.xpGainsEachNSeconds = 10
@@ -39,7 +39,7 @@ config.trackingOverTimeTimeout = 5
 
 -- mobs
 config.mobSightRange = 250
-config.mobMovementSpeed = config.walkspeed * 0.70
+config.mobMovementSpeed = config.walkspeed * 0.65
 config.mobAttackRange = 60
 config.mobDamage = 20
 config.mobAnimSpeed = 3
