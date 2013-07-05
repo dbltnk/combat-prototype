@@ -14,3 +14,5 @@ server/track.log
 log/*.gnu
 log/*.png
 log/*.dat
+log/*.log
+log/*.csv
