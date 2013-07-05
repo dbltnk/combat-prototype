@@ -7,6 +7,8 @@ CHARACTER_XP_CREEPS = 1
 CHARACTER_XP_RESOURCE = 2
 CHARACTER_XP_COMBAT = 3
 
+globalOneTimeStatsSend = false
+
 Character = Animation:extend
 {
 	class = "Character",
@@ -330,7 +332,9 @@ Character = Animation:extend
 			self:updateAndSendZones()
 		end)
 		
-		if self:isLocal() then
+		if self:isLocal() and globalOneTimeStatsSend then
+			globalOneTimeStatsSend = true
+			 
 			-- send selected skills
 			for k,v in pairs(self.skills) do
 				local s = self.skills[k].definition
