@@ -11,4 +11,6 @@ server/config.js
 game.json
 stats.json
 server/track.log
-
+log/*.gnu
+log/*.png
+log/*.dat
