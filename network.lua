@@ -56,6 +56,7 @@ network.connected_client_id_map = {}
 network.connected_client_count = 0
 network.lowest_client_id = nil
 network.open_request_count = 0
+network.is_admin = false
 
 network.loss_send = 0
 network.loss_recv = 0

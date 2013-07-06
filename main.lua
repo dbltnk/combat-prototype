@@ -171,7 +171,7 @@ the.app = App:new
 		if not the.keys:pressed("lctrl") and the.keys:justPressed ("f12") then config.draw_debug_info = not config.draw_debug_info end
 		
 		-- admin
-		if the.keys:pressed("lctrl") and the.keys:justPressed ("f11") then 
+		if the.keys:pressed("lctrl") and the.keys:justPressed ("f11") and network.is_admin then 
 			if the.phaseManager then object_manager.send(the.phaseManager.oid, "force_next_phase") end
 		end
 		if the.keys:pressed("lctrl") and the.keys:justPressed ("f12") then

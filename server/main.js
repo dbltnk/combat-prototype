@@ -254,6 +254,9 @@ server.on('connect', function(peer, data) {
 			} else if (message.cmd == "msg") {
 				//~ console.log("MSG")
 				send_to_one({seq: message.seq, send: client.messages_send, recv: client.messages_received, fin: true}, client, reliable);
+			} else if (message.cmd == "is_admin") {
+                                console.log("ISADMIN REQUEST");
+                                send_to_one({seq: message.seq, is_admin: message.password == config.adminPassword, fin: true}, client, reliable);
 			} else if (message.cmd == "restart") {
 				console.log("RESTART");
 				

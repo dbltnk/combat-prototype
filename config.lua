@@ -35,7 +35,7 @@ config.combatHealXP = 0.15 -- in % of damage / heal done
 config.crowdControlXP = 0.2 -- in % of duration in seconds
 
 -- tracking
-config.trackingOverTimeTimeout = 5
+config.trackingOverTimeTimeout = 15
 
 -- mobs
 config.mobSightRange = 250
