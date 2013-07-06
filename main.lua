@@ -194,20 +194,7 @@ the.app = App:new
 				the.quitGameButton:SetText("Yes, quit the game")
 				the.quitGameButton.OnClick = function(object)
 					--~ profiler.stop()
-					track("client_quit")
-					network.send({channel = "server", cmd = "bye"})
-					-- wait a little bit to ensure bye delivery
-					local t = love.timer.getTime()
-					while love.timer.getTime() - t < 1 do
-						network.update(1)
-					end
-					network.shutdown()
-					if the.phaseManager and the.phaseManager.storePlayerState then
-						print("STORE STATE")
-						the.phaseManager:storePlayerState()
-					end
-					if gameStats then storage.save("stats.json", gameStats) end
-					os.exit() 
+					quitClient()					
 				end
 				-- make me a cancel button
 				the.cancelButton = loveframes.Create("button")
@@ -260,3 +247,22 @@ the.app = App:new
 		end		
     end,
 }
+
+
+
+function quitClient()
+	track("client_quit")
+	network.send({channel = "server", cmd = "bye"})
+	-- wait a little bit to ensure bye delivery
+	local t = love.timer.getTime()
+	while love.timer.getTime() - t < 1 do
+		network.update(1)
+	end
+	network.shutdown()
+	if the.phaseManager and the.phaseManager.storePlayerState then
+		print("STORE STATE")
+		the.phaseManager:storePlayerState()
+	end
+	if gameStats then storage.save("stats.json", gameStats) end
+	os.exit() 
+end
