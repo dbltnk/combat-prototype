@@ -527,6 +527,12 @@ function runAsLocalChatCommand(text)
 		quitClient()
 		
 		return true
+  elseif text == "/help" then
+        showChatText("LOCAL", "/exit - closes the game")
+        showChatText("LOCAL", "/quit - closes the game")
+        showChatText("LOCAL", "/list - shows how is online")
+        showChatText("LOCAL", "/revs - shows version of the connected clients")
+      return true
   elseif text == "/revs" then
     network.send ({ channel = "server", cmd = "list_revisions" })
     return true
