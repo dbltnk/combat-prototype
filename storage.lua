@@ -13,6 +13,19 @@ os.exit()
 
 local storage = {}
 
+-- returns string
+storage.load_content = function (path)
+  local f = function()
+		local l = io.open(path)
+		local s = l:read("*a")
+		l:close()
+		return s
+	end
+	
+  local ok, result = pcall(f)
+	if ok then return result else return nil end
+end
+
 -- returns {}
 storage.load = function (path)
 	local f = function()

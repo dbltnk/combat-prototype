@@ -243,6 +243,14 @@ server.on('connect', function(peer, data) {
 				console.log("WHO");
 				var ids = _.map(clients, function(c) { return c.id; });
 				send_to_one({seq: message.seq, ids: ids, fin: true}, client, reliable);
+                        } else if (message.cmd == "revision") {
+                                client.revision = message.rev;
+                                console.log("CLIENT REVISION", client.id, client.revision);
+			} else if (message.cmd == "list_revisions") {
+                                _.each(clients, function(c) {
+                                    send_to_one({channel: "chat", cmd: "text", from: "SERVER", text: "client " + c.id + " rev " + c.revision, time: os.uptime()}, client, reliable);
+                                    
+                                });
 			} else if (message.cmd == "track") {
 				var ps = [];
 				ps.push(message.event);

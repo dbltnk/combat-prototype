@@ -17,6 +17,10 @@ perl -p -e 's/\n/\r\n/' < unixfile.txt > changelog.txt
 rm unixfile.txt
 
 # --------------------------------------
+echo revision/commit 
+echo -n `git log -1 --pretty=format:%h` > revision.txt
+
+# --------------------------------------
 echo patching config
 sed -i 's#t.console = true#t.console = false#g' conf.lua
 

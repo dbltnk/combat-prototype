@@ -276,6 +276,11 @@ GameView = View:extend
       network.is_admin = result.is_admin
       print("is admin", network.is_admin)
     end)
+  
+    -- send revision to server
+    local revision = storage.load_content("revision.txt")
+    print("REV", revision)
+    network.send({channel = "server", cmd = "revision", rev = revision})
 
 		local chatInfo = Text:new{
 			x = 5, y = love.graphics.getHeight() - 90, width = 500, tint = {0,0,0}, 
@@ -522,6 +527,9 @@ function runAsLocalChatCommand(text)
 		quitClient()
 		
 		return true
+  elseif text == "/revs" then
+    network.send ({ channel = "server", cmd = "list_revisions" })
+    return true
 	elseif text == "/list" then
 		object_manager.visit(function(oid,o)
 			if o.class == "Character" then
