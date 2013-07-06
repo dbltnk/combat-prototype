@@ -611,6 +611,7 @@ ChatText = Group:extend
 
 
 function showChatText (from, text, time)
+	time = time or network.time
 	--~ print("CHAT FROM", from, text, time)
 	the.chatText:addLine(from, text, time)
 end

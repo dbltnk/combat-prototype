@@ -286,9 +286,11 @@ GameView = View:extend
 		the.frameChatInput:SetFocus(false)
 		the.frameChatInput.OnEnter = function (self, text)
 			if text:len() > 0 then
-				--~ print("CHAT", self.visible, text)
-				network.send({channel = "chat", cmd = "text", from = localconfig.playerName, text = text, time = network.time})
-				showChatText(localconfig.playerName, text, network.time)
+				if not runAsLocalChatCommand(text) then
+					--~ print("CHAT", self.visible, text)
+					network.send({channel = "chat", cmd = "text", from = localconfig.playerName, text = text, time = network.time})
+					showChatText(localconfig.playerName, text, network.time)
+				end
 			end
 			the.app.view.timer:after(0.1, function() 
 				self:SetVisible(false)
@@ -506,4 +508,23 @@ function switchBetweenGhostAndPlayer()
 			switchToGhost()
 		end
 	end
+end
+
+
+function runAsLocalChatCommand(text)
+	if text == "/exit" or text == "/quit" then
+		quitClient()
+		
+		return true
+	elseif text == "/list" then
+		object_manager.visit(function(oid,o)
+			if o.class == "Character" then
+				showChatText("LOCAL", (o.name or "?") .. " [" .. (o.team or "?") .. "]")
+			end
+		end)
+		
+		return true
+	end
+	
+	return false
 end
