@@ -31,6 +31,8 @@ TargetDummy = Animation:extend
 	mezzed = false,
 	powerblocked = false,
 	dmgModified = config.dmgUnmodified,
+	spawnX = 0,
+	spawnY = 0,
 	
 	-- oid that this mob is focused on
 	focused_target = 0,
@@ -89,6 +91,8 @@ TargetDummy = Animation:extend
 		self.charDebuffDisplay = CharDebuffDisplay:new{
 			x = self.x, y = self.y
 		}
+		
+		self.spawnX, self.spawnY = self.x, self.y 
 	end,
 	
 	gainPain = function (self, str)
@@ -198,7 +202,7 @@ TargetDummy = Animation:extend
 			self.currentPain = self.maxPain
 			self.alive = false
 			local x,y = self.x, self.y
-			the.app.view.timer:after(config.dummyRespawn, function() SpawnMobAt(x, y) end)
+			the.app.view.timer:after(config.dummyRespawn, function() SpawnMobAt(self.spawnX, self.spawnY) end)
 			self:die()
 		end	
 	end,
