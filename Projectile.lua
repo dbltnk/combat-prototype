@@ -59,10 +59,7 @@ Projectile = Tile:extend
 		
 		utils.vardump(self.start)
 		utils.vardump(self.target)
-		
-		-- scythe_jump is allowed to bypass all collision
-		if self.image == "/assets/graphics/action_projectiles/scythe_jump.png" then self.solid = false end
-		
+				
 		-- this only displays the sprite
 		local goSelf = self
 		self.projectileSprite = Tile:new{

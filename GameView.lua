@@ -363,8 +363,10 @@ GameView = View:extend
 		profile.start("update.projectile")
 		for projectile,v in pairs(the.projectiles) do
 			self.landscape:subcollide(projectile)
-			self.collision:collide(projectile)
-			self.layers.characters:collide(projectile)
+			if projectile.image ~= "/assets/graphics/action_projectiles/scythe_jump.png" then
+				self.collision:collide(projectile)
+				self.layers.characters:collide(projectile)
+			end
 		end
 		profile.stop()
 		
