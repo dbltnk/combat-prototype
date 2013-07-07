@@ -11,8 +11,8 @@ config.healthreg = 8 -- 50% of that when incapacitated
 config.maxPain = 300
 config.maxEnergy = 300
 config.getUpPain = 0.5 -- in percent
-config.dmgUnmodified = 100
 config.weaponChangeTimeout = 15
+config.dmgUnmodified = 100
 
 -- next playtest - http://www.epochconverter.com/
 config.nextPlaytestAt = 1372960800
