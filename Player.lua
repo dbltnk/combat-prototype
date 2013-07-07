@@ -120,59 +120,22 @@ Player = Character:extend
 				end
 			end
 
-			self.selfTargetingSkill = false 
-			-- find out if the currently selected skill targets self
-					
-			local skillObject = the.player.skills[skillNrTriggered]
-			if utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type", false) == "self" then
-				self.selfTargetingSkill = true 
-			end
-
 			-- select a skill
 			for k,v in pairs(skill_keys) do
-				if the.keys:justPressed(v) and not the.ignorePlayerCharacterInputs then --and the.player.skills[k]:isPossibleToUse() then
-					if the.player.selectedSkill == k then
-						shootSkillNr = k 
-						doShoot = true
-					end
-					if not self.selfTargetingSkill then 
+				if v == "l" or v == "r" then
+					if the.mouse:justPressed(v) and not the.ignorePlayerCharacterInputs and the.player.skills[k]:isPossibleToUse() then
 						the.player.selectedSkill = k
-					end
-				end
-			end
-			
-			for k,v in pairs(skill_keys) do
-				if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs then
-					-- use the skill if it targets self
-					if self.selfTargetingSkill then
 						shootSkillNr = k 
 						doShoot = true
-						self.selfTargetingSkill = false
+					end	
+				else
+					if the.keys:justPressed(v) and not the.ignorePlayerCharacterInputs and the.player.skills[k]:isPossibleToUse() then
+							the.player.selectedSkill = k
+							shootSkillNr = k 
+							doShoot = true
 					end
 				end
 			end
-
-			-- in all other cases only cast it on click
-			if the.mouse:pressed("l") then 
-				shootSkillNr = 1 
-				doShoot = true 
-				--~ the.player.selectedSkill = 1 
-			end
-			if the.mouse:pressed("r") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
-				shootSkillNr = the.player.selectedSkill 
-				doShoot = true 
-			end
-			
-			-- sue the mouse wheel to change the selected skill
-			if the.mouse:justReleased("wd") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
-				the.player.selectedSkill = the.player.selectedSkill + 1
-				if the.player.selectedSkill > 8 then the.player.selectedSkill = 1 end
-			end 
-			
-			if the.mouse:justReleased("wu") and not the.player.skills[the.player.selectedSkill]:isCasting() then 
-				the.player.selectedSkill = the.player.selectedSkill - 1
-				if the.player.selectedSkill < 1 then the.player.selectedSkill = 8 end								
-			end 
 			
 			if not the.ignorePlayerCharacterInputs then
 				if the.keys:pressed('left', 'a') then movex = -1 end

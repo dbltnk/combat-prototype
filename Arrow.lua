@@ -88,9 +88,11 @@ Arrow = Fill:extend
 			self.x, self.y = vector.sub(rotCenterX, rotCenterY, self.width/2, self.height/2)
 			
 			self.rotation = vector.toVisualRotation(dx,dy)
+			self.visible = true
 
 			-- circle for PBAEs (at arrow start)
 			if utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type") == "ae" then
+				self.visible = false
 				self.crescent.visible = false
 				self.circle.visible = true				
 				local range = utils.get_by_path(skillObject, "definition.application.target_selection.range", 0)
@@ -99,14 +101,20 @@ Arrow = Fill:extend
 				self.circle.x, self.circle.y = playerCenterX - self.circle.width / 2, playerCenterY - self.circle.height / 2
 			elseif utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type") == "cone" then				
 				-- crescent for melee attacks
+				self.visible = false				
 				self.crescent.visible = true
 				self.circle.visible = false
 				self.crescent.x, self.crescent.y = playerCenterX - self.crescent.width / 2, playerCenterY - self.crescent.height / 2
 				self.crescent.rotation = the.player.rotation
 				--~ print(self.crescent.x, self.crescent.y,playerCenterX, playerCenterY,self.crescent.visible, self.crescent.alpha, self.crescent.image, self.crescent.width, self.crescent.height)
 				--~ utils.vardump(self.crescent.tint)
+			elseif utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type") == "self" then				
+				self.visible = false				
+				self.crescent.visible = false
+				self.circle.visible = false	
 			else
 				-- circle for projectile AEs (at arrow end)
+				self.visible = true			
 				self.crescent.visible = false
 				self.circle.visible = true				
 				local range = utils.get_by_path(skillObject, "definition.application.effects.1.application.target_selection.range", 0)
@@ -114,6 +122,12 @@ Arrow = Fill:extend
 				self.circle.height = range * 2
 				self.circle.x, self.circle.y = playerCenterX + dx - self.circle.width / 2, playerCenterY + dy - self.circle.height / 2
 			end
+		end
+		
+		if not the.player:isCasting() then
+			self.visible = false
+			self.circle.visible = false
+			self.crescent.visible = false
 		end
 	end,
 	

@@ -175,13 +175,13 @@ Cursor = Tile:extend
 	image = '/assets/graphics/cursor.png',
     
 	onUpdate = function (self)
-		if the.player and the.player.skills and the.player.selectedSkill then
-			if the.player.skills[the.player.selectedSkill]:isPossibleToUse() then
-				self.image = '/assets/graphics/cursor.png'
-			else
-				self.image = '/assets/graphics/cursor_cant_cast.png'
-			end
-		end
+		--~ if the.player and the.player.skills and the.player.selectedSkill then
+			--~ if the.player.skills[the.player.selectedSkill]:isPossibleToUse() then
+				--~ self.image = '/assets/graphics/cursor.png'
+			--~ else
+				--~ self.image = '/assets/graphics/cursor_cant_cast.png'
+			--~ end
+		--~ end
 		
 		self.x = input.cursor.x - self.width / 2
 		self.y = input.cursor.y - self.height / 2
