@@ -123,13 +123,13 @@ Player = Character:extend
 			-- select a skill
 			for k,v in pairs(skill_keys) do
 				if v == "l" or v == "r" then
-					if the.mouse:justPressed(v) and not the.ignorePlayerCharacterInputs and the.player.skills[k]:isPossibleToUse() then
+					if the.mouse:pressed(v) and not the.ignorePlayerCharacterInputs and the.player.skills[k]:isPossibleToUse() then
 						the.player.selectedSkill = k
 						shootSkillNr = k 
 						doShoot = true
 					end	
 				else
-					if the.keys:justPressed(v) and not the.ignorePlayerCharacterInputs and the.player.skills[k]:isPossibleToUse() then
+					if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs and the.player.skills[k]:isPossibleToUse() then
 							the.player.selectedSkill = k
 							shootSkillNr = k 
 							doShoot = true
