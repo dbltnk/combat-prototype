@@ -28,6 +28,7 @@ Barrier = Tile:extend
 		the.barrier = self
 		
 		self:mixin(GameObject)
+		self:mixin(GameObjectCommons)
 		self:mixin(FogOfWarObject)
 		
 		self.width = 96
@@ -44,6 +45,13 @@ Barrier = Tile:extend
 		}
 		
 		drawDebugWrapper(self)
+		
+		-- over time tracking
+		self:every(config.trackingOverTimeTimeout, function() 
+			if self:isLocal() and the.phaseManager and the.phaseManager.phase == "playing" then
+				track("barrier_ot", self.currentPain)
+			end
+		end)
 	end,
 	
 	gainPain = function (self, str)
@@ -53,12 +61,7 @@ Barrier = Tile:extend
 	end,
 	
 	showDamage = function (self, str)
-		str = math.floor(str * 10) / 10
-		if str >= 0 then
-			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
-		else
-			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
-		end
+		self:showDamageWithOffset (str, 0)
 	end,
 	
 	receiveBoth = function (self, message_name, ...)
@@ -69,7 +72,7 @@ Barrier = Tile:extend
 			local str, duration, ticks, source_oid = ...
 			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					self:showDamage(str)
 				end)
 			end
@@ -87,7 +90,7 @@ Barrier = Tile:extend
 			local str, duration, ticks, source_oid = ...
 			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					self:gainPain(str)
 					self:updateHighscore(source_oid,str)
 				end)
@@ -107,9 +110,20 @@ Barrier = Tile:extend
 		if not self.highscore[source_oid] then self.highscore[source_oid] = 0 end
 		self.highscore[source_oid] = self.highscore[source_oid] + score
 		-- team highscore
-		if not self.teamscore[object_manager.get(source_oid).team] then self.teamscore[object_manager.get(source_oid).team] = 0 end
-		self.teamscore[object_manager.get(source_oid).team] = self.teamscore[object_manager.get(source_oid).team] + score
+		local src = object_manager.get(source_oid)
+		if src then
+			if not self.teamscore[src.team] then self.teamscore[src.team] = 0 end
+			self.teamscore[src.team] = self.teamscore[src.team] + score
+		end
+		
+		-- dmg tracking
+		object_manager.send(source_oid, "inc", "barrier_dmg", score)
 	end,	
+	
+	hideHighscore = function (self)
+		if self.frame then self.frame:Remove() self.frame = nil end
+		loveframes.SetState("none")
+	end,
 	
 	showHighscore = function (self, title)
 		if self.frame then self.frame:Remove() self.frame = nil end
@@ -219,12 +233,10 @@ Barrier = Tile:extend
 	
 	onDieBoth = function (self)
 		self.painBar:die()
-		if the.app.running then
-			local text = "The players won, here's how you did:"
-			self:showHighscore(text)
-			the.app.running = false
-			the.app.timeScale = 0
-		end
+	end,
+	
+	onDieLocal = function (self)
+		
 	end,
 	
 	onUpdateBoth = function (self)	

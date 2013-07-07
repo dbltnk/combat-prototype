@@ -35,6 +35,7 @@ Ressource = Tile:extend
 	
 	onNew = function (self)
 		self:mixin(GameObject)
+		self:mixin(GameObjectCommons)
 		self:mixin(FogOfWarObject)
 		self.width = 64
 		self.height = 64
@@ -51,24 +52,29 @@ Ressource = Tile:extend
 		}
 		drawDebugWrapper(self)
 		
-		the.app.view.timer:every(config.xpGainsEachNSeconds, function() 
+		self:every(config.xpGainsEachNSeconds, function() 
 			if self:isLocal() then self:giveXP() end
+		end)
+		
+		-- over time tracking
+		self:every(config.trackingOverTimeTimeout, function() 
+			if self:isLocal() and the.phaseManager and the.phaseManager.phase == "playing" then
+				track("resource_ot", self.oid, self.description, self.currentPain, self.controller)
+			end
 		end)
 	end,
 	
-	gainPain = function (self, str)
+	gainPain = function (self, str, source_oid)
 		--print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
 		self:updatePain()
+		
+		-- dmg tracking
+		object_manager.send(source_oid, "inc", "resource_dmg", str)
 	end,
 	
 	showDamage = function (self, str)
-		str = math.floor(str * 10) / 10
-		if str >= 0 then
-			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
-		else
-			ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
-		end
+		self:showDamageWithOffset (str, 30)
 	end,	
 	
 	receiveBoth = function (self, message_name, ...)
@@ -86,7 +92,7 @@ Ressource = Tile:extend
 			--~ print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks, source_oid)
 			local oldDeaths = self.deaths
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						self:showDamage(str)
 					end
@@ -97,7 +103,7 @@ Ressource = Tile:extend
 			local oldDeaths = self.deaths			
 			--print("RESSOURCE HEAL_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						self:showDamage(-str)
 					end
@@ -112,21 +118,21 @@ Ressource = Tile:extend
 			local str, source_oid = ...
 			--~ print("RESSOURCE DAMANGE", str, source_oid)
 			self:controllerChanger(source_oid)
-			self:gainPain(str)
+			self:gainPain(str, source_oid)
 		elseif message_name == "heal" then
 			local str, source_oid = ...
 			--print("RESSOURCE HEAL", -str)
 			self:controllerChanger(source_oid)
-			self:gainPain(-str)
+			self:gainPain(-str, source_oid)
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--~ print("RESSOURCE DAMAGE_OVER_TIME", str, duration, ticks, source_oid)
 			local oldDeaths = self.deaths
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						self:controllerChanger(source_oid)
-						self:gainPain(str)
+						self:gainPain(str, source_oid)
 					end
 				end)
 			end
@@ -135,10 +141,10 @@ Ressource = Tile:extend
 			--print("RESSOURCE HEAL_OVER_TIME", str, duration, ticks)
 			local oldDeaths = self.deaths
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						self:controllerChanger(source_oid)
-						self:gainPain(-str)
+						self:gainPain(-str, source_oid)
 					end
 				end)
 			end	
@@ -172,10 +178,10 @@ Ressource = Tile:extend
 	end,
 	
 	giveXP = function(self)
-		if self.controller == "alpha" or self.controller == "beta" or self.controller == "gamma" or self.controller == "delta" then 
+		if self.controller then 
 			object_manager.visit(function(oid,obj) 
-				if obj.team == self.controller then
-					object_manager.send(oid, "xp", config.xpPerRessourceTick)
+				if obj.team and obj.team == self.controller then
+					object_manager.send(oid, "xp", config.xpPerRessourceTick, CHARACTER_XP_RESOURCE)
 				end
 			end)
 		end
@@ -200,5 +206,13 @@ Ressource = Tile:extend
 		self.t.width = 120	
 		the.ressources[self.description] = name or "none"
 		self:updateFogAlpha()
-	end,	
+	end,
+	
+	onDieBoth = function (self)
+		self.painBar:die()
+		self.painBar = nil
+		
+		self.t:die()
+		self.t = nil
+	end,
 }

@@ -98,10 +98,9 @@ Player = Character:extend
 --~ 			if the.gamepads[1].axes[5] > 0.2 then print("axes 5:  " .. the.gamepads[1].axes[5]) end		
 		--	if the.gamepads[1].axes[6] > 0.2 then print("axes 6:  " .. the.gamepads[1].axes[6]) end
 			
-			
-			
+	
 		elseif input.getMode() == input.MODE_MOUSE_KEYBOARD then
-		
+
 			local skill_keys = {
 				[1] = localconfig.skillOne,
 				[2] = localconfig.skillTwo,
@@ -113,14 +112,31 @@ Player = Character:extend
 				[8] = localconfig.skillEight,
 			}
 			
+			local skillNrTriggered = nil
+			-- which skill button was selected?
 			for k,v in pairs(skill_keys) do
-				if v == "l" or v == "r" then
-					if the.mouse:pressed(v) then shootSkillNr = k doShoot = true end
-				else
-					if not the.ignorePlayerCharacterInputs and the.keys:pressed(v) then shootSkillNr = k doShoot = true end
+				if the.keys:justPressed(v) and not the.ignorePlayerCharacterInputs then --and the.player.skills[k]:isPossibleToUse() then
+					skillNrTriggered = k
 				end
 			end
 
+			-- select a skill
+			for k,v in pairs(skill_keys) do
+				if v == "l" or v == "r" then
+					if the.mouse:pressed(v) and not the.ignorePlayerCharacterInputs and the.player.skills[k]:isPossibleToUse() then
+						the.player.selectedSkill = k
+						shootSkillNr = k 
+						doShoot = true
+					end	
+				else
+					if the.keys:pressed(v) and not the.ignorePlayerCharacterInputs and the.player.skills[k]:isPossibleToUse() then
+							the.player.selectedSkill = k
+							shootSkillNr = k 
+							doShoot = true
+					end
+				end
+			end
+			
 			if not the.ignorePlayerCharacterInputs then
 				if the.keys:pressed('left', 'a') then movex = -1 end
 				if the.keys:pressed('right', 'd') then movex = 1 end
@@ -155,7 +171,7 @@ Player = Character:extend
 			doShoot = doShoot, shootSkillNr = shootSkillNr, }
 	end,
 	
-	--~ onUpdate = function (self, elapsed)
+	--~ onUpdateLocal = function (self, elapsed)
 		--~ self.prototype.prototype.onUpdate(self, elapsed)
 		--~ print(self, self.prototype, self.parent, self.lala)
 		--~ print(json.encode({x = self.x, y = self.y}))

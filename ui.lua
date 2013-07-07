@@ -152,11 +152,19 @@ LevelUI = Fill:extend
 {
 	width = 1,
 	height = 20,
-	fill = {128,128,128,255},	
+	fill = {128,128,128,255},
 	border = {0,0,0,255},
+	level = 0,
+    
+    activated = false,
     
 	onUpdate = function (self)
 		self.y = love.graphics.getHeight() - self.height * 2 - 10
+		if self.activated then
+			self.fill = {255,255,0,255}
+		else
+			self.fill = {128,128,128,255}
+		end
 	end
 }
 
@@ -167,6 +175,14 @@ Cursor = Tile:extend
 	image = '/assets/graphics/cursor.png',
     
 	onUpdate = function (self)
+		--~ if the.player and the.player.skills and the.player.selectedSkill then
+			--~ if the.player.skills[the.player.selectedSkill]:isPossibleToUse() then
+				--~ self.image = '/assets/graphics/cursor.png'
+			--~ else
+				--~ self.image = '/assets/graphics/cursor_cant_cast.png'
+			--~ end
+		--~ end
+		
 		self.x = input.cursor.x - self.width / 2
 		self.y = input.cursor.y - self.height / 2
 		self.x, self.y = tools.ScreenPosToWorldPos(self.x, self.y)
@@ -253,7 +269,7 @@ NameLevel = Text:extend
 	
 	onUpdate = function (self)
 		self.text = self.name .. " (" .. self.level .. ")\n" .. "[" .. self.team .. "]"
-		--~ self.x = self.x - 20
+		self.x = self.x - 20
 		self.y = self.y - 30
 		--~ self:centerAround(self.x,self.y,"horizontal")
 	end,
@@ -293,7 +309,11 @@ CharDebuffDisplay = Text:extend
 	
 	onNew = function (self)
 		the.app.view.layers.ui:add(self)
-	end
+	end,
+	
+	onDie = function (self)
+		the.app.view.layers.ui:remove(self)
+	end,
 }
 
 UiGroup = Group:extend
@@ -314,19 +334,59 @@ TimerDisplay = Text:extend
 	x = 0,
 	y = 0, 
 	time = 0,
-	width = 200,
+	width = 300,
 	tint = {0.1,0.1,0.1},
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
-		local runningTime = network.time - the.app.view.game_start_time
-		self.time = config.roundTime - math.floor(runningTime)
-		local minutes = math.floor(self.time / 60)
-		local seconds = (self.time - minutes * 60)
-		if seconds >= 10 then 
-			self.text = minutes .. ":" .. seconds .. " remaining"
-		elseif seconds < 10 then
-			self.text = minutes .. ":0" .. seconds .. " remaining"
+		
+		if the.phaseManager then
+			self.text = the.phaseManager:getTimeText()
+		else
+			self.text = "???"
+		end
+	end
+}
+
+
+PlaytestTimerDisplay = Text:extend
+{
+	font = 20,
+	text = "",
+	x = 0,
+	y = 0, 
+	time = 0,
+	width = 300,
+	tint = {0.1,0.1,0.1},
+	
+	onUpdate = function (self)
+		self.x = (love.graphics.getWidth() - self.width) / 2
+		self.y = 50
+
+		local t = os.time()
+		if config.nextPlaytestAt and config.nextPlaytestAt > t then
+			self.visible = true
+			
+			local dt = config.nextPlaytestAt - t
+			local days = math.floor(dt / 60/60/24)
+			dt = dt - days * 60*60*24
+			local hours = math.floor(dt / 60/60)
+			dt = dt - hours * 60*60
+			local minutes = math.floor(dt / 60)
+			dt = dt - minutes * 60
+			local seconds = math.floor(dt)
+
+			local d = ""
+			
+			if days > 0 then d = days .. " days"
+			elseif hours > 0 then d = hours .. " hours"
+			elseif minutes > 0 then d = minutes .. " minutes"
+			elseif seconds > 0 then d = seconds .. " seconds"
+			else d = "" end
+
+			self.text = "Next official playtest at\n" .. os.date(nil, config.nextPlaytestAt) .. "\n" .. "in " .. d
+		else
+			self.visible = false
 		end
 	end
 }
@@ -344,8 +404,9 @@ XpTimerDisplay = Text:extend
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
 		self.y = 25		
-		local runningTime = network.time - the.app.view.game_start_time
-		self.time = config.roundTime - math.floor(runningTime)
+
+		self.time = the.phaseManager and math.floor(the.phaseManager.next_xp_reset_time - network.time) or 0
+
 		local minutes = math.floor(self.time / 60)
 		local seconds = (self.time - minutes * 60)
 		local xpMinutes = math.floor((self.time % config.xpCapTimer)/ 60)
@@ -355,6 +416,8 @@ XpTimerDisplay = Text:extend
 		elseif xpSeconds < 10 then
 			self.text = "Next XP cap reset in " .. xpMinutes .. ":0" .. xpSeconds
 		end
+		
+		self.visible = the.phaseManager and the.phaseManager.phase == "playing"
 	end
 }
 
@@ -390,12 +453,13 @@ ScrollingText = Text:extend
 	y = 0, 
 	width = 6,
 	tint = {1,1,1},
+	yOffset = 0,
 	
 	onNew = function (self)
 		self:mixin(FogOfWarObject)
 		self.x = self.x - self.width / 2
 		GameView.layers.ui:add(self)
-		self.y = self.y - math.random(-10,10)
+		self.y = self.y - self.yOffset - math.random(-10,10)
 	end,
 	
 	onUpdate = function (self)
@@ -554,7 +618,7 @@ ChatText = Group:extend
 		local py = self.y
 		
 		local l = list.process_values(self.entries)
-			:orderby(function(a,b) return a.time > b.time end)
+			:orderby(function(a,b) return a and b and a.time and b.time and a.time > b.time end)
 			:done()
 		
 		for k,v in pairs(l) do
@@ -570,6 +634,7 @@ ChatText = Group:extend
 
 
 function showChatText (from, text, time)
+	time = time or network.time
 	--~ print("CHAT FROM", from, text, time)
 	the.chatText:addLine(from, text, time)
 end

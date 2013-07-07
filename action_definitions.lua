@@ -5,25 +5,40 @@ local color_scythe = {128,128,128}
 local color_staff = {255,64,0}
 local color_robe = {0,0,255}
 local color_hide_armor = {0,255,64}
-local color_splint_mail = {255,255,0}
+local color_splint_mail = {128,0,255}
 
 action_definitions = {
+	-- -----------------------------------------------------------------------------------
+	noskill = {
+		name = "no skill",
+		description = "This is now skill.",
+		icon = nil,
+		sound = nil,
+		cast_time = 0,
+		timeout = 999,
+		energy = 999,
+		on_the_run = true,
+		cast_particle_color = color_bow,
+		
+		application = {
+		},	
+	},
 	-- -----------------------------------------------------------------------------------
 	bow_shot = {
 		name = "Shot",
 		description = "Shoot a projectile that damages one target.",
 		icon = nil,
 		sound = nil,
-		cast_time = .5,
-		timeout = 2,
-		energy = 10,
+		cast_time = 0,
+		timeout = 1.5,
+		energy = 6,
 		on_the_run =  true,
 		cast_particle_color = color_bow,
 		
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 800, speed = 400, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_shot.png"},
 			effects = {
-				{effect_type = "damage", str = 25},
+				{effect_type = "damage", str = 15},
 			},
 		},	
 	},
@@ -132,18 +147,18 @@ action_definitions = {
 		description = "Sweeping blow that hits several targets in front of you.",
 		icon = nil,
 		sound = nil,
-		cast_time = .5,
-		timeout = 2,
-		energy = 15,
+		cast_time = 0,
+		timeout = 1.5,
+		energy = 5,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
 		
 		application = {
 			target_selection = {target_selection_type = "cone", 
-				gfx_radius = 100, gfx = "assets/graphics/melee_radians/120_200.png",
-				range = 100, cone = 120, piercing_number = 6},
+				gfx_radius = 100, gfx = "assets/graphics/melee_radians/90_200.png",
+				range = 100, cone = 90, piercing_number = 6},
 			effects = {
-				{effect_type = "damageOnlyOthers", str = 20},
+				{effect_type = "damageOnlyOthers", str = 12},
 			},
 		},	
 	},	
@@ -155,7 +170,7 @@ action_definitions = {
 		sound = nil,
 		cast_time = 1,
 		timeout = 5,
-		energy = 25,
+		energy = 30,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
 		
@@ -163,7 +178,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "ae", 
 				range = 100, piercing_number = 12},
 			effects = {
-				{effect_type = "damageOnlyOthers", str = 40},
+				{effect_type = "damageOnlyOthers", str = 50},
 			},
 		},	
 	},	
@@ -176,11 +191,11 @@ action_definitions = {
 		cast_time = 1.5,
 		timeout = 12,
 		energy = 40,
-		on_the_run = false,
+		on_the_run = true,
 		cast_particle_color = color_scythe,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 400, speed = 1200, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_jump.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 1200, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_jump.png"},
 			effects = {
 				{effect_type = "moveSelfTo"},	
 			},
@@ -193,17 +208,18 @@ action_definitions = {
 		description = "Shoots a projectile that pulls one target to your location.",
 		icon = nil,
 		sound = nil,				
-		cast_time = 1,
+		cast_time = 1.5,
 		timeout = 9,
 		energy = 50,
-		on_the_run = false,
+		on_the_run = true,
 		cast_particle_color = color_scythe,		
 		
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 400, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_harpoon.png"},
 			effects = {
-				{effect_type = "damage", str = 35},
-				{effect_type = "stun", duration = 0.2},	
+				{effect_type = "damage", str = 25},
+				{effect_type = "stun", duration = 0.2},
+				{effect_type = "runspeed", duration = 3, str = config.walkspeed / 2},						
 				{effect_type = "moveToMe"},	
 			},
 		},	
@@ -222,8 +238,8 @@ action_definitions = {
 		
 		application = {
 			target_selection = {target_selection_type = "cone", 
-				gfx_radius = 100, gfx = "assets/graphics/melee_radians/120_200.png",
-				range = 100, cone = 120, piercing_number = 3},
+				gfx_radius = 100, gfx = "assets/graphics/melee_radians/90_200.png",
+				range = 100, cone = 90, piercing_number = 3},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 15},
 				{effect_type = "stunOnlyOthers", duration = 2},
@@ -252,6 +268,54 @@ action_definitions = {
 		},		
 	},	
 	-- -----------------------------------------------------------------------------------
+	staff_magic_bolt = {
+		name = "Magic Bolt",
+		description = "Shoot a small projectile that explodes on impact and damages a few targets in a small area.",
+		icon = nil,
+		sound = nil,
+		cast_time = 0,
+		timeout = 1.5,
+		energy = 4,
+		on_the_run =  true,
+		cast_particle_color = color_staff,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_magic_bolt.png"},
+			effects = {
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 75, piercing_number = 3, explosion_color = color_staff},
+					effects = {
+						{effect_type = "damage", str = 10},
+					},
+				}},	
+			},
+		},	
+	},	
+	-- -----------------------------------------------------------------------------------
+	staff_poison = {
+		name = "Poison",
+		description = "Shoot a projectile that slowly decreases one targets life.",
+		icon = nil,
+		sound = nil,				
+		cast_time = 1,
+		timeout = 5,
+		energy = 30,
+		on_the_run = false,
+		cast_particle_color = color_staff,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_poison.png"},
+			effects = {
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
+					effects = {
+						{effect_type = "damage_over_time", ticks = 3, duration = 15, str = 20}
+					},
+				}},	
+			},
+		},	
+	},	
+-- -----------------------------------------------------------------------------------	
 	staff_life_leech = {
 		name = "Life Leech",
 		description = "Shoot a projectile that drains one targets life while healing you.",
@@ -274,31 +338,6 @@ action_definitions = {
 				}},	
 			},
 		},
-	},	
-	-- -----------------------------------------------------------------------------------
-	staff_poison = {
-		name = "Poison",
-		description = "Shoot a projectile that slowly decreases one targets life.",
-		icon = nil,
-		sound = nil,				
-		cast_time = 1,
-		timeout = 5,
-		energy = 30,
-		on_the_run = false,
-		cast_particle_color = color_staff,		
-		
-		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_poison.png"},
-			effects = {
-				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
-					effects = {
-						{effect_type = "damage", str = 20},
-						{effect_type = "damage_over_time", ticks = 3, duration = 15, str = 15}
-					},
-				}},	
-			},
-		},	
 	},	
 	-- -----------------------------------------------------------------------------------
 	staff_fireball = {
@@ -390,7 +429,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
 					effects = {
-						{effect_type = "mezz", duration = 10},
+						{effect_type = "mezz", duration = 7},
 					},
 				}},
 			},
@@ -411,7 +450,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "heal", str = 75},
+				{effect_type = "heal", str = 60},
 			},
 		},
 	},
@@ -455,21 +494,22 @@ action_definitions = {
 		},		
 	},		
 	-- -----------------------------------------------------------------------------------
-	robe_hide = {
-		name = "Hide",
-		description = "Renders you invisible if you stand still.",
+	robe_fade = {
+		name = "Fade",
+		description = "Renders you invisible and invulnerable for a very short time.",
 		icon = nil,
 		sound = nil,				
-		cast_time = 3,
-		timeout = 60,
+		cast_time = .1,
+		timeout = 30,
 		energy = 30,
-		on_the_run = false,
+		on_the_run = true,
 		cast_particle_color = color_robe,		
 		
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "hide"},
+				{effect_type = "invul", duration = 3},			
+				{effect_type = "sneak", duration = 3, speedPenalty = 0.5},
 			},
 		},	
 	},		
@@ -546,7 +586,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "sneak", duration = 30, speedPenalty = 0.5},
+				{effect_type = "sneak", duration = 30, speedPenalty = 0.75},
 			},
 		},	
 	},	
@@ -604,7 +644,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "heal_over_time", ticks = 3, duration = 15, str = 25},
+				{effect_type = "heal_over_time", ticks = 3, duration = 15, str = 15},
 			},
 		},		
 	},		
@@ -645,7 +685,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_splint_mail},
 					effects = {
-						{effect_type = "transfer", eff = 1, ticks = 1, duration = 10, str = 75}
+						{effect_type = "transfer", eff = 1, ticks = 1, duration = 5, str = 100}
 					},
 				}},
 			},	
@@ -756,6 +796,7 @@ for k,v in pairs(action_definitions) do
 	if not v.icon then v.icon = "/assets/graphics/action_icons/" .. k ..".png" end
 	if not v.sound then v.sound = "/assets/audio/sfx/" .. k .. ".wav" end
 	if not love.filesystem.exists(v.sound) then v.sound = "/assets/audio/sfx/missing.wav" end
+	if not v.key then v.key = k end
 end		
 
 return action_definitions

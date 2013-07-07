@@ -80,13 +80,16 @@ Skill = Class:extend
 		Effect:new{r=r, g=g, b=b, duration=castTime, follow_oid=player.oid}
 		
 		if self.onUse then 
+			gameStatsInc("times_skill_used_" .. self.definition.key)
+			track("skill_used", self.definition.key)
 			-- call use after casttime timeout
 			the.app.view.timer:after(self.cast_time, function() 
 				-- finished casting	
+				--~ the.player.selectedSkill = 1 
 				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
 				if player.interrupted == false then			
 					--print("SKILL", self.nr, "REALLY USE")
-					playSound(self.definition.sound or '/assets/audio/missing.wav', 1, 'short')
+					playSound(self.definition.sound or '/assets/audio/missing.wav', audio.volume, 'short')
 					-- update view pos
 					if player.readInput then
 						local ipt = player:readInput()

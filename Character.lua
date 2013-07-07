@@ -2,20 +2,27 @@
 
 characterMap = {}
 
+CHARACTER_XP_OTHER = 0
+CHARACTER_XP_CREEPS = 1
+CHARACTER_XP_RESOURCE = 2
+CHARACTER_XP_COMBAT = 3
+
+globalOneTimeStatsSend = false
+
 Character = Animation:extend
 {
 	class = "Character",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
 		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", 
-		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths"},
+		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", "kills", },
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
 		"invul", "width", "height", "rotation", "dmgModified", "marked", "rooted", "snared", "mezzed", "stunned", "powerblocked",
 		"maxPainOverdrive", "weaponSet", "recentlyChangedWeapon", "weapon", "armor"},	
 		
-	sync_low = {"image", "level", "name", "team", "deaths"},
+	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths", "xp", "kills", },
 	
 	maxPain = config.maxPain, 
 	-- 1 = 100% health bar, 1.2 is 20% longer
@@ -37,7 +44,7 @@ Character = Animation:extend
 	team = "none",
 	rooted = false,
 	stunned = false,
-	dmgModified = 100,
+	dmgModified = config.dmgUnmodified,
 	invul = false,
 	mezzed = false,
 	snared = false,
@@ -45,6 +52,14 @@ Character = Animation:extend
 	marked = false,
 	interrupted = false,
 	deaths = 0,
+	kills_player = 0,
+	xp_gained_from_creeps = 0,
+	xp_gained_from_resource = 0,
+	xp_gained_from_combat = 0,
+	barrier_dmg = 0,
+	resource_dmg = 0,
+	selectedSkill = 1,
+	selfTargetingSkill = false,
 	weaponSet = "first",
 	lastChangedWeapons = 0,
 	oldTimers = {},
@@ -61,12 +76,12 @@ Character = Animation:extend
 			
 	-- list of Skill
 	skills = localconfig.skills or {
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
-		"bow_shot",
+		"noskill",
+		"noskill",
+		"noskill",
+		"noskill",
+		"noskill",
+		"noskill",
 	},
 	
 
@@ -77,7 +92,7 @@ Character = Animation:extend
 	pain_bar_size = 52,
 	
 	width = 26,
-	height = 26,
+	height = 46,
 	--~ image = '/assets/graphics/player_characters/robe_bow.png',
 	image = nil,--'/assets/graphics/player_collision.png',
 
@@ -109,14 +124,17 @@ Character = Animation:extend
 	end,
 	
 	onNew = function (self)
+		--~ print(self.oid, self.name, debug.traceback())
+		
 		self:mixin(GameObject)
+		self:mixin(GameObjectCommons)
 		self:mixin(FogOfWarObject)
 		
 		the.app.view.layers.characters:add(self)
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
 		-- fill up skill bar with missing skills
 		for i = 1,8 do 
-			if not self.skills[i] then self.skills[i] = "bow_shot" end
+			if not self.skills[i] then self.skills[i] = "noskill" end
 		end
 		
 		local skill_names = {
@@ -132,6 +150,7 @@ Character = Animation:extend
 			scythe_harpoon = true,
 			scythe_stun = true,
 			scythe_gank = true,
+			staff_magic_bolt = true,
 			staff_life_leech = true,
 			staff_poison = true,
 			staff_fireball = true,
@@ -141,7 +160,7 @@ Character = Animation:extend
 			robe_bandage = true,
 			robe_shrink = true,
 			robe_sonic_boom = true,
-			robe_hide = true,
+			robe_fade = true,
 			robe_quake = true,
 			robe_gust = true,
 			hide_armor_sprint = true,
@@ -161,7 +180,7 @@ Character = Animation:extend
 		-- overwrite invalid skills
 		for k,v in pairs(self.skills) do
 			if not skill_names[v] then
-				self.skills[k] = "bow_shot"
+				self.skills[k] = "noskill"
 			end
 		end
 
@@ -181,7 +200,7 @@ Character = Animation:extend
 			x = self.x, y = self.y, 
 			level = self.level, name = self.name,
 			weapon = self.weapon, armor = self.armor, team = self.team,
-			width = self.pain_bar_size,
+			width = self.pain_bar_size * 2,
 		}	
 		
 		self.charDebuffDisplay = CharDebuffDisplay:new{
@@ -244,10 +263,10 @@ Character = Animation:extend
 			end,
 			
 			onUpdate = function(self)
-				self.x = goSelf.x
+				self.x = goSelf.x - 3
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
-				self:play(goSelf.anim_name)
+				if goSelf.anim_name then self:play(goSelf.anim_name) end
 				self.alpha = goSelf.alpha
 			end,
 		}
@@ -306,11 +325,69 @@ Character = Animation:extend
 			--~ self.anim_freeze = index
 		--~ end
 	
+		self:refreshLevelBar()
+		
+		-- update zones
+		self:updateAndSendZones()
+		
+		self:every(1, function()
+			self:updateAndSendZones()
+		end)
+		
+		if self:isLocal() and globalOneTimeStatsSend then
+			globalOneTimeStatsSend = true
+			 
+			-- send selected skills
+			for k,v in pairs(self.skills) do
+				local s = self.skills[k].definition
+				track("skill_taken", self.name, s.key)
+			end
+			
+			-- send config
+			track("config", self.name, self.team, localconfig.fullscreen, localconfig.screenWidth, localconfig.screenHeight,
+				localconfig.max_chat_lines, localconfig.audioVolume, 
+				localconfig.skillOne,
+				localconfig.skillTwo,
+				localconfig.skillThree,
+				localconfig.skillFour,
+				localconfig.skillFive,
+				localconfig.skillSix,
+				localconfig.skillSeven,
+				localconfig.skillEight,
+				localconfig.targetSelf,
+				localconfig.showHighscore,
+				localconfig.toggleFullscreen,
+				localconfig.quitGame
+			)
+		end
+		
+		-- over time tracking
+		self:every(config.trackingOverTimeTimeout, function() 
+			if self:isLocal() and the.phaseManager and the.phaseManager.phase == "playing" then
+				track("player_ot", self.oid, self.name, self.level, self.xp, self.deaths, self.kills_player, 
+					self.xp_gained_from_combat, self.xp_gained_from_creeps, self.xp_gained_from_resource, 
+					self.barrier_dmg, self.resource_dmg
+					)
+			end
+		end)
+	end,
+	
+	updateAndSendZones = function (self)
+		self:calculateZones()
+		if the.player and the.player.oid == self.oid then
+			-- update zone on server
+			--~ print("SEND ZONE")
+			--~ utils.vardump(self.zones)
+			local msg = { channel = "server", cmd = "zones", zones = self.zones, }
+			network.send (msg, true)
+		end
 	end,
 	
 	onDieBoth = function (self)
 		the.app.view.layers.characters:remove(self)
 		self.painBar:die()
+		if self.reminder then self.reminder:die() end
+		if self.markedSprite then self.markedSprite:die() end
 	end,
 	
 	freezeCasting = function (self)
@@ -337,13 +414,13 @@ Character = Animation:extend
 		end
 	end,
 	
-	gainPain = function (self, str)
+	gainPain = function (self, str, source_oid)
 		--print(self.oid, "gain pain", str)
 		if self.invul and str >= 0 then 
 			-- do nothing
 		else
 			self.currentPain = self.currentPain + str
-			self:updatePain()
+			self:updatePain(source_oid)
 		end
 	end,
 	
@@ -367,11 +444,25 @@ Character = Animation:extend
 		end
 	end,
 	
-	updatePain = function (self)
+	updatePain = function (self, source_oid)
 	--print("Player ", self.oid, " is incapacitated:", self.incapacitated)
 		if self.currentPain >= self.maxPain then 
 			self:setIncapacitation(true)
 			self.deaths = self.deaths + 1
+			gameStatsInc("times_died")
+			
+			-- kills tracking
+			local killer = object_manager.get(source_oid)
+			if killer then
+				if killer.class == "Character" then
+					object_manager.send(source_oid, "inc", "kills_player", 1)
+					track("killed_by_player", self.oid, self.name, self.team, killer.oid, killer.name, killer.team)
+				else
+					track("killed_by_other", self.oid, self.name, self.team, killer.oid, killer.class)
+				end
+			else
+				track("killed_by_unknown", self.oid, self.name, self.team)
+			end
 		end
 		
 		self.currentPain = utils.clamp(self.currentPain, 0, self.maxPain)
@@ -460,7 +551,7 @@ Character = Animation:extend
 		self:setIncapacitation(false)
 		self.rooted = false
 		self.stunned = false
-		self.dmgModified = 100
+		self.dmgModified = config.dmgUnmodified
 		self.invul = false
 		self.mezzed = false
 		self.snared = false
@@ -474,20 +565,24 @@ Character = Animation:extend
 		self:resetCooldowns()
 	end,	
 	
-	gainXP = function (self, str)
-		--print(self.oid, "gain xp", str)
+	gainXP = function (self, str, xpType)
+		xpType = xpType or CHARACTER_XP_OTHER
+		--~ print(self.oid, "gain xp", str, xpType)
 		if self.tempMaxxed == false then
 			self.xp = self.xp + str
+			
+			if xpType == CHARACTER_XP_CREEPS then self.xp_gained_from_creeps = self.xp_gained_from_creeps + str end
+			if xpType == CHARACTER_XP_RESOURCE then self.xp_gained_from_resource = self.xp_gained_from_resource + str end
+			if xpType == CHARACTER_XP_COMBAT then self.xp_gained_from_combat = self.xp_gained_from_combat + str end
 		end
-		--self:updatePain()
 		--print(self.xp)
 		if self.tempMaxxed == false and self.xp >= 1000 then 
 			self:updateLevel()							
 		end		
 		if math.floor(str) > 0 then 
-			str = math.floor(str * 10) / 10
+			str = tools.floor1(str)
 			if not self.hidden or self == the.player then
-				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,1,0}}
+				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,1,0}, yOffset = 50}
 			end
 		end	
 	end,	
@@ -501,6 +596,20 @@ Character = Animation:extend
 		end
 	end,
 	
+	refreshLevelBar = function (self)
+		--~ if the.player then print("LALA", self.level, self.oid, the.player.level, the.player.oid, the.player.class, the.player == self) end
+		
+		if the.levelUI then
+			for k,v in pairs(the.levelUI) do
+				if the.player and the.player.class == "Character" and the.player.oid == self.oid then
+					v.activated = self.level >= v.level
+				else
+					v.activated = false
+				end
+			end
+		end
+	end,
+	
 	updateLevel = function (self, elapsed)
 		self.level = self.level +1
 		self.nameLevel.level = self.level
@@ -511,24 +620,15 @@ Character = Animation:extend
 		local particleTime = 3
 		Effect:new{r=255, g=255, b=0, duration=particleTime, follow_oid=self.oid}
 		--	print("update reveived! character level = ",  self.level)
-		for i = 0, config.levelCap - 1 do
-			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / 10
-			if self.level == i then  
-				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * (i - 1), fill = {255,255,0,255}} 
-				the.hud:add(the.levelUI)			
-			end							
-		end
+
+		self:refreshLevelBar()
+		
 		self.maxPain = config.maxPain *	(1 + config.strIncreaseFactor * self.level) 
 	end,
 	
 	showDamage = function (self, str)
-		str = math.floor(str * 10) / 10
 		if not self.hidden or self == the.player then
-			if str >= 0 then
-				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {1,0,0}}
-			else
-				ScrollingText:new{x = self.x + self.width / 2, y = self.y, text = str, tint = {0,0,1}}
-			end
+			self:showDamageWithOffset (str, 50)
 		end
 	end,
 	
@@ -552,7 +652,7 @@ Character = Animation:extend
 			local str, duration, ticks, source_oid = ...
 			local oldDeaths = self.deaths
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						if not self.incapacitated and not self.invul then  
 							if self.dmgModified then
@@ -568,7 +668,7 @@ Character = Animation:extend
 			local str, duration, ticks, source_oid = ...
 			--print("CHARACTER HEAL_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if not self.incapacitated then self:showDamage(-str) end
 				end)
 			end	
@@ -576,15 +676,15 @@ Character = Animation:extend
 			local str, duration, source_oid = ...
 			self.charSprite.scale = self.charSprite.scale / 100 * str
 			self.markedSprite.scale = self.charSprite.scale / 100 * str
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.markedSprite.scale = 1
 				self.charSprite.scale = 1
 			end)
 		elseif message_name == "mark" then
 			local duration, source_oid = ...
-			object_manager.send(source_oid, "xp", duration / 8 * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration / 8 * config.crowdControlXP, CHARACTER_XP_COMBAT)
 				self.marked = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.marked = false
 			end)						
 		end	
@@ -595,24 +695,29 @@ Character = Animation:extend
 		if message_name == "heal" then
 			local str, source_oid = ...
 		--	print("HEAL", str)
-			self:gainPain(-str)
-			object_manager.send(source_oid, "xp", str * config.combatHealXP)
+			self:gainPain(-str, source_oid)
+			object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT)
 			if self.hidden then self.hidden = false self.speedOverride = 0 end			
+		elseif message_name == "inc" then
+			local key, value = ...
+			if self[key] then self[key] = self[key] + value end
+		elseif message_name == "reset_xp" then
+			self:resetXP()
 		elseif message_name == "stamHeal" then
 			local str, source_oid = ...
 		--	print("STAMHEAL", str)
 			self:gainFatigue(-str)
-			object_manager.send(source_oid, "xp", str * config.combatHealXP)	
+			object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT)	
 		elseif message_name == "damage" then
 			local str, source_oid = ...
 		--	print("DAMANGE", str)
 			if not self.incapacitated then 
 				if self.dmgModified then
-					self:gainPain(str / 100 * self.dmgModified) 
+					self:gainPain(str / 100 * self.dmgModified, source_oid) 
 				else
-					self:gainPain(str)
+					self:gainPain(str, source_oid)
 				end
-				if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
+				if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT) end
 			end
 			if self.hidden then self.hidden = false self.speedOverride = 0 end	
 			if self.mezzed then
@@ -636,7 +741,7 @@ Character = Animation:extend
 			--~ utils.vardump(targetOids)
 			local strPerTargetPerTick = str / #targetOids
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if not self.incapacitated then  
 						for k,v in pairs(targetOids) do
 							-- only send messages if none of the pair died
@@ -666,15 +771,15 @@ Character = Animation:extend
 			local str, duration, ticks, source_oid = ...
 			local oldDeaths = self.deaths
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if self.deaths == oldDeaths then
 						if not self.incapacitated and not self.invul then  
 							if self.dmgModified then
-								self:gainPain(str / 100 * self.dmgModified)  
+								self:gainPain(str / 100 * self.dmgModified, source_oid)  
 							else
-								self:gainPain(str)
+								self:gainPain(str, source_oid)
 							end
-							if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP) end
+							if source_oid ~= self.oid then object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT) end
 						end
 						if self.mezzed then
 							self:unfreezeMovement()
@@ -692,10 +797,10 @@ Character = Animation:extend
 		elseif message_name == "heal_over_time" then
 			local str, duration, ticks, source_oid = ...
 			for i=0,ticks do
-				the.app.view.timer:after(duration / ticks * i, function()
+				self:after(duration / ticks * i, function()
 					if not self.incapacitated then  
-						self:gainPain(-str)
-						object_manager.send(source_oid, "xp", str * config.combatHealXP)
+						self:gainPain(-str, source_oid)
+						object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT)
 					end
 				end)
 			end	
@@ -707,8 +812,8 @@ Character = Animation:extend
 			self:freezeCasting()
 			self.stunned = true
 			self.interrupted = true
-			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
-			the.app.view.timer:after(duration, function()
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT) end
+			self:after(duration, function()
 				self:unfreezeMovement()
 				self:unfreezeCasting()
 				self.stunned = false
@@ -720,8 +825,8 @@ Character = Animation:extend
 			self:freezeCasting()
 			self.mezzed = true
 			self.interrupted = true			
-			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
-			the.app.view.timer:after(duration, function()
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT) end
+			self:after(duration, function()
 				self:unfreezeMovement()
 				self:unfreezeCasting()
 				self.mezzed = false
@@ -748,23 +853,23 @@ Character = Animation:extend
 			self:freezeCasting()
 			self.powerblocked = true
 			self.interrupted = true			
-			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP) end
-			the.app.view.timer:after(duration, function()
+			if source_oid ~= self.oid then object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT) end
+			self:after(duration, function()
 				self:unfreezeCasting()
 				self.powerblocked = false
 			end)									
 		elseif message_name == "runspeed" then
 			local str, duration, source_oid = ...
 			--print("SPEED", str, duration)
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self.speedOverride = str
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.speedOverride = 0
 			end)
 		elseif message_name == "xp" then
-			local str = ...
+			local str, xpType = ...
 			--print("XP", str)
-			self:gainXP(str)
+			self:gainXP(str, xpType)
 		elseif message_name == "moveSelfTo" then
 			local x,y = ...
 			self.x = x
@@ -777,24 +882,24 @@ Character = Animation:extend
 			local duration, speedPenalty, source_oid = ...
 			self.hidden = true
 			self.speedOverride = config.walkspeed * speedPenalty
-			the.app.view.timer:after(duration, function() self.hidden = false self.speedOverride = 0 end)
+			self:after(duration, function() self.hidden = false self.speedOverride = 0 end)
 		elseif message_name == "hide" then
 			local duration, speedPenalty, source_oid = ...
 			self.hidden = true			
 		elseif message_name == "dmgModifier" then
 			local str, duration, source_oid = ...
 			--print("dmgModifier", str, duration)
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self.dmgModified = str
-			the.app.view.timer:after(duration, function() 
-					self.dmgModified = 100
+			self:after(duration, function() 
+					self.dmgModified = config.dmgUnmodified
 			end)
 		elseif message_name == "root" then
 			local duration, source_oid = ...
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self:freezeMovement()
 			self.rooted = true
-			the.app.view.timer:after(duration, function() 
+			self:after(duration, function() 
 				self:unfreezeMovement()
 				self.rooted = false
 			end)		
@@ -812,27 +917,27 @@ Character = Animation:extend
 			end		
 		elseif message_name == "buff_max_pain" then
 			local str, duration, source_oid = ...
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self.maxPainOverdrive = 1 + str / self.maxPain
 			self.maxPain = self.maxPain + str
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				if self.currentPain >= self.maxPain - str then self:setIncapacitation(true) end
 				self.maxPain = self.maxPain - str
 				self.maxPainOverdrive = 1
 			end)	
 		elseif message_name == "invul" then
 			local duration, source_oid = ...
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self.invul = true
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.invul = false
 			end)	
 		elseif message_name == "changeSize" then
 			local str, duration, source_oid = ...
-			object_manager.send(source_oid, "xp", duration * config.crowdControlXP)
+			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self.width = self.width / 100 * str
 			self.height = self.height / 100 * str
-			the.app.view.timer:after(duration, function()
+			self:after(duration, function()
 				self.width = self.width / str * 100 
 				self.height = self.height / str * 100
 			end)	
@@ -864,7 +969,12 @@ Character = Animation:extend
 				regenerating = false
 			end
 		end
-		if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed end
+		if self.incapacitated then
+			if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed / 2 end
+		else
+			if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed end
+		end	
+			
 		if self.currentPain < 0 then self.currentPain = 0 end
 		if self.currentPain > self.maxPain then self.currentPain = self.maxPain end
 		
@@ -964,13 +1074,13 @@ Character = Animation:extend
 		end
 		
 		self.nameLevel.x = self.x - 5
-		self.nameLevel.y = self.y - 28
+		self.nameLevel.y = self.y - 8
 		self.nameLevel.level = self.level
 		self.nameLevel.team = self.team
 		self.nameLevel.alpha = self.alpha
 		
 		self.charDebuffDisplay.x = self.x - 5
-		self.charDebuffDisplay.y = self.y - 28
+		self.charDebuffDisplay.y = self.y - 8
 		self.charDebuffDisplay.alpha = self.alpha
 		
 		if self.rooted then self.charDebuffDisplay.rooted = "rooted" else self.charDebuffDisplay.rooted = "" end
@@ -978,7 +1088,7 @@ Character = Animation:extend
 		if self.mezzed then self.charDebuffDisplay.mezzed = "mezzed" else self.charDebuffDisplay.mezzed = "" end	
 		if self.snared then self.charDebuffDisplay.snared = "snared" else self.charDebuffDisplay.snared = "" end			
 		if self.powerblocked then self.charDebuffDisplay.powerblocked = "pb'ed" else self.charDebuffDisplay.powerblocked = "" end	
-		if self.dmgModified == 125 then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
+		if self.dmgModified > config.dmgUnmodified then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
 		if self.invul then self.charDebuffDisplay.invul = "invul" else self.charDebuffDisplay.invul = "" end			
 		
 		if self.hidden then
@@ -1014,13 +1124,13 @@ Character = Animation:extend
 		end 
 		
 		-- hide pain bar when not in combat and at full health
-		if not self.isInCombat and self.currentPain == 0 then
-			self.painBar.visible = false
-			self.painBar.bar.visible = false
-			self.painBar.background.visible = false	
-			self.nameLevel.visible = false
-			self.charDebuffDisplay.visible = false	
-		end
+		--~ if not self.isInCombat and self.currentPain == 0 then
+			--~ self.painBar.visible = false
+			--~ self.painBar.bar.visible = false
+			--~ self.painBar.background.visible = false	
+			--~ self.nameLevel.visible = false
+			--~ self.charDebuffDisplay.visible = false	
+		--~ end
 		
 		-- local hidden image
 		if self.hidden and self == the.player then
@@ -1043,10 +1153,12 @@ Character = Animation:extend
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
+		self:refreshLevelBar()
+		
 		-- move back into map if outside
 		local px,py = self.x+self.width/2, self.y+self.height/2
-		if px < 0 or px > 3200 or py < 0 or py > 3200 then
-			local dx,dy = vector.fromToWithLen(px,py,3200/2,3200/2,200)
+		if px < 0 or px > config.map_width or py < 0 or py > config.map_height then
+			local dx,dy = vector.fromToWithLen(px,py,config.map_width/2,config.map_height/2,200)
 			self.x, self.y = self.x+dx,self.y+dy
 		end
 	
@@ -1056,27 +1168,17 @@ Character = Animation:extend
 		
 		self:applyMovement(elapsed, ipt)
 		
-		-- TODO hack
-		if self.armor == "robe" and not the.ignorePlayerCharacterInputs then
-			if the.keys:justPressed ("w") then self.hidden = false end	
-			if the.keys:justPressed ("a") then self.hidden = false end	
-			if the.keys:justPressed ("s") then self.hidden = false end	
-			if the.keys:justPressed ("d") then self.hidden = false end	
-			if the.keys:justPressed ("up") then self.hidden = false end	
-			if the.keys:justPressed ("down") then self.hidden = false end	
-			if the.keys:justPressed ("left") then self.hidden = false end	
-			if the.keys:justPressed ("right") then self.hidden = false end	
-		end
-		
-		local done = {}
-		for i = 1, 10 do 
-			local remainingTime = (the.app.view.game_start_time + config.roundTime) - network.time
-			--~ print(math.floor(love.timer.getTime()), config.xpCapTimer, i, math.floor(remainingTime))
-			if (math.floor(remainingTime) == config.xpCapTimer * i) and done[i] == nil then
-				self:resetXP()
-				done[i] = true
-			end
-		end
+		--~ -- TODO hack
+		--~ if self.armor == "robe" and not the.ignorePlayerCharacterInputs then
+			--~ if the.keys:justPressed ("w") then self.hidden = false end	
+			--~ if the.keys:justPressed ("a") then self.hidden = false end	
+			--~ if the.keys:justPressed ("s") then self.hidden = false end	
+			--~ if the.keys:justPressed ("d") then self.hidden = false end	
+			--~ if the.keys:justPressed ("up") then self.hidden = false end	
+			--~ if the.keys:justPressed ("down") then self.hidden = false end	
+			--~ if the.keys:justPressed ("left") then self.hidden = false end	
+			--~ if the.keys:justPressed ("right") then self.hidden = false end	
+		--~ end
 		
 		if self.speedOverride > 1 and self.speedOverride < config.walkspeed then 
 			self.snared = true 

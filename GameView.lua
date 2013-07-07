@@ -1,8 +1,16 @@
 -- GameView
-
+NetworkSyncedObjects = {
+	TargetDummy = true,
+	Npc = true,
+	Barrier = true,
+	Ressource = true,
+}
+		
+		
 GameView = View:extend
 {
 	layers = {
+		management = Group:new(),
 		ground = Group:new(),
 		particles = Group:new(),
 		characters = Group:new(),
@@ -14,9 +22,9 @@ GameView = View:extend
 	
 	game_start_time = 0,
 	
-	on = false,
+	fogEnabled = nil,
 
-	loadMap = function (self, file, objectNamesToIgnore)
+	loadMap = function (self, file, filter)
 		local ok, data = pcall(loadstring(Cached:text(file)))
 
 		if ok then
@@ -42,7 +50,7 @@ GameView = View:extend
 
 						local spr
 						
-						if not objectNamesToIgnore or not objectNamesToIgnore[obj.name]  then
+						if not filter or filter(obj) then
 							
 							if obj.name and rawget(_G, obj.name) then
 								obj.properties.x = obj.x
@@ -85,33 +93,20 @@ GameView = View:extend
 		self:loadLayers(mapFile, true, {objects = true, })
 		
 		local is_server = network.is_first and network.connected_client_count == 1
-		print("XXXXXXXXX", network.is_first, network.connected_client_count)
-		
-		local networkSyncedObjects = {
-			TargetDummy = true,
-			Npc = true,
-			Barrier = true,
-			Ressource = true,
-		}
-		self:loadMap(mapFile, not is_server and networkSyncedObjects or nil)
+		print("startup", network.is_first, network.connected_client_count)
+
+		self:loadMap(mapFile, function (o) return not (o.name and NetworkSyncedObjects[o.name]) end)
 		
 		-- first client -> setup "new" world
 		if is_server then
 			PhaseManager:new{}
-			self.game_start_time = network.time
-			network.set("game", {
-				start_time = self.game_start_time
-			})
-		else
-			network.get("game", function(data)
-				self.game_start_time = data and data.start_time or 0
-			end)
 		end
 		
 		self.collision.visible = false
 		self.collision.static = true
 		
 		-- specify render order
+		self:add(self.layers.management)
 		self:add(self.layers.ground)
 		self:add(self.layers.particles)
 		self:add(self.layers.characters)
@@ -120,19 +115,15 @@ GameView = View:extend
 		self:add(self.layers.ui)
 		self:add(self.layers.debug)
 		
-		if localconfig.spectator then
-			the.player = Ghost:new{}
-		else
-			-- setup player
-			the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, 
-				name = localconfig.playerName, 
-				armor = localconfig.armor, 
-				weapon = localconfig.weapon,
-				team = localconfig.team,
-			}
-		end
+		-- setup player
+		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, 
+			name = localconfig.playerName, 
+			armor = localconfig.armor, 
+			weapon = localconfig.weapon,
+			team = localconfig.team,
+		}
 		
-    -- place ontop
+		-- place ontop
 		self:remove(self.trees)
 		self:remove(self.buildings)
 		self:remove(self.vegetation)
@@ -151,6 +142,8 @@ GameView = View:extend
 		
 		the.focusSprite = FocusSprite:new{ x = 0, y = 0 }
 		self:add(the.focusSprite)
+		
+		the.arrow = Arrow:new{ x = 0, y = 0 }
 		
 		if the.player and the.player.class ~= "Ghost" then
 			self.focus = the.focusSprite
@@ -172,6 +165,9 @@ GameView = View:extend
 		
 		the.xpTimerDisplay = XpTimerDisplay:new{ x = 0, y = 0 }
 		the.hud:add(the.xpTimerDisplay)	
+		
+		the.playtestTimerDisplay = PlaytestTimerDisplay:new{ x = 0, y = 0 }
+		the.hud:add(the.playtestTimerDisplay)	
 		
 		the.weaponChangeTimerDisplay = WeaponChangeTimerDisplay:new{ x = 0, y = 0 }
 		the.hud:add(the.weaponChangeTimerDisplay)	
@@ -218,17 +214,15 @@ GameView = View:extend
 		the.experienceUI = ExperienceUI:new{}
 		the.hud:add(the.experienceUI)	
 
+		the.levelUI = {}
+
 		for i = 0, config.levelCap - 1 do
 			local width = (love.graphics.getWidth() / 2 - the.controlUI.width / 2) / config.levelCap
-			if i >= the.player.level then 
-				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i} 
-				the.hud:add(the.levelUI)	
-			else
-				the.levelUI = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i, fill = {255,255,0,255}} 
-				the.hud:add(the.levelUI)			
-			end							
+			local ui = LevelUI:new{width = width, x = (love.graphics.getWidth() + the.controlUI.width) / 2 + width * i} 
+			ui.level = i + 1
+			the.hud:add(ui)	
+			table.insert(the.levelUI, ui)
 		end
-		
 		
 		audio.init()
 	
@@ -270,11 +264,27 @@ GameView = View:extend
 		})
 	
 		if config.show_fog_of_war then	
-			self:fogOn()
+			self:setupFog()
 		end
 
 		self:setupNetworkHandler()
 		
+		-- auth
+		network.send_request({channel = "server", cmd = "auth", 
+			name = localconfig.playerName, pass = localconfig.accountPassword, }, function(fin, result)			
+		end)
+  
+    -- set admin flag, totally not tamper proved, just prevent accidential admin commands
+    network.send_request({channel = "server", cmd = "is_admin", password = localconfig.adminPassword}, function(fin, result)
+      network.is_admin = result.is_admin
+      print("is admin", network.is_admin)
+    end)
+  
+    -- send revision to server
+    local revision = storage.load_content("revision.txt")
+    print("REV", revision)
+    network.send({channel = "server", cmd = "revision", rev = revision})
+
 		local chatInfo = Text:new{
 			x = 5, y = love.graphics.getHeight() - 90, width = 500, tint = {0,0,0}, 
 			text = "Press enter to chat",
@@ -290,9 +300,11 @@ GameView = View:extend
 		the.frameChatInput:SetFocus(false)
 		the.frameChatInput.OnEnter = function (self, text)
 			if text:len() > 0 then
-				--~ print("CHAT", self.visible, text)
-				network.send({channel = "chat", cmd = "text", from = localconfig.playerName, text = text, time = network.time})
-				showChatText(localconfig.playerName, text, network.time)
+				if not runAsLocalChatCommand(text) then
+					--~ print("CHAT", self.visible, text)
+					network.send({channel = "chat", cmd = "text", from = localconfig.playerName, text = text, time = network.time})
+					showChatText(localconfig.playerName, text, network.time)
+				end
 			end
 			the.app.view.timer:after(0.1, function() 
 				self:SetVisible(false)
@@ -303,16 +315,26 @@ GameView = View:extend
 			end)
 		end
 
+		switchToGhost()
     end,
     
-    fogOn = function(self)
-		if self.on == false then
+    setFogEnabled = function (self, enabled)
+		if self.fogEnabled ~= enabled then
+			self.fogEnabled = enabled
+			
 			for _,v in pairs(self.covers) do
-				self.layers.ui:add(v)
+				v.visible = enabled
 			end
-			self.on = true
+			
+			self.fogEnabled = enabled
 		end
 	end,
+	
+	setupFog = function(self)
+		for _,v in pairs(self.covers) do
+			self.layers.ui:add(v)
+		end
+    end,
 
     onUpdate = function (self, elapsed)
 		-- handle chat
@@ -357,8 +379,10 @@ GameView = View:extend
 		profile.start("update.projectile")
 		for projectile,v in pairs(the.projectiles) do
 			self.landscape:subcollide(projectile)
-			self.collision:collide(projectile)
-			self.layers.characters:collide(projectile)
+			if projectile.image ~= "/assets/graphics/action_projectiles/scythe_jump.png" then
+				self.collision:collide(projectile)
+				self.layers.characters:collide(projectile)
+			end
 		end
 		profile.stop()
 		
@@ -377,8 +401,10 @@ GameView = View:extend
 	resyncAllLocalObjects = function (self)
 		local s,c = 0,0
 		object_manager.visit(function(oid,o)
-			if o.sendResync then o:sendResync() s = s + 1 end
-			if o.netCreate then o:netCreate() c = c + 1 end
+			if o:isLocal() then
+				if o.sendResync then o:sendResync() s = s + 1 end
+				if o.netCreate then o:netCreate() c = c + 1 end
+			end
 		end)
 		print("RESYNC", "sync", s, "create", c)
 	end,
@@ -461,7 +487,7 @@ GameView = View:extend
 }
 
 
-function switchBetweenGhostAndPlayer()
+function switchToPlayer()
 	if the.player then
 		if the.player.class == "Ghost" then
 			the.player:die()
@@ -474,10 +500,54 @@ function switchBetweenGhostAndPlayer()
 			-- set spawn position
 			the.player.x = the.spawnpoint.x
 			the.player.y = the.spawnpoint.y
-		else
-			the.player:die()
-			the.player.deaths = the.player.deaths + 1
-			the.player = Ghost:new{}
+			the.app.view:setFogEnabled(true)
 		end
 	end
+end
+
+function switchToGhost()
+	if the.player then the.player:die() end
+	the.player.deaths = (the.player.deaths or 0) + 1
+	the.player = Ghost:new{}
+	the.player.x = the.spawnpoint.x
+	the.player.y = the.spawnpoint.y
+	the.app.view:setFogEnabled(false)
+end
+
+function switchBetweenGhostAndPlayer()
+	if the.player then
+		if the.player.class == "Ghost" then
+			switchToPlayer()			
+		else
+			switchToGhost()
+		end
+	end
+end
+
+
+function runAsLocalChatCommand(text)
+	if text == "/exit" or text == "/quit" then
+		quitClient()
+		
+		return true
+  elseif text == "/help" then
+        showChatText("LOCAL", "/exit - closes the game")
+        showChatText("LOCAL", "/quit - closes the game")
+        showChatText("LOCAL", "/list - shows how is online")
+        showChatText("LOCAL", "/revs - shows version of the connected clients")
+      return true
+  elseif text == "/revs" then
+    network.send ({ channel = "server", cmd = "list_revisions" })
+    return true
+	elseif text == "/list" then
+		object_manager.visit(function(oid,o)
+			if o.class == "Character" then
+				showChatText("LOCAL", (o.name or "?") .. " [" .. (o.team or "?") .. "]")
+			end
+		end)
+		
+		return true
+	end
+	
+	return false
 end

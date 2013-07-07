@@ -4,6 +4,8 @@ localconfig.weaponSkills = {}
 localconfig.secondWeaponSkills = {}
 localconfig.armorSkills = {}
 localconfig.spectator = false
+localconfig.adminPassword = "lala"
+localconfig.is_bot = false
 
 -- ### Step 1: Set up your screen resolution. ###
 localconfig.fullscreen = false -- Set this to "true" for fullscreen.
@@ -12,6 +14,7 @@ localconfig.screenHeight = 600 -- Choose your screen height in pixels.
 
 -- ### Step 2: Set your player name and join one of the four teams. ###
 localconfig.playerName = "changeme" -- Just type your nickname in between the "".
+localconfig.accountPassword = "pass" -- Should you have a  pasword: enter it here. 
 localconfig.team = "pick_one" -- You can pick "alpha", "beta", "gamma" or "delta".
 
 -- ### Step 3: Pick your weapons of choice. ###
@@ -24,6 +27,7 @@ localconfig.secondWeapon = "pick_one" -- Your second weapon. You can use "bow", 
 -- ### You can only have up to eight skills in total (1 weapon + 1 armor) so we advise to pick exactly four skills here. ###
 
 if localconfig.weapon == "bow" then -- The following lines are the six bow skills.
+	-- # Attention: We advise you to keep Shot as your first skill. # --
 	table.insert(localconfig.weaponSkills,"bow_shot") -- Shoot a projectile that damages one target.
 	table.insert(localconfig.weaponSkills,"bow_puncture") -- Shoot a fast projectile that pierces several targets and makes them bleed.
 	table.insert(localconfig.weaponSkills,"bow_snare") -- Shoot a projectile that slows down one target.
@@ -32,6 +36,7 @@ if localconfig.weapon == "bow" then -- The following lines are the six bow skill
 	-- table.insert(localconfig.weaponSkills,"bow_mark_target") -- Shoot a projectile that hightlights one target and exposes it so it receives more damage.
 
 elseif localconfig.weapon == "scythe" then -- The following lines are the six scythe skills.
+	-- # Attention: We advise you to keep Sweep as your first skill. # --
 	table.insert(localconfig.weaponSkills,"scythe_sweep") -- Sweeping blow that hits several targets in front of you.
 	table.insert(localconfig.weaponSkills,"scythe_pirouette") -- Sweeping blow that hits a lot of targets all around you.
 	table.insert(localconfig.weaponSkills,"scythe_jump") -- Jump to your target location.
@@ -40,6 +45,8 @@ elseif localconfig.weapon == "scythe" then -- The following lines are the six sc
 	-- table.insert(localconfig.weaponSkills,"scythe_gank") -- Gank one target in front of you.
 
 elseif localconfig.weapon == "staff" then -- The following lines are the six staff skills.
+	-- # Attention: We advise you to keep Magic Bolt as your first skill. # --
+	table.insert(localconfig.weaponSkills,"staff_magic_bolt") -- Shoot a small projectile that explodes on impact and damages a few targets in a small area.
 	table.insert(localconfig.weaponSkills,"staff_life_leech") -- Shoot a projectile that drains one targets life while healing you.
 	table.insert(localconfig.weaponSkills,"staff_poison") -- Shoot a projectile that slowly decreases one targets life.
 	table.insert(localconfig.weaponSkills,"staff_fireball") -- Shoot a projectile that explodes on impact and damages a lot of targets in the area.
@@ -72,6 +79,7 @@ elseif localconfig.secondWeapon == "scythe" then -- The following lines are the 
 	--table.insert(localconfig.secondWeaponSkills,"scythe_gank") -- Gank one target in front of you.
 
 elseif localconfig.secondWeapon == "staff" then -- The following lines are the six staff skills.
+	table.insert(localconfig.secondWeaponSkills,"staff_magic_bolt") -- Shoot a small projectile that explodes on impact and damages a few targets in a small area.
 	table.insert(localconfig.secondWeaponSkills,"staff_life_leech") -- Shoot a projectile that drains one targets life while healing you.
 	table.insert(localconfig.secondWeaponSkills,"staff_poison") -- Shoot a projectile that slowly decreases one targets life.
 	table.insert(localconfig.secondWeaponSkills,"staff_fireball") -- Shoot a projectile that explodes on impact and damages a lot of targets in the area.
@@ -90,7 +98,7 @@ if localconfig.armor == "robe" then -- The following lines are the six robe skil
 	table.insert(localconfig.armorSkills,"robe_bandage") -- Heal yourself instantly.
 	table.insert(localconfig.armorSkills,"robe_shrink") -- Decrease your body size for some time but makes you take more damage.
 	table.insert(localconfig.armorSkills,"robe_sonic_boom") -- Stuns a lot of targets in the area around you for a brief time.
-	table.insert(localconfig.armorSkills,"robe_hide") -- Renders you invisible if you stand still.
+	table.insert(localconfig.armorSskills,"robe_fade") -- Renders you invisible and invulnerable for a very short time.
 	-- table.insert(localconfig.armorSkills,"robe_quake") -- Damages a lot of targets in the area around you.
 	-- table.insert(localconfig.armorSkills,"robe_gust") -- Push away a lot of targets in the area around you.
 
@@ -137,8 +145,9 @@ localconfig.showHighscore = "f5"
 localconfig.toggleFullscreen = "f10"
 localconfig.quitGame = "escape"
 
-localconfig.adminPassword = "lala"
+
 localconfig.max_chat_lines = 10
-localconfig.is_bot = false
+localconfig.audioVolume = 20 -- 0 = off, 100 = very loud
+
 
 return localconfig

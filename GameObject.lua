@@ -5,9 +5,13 @@ GameObject = {
 	-- x,y,oid,class,owner
 	-- props
 	-- sync_high, sync_low
+	-- zones, zone
 	
 	-- changeMonitorHigh
 	-- changeMonitorLow
+	
+	-- counts object destructions to be able to kill running tickers (eg. after)
+	die_counter = 0,
 	
 	onMixin = function (self)
 		--~ print("GO MIXIN")
@@ -25,6 +29,53 @@ GameObject = {
 		if self.sync_low then
 			self.changeMonitorLow = MonitorChanges:new{ timeout = config.sync_low, obj = self, keys = self.sync_low }
 		end
+		
+		self.zones = {}
+		self.zone = 0
+		
+		-- TODO sync -> prop
+		--~ for _,v in pairs(self.sync_low) do
+			--~ 
+		--~ end
+	end,
+	
+	calculateOwnZone = function (self)
+		local w = config.map_width
+		local h = config.map_height
+		local x = utils.clamp(self.x, 0, w)
+		local y = utils.clamp(self.y, 0, h)
+		local c = config.zones
+		local g = w / c
+		
+		self.zone = math.floor(x / g) + math.floor(y / g) * c
+	end,
+	
+	-- you need to manually call this
+	calculateZones = function (self, overlap)
+		overlap = overlap or 400
+		self.zones = {}
+		self.zone = 0
+		
+		local w = config.map_width
+		local h = config.map_height
+		local x = utils.clamp(self.x, 0, w)
+		local y = utils.clamp(self.y, 0, h)
+		local c = config.zones
+		local g = w / c
+		
+		for cx = 0,c-1 do
+		for cy = 0,c-1 do
+			local gx = cx * g
+			local gy = cy * g
+			if collision.minDistPointToAABB(x,y, gx,gy, gx+g,gy+g) < overlap then
+				local z = cx + c * cy
+				table.insert(self.zones, z)
+			end
+		end
+		end
+		
+		--~ print(x,y, self.zone)
+		--~ utils.vardump(self.zones)
 	end,
 	
 	onUpdate = function (self, ...)
@@ -40,9 +91,27 @@ GameObject = {
 		end
 		
 		if self.onUpdateBoth then self:onUpdateBoth(...) end
+		
+		self:calculateOwnZone()
+	end,
+	
+	after = function (self, duration, fun)
+		local starting_die_counter = self.die_counter
+		the.app.view.timer:after(duration, function()
+			if self.die_counter == starting_die_counter then fun() end
+		end)
+	end,
+	
+	every = function (self, duration, fun)
+		local starting_die_counter = self.die_counter
+		the.app.view.timer:every(duration, function()
+			if self.die_counter == starting_die_counter then fun() end
+		end)
 	end,
 	
 	onDie = function (self, ...)
+		self.die_counter = self.die_counter + 1
+	
 		if self:isLocal() then
 			if self.onDieLocal then self:onDieLocal(...) end
 			network.send({channel = "game", cmd = "delete", oid = self.oid, })
@@ -68,7 +137,9 @@ GameObject = {
 			if self.receiveRemote then self:receiveRemote(message_name, ...) end
 		end
 		
-		if self.receiveBoth then self:receiveBoth(message_name, ...) end	
+		if self.receiveBoth then self:receiveBoth(message_name, ...) end
+		
+		self:sendResync()
 	end,
 	
 	receive = function (self, message_name, ...)
@@ -113,7 +184,7 @@ GameObject = {
 			msg[prop] = self[prop] 
 		end
 		msg.nils = nils
-		network.send (msg)
+		network.send (msg, false)
 	end,
 	
 	propsToString = function (self)

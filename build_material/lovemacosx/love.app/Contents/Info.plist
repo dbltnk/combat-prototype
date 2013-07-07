@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>11D50b</string>
+	<string>12C54</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDocumentTypes</key>
@@ -54,17 +54,17 @@
 	<key>DTCompiler</key>
 	<string></string>
 	<key>DTPlatformBuild</key>
-	<string>4E2002</string>
+	<string>4H127</string>
 	<key>DTPlatformVersion</key>
 	<string>GM</string>
 	<key>DTSDKBuild</key>
-	<string>11D50a</string>
+	<string>12C37</string>
 	<key>DTSDKName</key>
-	<string>macosx10.7</string>
+	<string>macosx10.8</string>
 	<key>DTXcode</key>
-	<string>0432</string>
+	<string>0460</string>
 	<key>DTXcodeBuild</key>
-	<string>4E2002</string>
+	<string>4H127</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2006-2012 LÖVE Development Team</string>
 	<key>NSMainNibFile</key>

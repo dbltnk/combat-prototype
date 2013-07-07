@@ -8,7 +8,7 @@ FogOfWarObject = {
 	updateFogAlpha = function (self)
 		local fogAlpha = 1
 		
-		if the.player then
+		if the.player and the.player.class ~= "Ghost" then
 			local p = the.player
 			local cx,cy = p.x+p.width/2, p.y+p.height/2
 			local dist = vector.lenFromTo(self.x, self.y, cx, cy)
