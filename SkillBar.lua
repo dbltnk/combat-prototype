@@ -114,12 +114,13 @@ SkillBar = Class:extend
 		
 		-- mark selected skill as selected
 		for index, overlay in pairs(self.skillSelectedIcons) do
+			overlay.visible = false
 			if the.player and the.player.skills and the.player.skills[index] then
 				local skill = the.player.skills[index]
 				--~ overlay.visible = skill:isCasting() == false and skill:isPossibleToUse() == false
 				--~ print(skill)
 				if index == the.player.selectedSkill then
-					overlay.visible = true
+					--~ overlay.visible = true
 				else
 					overlay.visible = false
 				end
