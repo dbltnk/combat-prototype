@@ -124,7 +124,7 @@ Arrow = Fill:extend
 			end
 		end
 		
-		if not the.player:isCasting() then
+		if the.player and not the.player:isCasting() then
 			self.visible = false
 			self.circle.visible = false
 			self.crescent.visible = false
