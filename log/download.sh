@@ -1,3 +1,3 @@
 #!/bin/bash
 
-scp sebialex@buffy.leenox.de:/home/sebialex/combat-prototype-enet/checkout/server/track.log .
+scp sebialex@buffy.leenox.de:/home/sebialex/combat-prototype-enet/checkout/server/track.log raw.log
