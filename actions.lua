@@ -240,7 +240,7 @@ end)
 -- has: duration, speedPenalty
 action_handling.register_effect("sneak", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	object_manager.send(target.oid, "sneak", effect.duration * increase, effect.speedPenalty, source_oid)
+	object_manager.send(target.oid, "sneak", effect.duration , effect.speedPenalty, source_oid)
 end)
 
 -- effect: hide ----------------------------------------------------------
@@ -312,7 +312,7 @@ end)
 -- has: str, duration
 action_handling.register_effect("runspeed", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	object_manager.send(target.oid, "runspeed", effect.str, effect.duration * increase, source_oid)
+	object_manager.send(target.oid, "runspeed", effect.str, effect.duration, source_oid)
 end)
 
 -- effect: snare_break ----------------------------------------------------------
@@ -327,7 +327,7 @@ end)
 -- has: duration
 action_handling.register_effect("stun", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	object_manager.send(target.oid, "stun", effect.duration * increase, source_oid)
+	object_manager.send(target.oid, "stun", effect.duration, source_oid)
 end)
 
 -- effect: stunOnlyOthers ----------------------------------------------------------
@@ -335,7 +335,7 @@ end)
 -- has: duration
 action_handling.register_effect("stunOnlyOthers", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	if target.oid ~= source_oid then object_manager.send(target.oid, "stun", effect.duration * increase, source_oid) end
+	if target.oid ~= source_oid then object_manager.send(target.oid, "stun", effect.duration, source_oid) end
 end)
 
 -- effect: stun_break ----------------------------------------------------------
@@ -350,7 +350,7 @@ end)
 -- has: powerblock
 action_handling.register_effect("powerblock", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	object_manager.send(target.oid, "powerblock", effect.duration * increase, source_oid)
+	object_manager.send(target.oid, "powerblock", effect.duration, source_oid)
 end)
 
 -- effect: powerblockOnlyOthers ----------------------------------------------------------
@@ -358,7 +358,7 @@ end)
 -- has: powerblock
 action_handling.register_effect("powerblockOnlyOthers", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	if target.oid ~= source_oid then object_manager.send(target.oid, "powerblock", effect.duration * increase, source_oid) end
+	if target.oid ~= source_oid then object_manager.send(target.oid, "powerblock", effect.duration, source_oid) end
 end)
 
 -- effect: mezz ----------------------------------------------------------
@@ -366,7 +366,7 @@ end)
 -- has: duration
 action_handling.register_effect("mezz", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	object_manager.send(target.oid, "mezz", effect.duration * increase, source_oid)
+	object_manager.send(target.oid, "mezz", effect.duration, source_oid)
 end)
 
 -- effect: clarity ----------------------------------------------------------
@@ -381,7 +381,7 @@ end)
 -- has: duration
 action_handling.register_effect("root", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	object_manager.send(target.oid, "root", effect.duration * increase, source_oid)
+	object_manager.send(target.oid, "root", effect.duration, source_oid)
 end)
 
 -- effect: root_break ----------------------------------------------------------
@@ -403,7 +403,7 @@ end)
 -- has: str, duration
 action_handling.register_effect("dmgModifier", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	object_manager.send(target.oid, "dmgModifier", effect.str, effect.duration * increase, source_oid)
+	object_manager.send(target.oid, "dmgModifier", effect.str, effect.duration, source_oid)
 end)
 
 -- effect: transfer ----------------------------------------------------------
@@ -468,7 +468,7 @@ end)
 -- has: str, duration
 action_handling.register_effect("changeSize", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	object_manager.send(target.oid, "changeSize", effect.str, effect.duration * increase, source_oid)
+	object_manager.send(target.oid, "changeSize", effect.str, effect.duration, source_oid)
 end)
 
 -- effect: mark ----------------------------------------------------------
@@ -476,5 +476,5 @@ end)
 -- has: duration
 action_handling.register_effect("mark", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	object_manager.send(target.oid, "mark", effect.duration * increase, source_oid)
+	object_manager.send(target.oid, "mark", effect.duration, source_oid)
 end)
