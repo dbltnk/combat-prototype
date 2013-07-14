@@ -137,7 +137,7 @@ Player = Character:extend
 				end
 			end
 			
-			if not the.ignorePlayerCharacterInputs and not the.player.incapacitated then
+			if not the.ignorePlayerCharacterInputs and the.player and not the.player.incapacitated then
 				if the.keys:pressed('left', 'a') then movex = -1 end
 				if the.keys:pressed('right', 'd') then movex = 1 end
 				if the.keys:pressed('up', 'w') then movey = -1 end
