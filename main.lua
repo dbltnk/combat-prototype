@@ -1,5 +1,5 @@
 STRICT = true
-DEBUG = true
+DEBUG = false
 
 config = require 'config'
 
