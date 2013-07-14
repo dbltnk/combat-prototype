@@ -36,7 +36,7 @@ action_definitions = {
 		cast_particle_color = color_bow,
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 800, speed = 400, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_shot.png"},
+			target_selection = {target_selection_type = "projectile", range = 800, speed = 500, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_shot.png"},
 			effects = {
 				{effect_type = "damage", str = 15},
 			},
@@ -115,7 +115,7 @@ action_definitions = {
 		cast_particle_color = color_bow,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_root.png"},
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 500, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_root.png"},
 			effects = {
 				{effect_type = "root", duration = 5},
 			},
@@ -134,7 +134,7 @@ action_definitions = {
 		cast_particle_color = color_bow,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_blunt_arrow.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_blunt_arrow.png"},
 			effects = {
 				{effect_type = "moveAwayFromMe", str = 200},
 				{effect_type = "damage", str = 50},
@@ -280,7 +280,7 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_magic_bolt.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 500, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_magic_bolt.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 75, piercing_number = 3, explosion_color = color_staff},
@@ -304,7 +304,7 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_poison.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 500, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_poison.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
@@ -328,7 +328,7 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_life_leech.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 500, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_life_leech.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 2, explosion_color = color_staff},
@@ -352,7 +352,7 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 400, speed = 300, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_fireball.png"},
+			target_selection = {target_selection_type = "projectile", range = 400, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_fireball.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_staff},
@@ -376,10 +376,10 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_healing_orb.png"},
+			target_selection = {target_selection_type = "projectile", range = 700, speed = 600, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_healing_orb.png"},
 			effects = {
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
+					target_selection = {target_selection_type = "ae", range = 75, piercing_number = 1, explosion_color = color_staff},
 					effects = {
 						{effect_type = "heal", str = 50, },
 					},
@@ -400,10 +400,10 @@ action_definitions = {
 		cast_particle_color = color_staff,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 400, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_healing_breeze.png"},
+			target_selection = {target_selection_type = "projectile", range = 700, speed = 600, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_healing_breeze.png"},
 			effects = {
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_staff},
+					target_selection = {target_selection_type = "ae", range = 75, piercing_number = 1, explosion_color = color_staff},
 					effects = {
 						{effect_type = "heal_over_time", ticks = 6, duration = 30, str = 25},
 					},
