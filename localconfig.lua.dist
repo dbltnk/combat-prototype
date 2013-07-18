@@ -96,7 +96,7 @@ localconfig.skillSix = "4"
 localconfig.skillSeven = "q"
 localconfig.skillEight = "e"
 localconfig.targetSelf = "shift"
-localconfig.showHighscore = "f5"
+localconfig.showHighscore = "tab"
 localconfig.toggleFullscreen = "f10"
 localconfig.quitGame = "escape"
 
