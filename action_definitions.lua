@@ -11,7 +11,7 @@ action_definitions = {
 	-- -----------------------------------------------------------------------------------
 	noskill = {
 		name = "no skill",
-		description = "This is now skill.",
+		description = "This is no skill.",
 		icon = nil,
 		sound = nil,
 		cast_time = 0,
@@ -276,7 +276,7 @@ action_definitions = {
 		cast_time = 0,
 		timeout = 1.5,
 		energy = 4,
-		on_the_run =  true,
+		on_the_run = true,
 		cast_particle_color = color_staff,		
 		
 		application = {
@@ -300,7 +300,7 @@ action_definitions = {
 		cast_time = 1,
 		timeout = 5,
 		energy = 30,
-		on_the_run = false,
+		on_the_run = true,
 		cast_particle_color = color_staff,		
 		
 		application = {
@@ -324,7 +324,7 @@ action_definitions = {
 		cast_time = 0.5,
 		timeout = 6,
 		energy = 36,
-		on_the_run =  false,
+		on_the_run =  true,
 		cast_particle_color = color_staff,		
 		
 		application = {
@@ -345,7 +345,7 @@ action_definitions = {
 		description = "Shoot a projectile that explodes on impact and damages a lot of targets in the area.",
 		icon = nil,
 		sound = nil,
-		cast_time = 2,
+		cast_time = 1.5,
 		timeout = 9,
 		energy = 40,
 		on_the_run =  false,
@@ -357,7 +357,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_staff},
 					effects = {
-						{effect_type = "damage", str = 50, },
+						{effect_type = "damage", str = 75, },
 					},
 				}},
 			},
@@ -369,8 +369,8 @@ action_definitions = {
 		description = "Shoot a projectile that heals one target.",
 		icon = nil,
 		sound = nil,				
-		cast_time = 2,
-		timeout = 5,
+		cast_time = 1,
+		timeout = 6,
 		energy = 20,
 		on_the_run = false,
 		cast_particle_color = color_staff,		
@@ -393,8 +393,8 @@ action_definitions = {
 		description = "Shoot a projectile that heals one target slowly over time.",
 		icon = nil,
 		sound = nil,				
-		cast_time = 2,
-		timeout = 9,
+		cast_time = 1,
+		timeout = 10,
 		energy = 50,
 		on_the_run = false,
 		cast_particle_color = color_staff,		
@@ -420,7 +420,7 @@ action_definitions = {
 		cast_time = .1,
 		timeout = 20,
 		energy = 40,
-		on_the_run = false,
+		on_the_run = true,
 		cast_particle_color = color_staff,		
 		
 		application = {
