@@ -315,6 +315,14 @@ action_handling.register_effect("runspeed", function (target, effect, source_oid
 	object_manager.send(target.oid, "runspeed", effect.str, effect.duration, source_oid)
 end)
 
+-- effect: snare_only_others ----------------------------------------------------------
+-- eg. {effect_type = "snare_only_others", str = 100, duration = 10},
+-- has: str, duration
+action_handling.register_effect("snare_only_others", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
+	if target.oid ~= source_oid then object_manager.send(target.oid, "runspeed", effect.str, effect.duration, source_oid) end
+end)
+
 -- effect: snare_break ----------------------------------------------------------
 -- eg. {effect_type = "snare_break"},
 -- has: 

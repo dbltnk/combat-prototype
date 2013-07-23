@@ -81,7 +81,7 @@ action_definitions = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 2, explosion_color = color_bow},
 					effects = {
 						{effect_type = "damage_only_others", str = 15},
-						{effect_type = "runspeed", duration = 15, str = config.walkspeed / 2},	
+						{effect_type = "snare_only_others", duration = 15, str = config.walkspeed / 2},	
 					},
 				}},	
 			},
