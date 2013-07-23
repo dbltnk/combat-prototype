@@ -36,9 +36,9 @@ elseif localconfig.weapon == "scythe" then -- The following lines are the six sc
 	-- # Attention: We advise you to keep Sweep as your first skill. # --
 	table.insert(localconfig.skills,"scythe_sweep") -- Sweeping blow that hits several targets in front of you.
 	table.insert(localconfig.skills,"scythe_pirouette") -- Sweeping blow that hits a lot of targets all around you.
+	table.insert(localconfig.skills,"scythe_stun") -- Stun one target in front of you.
 	table.insert(localconfig.skills,"scythe_jump") -- Jump to your target location.
-	table.insert(localconfig.skills,"scythe_harpoon") -- Shoots a projectile that pulls one target to your location. 
-	-- table.insert(localconfig.skills,"scythe_stun") -- Stun one target in front of you.
+	-- table.insert(localconfig.skills,"scythe_harpoon") -- Shoots a projectile that pulls one target to your location. 
 	-- table.insert(localconfig.skills,"scythe_gank") -- Gank one target in front of you.
 
 elseif localconfig.weapon == "staff" then -- The following lines are the six staff skills.
@@ -60,27 +60,29 @@ localconfig.armor = "pick_one" -- You can decide between "robe", "hide_armor" an
 
 if localconfig.armor == "robe" then -- The following lines are the six robe skills.
 	table.insert(localconfig.skills,"robe_bandage") -- Heal yourself instantly.
-	table.insert(localconfig.skills,"robe_shrink") -- Decrease your body size for some time but makes you take more damage.
 	table.insert(localconfig.skills,"robe_sonic_boom") -- Stuns a lot of targets in the area around you for a brief time.
 	table.insert(localconfig.skills,"robe_fade") -- Renders you invisible and invulnerable for a very short time.
-	-- table.insert(localconfig.skills,"robe_quake") -- Damages a lot of targets in the area around you.
+	table.insert(localconfig.skills,"robe_quake") -- Damages a lot of targets in the area around you.
+	-- table.insert(localconfig.skills,"robe_shrink") -- Decrease your body size for some time but makes you take more damage.
 	-- table.insert(localconfig.skills,"robe_gust") -- Push away a lot of targets in the area around you.
 
 elseif localconfig.armor == "hide_armor" then -- The following lines are the six hide armor skills.
 	table.insert(localconfig.skills,"hide_armor_sprint") -- Increases your movement speed for a short time.
 	table.insert(localconfig.skills,"hide_armor_sneak") -- Renders you invisible for a short time even when moving.
-	table.insert(localconfig.skills,"hide_armor_freedom") -- Break all root and snare effects.
-	table.insert(localconfig.skills,"hide_armor_mend_wounds") -- Break all damage-over-time effects.
-	-- table.insert(localconfig.skills,"hide_armor_regenerate") -- Decreases your pain slowly over time.
-	-- table.insert(localconfig.skills,"hide_armor_second_wind") -- Instantly decreases your fatigue a little.
+	table.insert(localconfig.skills,"hide_armor_regenerate") -- Decreases your pain slowly over time.
+	table.insert(localconfig.skills,"hide_armor_second_wind") -- Instantly decreases your fatigue a little.
+	-- table.insert(localconfig.skills,"hide_armor_freedom") -- Break all root and snare effects.
+	-- table.insert(localconfig.skills,"hide_armor_mend_wounds") -- Break all damage-over-time effects.
+
 
 elseif localconfig.armor == "splint_mail" then -- The following lines are the six splint mail skills.
 	table.insert(localconfig.skills,"splint_mail_absorb") -- Drains the health of a lot of targets around you.
-	table.insert(localconfig.skills,"splint_mail_ignore_pain") -- Increases your pain resistance for some time.
-	table.insert(localconfig.skills,"splint_mail_clarity") -- Break all stun, mezz and powerblock effects in a large area around you.
 	table.insert(localconfig.skills,"splint_mail_grow") -- Increase your body size for some time and decreases the damage you take.
-	-- table.insert(localconfig.skills,"splint_mail_shout") -- Makes a lot of targets in the area around you unable to use actions for a brief time.
-	-- table.insert(localconfig.skills,"splint_mail_invulnerability") -- Renders you invulnerable to damage for a short amount of time.
+	table.insert(localconfig.skills,"splint_mail_shout") -- Makes a lot of targets in the area around you unable to use actions for a brief time.
+	table.insert(localconfig.skills,"splint_mail_invulnerability") -- Renders you invulnerable to damage for a short amount of time.
+	-- table.insert(localconfig.skills,"splint_mail_ignore_pain") -- Increases your pain resistance for some time.
+	-- table.insert(localconfig.skills,"splint_mail_clarity") -- Break all stun, mezz and powerblock effects in a large area around you.
+
 end
 
 -- ### Step 7: Customize your keyboard layout (if you want). ###
