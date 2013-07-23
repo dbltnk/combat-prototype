@@ -31,7 +31,7 @@ local Crescent = Tile:extend
 	height = 200,
 	tint = {0,0,1},
 	alpha = .25,
-	image = "assets/graphics/melee_radians/90_200.png", -- TODO: remove hard-coded path
+	image = "assets/graphics/melee_radians/90_200.png",
 	rotation = 0,
 	
 	onNew = function(self)
@@ -101,6 +101,15 @@ Arrow = Fill:extend
 				self.circle.x, self.circle.y = playerCenterX - self.circle.width / 2, playerCenterY - self.circle.height / 2
 			elseif utils.get_by_path(skillObject, "definition.application.target_selection.target_selection_type") == "cone" then				
 				-- crescent for melee attacks
+				
+				local radius = utils.get_by_path(skillObject, "definition.application.target_selection.gfx_radius")
+				local diameter = radius * 2
+				local cone = utils.get_by_path(skillObject, "definition.application.target_selection.cone")
+				self.crescent.width, self.crescent.height = diameter, diameter
+				self.crescent.image = "assets/graphics/melee_radians/" .. cone .. "_" .. diameter .. ".png"
+				
+				
+				
 				self.visible = false				
 				self.crescent.visible = true
 				self.circle.visible = false

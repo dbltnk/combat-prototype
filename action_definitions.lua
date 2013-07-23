@@ -75,12 +75,17 @@ action_definitions = {
 		cast_particle_color = color_bow,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 800, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_puncture.png"},
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, piercing_number = 2, gfx = "/assets/graphics/action_projectiles/bow_puncture.png"},
 			effects = {
-				{effect_type = "damage", str = 15},
-				{effect_type = "runspeed", duration = 15, str = config.walkspeed / 2},	
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 2, explosion_color = color_bow},
+					effects = {
+						{effect_type = "damage_only_others", str = 15},
+						{effect_type = "runspeed", duration = 15, str = config.walkspeed / 2},	
+					},
+				}},	
 			},
-		},	
+		},			
 	},		
 	-- -----------------------------------------------------------------------------------
 	bow_mark_target = {
@@ -115,11 +120,15 @@ action_definitions = {
 		cast_particle_color = color_bow,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 500, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_root.png"},
+			target_selection = {target_selection_type = "cone", 
+				gfx_radius = 200, gfx = "assets/graphics/melee_radians/90_400.png",
+				range = 200, cone = 90, piercing_number = 3, explosion_color = color_bow},
 			effects = {
-				{effect_type = "root", duration = 5},
+				{effect_type = "root_only_others", duration = 5},
 			},
 		},
+		
+		
 	},	
 	-- -----------------------------------------------------------------------------------
 	bow_blunt_arrow = {

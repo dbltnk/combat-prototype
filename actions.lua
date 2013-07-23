@@ -384,6 +384,14 @@ action_handling.register_effect("root", function (target, effect, source_oid)
 	object_manager.send(target.oid, "root", effect.duration, source_oid)
 end)
 
+-- effect: root_only_others ----------------------------------------------------------
+-- eg. {effect_type = "root_only_others", duration = 10},
+-- has: duration
+action_handling.register_effect("root_only_others", function (target, effect, source_oid)
+	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
+	if target.oid ~= source_oid then object_manager.send(target.oid, "root", effect.duration, source_oid) end
+end)
+
 -- effect: root_break ----------------------------------------------------------
 -- eg. {effect_type = "root_break"},
 -- has: 

@@ -164,7 +164,7 @@ PhaseManager = Sprite:extend
 		
 	getTimeText = function (self)
 		local addendum = ""
-		if the.player.class == "Ghost" or localconfig.spectator then addendum = "\n You are spectating. Wait for the next game to start to join." else addendum = "" end
+		--~ if the.player.class == "Ghost" or localconfig.spectator then addendum = "\n You are spectating. Wait for the next game to start to join." else addendum = "" end
 		if self.phase == "init_needed" then
 			return "init in progress..."
 		elseif self.phase == "warmup" then
