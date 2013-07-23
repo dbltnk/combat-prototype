@@ -454,12 +454,12 @@ Character = Animation:extend
 			if killer then
 				if killer.class == "Character" then
 					object_manager.send(source_oid, "inc", "kills_player", 1)
-					track("killed_by_player", self.oid, self.name, self.team, killer.oid, killer.name, killer.team)
+					track("killed_by_player", self.oid, self.name, self.team, killer.oid, killer.name, killer.team, self.x, self.y)
 				else
-					track("killed_by_other", self.oid, self.name, self.team, killer.oid, killer.class)
+					track("killed_by_other", self.oid, self.name, self.team, killer.oid, killer.class, self.x, self.y)
 				end
 			else
-				track("killed_by_unknown", self.oid, self.name, self.team)
+				track("killed_by_unknown", self.oid, self.name, self.team, self.x, self.y)
 			end
 		end
 		
