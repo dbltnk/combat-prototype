@@ -65,7 +65,7 @@ action_definitions = {
 	-- -----------------------------------------------------------------------------------
 	bow_snare = {
 		name = "Snare",
-		description = "Shoot a projectile that slows down one target.",
+		description = "Shoot a projectile that slows down up to two targets.",
 		icon = nil,
 		sound = nil,				
 		cast_time = 0.5,
@@ -78,7 +78,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, piercing_number = 2, gfx = "/assets/graphics/action_projectiles/bow_puncture.png"},
 			effects = {
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 2, explosion_color = color_bow},
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_bow},
 					effects = {
 						{effect_type = "damage_only_others", str = 15},
 						{effect_type = "snare_only_others", duration = 15, str = config.walkspeed / 2},	
@@ -110,7 +110,7 @@ action_definitions = {
 	-- -----------------------------------------------------------------------------------
 	bow_root = {
 		name = "Root",
-		description = "Shoot a projectile that roots one target.",
+		description = "Roots a small number of targets in front of you.",
 		icon = nil,
 		sound = nil,				
 		cast_time = 0.5,
