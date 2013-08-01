@@ -236,6 +236,7 @@ PhaseManager = Sprite:extend
 	
 	changePhaseToPlaying = function (self)
 		self.phase = "playing"	
+		the.lineOfSight:reset()
 		self.next_xp_reset_time = network.time + config.xpCapTimer
 		object_manager.send(self.oid, "set_phase", self.phase)
 		self:resetGame()

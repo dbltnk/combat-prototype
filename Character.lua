@@ -1087,17 +1087,6 @@ Character = Animation:extend
 		self.markedSprite.y = self.y - 32
 		
 		self:updateFogAlpha()
-		
-		-- udpate line of sight sources
-		if the.lineOfSight then
-			local l = object_manager.find_where(function(oid, o)
-				--~ print(oid, o, o.class, o.team)
-				return o.class and o.class == "Character" and o.team == self.team
-			end)
-			
-			the.lineOfSight.sourceOids = list.keys(l)			
-			the.lineOfSight.allVisible = #the.lineOfSight.sourceOids == 0
-		end
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
@@ -1174,6 +1163,17 @@ Character = Animation:extend
 		
 		if not the.ignorePlayerCharacterInputs and the.keys:pressed(' ') and self.incapacitated then 
 			object_manager.send(self.oid, "gank") 
+		end
+		
+		-- udpate line of sight sources
+		if the.lineOfSight then
+			local l = object_manager.find_where(function(oid, o)
+				--~ print(oid, o, o.class, o.team)
+				return o.class and o.class == "Character" and o.team == self.team
+			end)
+			
+			the.lineOfSight.sourceOids = list.keys(l)			
+			the.lineOfSight.allVisible = #the.lineOfSight.sourceOids == 0
 		end
 	end,
 

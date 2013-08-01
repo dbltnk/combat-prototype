@@ -265,6 +265,12 @@ LineOfSight = Sprite:extend
 		self:calculateVisibility()
 	end,
 
+	reset = function (self)
+		self.visibility = {}
+		self.alreadySeen = {}
+		self.collision = nil
+	end,
+
 	onDraw = function (self, x, y)
 		if self.allVisible then return end
 		
