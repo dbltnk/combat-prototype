@@ -61,6 +61,7 @@ Character = Animation:extend
 	selectedSkill = 1,
 	selfTargetingSkill = false,
 	viewRange = config.characterViewRange,
+	feelRange = config.characterFeelRange,
 	viewAngle = config.characterViewAngle,
 
 	--~ "bow" or "scythe" or "staff"

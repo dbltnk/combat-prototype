@@ -106,7 +106,13 @@ LineOfSight = Sprite:extend
 		return collision
 	end,
 	
-	calculateVisibilityAddSource = function (self, px,py, range, angle, rotation)
+	calculateVisibilityAddSource = function (self, px,py, range, angle, rotation, feelRange)
+		local self_cellKey = self.cellKey
+		local vector_sqLenFromTo = vector.sqLenFromTo
+		local self_isCollisionOnCellUseCache = self.isCollisionOnCellUseCache
+		local cellsUntilDarkMax = config.cellsUntilDark
+		
+
 		local pcx, pcy = self:px2cell(px,py)
 		
 		--~ if pcx == self.lastCalculatedCellSource.x and pcy == self.lastCalculatedCellSource.y then return
@@ -119,6 +125,19 @@ LineOfSight = Sprite:extend
 
 		local v = self.visibility
 		local as = self.alreadySeen
+		
+		-- feel range
+		local f0x, f0y = self:px2cell(px-feelRange,py-feelRange)
+		local f1x, f1y = self:px2cell(px+feelRange,py+feelRange)
+		for fx = f0x, f1x do
+		for fy = f0y, f1y do
+			local k = self_cellKey(self, fx,fy)
+			v[k] = 1
+			as[k] = 1
+		end
+		end
+		
+		
 		
 		local sx,sy = -the.view.translate.x, -the.view.translate.y
 		
@@ -139,11 +158,6 @@ LineOfSight = Sprite:extend
 		
 			local range2 = range*range
 			local angleHRad = (angle / 2) / 180 * math.pi
-			
-			local self_cellKey = self.cellKey
-			local vector_sqLenFromTo = vector.sqLenFromTo
-			local self_isCollisionOnCellUseCache = self.isCollisionOnCellUseCache
-			local cellsUntilDarkMax = config.cellsUntilDark
 			
 			local srcViewX, srcViewY = vector.fromVisualRotation(rotation, 1)
 			
@@ -208,7 +222,7 @@ LineOfSight = Sprite:extend
 			local o = object_manager.get(oid)
 			if o then
 				local ox, oy = tools.object_center(o)
-				self:calculateVisibilityAddSource(ox,oy, o.viewRange or 0, o.viewAngle or 0, o.rotation)
+				self:calculateVisibilityAddSource(ox,oy, o.viewRange or 0, o.viewAngle or 0, o.rotation, o.feelRange or 0)
 			end
 		end
 	end,

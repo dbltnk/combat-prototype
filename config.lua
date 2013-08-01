@@ -58,6 +58,7 @@ config.cellsUntilDark = 3
 config.cellSize = 40
 config.characterViewRange = 800
 config.characterViewAngle = 90
+config.characterFeelRange = 100
 config.textColor = {0.4,0.4,0.4}
 
 -- gamepad
