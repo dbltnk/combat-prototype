@@ -335,7 +335,7 @@ TimerDisplay = Text:extend
 	y = 0, 
 	time = 0,
 	width = 300,
-	tint = {0.1,0.1,0.1},
+	tint = {1,1,1},
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
@@ -357,7 +357,7 @@ PlaytestTimerDisplay = Text:extend
 	y = 0, 
 	time = 0,
 	width = 300,
-	tint = {0.1,0.1,0.1},
+	tint = {1,1,1},
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
@@ -399,7 +399,7 @@ XpTimerDisplay = Text:extend
 	y = 0, 
 	time = 0,
 	width = 200,
-	tint = {0.1,0.1,0.1},
+	tint = {1,1,1},
 	
 	onUpdate = function (self)
 		self.x = (love.graphics.getWidth() - self.width) / 2
@@ -459,7 +459,7 @@ NetworkDisplay = Text:extend
 	text = "",
 	x = 0,
 	y = 0, 
-	tint = {0,0,0},
+	tint = {1,1,1},
 	time = 0,
 	width = love.graphics.getWidth() * 0.9,
 	

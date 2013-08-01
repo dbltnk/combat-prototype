@@ -60,7 +60,7 @@ Character = Animation:extend
 	resource_dmg = 0,
 	selectedSkill = 1,
 	selfTargetingSkill = false,
-	viewRange = 400,
+	viewRange = config.characterViewRange,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",

@@ -8,7 +8,7 @@ LineOfSight = Sprite:extend
 	y = 0,
 	width = 1,
 	height = 1,
-	cell = 40,
+	cell = config.cellSize,
 	
 	visibility = {},
 	
@@ -94,7 +94,7 @@ LineOfSight = Sprite:extend
 			local self_cellKey = self.cellKey
 			local vector_sqLenFromTo = vector.sqLenFromTo
 			local self_isCollisionOnCell = self.isCollisionOnCell
-			local cellsUntilDarkMax = 2
+			local cellsUntilDarkMax = config.cellsUntilDark
 			
 			for cx = c0x, c1x do
 			for cy = c0y, c1y do
