@@ -54,6 +54,11 @@ LineOfSight = Sprite:extend
 		if collision == false and the.view.collision:collide(s) then collision = true end
 		-- profile.stop()
 		
+		-- resources
+		for obj,_ in pairs(the.ressourceObjects) do
+			if collision == false and obj:collide(s) then collision = true end
+		end
+		
 		-- profile.stop()
 		
 		return collision

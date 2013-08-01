@@ -62,6 +62,8 @@ Ressource = Tile:extend
 				track("resource_ot", self.oid, self.description, self.currentPain, self.controller)
 			end
 		end)
+		
+		the.ressourceObjects[self] = true
 	end,
 	
 	gainPain = function (self, str, source_oid)
@@ -214,5 +216,7 @@ Ressource = Tile:extend
 		
 		self.t:die()
 		self.t = nil
+		
+		the.ressourceObjects[self] = nil
 	end,
 }

@@ -160,6 +160,7 @@ GameView = View:extend
 		
 		-- object -> true map for easy remove, key contains ressource references
 		the.ressources = {}
+		the.ressourceObjects = {}
 		--~ the.ressourceDisplay = RessourceDisplay:new{ x = 0, y = 0, text = "ressources uninitialized" }
 		--~ the.hud:add(the.ressourceDisplay) 
 		
