@@ -28,11 +28,11 @@ LineOfSight = Sprite:extend
 	end,
 	
 	isCollisionOnCell = function (self, cx,cy)
-		profile.start("los collide")
+		-- profile.start("los collide")
 	
 		local collision = false
 		local px,py = self:cell2px(cx,cy)
-		profile.start("los sprite")
+		-- profile.start("los sprite")
 		local s = {
 			x = px,
 			y = py,
@@ -40,17 +40,17 @@ LineOfSight = Sprite:extend
 			height = self.cell,
 			solid = true,
 		}
-		profile.stop()
+		-- profile.stop()
 		
-		profile.start("los collide landscape")
+		-- profile.start("los collide landscape")
 		if collision == false and the.view.landscape:subcollide(s) then collision = true end
-		profile.stop()
+		-- profile.stop()
 		
-		profile.start("los collide collision")
+		-- profile.start("los collide collision")
 		if collision == false and the.view.collision:collide(s) then collision = true end
-		profile.stop()
+		-- profile.stop()
 		
-		profile.stop()
+		-- profile.stop()
 		
 		return collision
 	end,
@@ -65,7 +65,7 @@ LineOfSight = Sprite:extend
 			--~ self.lastCalculatedCellSource.y = pcy
 		--~ end
 
-		profile.start("calculateVisibility")
+		-- profile.start("calculateVisibility")
 
 		local v = {}
 		
@@ -86,26 +86,29 @@ LineOfSight = Sprite:extend
 					local cellsUntilDarkMax = 4
 					local cellsUntilDark = cellsUntilDarkMax
 					
-					profile.start("los 1 step")
+					-- profile.start("los 1 step")
 					
-					for x,y in geometry.raster_line_it(pcx,pcy,cx,cy) do
-						profile.start("los 1 sub step")
-						if self:isCollisionOnCell(x,y) then free = false end
-						if free or cellsUntilDark > 0 then 
-							if free then v[self:cellKey(x,y)] = 1
-							elseif cellsUntilDark >= 0 then 
-								v[self:cellKey(x,y)] = cellsUntilDark / cellsUntilDarkMax
-								cellsUntilDark = cellsUntilDark - 1
-							else
-								profile.stop()
-								break
+					for x,y,cellNumInLine in geometry.raster_line_it(pcx,pcy,cx,cy) do
+						-- profile.start("los 1 sub step " .. cellNumInLine)
+						local k = self:cellKey(x,y)
+						if (v[k] or 0) <= 1 then 
+							if self:isCollisionOnCell(x,y) then free = false end
+							if free or cellsUntilDark > 0 then 
+								if free then v[k] = 1
+								elseif cellsUntilDark >= 0 then 
+									v[k] = cellsUntilDark / cellsUntilDarkMax
+									cellsUntilDark = cellsUntilDark - 1
+								else
+									-- profile.stop()
+									break
+								end
 							end
 						end
 						--~ print("free", free, x,y)
-						profile.stop()
+						-- profile.stop()
 					end
 					
-					profile.stop()
+					-- profile.stop()
 				end
 			end
 			end
@@ -113,7 +116,7 @@ LineOfSight = Sprite:extend
 		
 		self.visibility = v
 		
-		profile.stop()
+		-- profile.stop()
 	end,
 	
 	cellKey = function (self, cx,cy)
