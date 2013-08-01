@@ -12,6 +12,7 @@ LineOfSight = Sprite:extend
 	
 	visibility = {},
 	alreadySeen = {},
+	collision = nil,
 	
 	sourceOids = {},
 	
@@ -30,6 +31,46 @@ LineOfSight = Sprite:extend
 
 	px2cell = function (self, x, y)
 		return math.floor(x / self.cell), math.floor(y / self.cell)
+	end,
+	
+	calculateCollision = function (self)
+		local c = {}
+		
+		local c0x, c0y = self:px2cell(0,0)
+		local c1x, c1y = self:px2cell(config.map_width, config.map_height)
+		local cell = self.cell
+		
+		if c0x < -math.huge or c0x > math.huge then return end
+		
+		local b = 2
+		c0x, c0y = vector.add(c0x, c0y, -b,-b)
+		c1x, c1y = vector.add(c1x, c1y, b, b)
+		
+		print("build collision cache")
+		
+		local count = 0
+		
+		for cx = c0x, c1x do
+		for cy = c0y, c1y do
+			if self:isCollisionOnCell(cx,cy) then 
+				count = count + 1
+				c[self:cellKey(cx,cy)] = true 
+			end
+		end
+		end
+		
+		print("found", count, "collision cells")
+		
+		self.collision = c
+	end,
+	
+	isCollisionOnCellUseCache = function (self, cx, cy)
+		if self.collision then 
+			return self.collision[self:cellKey(cx,cy)]
+		else
+			self:calculateCollision()
+			return self:isCollisionOnCell(cx,cy)
+		end
 	end,
 	
 	isCollisionOnCell = function (self, cx,cy)
@@ -101,7 +142,7 @@ LineOfSight = Sprite:extend
 			
 			local self_cellKey = self.cellKey
 			local vector_sqLenFromTo = vector.sqLenFromTo
-			local self_isCollisionOnCell = self.isCollisionOnCell
+			local self_isCollisionOnCellUseCache = self.isCollisionOnCellUseCache
 			local cellsUntilDarkMax = config.cellsUntilDark
 			
 			local srcViewX, srcViewY = vector.fromVisualRotation(rotation, 1)
@@ -131,7 +172,7 @@ LineOfSight = Sprite:extend
 									--~ print(d,range,px,py,x,y)
 									if d > range2 then free = false
 									-- collision
-									elseif self_isCollisionOnCell(self, x,y) then free = false end
+									elseif self_isCollisionOnCellUseCache(self, x,y) then free = false end
 								end
 								
 								if free or cellsUntilDark > 0 then 
