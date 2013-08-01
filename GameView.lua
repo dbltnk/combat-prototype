@@ -114,6 +114,7 @@ GameView = View:extend
 		self:add(self.layers.projectiles)
 		self:add(self.layers.above)	
 		self:add(self.layers.ui)
+		self:add(self.layers.lineOfSight)	
 		self:add(self.layers.debug)
 		the.hud = UiGroup:new()
 		self:add(the.hud)
