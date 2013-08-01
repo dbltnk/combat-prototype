@@ -18,6 +18,7 @@ GameView = View:extend
 		above = Group:new(),
 		ui = Group:new(),
 		debug = Group:new(),
+		topmost = Group:new(),
 	},
 	
 	game_start_time = 0,
@@ -111,9 +112,12 @@ GameView = View:extend
 		self:add(self.layers.particles)
 		self:add(self.layers.characters)
 		self:add(self.layers.projectiles)
-		self:add(self.layers.above)		
+		self:add(self.layers.above)	
 		self:add(self.layers.ui)
 		self:add(self.layers.debug)
+		the.hud = UiGroup:new()
+		self:add(the.hud)
+		self:add(self.layers.topmost)
 		
 		-- setup player
 		the.player = Player:new{ x = the.app.width / 2, y = the.app.height / 2, 
@@ -137,9 +141,6 @@ GameView = View:extend
 		the.player.y = the.spawnpoint.y
 			
 		
-		the.cursor = Cursor:new{ x = 0, y = 0 }
-		self.layers.ui:add(the.cursor)
-		
 		the.focusSprite = FocusSprite:new{ x = 0, y = 0 }
 		self:add(the.focusSprite)
 		
@@ -151,9 +152,10 @@ GameView = View:extend
 			self.focus = the.player
 		end
 		
-		-- TODO obsolete? use self.layers instead?
-		the.hud = UiGroup:new()
-		self:add(the.hud)
+		-- topmost, cursor + loveframes
+		the.cursor = Cursor:new{ x = 0, y = 0 }
+		self.layers.topmost:add(LoveFramesCaller:new{})
+		self.layers.topmost:add(the.cursor)
 		
 		-- object -> true map for easy remove, key contains ressource references
 		the.ressources = {}

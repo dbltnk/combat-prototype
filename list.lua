@@ -174,4 +174,14 @@ function list.process_keys (m)
 	return list.process(r)
 end
 
+-- returns the list of l's key values
+function list.keys (l)
+	return list.process_keys(l):done()
+end
+
+-- returns the list of l's key values
+function list.values (l)
+	return list.process_values(l):done()
+end
+
 return list

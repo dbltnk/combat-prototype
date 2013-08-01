@@ -1,6 +1,10 @@
 
 local vector = {}
 
+vector.sqLen = function(x,y)
+	return x*x + y*y
+end
+
 vector.len = function(x,y)
 	return math.sqrt(x*x + y*y)
 end
@@ -21,6 +25,10 @@ end
 
 vector.lenFromTo = function(x0,y0, x1,y1)
 	return vector.len(vector.fromTo(x0,y0, x1,y1))
+end
+
+vector.sqLenFromTo = function(x0,y0, x1,y1)
+	return vector.sqLen(vector.fromTo(x0,y0, x1,y1))
 end
 
 vector.angleFromTo = function(x0,y0, x1,y1)

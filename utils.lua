@@ -66,6 +66,12 @@ function utils.vardump_rec(max_depth, value, depth, key)
   end
 end
 
+function utils.clamp01 (value)
+	if value < 0 then return 0
+	elseif value > 1 then return 1
+	else return value end
+end
+
 function utils.clamp (value, min, max)
 	if value < min then return min
 	elseif value > max then return max
