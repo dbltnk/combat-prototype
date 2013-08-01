@@ -270,6 +270,8 @@ LineOfSight = Sprite:extend
 		self.alreadySeen = {}
 		self.collision = nil
 	end,
+	
+	screenCellMap = {},
 
 	onDraw = function (self, x, y)
 		if self.allVisible then return end
@@ -284,6 +286,10 @@ LineOfSight = Sprite:extend
 		
 		--~ print(sx,sy, c0x, c0y, c1x, c1y, cell)
 		
+		local m = self.screenCellMap
+		local mv = self.visibility
+		local mas = self.alreadySeen
+		
 		if 
 			c0x > -math.huge and c0x < math.huge
 		then
@@ -291,9 +297,14 @@ LineOfSight = Sprite:extend
 			for cy = c0y, c1y do
 				local k = self:cellKey(cx,cy)
 				local px,py = self:cell2px(cx,cy)
-				local vb = self.visibility[k] or 0
-				local as = self.alreadySeen[k] or 0
+				local vb = mv[k] or 0
+				local as = mas[k] or 0
 				local f = math.max(vb, as / 2)
+				
+				local of = m[k] or 0
+				
+				f = 0.4 * f + 0.6 * of
+				m[k] = f
 				
 				--~ print(cx, cy, px, py)
 				love.graphics.setColor(0,0,0,math.floor(255 * (1 - f)))
