@@ -8,11 +8,15 @@ LineOfSight = Sprite:extend
 	y = 0,
 	width = 1,
 	height = 1,
-	cell = 50,
+	cell = 40,
 	
 	visibility = {},
 	
+	sourceOids = {},
+	
 	lastCalculatedCellSource = {x = -1000, y = -1000},
+	
+	allVisible = true,
 	
 	onNew = function (self)
 		self.width = config.map_width
@@ -55,8 +59,7 @@ LineOfSight = Sprite:extend
 		return collision
 	end,
 	
-	calculateVisibility = function (self)
-		local px, py = tools.object_center(the.player)
+	calculateVisibilityAddSource = function (self, px,py, range)
 		local pcx, pcy = self:px2cell(px,py)
 		
 		--~ if pcx == self.lastCalculatedCellSource.x and pcy == self.lastCalculatedCellSource.y then return
@@ -67,7 +70,7 @@ LineOfSight = Sprite:extend
 
 		-- profile.start("calculateVisibility")
 
-		local v = {}
+		local v = self.visibility
 		
 		local sx,sy = -the.view.translate.x, -the.view.translate.y
 		
@@ -78,21 +81,43 @@ LineOfSight = Sprite:extend
 		if 
 			c0x > -math.huge and c0x < math.huge
 		then
+			local b = 2
+			c0x, c0y = vector.add(c0x, c0y, -b,-b)
+			c1x, c1y = vector.add(c1x, c1y, b, b)
+		
+			-- early out
+			if pcx < c0x or c1x < pcx or
+				pcy < c0y or c1y < pcy then return end
+		
+			local range2 = range*range
+			
+			local self_cellKey = self.cellKey
+			local vector_sqLenFromTo = vector.sqLenFromTo
+			local self_isCollisionOnCell = self.isCollisionOnCell
+			local cellsUntilDarkMax = 4
+			
 			for cx = c0x, c1x do
 			for cy = c0y, c1y do
 				if cx == c0x or cx == c1x or cy == c0y or cy == c1y then
 					--~ print("line from", pcx,pcy,"to",cx,cy)
 					local free = true
-					local cellsUntilDarkMax = 4
 					local cellsUntilDark = cellsUntilDarkMax
 					
 					-- profile.start("los 1 step")
 					
 					for x,y,cellNumInLine in geometry.raster_line_it(pcx,pcy,cx,cy) do
 						-- profile.start("los 1 sub step " .. cellNumInLine)
-						local k = self:cellKey(x,y)
+						local k = self_cellKey(self, x,y)
 						if (v[k] or 0) <= 1 then 
-							if self:isCollisionOnCell(x,y) then free = false end
+							if cellNumInLine > 0 then
+								-- view range
+								local d = vector_sqLenFromTo(px,py, self:cell2px(x,y))
+								--~ print(d,range,px,py,x,y)
+								if d > range2 then free = false
+								-- collision
+								elseif self_isCollisionOnCell(self, x,y) then free = false end
+							end
+							
 							if free or cellsUntilDark > 0 then 
 								if free then v[k] = 1
 								elseif cellsUntilDark >= 0 then 
@@ -114,9 +139,18 @@ LineOfSight = Sprite:extend
 			end
 		end
 		
-		self.visibility = v
-		
 		-- profile.stop()
+	end,
+	
+	calculateVisibility = function (self)
+		self.visibility = {}
+		for _,oid in pairs(self.sourceOids) do
+			local o = object_manager.get(oid)
+			if o then
+				local ox, oy = tools.object_center(o)
+				self:calculateVisibilityAddSource(ox,oy, o.viewRange or 0)
+			end
+		end
 	end,
 	
 	cellKey = function (self, cx,cy)
@@ -139,6 +173,8 @@ LineOfSight = Sprite:extend
 	end,
 
 	onDraw = function (self, x, y)
+		if self.allVisible then return end
+		
 		love.graphics.setBlendMode( "alpha" )
 
 		local sx,sy = -the.view.translate.x, -the.view.translate.y

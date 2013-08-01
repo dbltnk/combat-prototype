@@ -13,14 +13,14 @@ Character = Animation:extend
 {
 	class = "Character",
 
-	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
+	props = {"viewRange", "x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
 		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", 
 		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", "kills", },
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
 		"invul", "width", "height", "rotation", "dmgModified", "marked", "rooted", "snared", "mezzed", "stunned", "powerblocked",
-		"maxPainOverdrive"},	
+		"maxPainOverdrive", "viewRange"},	
 		
 	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths", "xp", "kills", },
 	
@@ -60,6 +60,7 @@ Character = Animation:extend
 	resource_dmg = 0,
 	selectedSkill = 1,
 	selfTargetingSkill = false,
+	viewRange = 400,
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -1084,6 +1085,17 @@ Character = Animation:extend
 		self.markedSprite.y = self.y - 32
 		
 		self:updateFogAlpha()
+		
+		-- udpate line of sight sources
+		if the.lineOfSight then
+			local l = object_manager.find_where(function(oid, o)
+				--~ print(oid, o, o.class, o.team)
+				return o.class and o.class == "Character" and o.team == self.team
+			end)
+			
+			the.lineOfSight.sourceOids = list.keys(l)			
+			the.lineOfSight.allVisible = #the.lineOfSight.sourceOids == 0
+		end
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
