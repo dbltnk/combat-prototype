@@ -1,4 +1,4 @@
-STRICT = true
+STRICT = false
 DEBUG = false
 
 config = require 'config'
@@ -69,6 +69,7 @@ profile = require 'profile'
 list = require 'list'
 json = require 'dkjson'
 bson = require 'bson'
+geometry = require 'geometry'
 
 action_definitions = require 'action_definitions'
 object_manager = require 'object_manager'

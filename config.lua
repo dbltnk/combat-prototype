@@ -63,7 +63,7 @@ config.gamepad_cursor_near_border = 200
 
 -- debug
 config.draw_debug_info = false
-config.show_profile_info = false
+config.show_profile_info = true
 config.show_object_list = false
 config.show_prints = true
 
