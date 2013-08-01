@@ -176,6 +176,25 @@ LineOfSight = Sprite:extend
 		return cx .. "_" .. cy
 	end,
 	
+	isObjectVisible = function (self, o)
+		local c0x, c0y = self:px2cell(o.x,o.y)
+		local c1x, c1y = self:px2cell(o.x + o.width, o.y + o.height)
+		
+		if 
+			c0x > -math.huge and c0x < math.huge
+		then
+			for cx = c0x, c1x do
+			for cy = c0y, c1y do
+				local k = self:cellKey(cx,cy)
+				local f = self.visibility[k] or 0
+				if f > 0 then return true end
+			end
+			end
+		end
+		
+		return false
+	end,
+	
 	getVisibility = function (self, px, py, cx, cy)
 		return self.visibility[self:cellKey(cx,cy)] or 0
 		--~ local dx,dy = vector.fromTo(the.player.x, the.player.y, px, py)
