@@ -159,8 +159,8 @@ GameView = View:extend
 		
 		-- object -> true map for easy remove, key contains ressource references
 		the.ressources = {}
-		the.ressourceDisplay = RessourceDisplay:new{ x = 0, y = 0, text = "ressources uninitialized" }
-		the.hud:add(the.ressourceDisplay) 
+		--~ the.ressourceDisplay = RessourceDisplay:new{ x = 0, y = 0, text = "ressources uninitialized" }
+		--~ the.hud:add(the.ressourceDisplay) 
 		
 		the.timerDisplay = TimerDisplay:new{ x = 0, y = 0 }
 		the.hud:add(the.timerDisplay)		
@@ -392,7 +392,7 @@ GameView = View:extend
 		for k, v in pairs(the.ressources) do
 			s = s .. k .. ": " .. v .. "\n"
 		end
-		the.ressourceDisplay.text = s
+		--~ the.ressourceDisplay.text = s
 		
 		audio.update()
     end,	
