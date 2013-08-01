@@ -14,15 +14,21 @@ LineOfSight = Sprite:extend
 	alreadySeen = {},
 	collision = nil,
 	
+	scanline = 0,
+	
 	sourceOids = {},
 	
 	lastCalculatedCellSource = {x = -1000, y = -1000},
+	
+	updateEachNFrames = config.cellUpdateEachNFrames,
+	framesUntilUpdate = 0,
 	
 	allVisible = true,
 	
 	onNew = function (self)
 		self.width = config.map_width
 		self.height = config.map_height
+		self.scanline = math.floor(config.map_width / self.cell) + 200
 	end,
 	
 	cell2px = function (self, cx, cy)
@@ -63,16 +69,7 @@ LineOfSight = Sprite:extend
 		
 		self.collision = c
 	end,
-	
-	isCollisionOnCellUseCache = function (self, cx, cy)
-		if self.collision then 
-			return self.collision[self:cellKey(cx,cy)]
-		else
-			self:calculateCollision()
-			return self:isCollisionOnCell(cx,cy)
-		end
-	end,
-	
+
 	isCollisionOnCell = function (self, cx,cy)
 		-- profile.start("los collide")
 	
@@ -111,8 +108,19 @@ LineOfSight = Sprite:extend
 		local vector_sqLenFromTo = vector.sqLenFromTo
 		local self_isCollisionOnCellUseCache = self.isCollisionOnCellUseCache
 		local cellsUntilDarkMax = config.cellsUntilDark
+		local self_cell2px = self.cell2px
+		local self_collision = self.collision
 		
+		local colFun = nil
 
+		if self.collision then 
+			colFun = function(k,cx,cy) return self_collision[k] end
+		else
+			self:calculateCollision()
+			colFun = function(k,cx,cy) return self:isCollisionOnCell(cx,cy) end
+		end
+		
+		
 		local pcx, pcy = self:px2cell(px,py)
 		
 		--~ if pcx == self.lastCalculatedCellSource.x and pcy == self.lastCalculatedCellSource.y then return
@@ -171,30 +179,32 @@ LineOfSight = Sprite:extend
 					-- profile.start("los 1 step")
 
 					-- in fov?
-					local a = vector.angleFromTo(srcViewX, srcViewY, vector.fromTo(px,py, self:cell2px(cx,cy)))
+					local a = vector.angleFromTo(srcViewX, srcViewY, vector.fromTo(px,py, self_cell2px(self,cx,cy)))
 					
 					--~ print(a, angleHRad)
 					
 					if a <= angleHRad then
+						-- profile.start("los 1 raster")
 						for x,y,cellNumInLine in geometry.raster_line_it(pcx,pcy,cx,cy) do
-							-- profile.start("los 1 sub step " .. cellNumInLine)
+							-- profile.start("los 1 sub step")
 							local k = self_cellKey(self, x,y)
 							if (v[k] or 0) <= 1 then 
 								if cellNumInLine > 0 then
 									-- view range
-									local d = vector_sqLenFromTo(px,py, self:cell2px(x,y))
+									local d = vector_sqLenFromTo(px,py, self_cell2px(self,x,y))
 									--~ print(d,range,px,py,x,y)
 									if d > range2 then free = false
 									-- collision
-									elseif self_isCollisionOnCellUseCache(self, x,y) then free = false end
+									elseif colFun(k, x,y) then free = false end
 								end
 								
 								if free or cellsUntilDark > 0 then 
-									if free then v[k] = 1 as[k] = 1
+									if free then 
+										as[k] = 1
+										v[k] = 1 
 									elseif cellsUntilDark > 0 then 
-										local f = math.max(v[k] or 0, 1)
-										if f > 0 then as[k] = 1 end
-										v[k] = f
+										as[k] = 1
+										v[k] = 1
 										cellsUntilDark = cellsUntilDark - 1
 									else
 										-- profile.stop()
@@ -205,6 +215,7 @@ LineOfSight = Sprite:extend
 							--~ print("free", free, x,y)
 							-- profile.stop()
 						end
+						-- profile.stop()
 					end
 					
 					-- profile.stop()
@@ -228,7 +239,8 @@ LineOfSight = Sprite:extend
 	end,
 	
 	cellKey = function (self, cx,cy)
-		return cx .. "_" .. cy
+		-- "int" for faster array table access
+		return self.scanline + cx + self.scanline * cy
 	end,
 	
 	isObjectVisible = function (self, o)
@@ -262,7 +274,14 @@ LineOfSight = Sprite:extend
 	end,
 
 	onUpdate = function (self, elapsed)
-		self:calculateVisibility()
+		if self.framesUntilUpdate <= 0 then
+			--~ print("UPDATE")
+			self:calculateVisibility()
+			self.framesUntilUpdate = self.updateEachNFrames
+		else
+			--~ print("SKIP")
+			self.framesUntilUpdate = self.framesUntilUpdate - 1
+		end		
 	end,
 
 	reset = function (self)
@@ -275,6 +294,8 @@ LineOfSight = Sprite:extend
 
 	onDraw = function (self, x, y)
 		if self.allVisible then return end
+		
+		-- profile.start("fos draw")
 		
 		love.graphics.setBlendMode( "alpha" )
 
@@ -312,5 +333,7 @@ LineOfSight = Sprite:extend
 			end
 			end
 		end
+		
+		-- profile.stop()
 	end,
 }

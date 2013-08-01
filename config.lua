@@ -56,6 +56,7 @@ config.AEShowTime = 4
 config.focusSpriteMaxRange = 2.5
 config.cellsUntilDark = 3
 config.cellSize = 40
+config.cellUpdateEachNFrames = 0
 config.characterViewRange = 800
 config.characterViewAngle = 150
 config.characterFeelRange = 80

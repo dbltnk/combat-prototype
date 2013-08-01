@@ -57,8 +57,8 @@ Projectile = Tile:extend
 			self.y = self.y + self.velocity.y * dt
 		end
 		
-		utils.vardump(self.start)
-		utils.vardump(self.target)
+		--~ utils.vardump(self.start)
+		--~ utils.vardump(self.target)
 				
 		-- this only displays the sprite
 		local goSelf = self
