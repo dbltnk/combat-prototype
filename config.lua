@@ -57,7 +57,7 @@ config.focusSpriteMaxRange = 2.5
 config.cellsUntilDark = 3
 config.cellSize = 40
 config.characterViewRange = 800
-config.characterViewAngle = 360
+config.characterViewAngle = 90
 config.textColor = {0.4,0.4,0.4}
 
 -- gamepad

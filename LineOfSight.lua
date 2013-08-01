@@ -11,6 +11,7 @@ LineOfSight = Sprite:extend
 	cell = config.cellSize,
 	
 	visibility = {},
+	alreadySeen = {},
 	
 	sourceOids = {},
 	
@@ -76,6 +77,7 @@ LineOfSight = Sprite:extend
 		-- profile.start("calculateVisibility")
 
 		local v = self.visibility
+		local as = self.alreadySeen
 		
 		local sx,sy = -the.view.translate.x, -the.view.translate.y
 		
@@ -133,9 +135,11 @@ LineOfSight = Sprite:extend
 								end
 								
 								if free or cellsUntilDark > 0 then 
-									if free then v[k] = 1
-									elseif cellsUntilDark >= 0 then 
-										v[k] = math.max(v[k] or 0, cellsUntilDark / cellsUntilDarkMax)
+									if free then v[k] = 1 as[k] = 1
+									elseif cellsUntilDark > 0 then 
+										local f = math.max(v[k] or 0, 1)
+										if f > 0 then as[k] = 1 end
+										v[k] = f
 										cellsUntilDark = cellsUntilDark - 1
 									else
 										-- profile.stop()
@@ -200,16 +204,19 @@ LineOfSight = Sprite:extend
 		
 		--~ print(sx,sy, c0x, c0y, c1x, c1y, cell)
 		
-		local gv = self.getVisibility
-		
 		if 
 			c0x > -math.huge and c0x < math.huge
 		then
 			for cx = c0x, c1x do
 			for cy = c0y, c1y do
+				local k = self:cellKey(cx,cy)
 				local px,py = self:cell2px(cx,cy)
+				local vb = self.visibility[k] or 0
+				local as = self.alreadySeen[k] or 0
+				local f = math.max(vb, as / 2)
+				
 				--~ print(cx, cy, px, py)
-				love.graphics.setColor(0,0,0,math.floor(255 * (1 - gv(self,px,py,cx,cy))))
+				love.graphics.setColor(0,0,0,math.floor(255 * (1 - f)))
 				love.graphics.rectangle("fill", px-sx,py-sy, cell,cell)
 			end
 			end
