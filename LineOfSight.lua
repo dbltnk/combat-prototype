@@ -94,7 +94,7 @@ LineOfSight = Sprite:extend
 			local self_cellKey = self.cellKey
 			local vector_sqLenFromTo = vector.sqLenFromTo
 			local self_isCollisionOnCell = self.isCollisionOnCell
-			local cellsUntilDarkMax = 4
+			local cellsUntilDarkMax = 2
 			
 			for cx = c0x, c1x do
 			for cy = c0y, c1y do
@@ -121,7 +121,7 @@ LineOfSight = Sprite:extend
 							if free or cellsUntilDark > 0 then 
 								if free then v[k] = 1
 								elseif cellsUntilDark >= 0 then 
-									v[k] = cellsUntilDark / cellsUntilDarkMax
+									v[k] = math.max(v[k] or 0, cellsUntilDark / cellsUntilDarkMax)
 									cellsUntilDark = cellsUntilDark - 1
 								else
 									-- profile.stop()
