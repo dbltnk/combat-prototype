@@ -214,8 +214,8 @@ server.on('connect', function(peer, data) {
 	
 	var ids = _.map(clients, function(c) { return c.id; });
 	
-	send_to_other({channel: "server", seed: seed, ids: ids, cmd: "join", id: client.id}, client, clients);
-	send_to_one({time: os.uptime(), channel: "server", ids: ids, cmd: "id", id: client.id, first: clients_count == 1, }, client);
+	send_to_other({channel: "server", ids: ids, cmd: "join", id: client.id}, client, clients);
+	send_to_one({time: os.uptime(), seed: seed, channel: "server", ids: ids, cmd: "id", id: client.id, first: clients_count == 1, }, client);
 
 }).on('disconnect', function(peer, data) {
     // Peer disconnected.
