@@ -92,7 +92,7 @@ TargetDummy = Animation:extend
 			x = self.x, y = self.y
 		}
 		
-		self.spawnX, self.spawnY = self.x, self.y 
+		self.spawnX, self.spawnY = 0, 0
 	end,
 	
 	gainPain = function (self, str)
@@ -229,6 +229,13 @@ TargetDummy = Animation:extend
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
+
+		if self.spawnX == 0 and self.spawnY == 0 then
+			local amount = #the.validPositions
+			local randomNumber = math.random(1,amount)
+			self.x, self.y = the.validPositions[randomNumber].x, the.validPositions[randomNumber].y	
+			self.spawnX, self.spawnY = self.x, self.y
+		end	
 
 		-- refocus needed?
 		if love.timer.getTime() - self.last_refocus_time > self.refocus_timeout then

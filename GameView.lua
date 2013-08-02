@@ -4,6 +4,7 @@ NetworkSyncedObjects = {
 	Npc = true,
 	Barrier = true,
 	Ressource = true,
+	ValidPosition = true,
 }
 		
 		
@@ -161,6 +162,7 @@ GameView = View:extend
 		-- object -> true map for easy remove, key contains ressource references
 		the.ressources = {}
 		the.ressourceObjects = {}
+		the.validPositions = {} 
 		--~ the.ressourceDisplay = RessourceDisplay:new{ x = 0, y = 0, text = "ressources uninitialized" }
 		--~ the.hud:add(the.ressourceDisplay) 
 		
