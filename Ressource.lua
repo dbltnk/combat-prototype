@@ -2,10 +2,10 @@ Ressource = Tile:extend
 {
 	class = "Ressource",
 
-	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "controller", "description", "deaths", },	
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "controller", "description", "deaths", "quality"},	
 	
 	sync_high = {"currentPain"},
-	sync_low = {"controller", "deaths"},
+	sync_low = {"controller", "deaths", "quality"},
 
 	owner = 0,
 
@@ -23,6 +23,7 @@ Ressource = Tile:extend
 	nextController = "",
 	targetable = true,
 	deaths = 0,
+	quality = 0,
 	
 	-- UiBar
 	painBar = nil,
@@ -64,6 +65,11 @@ Ressource = Tile:extend
 		end)
 		
 		the.ressourceObjects[self] = true
+		
+		local amount = #config.ressourceQualityTable
+		local randomNumber = math.random(1,amount)
+		self.quality = config.ressourceQualityTable[randomNumber]
+		table.remove(config.ressourceQualityTable, randomNumber)
 	end,
 	
 	gainPain = function (self, str, source_oid)
@@ -183,7 +189,7 @@ Ressource = Tile:extend
 		if self.controller then 
 			object_manager.visit(function(oid,obj) 
 				if obj.team and obj.team == self.controller then
-					object_manager.send(oid, "xp", config.xpPerRessourceTick, CHARACTER_XP_RESOURCE)
+					object_manager.send(oid, "xp", config.xpPerRessourceTick * self.quality, CHARACTER_XP_RESOURCE)
 				end
 			end)
 		end
@@ -201,9 +207,9 @@ Ressource = Tile:extend
 		if self.controller ~= "" then 
 			name = self.controller
 		end	
-		self.t.text = "Owned by: " .. name
+		self.t.text = "Lvl " .. self.quality .. " ressource \nOwned by: " .. name
 		self.t.x = self.x - self.width /4
-		self.t.y = self.y - self.t.height
+		self.t.y = self.y - self.t.height - 20
 		self.t.alpha = self.alpha
 		self.t.width = 120	
 		the.ressources[self.description] = name or "none"

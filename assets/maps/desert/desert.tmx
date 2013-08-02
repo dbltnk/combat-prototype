@@ -69,12 +69,12 @@
     <property name="description" value="Fort"/>
    </properties>
   </object>
-  <object name="Ressource" x="1228" y="78" width="64" height="64">
+  <object name="Ressource" x="1236" y="184" width="64" height="64">
    <properties>
     <property name="description" value="Mine"/>
    </properties>
   </object>
-  <object name="respawnpoint" x="1268" y="247">
+  <object name="respawnpoint" x="1291" y="408">
    <properties>
     <property name="_the" value="respawnpoint"/>
    </properties>

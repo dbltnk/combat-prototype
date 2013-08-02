@@ -33,6 +33,7 @@ config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * 
 config.strIncreaseFactor = 0.1 -- 10% stronger per lvl
 config.combatHealXP = 0.15 -- in % of damage / heal done
 config.crowdControlXP = 0.2 -- in % of duration in seconds
+config.ressourceQualityTable = {0.5, 0.5, 1, 2}
 
 -- tracking
 config.trackingOverTimeTimeout = 15
