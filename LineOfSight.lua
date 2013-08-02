@@ -311,6 +311,8 @@ LineOfSight = Sprite:extend
 		local mv = self.visibility
 		local mas = self.alreadySeen
 		
+		local r,g,b = unpack(config.lineOfSightColor)
+		
 		if 
 			c0x > -math.huge and c0x < math.huge
 		then
@@ -322,13 +324,17 @@ LineOfSight = Sprite:extend
 				local as = mas[k] or 0
 				local f = math.max(vb, as / 2)
 				
+				if vb > 0 then f = config.lineOfSightInSight
+				elseif as > 0 then f = config.lineOfSightOutOfSight
+				else f = config.lineOfSightUnknown end
+				
 				local of = m[k] or 0
 				
 				f = 0.4 * f + 0.6 * of
 				m[k] = f
 				
 				--~ print(cx, cy, px, py)
-				love.graphics.setColor(0,0,0,math.floor(255 * (1 - f)))
+				love.graphics.setColor(r,g,b, math.floor(255 * (1 - f)))
 				love.graphics.rectangle("fill", px-sx,py-sy, cell,cell)
 			end
 			end
