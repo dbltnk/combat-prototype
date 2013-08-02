@@ -208,8 +208,8 @@ PhaseManager = Sprite:extend
 			for _,o in pairs(l) do o:die() end
 			
 			-- recreate map objects
-			local mapFile = '/assets/maps/desert/desert.lua'
-			the.app.view:loadMap(mapFile, function (o) return o.name and NetworkSyncedObjects[o.name] end)
+                        print("MAP", the.mapFile)
+			the.app.view:loadMap(the.mapFile, function (o) return o.name and NetworkSyncedObjects[o.name] end)
 		elseif message_name == "force_next_phase" then
 			self:forceNextPhase()
 		end

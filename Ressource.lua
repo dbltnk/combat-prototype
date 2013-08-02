@@ -1,3 +1,7 @@
+
+local Ressource_usedIndex = {}
+
+
 Ressource = Tile:extend
 {
 	class = "Ressource",
@@ -63,13 +67,22 @@ Ressource = Tile:extend
 				track("resource_ot", self.oid, self.description, self.currentPain, self.controller)
 			end
 		end)
-		
-		the.ressourceObjects[self] = true
-		
-		local amount = #config.ressourceQualityTable
-		local randomNumber = math.random(1,amount)
+
+                local amount = #config.ressourceQualityTable
+
+                local count = 0
+                for k,v in pairs(Ressource_usedIndex) do count = count + 1 end
+                if count == amount then Ressource_usedIndex = {} end
+                
+                local randomNumber = nil
+                while true do
+                    randomNumber = math.random(1,amount)
+                    if not Ressource_usedIndex[randomNumber] then break end
+                end
+                Ressource_usedIndex[randomNumber] = true
 		self.quality = config.ressourceQualityTable[randomNumber]
-		table.remove(config.ressourceQualityTable, randomNumber)
+
+		the.ressourceObjects[self] = true
 	end,
 	
 	gainPain = function (self, str, source_oid)

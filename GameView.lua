@@ -91,13 +91,15 @@ GameView = View:extend
 		-- object -> true map for easy remove, key contains footstep references
 		the.footsteps = {}
 				
-		local mapFile = '/assets/maps/desert/desert.lua'
-		self:loadLayers(mapFile, true, {objects = true, })
+                local mapIdx = 1 + (network.seed % 3)
+		the.mapFile = '/assets/maps/desert/desert' .. mapIdx .. '.lua'
+                print("using map", the.mapFile)
+		self:loadLayers(the.mapFile, true, {objects = true, })
 		
 		local is_server = network.is_first and network.connected_client_count == 1
 		print("startup", network.is_first, network.connected_client_count)
 
-		self:loadMap(mapFile, function (o) return not (o.name and NetworkSyncedObjects[o.name]) end)
+		self:loadMap(the.mapFile, function (o) return not (o.name and NetworkSyncedObjects[o.name]) end)
 		
 		-- first client -> setup "new" world
 		if is_server then

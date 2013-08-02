@@ -198,6 +198,8 @@ function network.update (dt)
 						if m.channel == "server" then
 							if m.cmd == "id" then
 								network.client_id = m.id
+								network.seed = m.seed
+                                                                print("SEED", m.seed)
 								network.time = m.time
 								network.is_first = m.first
 								network.connected_client_id_map = {}

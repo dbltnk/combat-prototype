@@ -55,7 +55,7 @@ Cached = Class:extend
 	--		string
 
 	text = function (self, path)
-		assert(type(path) == 'string', 'path must be a string')
+		assert(type(path) == 'string', 'path must be a string but is a ' .. type(path))
 
 		if not self._library.text[path] then
 			self._library.text[path] = love.filesystem.read(path)
