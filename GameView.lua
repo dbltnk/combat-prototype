@@ -90,8 +90,15 @@ GameView = View:extend
 		
 		-- object -> true map for easy remove, key contains footstep references
 		the.footsteps = {}
+		
+		-- object -> true map for easy remove, key contains ressource references
+		the.ressources = {}
+		the.ressourceObjects = {}
+		the.validPositions = {} 
+		--~ the.ressourceDisplay = RessourceDisplay:new{ x = 0, y = 0, text = "ressources uninitialized" }
+		--~ the.hud:add(the.ressourceDisplay) 
 				
-                local mapIdx = 1 + (network.seed % 3)
+                local mapIdx = 1 + (network.seed % config.numberOfMaps)
 		the.mapFile = '/assets/maps/desert/desert' .. mapIdx .. '.lua'
                 print("using map", the.mapFile)
 		self:loadLayers(the.mapFile, true, {objects = true, })
@@ -160,13 +167,6 @@ GameView = View:extend
 		the.cursor = Cursor:new{ x = 0, y = 0 }
 		self.layers.topmost:add(LoveFramesCaller:new{})
 		self.layers.topmost:add(the.cursor)
-		
-		-- object -> true map for easy remove, key contains ressource references
-		the.ressources = {}
-		the.ressourceObjects = {}
-		the.validPositions = {} 
-		--~ the.ressourceDisplay = RessourceDisplay:new{ x = 0, y = 0, text = "ressources uninitialized" }
-		--~ the.hud:add(the.ressourceDisplay) 
 		
 		the.timerDisplay = TimerDisplay:new{ x = 0, y = 0 }
 		the.hud:add(the.timerDisplay)		
