@@ -97,8 +97,12 @@ GameView = View:extend
 		the.validPositions = {} 
 		--~ the.ressourceDisplay = RessourceDisplay:new{ x = 0, y = 0, text = "ressources uninitialized" }
 		--~ the.hud:add(the.ressourceDisplay) 
-				
-                local mapIdx = 1 + (network.seed % config.numberOfMaps)
+		
+		local mapIdx = 1 + (network.seed % config.numberOfMaps)		
+		if config.mapNumber ~= 0 and config.mapNumber then			
+			mapIdx = config.mapNumber            
+        end
+                
 		the.mapFile = '/assets/maps/desert/desert' .. mapIdx .. '.lua'
                 print("using map", the.mapFile)
 		self:loadLayers(the.mapFile, true, {objects = true, })
@@ -115,6 +119,11 @@ GameView = View:extend
 		
 		self.collision.visible = false
 		self.collision.static = true
+		
+		if self.cover then
+			self.cover.visible = false
+			self.cover.static = true
+		end
 		
 		-- specify render order
 		self:add(self.layers.management)
@@ -365,6 +374,8 @@ GameView = View:extend
 		
 		profile.start("update.displace")
 		
+		
+		
 		for dummy,v in pairs(the.targetDummies) do
 			self.collision:displace(dummy)
 			self.layers.characters:displace(dummy)
@@ -377,6 +388,9 @@ GameView = View:extend
 			self.layers.characters:displace(the.player)
 			self.landscape:subdisplace(the.player)
 			self.water:subdisplace(the.player)
+			if self.cover then
+				self.cover:collide(the.player)
+			end
 		end
 		
 		profile.stop()
