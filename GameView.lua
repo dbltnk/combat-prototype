@@ -5,6 +5,7 @@ NetworkSyncedObjects = {
 	Barrier = true,
 	Ressource = true,
 	ValidPosition = true,
+	Cover = true,
 }
 		
 		
@@ -97,6 +98,8 @@ GameView = View:extend
 		the.validPositions = {} 
 		--~ the.ressourceDisplay = RessourceDisplay:new{ x = 0, y = 0, text = "ressources uninitialized" }
 		--~ the.hud:add(the.ressourceDisplay) 
+		
+		the.covers = {}
 		
 		local mapIdx = 1 + (network.seed % config.numberOfMaps)		
 		if config.mapNumber ~= 0 and config.mapNumber then			
@@ -388,9 +391,6 @@ GameView = View:extend
 			self.layers.characters:displace(the.player)
 			self.landscape:subdisplace(the.player)
 			self.water:subdisplace(the.player)
-			if self.cover then
-				self.cover:collide(the.player)
-			end
 		end
 		
 		profile.stop()

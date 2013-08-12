@@ -206,6 +206,18 @@
     <property name="_the" value="barrier"/>
    </properties>
   </object>
+  <object name="Cover" x="804" y="1207" width="79" height="248">
+   <properties>
+    <property name="id" value="1"/>
+   </properties>
+  </object>
+  <object x="832" y="1312"/>
+  <object x="564" y="1351"/>
+  <object name="Cover" x="526" y="1228" width="79" height="248">
+   <properties>
+    <property name="id" value="2"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
   <object x="1866" y="2484" width="138" height="105"/>

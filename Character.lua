@@ -15,12 +15,12 @@ Character = Animation:extend
 
 	props = {"viewRange", "x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
 		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", 
-		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", "kills", },
+		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", "kills", "inCover", "coverLocation" },
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
 		"invul", "width", "height", "rotation", "dmgModified", "marked", "rooted", "snared", "mezzed", "stunned", "powerblocked",
-		"maxPainOverdrive", "viewRange"},	
+		"maxPainOverdrive", "viewRange", "inCover", "coverLocation"},	
 		
 	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths", "xp", "kills", },
 	
@@ -63,6 +63,8 @@ Character = Animation:extend
 	viewRange = config.characterViewRange,
 	feelRange = config.characterFeelRange,
 	viewAngle = config.characterViewAngle,
+	inCover = false, 
+	coverLocation = "", 
 
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -1090,6 +1092,7 @@ Character = Animation:extend
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
+		print("preupdate:" , self.inCover, self.coverLocation)	
 		self:refreshLevelBar()
 		
 		-- move back into map if outside
@@ -1175,6 +1178,23 @@ Character = Animation:extend
 			the.lineOfSight.sourceOids = list.keys(l)			
 			the.lineOfSight.allVisible = #the.lineOfSight.sourceOids == 0
 		end
+		
+		-- get rid over cover info after we're no longer in cover
+		self.inCover = false
+		self.coverLocation = ""
+		print("postupdate:" , self.inCover, self.coverLocation)
 	end,
+	
+	onCollide = function (self, other)
+		print("precollide:" , self.inCover, self.coverLocation)
+		if other.class == "Cover" then 
+			self.inCover = true
+			self.coverLocation = other.id
+		else
+			self.inCover = false
+			self.coverLocation = ""
+		end
+		print("postcollide:" , self.inCover, self.coverLocation)
+	end;
 
 }

@@ -2295,6 +2295,54 @@ return {
           properties = {
             ["_the"] = "barrier"
           }
+        },
+        {
+          name = "Cover",
+          type = "",
+          shape = "rectangle",
+          x = 804,
+          y = 1207,
+          width = 79,
+          height = 248,
+          visible = true,
+          properties = {
+            ["id"] = "1"
+          }
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 832,
+          y = 1312,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 564,
+          y = 1351,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "Cover",
+          type = "",
+          shape = "rectangle",
+          x = 526,
+          y = 1228,
+          width = 79,
+          height = 248,
+          visible = true,
+          properties = {
+            ["id"] = "2"
+          }
         }
       }
     },

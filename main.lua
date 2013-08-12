@@ -111,6 +111,7 @@ require 'Arrow'
 require 'ui' 
 require 'loveframes'
 require 'ValidPosition' 
+require 'Cover' 
 
 -- stats ----------------------------
 gameStats = storage.load("stats.json") or {}
