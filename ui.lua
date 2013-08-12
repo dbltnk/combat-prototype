@@ -266,9 +266,10 @@ NameLevel = Text:extend
 	weapon = "",
 	armor = "",
 	team = "",
+	cover = nil,
 	
 	onUpdate = function (self)
-		self.text = self.name .. " (" .. self.level .. ")\n" .. "[" .. self.team .. "]"
+		self.text = self.name .. " (" .. self.level .. ")\n" .. "[" .. self.team .. "]" .. (self.cover or "aaa")
 		self.x = self.x - 20
 		self.y = self.y - 30
 		--~ self:centerAround(self.x,self.y,"horizontal")

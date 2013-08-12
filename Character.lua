@@ -64,7 +64,6 @@ Character = Animation:extend
 	feelRange = config.characterFeelRange,
 	viewAngle = config.characterViewAngle,
 	coverLocation = nil, 
-	coverLocationLastFrame = nil, 
 	
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -202,7 +201,7 @@ Character = Animation:extend
 			x = self.x, y = self.y, 
 			level = self.level, name = self.name,
 			weapon = self.weapon, armor = self.armor, team = self.team,
-			width = self.pain_bar_size * 2,
+			width = self.pain_bar_size * 2, cover = self.coverLocation
 		}	
 		
 		self.charDebuffDisplay = CharDebuffDisplay:new{
@@ -1019,6 +1018,7 @@ Character = Animation:extend
 		self.nameLevel.level = self.level
 		self.nameLevel.team = self.team
 		self.nameLevel.alpha = self.alpha
+		self.nameLevel.cover = self.coverLocation
 		
 		self.charDebuffDisplay.x = self.x - 5
 		self.charDebuffDisplay.y = self.y - 8
@@ -1090,28 +1090,22 @@ Character = Animation:extend
 		self.markedSprite.x = self.x
 		self.markedSprite.y = self.y - 32
 		
+		self.alphaWithoutFog = 1
+		
+		self.coverLocation = self:calculateCoverOid()
+		--~ print(self.coverLocation, self:calculateCoverOid())
+
 		-- hide players who are in cover
-		print(the.player, self.team, the.player.team , self.coverLocationLastFrame, the.player.coverLocationLastFrame)
-		if the.player and self.team ~= the.player.team and self.coverLocationLastFrame ~= the.player.coverLocationLastFrame then	
+		--~ print(the.player , self.team, the.player.team , self.coverLocation , self.coverLocation, the.player.coverLocation)
+		if the.player and self.team ~= the.player.team and self.coverLocation and self.coverLocation ~= the.player.coverLocation then	
 			self.alphaWithoutFog = 0
 		end
 		
 		self:updateFogAlpha()
 
-                print(self:calculateCoverOid())
-	end,
-	
-	onBeginFrame = function (self)
-		self.coverLocation = nil
-	end,
-	
-	onEndFrame = function (self)
-		-- get rid over cover info after we're no longer in cover
-		self.coverLocationLastFrame = self.coverLocation
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
-		print("preupdate:" , self.coverLocation)	
 		self:refreshLevelBar()
 		
 		-- move back into map if outside
@@ -1197,18 +1191,8 @@ Character = Animation:extend
 			the.lineOfSight.sourceOids = list.keys(l)			
 			the.lineOfSight.allVisible = #the.lineOfSight.sourceOids == 0
 		end
-		print("postupdate:" , self.coverLocation)
 	end,
-	
-	onCollide = function (self, other)
-		print("precollide:" , self.coverLocation)
-		if other.class == "Cover" then 
-			self.coverLocation = other.id
-		end
-		print("postcollide:" , self.coverLocation)
-	end;
-
-        
+ 
         calculateCoverOid = function (self)
             local l = object_manager.find_where(function(oid,o)
                 return o.class == "Cover"
