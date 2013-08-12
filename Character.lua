@@ -1089,6 +1089,8 @@ Character = Animation:extend
 		self.markedSprite.y = self.y - 32
 		
 		self:updateFogAlpha()
+
+                print(self:calculateCoverOid())
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
@@ -1196,5 +1198,20 @@ Character = Animation:extend
 		end
 		print("postcollide:" , self.inCover, self.coverLocation)
 	end;
+
+        
+        calculateCoverOid = function (self)
+            local l = object_manager.find_where(function(oid,o)
+                return o.class == "Cover"
+            end)
+
+            for oid,o in pairs(l) do
+                local d = collision.minDistPointToAABB(self.x, self.y, o.x, o.y, o.x+o.width, o.y+o.height)
+                if d < self.width / 2 then return oid end
+            end
+
+            return nil
+        end,
+
 
 }
