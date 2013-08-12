@@ -100,6 +100,7 @@ GameView = View:extend
 		--~ the.hud:add(the.ressourceDisplay) 
 		
 		the.covers = {}
+		the.characters = {}
 		
 		local mapIdx = 1 + (network.seed % config.numberOfMaps)		
 		if config.mapNumber ~= 0 and config.mapNumber then			

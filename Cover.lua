@@ -35,7 +35,13 @@ Cover = Tile:extend
 	end,
 	
 	onUpdateBoth = function (self)	
-		self:collide(the.player)
+		if the.characters then
+			for object, bool in pairs(the.characters) do
+				if bool == true then
+					self:collide(object)
+				end
+			end
+		end
 	end,
 	
 	onDieBoth = function (self)

@@ -15,12 +15,12 @@ Character = Animation:extend
 
 	props = {"viewRange", "x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
 		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", 
-		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", "kills", "inCover", "coverLocation" },
+		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", "kills"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
 		"invul", "width", "height", "rotation", "dmgModified", "marked", "rooted", "snared", "mezzed", "stunned", "powerblocked",
-		"maxPainOverdrive", "viewRange", "inCover", "coverLocation"},	
+		"maxPainOverdrive", "viewRange"},	
 		
 	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths", "xp", "kills", },
 	
@@ -63,9 +63,9 @@ Character = Animation:extend
 	viewRange = config.characterViewRange,
 	feelRange = config.characterFeelRange,
 	viewAngle = config.characterViewAngle,
-	inCover = false, 
-	coverLocation = "", 
-
+	coverLocation = nil, 
+	coverLocationLastFrame = nil, 
+	
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
 	--~ "robe" or "hide_armor" or "splint_mail"
@@ -132,6 +132,7 @@ Character = Animation:extend
 		self:mixin(FogOfWarObject)
 		
 		the.app.view.layers.characters:add(self)
+		the.characters[self] = true
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
 		-- fill up skill bar with missing skills
 		for i = 1,8 do 
@@ -261,6 +262,7 @@ Character = Animation:extend
 			
 			onDie = function(self)
 				the.app.view.layers.characters:remove(self)
+				the.characters[self] = false
 			end,
 			
 			onUpdate = function(self)
@@ -1088,13 +1090,28 @@ Character = Animation:extend
 		self.markedSprite.x = self.x
 		self.markedSprite.y = self.y - 32
 		
+		-- hide players who are in cover
+		print(the.player, self.team, the.player.team , self.coverLocationLastFrame, the.player.coverLocationLastFrame)
+		if the.player and self.team ~= the.player.team and self.coverLocationLastFrame ~= the.player.coverLocationLastFrame then	
+			self.alphaWithoutFog = 0
+		end
+		
 		self:updateFogAlpha()
 
                 print(self:calculateCoverOid())
 	end,
 	
+	onBeginFrame = function (self)
+		self.coverLocation = nil
+	end,
+	
+	onEndFrame = function (self)
+		-- get rid over cover info after we're no longer in cover
+		self.coverLocationLastFrame = self.coverLocation
+	end,
+	
 	onUpdateLocal = function (self, elapsed)
-		print("preupdate:" , self.inCover, self.coverLocation)	
+		print("preupdate:" , self.coverLocation)	
 		self:refreshLevelBar()
 		
 		-- move back into map if outside
@@ -1180,23 +1197,15 @@ Character = Animation:extend
 			the.lineOfSight.sourceOids = list.keys(l)			
 			the.lineOfSight.allVisible = #the.lineOfSight.sourceOids == 0
 		end
-		
-		-- get rid over cover info after we're no longer in cover
-		self.inCover = false
-		self.coverLocation = ""
-		print("postupdate:" , self.inCover, self.coverLocation)
+		print("postupdate:" , self.coverLocation)
 	end,
 	
 	onCollide = function (self, other)
-		print("precollide:" , self.inCover, self.coverLocation)
+		print("precollide:" , self.coverLocation)
 		if other.class == "Cover" then 
-			self.inCover = true
 			self.coverLocation = other.id
-		else
-			self.inCover = false
-			self.coverLocation = ""
 		end
-		print("postcollide:" , self.inCover, self.coverLocation)
+		print("postcollide:" , self.coverLocation)
 	end;
 
         
