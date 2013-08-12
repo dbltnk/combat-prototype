@@ -1094,11 +1094,17 @@ Character = Animation:extend
 		
 		self.coverLocation = self:calculateCoverOid()
 		--~ print(self.coverLocation, self:calculateCoverOid())
-
 		-- hide players who are in cover
 		--~ print(the.player , self.team, the.player.team , self.coverLocation , self.coverLocation, the.player.coverLocation)
+		
 		if the.player and self.team ~= the.player.team and self.coverLocation and self.coverLocation ~= the.player.coverLocation then	
 			self.alphaWithoutFog = 0
+		end
+		
+		for char, _ in pairs(the.characters) do
+			if self.coverLocation == char.coverLocation and self.team ~= char.team then
+				self.alphaWithoutFog = 1
+			end
 		end
 		
 		self:updateFogAlpha()
