@@ -89,7 +89,15 @@ Skill = Class:extend
 				if self:freezeMovementDuringCasting() then player:unfreezeMovement() end
 				if player.interrupted == false then			
 					--print("SKILL", self.nr, "REALLY USE")
-					playSound(self.definition.sound or '/assets/audio/missing.wav', audio.volume, 'short')
+					
+					--~ playSound(self.definition.sound or '/assets/audio/missing.wav', audio.volume, 'short')
+					local sfx = self.definition.sound or '/assets/audio/missing.wav'
+					if the.characters and the.player then
+						for player, _ in pairs(the.characters) do
+							object_manager.send(player.oid, "play_sound", sfx, the.player.oid)
+						end
+					end
+									
 					-- update view pos
 					if player.readInput then
 						local ipt = player:readInput()

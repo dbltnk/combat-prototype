@@ -631,7 +631,10 @@ Character = Animation:extend
 				self.marked = true
 			self:after(duration, function()
 				self.marked = false
-			end)						
+			end)
+		elseif message_name == "play_sound" then
+			local sfx, source_oid = ...
+			playSound(sfx, audio.volume, 'short')						
 		end	
 	end,
 	
