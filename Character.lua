@@ -637,7 +637,7 @@ Character = Animation:extend
 			local sfx, loudness, source_oid = ...
 			if self.oid == the.player.oid then
 				playSound(sfx, audio.volume * loudness, 'short')		
-				print("played", self.oid, source_oid)
+				--~ print("played", self.oid, source_oid)
 			end				
 		end	
 	end,
