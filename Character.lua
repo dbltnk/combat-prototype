@@ -132,7 +132,7 @@ Character = Animation:extend
 		
 		the.app.view.layers.characters:add(self)
 		the.characters[self] = true
-				print(debug.traceback())
+				--~ print(debug.traceback())
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
 		-- fill up skill bar with missing skills
 		for i = 1,8 do 
