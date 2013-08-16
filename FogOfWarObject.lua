@@ -24,5 +24,6 @@ FogOfWarObject = {
 	
 	onMixin = function (self)
 		self.alphaWithoutFog = 1
+                self:updateFogAlpha()
 	end,
 }
