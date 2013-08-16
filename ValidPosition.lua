@@ -25,7 +25,7 @@ ValidPosition = Tile:extend
 	end,
 	
 	onDieBoth = function (self)
-		the.validPositions[self] = false
+		the.validPositions[self] = nil
 		the.app.view.layers.ground:remove(self)		
 	end,
 }

@@ -68,6 +68,7 @@ config.lineOfSightColor = {32,32,32} -- 0 to 255
 config.lineOfSightUnknown = 0
 config.lineOfSightOutOfSight = 0.65
 config.lineOfSightInSight = 1
+config.audioRange = config.characterViewRange * 1.5
 
 -- gamepad
 config.gamepad_cursor_speed_near = 300

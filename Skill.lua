@@ -93,8 +93,16 @@ Skill = Class:extend
 					--~ playSound(self.definition.sound or '/assets/audio/missing.wav', audio.volume, 'short')
 					local sfx = self.definition.sound or '/assets/audio/missing.wav'
 					if the.characters and the.player then
-						for player, _ in pairs(the.characters) do
-							object_manager.send(player.oid, "play_sound", sfx, the.player.oid)
+						for player, bool in pairs(the.characters) do
+								--~ print(vector.lenFromTo(the.player.x, the.player.y, player.x, player.y), config.audioRange)
+								local distance = vector.lenFromTo(the.player.x, the.player.y, player.x, player.y)
+								if distance <= config.audioRange then
+									local loudness = 0
+									--~ print("pre", distance, loudness)
+									loudness = utils.mapIntoRange(distance, 0, config.audioRange, 1, 0)
+									--~ print("post", distance, loudness)
+									object_manager.send(player.oid, "play_sound", sfx, loudness, the.player.oid)
+								end
 						end
 					end
 									

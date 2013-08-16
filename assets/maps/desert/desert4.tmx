@@ -45,7 +45,7 @@
  </layer>
  <layer name="vegetation" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt3NtqwzAMgOFA8zQ7wroDbN120/d/i13uHWYzAm6wFTWWY9f9PwjtylhWObKwHDIMQD/ux2F4cMfjePoedby42L+64208fY86Pl3sv9zxPZ6+BwAAAAAAaBU9vrbQ46trng/0+OoiH9pCPgAAAAAAAAAAAFwO7gWoJxZ79j7ricWevc96iD0AAAAAoFf04+pIPQOpRj+OayD9DKQaPSF6sm09A6n2+YFeHXf5B+ykYnwQDpSTij/qIP5tYSzawngAAAD072Ychlt33NEfbcKTG4e9O54Zj+LCvbMwD8J10Lv7+cN/dsXjIcVJE0MN//vh3lkqD6QezjX0d6Q4aWOoPU+4d5bKgzDe8x6nf+29vkhx0sZQex5Nfkl9f6/3+iLFSRtDzTk8bSylPa/W68tPxnwqxcnyepyu79xYxq6N1urJb+Z4pOJkFUNvac7X7vuG10aPdUT6TlYx9KQcO2cfPrw2pr+5LzgmW9/bJsXJKoZebo7FzjX9zZIxm9/bllMbNKQ4WdVNi315aexL3g84v7ctpzacw2rNFxOORSyumjxL5eNx19/9gJZrPukc0+uaXEmN2fR5T7Xdcs2nUWK+v4Q1orb2pNZ8peYwy/l++l9aXyN6mtqTWvOVnMPCXFyau5bGvrW1YK7Umm/rOUz6/2J6qheh1Pey6lvlip3Xf3YJ9WKN0n2rtVI1/5jI51qs14el+1ZrzWv+IXEPfm1brA8t+1ZrSWu8rcaidG9Ey7JvZaXGPu1WvZElrczNPWkl1/CvlVy7Blz7beHaB2zwbBMbVjWCZ5vYsKoRve1l1mA1xzBX2bCaY5irbFjNMcxVwPn+ANiCipI=
+   eJztwTEBAAAAwqD1T+1lC6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAbnEAAAQ==
   </data>
  </layer>
  <objectgroup name="objects" width="100" height="100">
@@ -69,7 +69,7 @@
     <property name="description" value="Mine"/>
    </properties>
   </object>
-  <object name="ValidPosition" x="141" y="2745" width="23" height="20"/>
+  <object name="ValidPosition" x="356" y="2853" width="23" height="20"/>
   <object name="ValidPosition" x="228" y="2866" width="23" height="20"/>
   <object name="ValidPosition" x="171" y="3013" width="23" height="20"/>
   <object name="ValidPosition" x="246" y="3089" width="23" height="20"/>
@@ -88,8 +88,6 @@
   <object name="ValidPosition" x="2025" y="2996" width="23" height="20"/>
   <object name="ValidPosition" x="1037" y="2166" width="23" height="20"/>
   <object name="ValidPosition" x="1115" y="2148" width="23" height="20"/>
-  <object name="ValidPosition" x="1293" y="2184" width="23" height="20"/>
-  <object name="ValidPosition" x="1235" y="2178" width="23" height="20"/>
   <object name="ValidPosition" x="1493" y="2212" width="23" height="20"/>
   <object name="ValidPosition" x="1585" y="2304" width="23" height="20"/>
   <object name="ValidPosition" x="1685" y="2330" width="23" height="20"/>
@@ -138,7 +136,7 @@
   <object name="ValidPosition" x="1617" y="1204" width="23" height="20"/>
   <object name="ValidPosition" x="1727" y="1272" width="23" height="20"/>
   <object name="ValidPosition" x="1467" y="1408" width="23" height="20"/>
-  <object name="ValidPosition" x="1145" y="1454" width="23" height="20"/>
+  <object name="ValidPosition" x="1174" y="1407" width="23" height="20"/>
   <object name="ValidPosition" x="191" y="1468" width="23" height="20"/>
   <object name="ValidPosition" x="265" y="1390" width="23" height="20"/>
   <object name="ValidPosition" x="395" y="1470" width="23" height="20"/>
@@ -206,16 +204,58 @@
     <property name="_the" value="barrier"/>
    </properties>
   </object>
-  <object name="Cover" x="804" y="1207" width="79" height="248">
+  <object x="832" y="1312"/>
+  <object x="564" y="1351"/>
+  <object name="Cover" x="93" y="2152" width="246" height="665">
    <properties>
     <property name="id" value="1"/>
    </properties>
   </object>
-  <object x="832" y="1312"/>
-  <object x="564" y="1351"/>
-  <object name="Cover" x="526" y="1228" width="79" height="248">
+  <object name="Cover" x="1159" y="2131" width="232" height="75">
+   <properties>
+    <property name="id" value="5"/>
+   </properties>
+  </object>
+  <object name="Cover" x="89" y="1695" width="535" height="64">
+   <properties>
+    <property name="id" value="3"/>
+   </properties>
+  </object>
+  <object name="Cover" x="806" y="1462" width="518" height="54">
+   <properties>
+    <property name="id" value="4"/>
+   </properties>
+  </object>
+  <object name="Cover" x="930" y="2478" width="170" height="79">
    <properties>
     <property name="id" value="2"/>
+   </properties>
+  </object>
+  <object name="ValidPosition" x="1383" y="2050" width="23" height="20"/>
+  <object name="ValidPosition" x="1325" y="2044" width="23" height="20"/>
+  <object name="Cover" x="1569" y="2560" width="135" height="98">
+   <properties>
+    <property name="id" value="6"/>
+   </properties>
+  </object>
+  <object name="Cover" x="1958" y="1457" width="852" height="79">
+   <properties>
+    <property name="id" value="7"/>
+   </properties>
+  </object>
+  <object name="Cover" x="2981" y="2919" width="136" height="138">
+   <properties>
+    <property name="id" value="7"/>
+   </properties>
+  </object>
+  <object name="Cover" x="1666" y="537" width="124" height="101">
+   <properties>
+    <property name="id" value="7"/>
+   </properties>
+  </object>
+  <object name="Cover" x="1823" y="440" width="96" height="77">
+   <properties>
+    <property name="id" value="7"/>
    </properties>
   </object>
  </objectgroup>
@@ -274,15 +314,10 @@
   <object x="1284" y="1961" width="22" height="24"/>
   <object x="139" y="1324" width="37" height="36"/>
   <object name="ValidPosition" x="2239" y="1685" width="23" height="20"/>
-  <object name="ValidPosition" x="2307" y="1769" width="23" height="20"/>
   <object name="ValidPosition" x="2451" y="1615" width="23" height="20"/>
-  <object name="ValidPosition" x="2483" y="1893" width="23" height="20"/>
   <object name="ValidPosition" x="2225" y="1953" width="23" height="20"/>
-  <object name="ValidPosition" x="2609" y="1745" width="23" height="20"/>
-  <object name="ValidPosition" x="2591" y="1865" width="23" height="20"/>
   <object name="ValidPosition" x="2317" y="1579" width="23" height="20"/>
-  <object name="ValidPosition" x="2359" y="1835" width="23" height="20"/>
-  <object name="respawnpoint" x="260" y="2408">
+  <object name="respawnpoint" x="435" y="2412">
    <properties>
     <property name="_the" value="respawnpoint"/>
    </properties>
@@ -290,6 +325,16 @@
   <object name="spawnpoint" x="716" y="1304">
    <properties>
     <property name="_the" value="spawnpoint"/>
+   </properties>
+  </object>
+  <object name="ValidPosition" x="2374" y="2001" width="23" height="20"/>
+  <object name="ValidPosition" x="2426" y="2067" width="23" height="20"/>
+  <object name="ValidPosition" x="2550" y="2125" width="23" height="20"/>
+  <object name="ValidPosition" x="2658" y="2097" width="23" height="20"/>
+  <object name="ValidPosition" x="2676" y="1977" width="23" height="20"/>
+  <object name="Cover" x="2396" y="1711" width="232" height="230">
+   <properties>
+    <property name="id" value="5"/>
    </properties>
   </object>
  </objectgroup>

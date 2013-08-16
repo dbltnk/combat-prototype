@@ -132,6 +132,7 @@ Character = Animation:extend
 		
 		the.app.view.layers.characters:add(self)
 		the.characters[self] = true
+				print(debug.traceback())
 		self.maxPain = config.maxPain * (1 + config.strIncreaseFactor * self.level)
 		-- fill up skill bar with missing skills
 		for i = 1,8 do 
@@ -261,7 +262,6 @@ Character = Animation:extend
 			
 			onDie = function(self)
 				the.app.view.layers.characters:remove(self)
-				the.characters[self] = false
 			end,
 			
 			onUpdate = function(self)
@@ -389,6 +389,7 @@ Character = Animation:extend
 	
 	onDieBoth = function (self)
 		the.app.view.layers.characters:remove(self)
+		the.characters[self] = nil
 		self.painBar:die()
 		if self.reminder then self.reminder:die() end
 		if self.markedSprite then self.markedSprite:die() end
@@ -633,8 +634,11 @@ Character = Animation:extend
 				self.marked = false
 			end)
 		elseif message_name == "play_sound" then
-			local sfx, source_oid = ...
-			playSound(sfx, audio.volume, 'short')						
+			local sfx, loudness, source_oid = ...
+			if self.oid == the.player.oid then
+				playSound(sfx, audio.volume * loudness, 'short')		
+				print("played", self.oid, source_oid)
+			end				
 		end	
 	end,
 	
