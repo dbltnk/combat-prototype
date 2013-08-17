@@ -45,7 +45,7 @@
  </layer>
  <layer name="vegetation" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt3EtOwzAQgOFIzWl4SpSHVApsev9bsOQO2ItIbmQ7TTLOjJ3/kyxKFwWNMzONp2rXAe147Lvuya3n/voxdLy52L+79dFfP4aOLxf7b7d++uvHAAAAAAAAVnHGZwtnfLrG+cAZny7ywRbyAQAAAAAAAAAAoB58FkBPLPbMPvXEYs/sUw+xBwAAAAC0ivM4HanvQNI4j+MaSH8HksaZEGeytr4DSfvvA626HNYvyEnF+JxZKCcVf+gg/rawF7awHwAAAO2767vu3q0HzkdNeHH7cHTrlf0oLpydhXkQ3ged3O+f/jn2oygf83B2lsqD3BkO5ztyfBzD2VkqD8J4j884/c/a+4uV+fo4lqnrPHfu79XeXyzM1+fGMjfzst5ffifqqYX5+nB9r41lLL+s9ZM/Y/9PzFTNv3XuG+ZX7X1EU65OzZnDh/k1vOax4J5Y6b3S1tap2H4Nr1kyZuPeO9UbaiAxl8/lT8n3K+PeW0NvmBLuRSyut9SqVE27HGy8X6lN+F5oSa6k9mx4nt6+XIl6X8M9otXeI1nvhzyzfo/oWe09Yb2fql1Tdc3avWDrUvGmX+iI7Yd/roZ+0ZJUzx/OfK30C6s9Wtq4558Tn8HXZrVHS8vd4221F3u59pfQmNPu5drfI3LNFnJtO1z7tnDtAzJanf9uTapHWPjsVQukegSzzPWkagy1SoZUjaFWyZCqMdQqYL5/p/9jtg==
+   eJzt3EtOwzAQgOFIzWl4SpSHBC1sev9bsOQO2ItITuRH00wyY+f/JIvSRUFjj6f2VO06oB2Pfdc9ufHcjx9Dx5uL/bsbH/34MXScXey/3fjpx48BAAAAAACs4o7PFu74dE3zgTs+XeSDLeQDAAAAAAAAAABAPfgsgJ5Y7Ol96onFnt6nHmIPAAAAAGgV93E6Ut+BpHEfxxpIfweSxp0Qd7K2vgNJ++8Drboclg/IScX4lBlYTyr+0EH8bWEubGE+AAAA2nfXd929Gw/cj5rw4ubh6MYr87G6sHcW5kF4Dvp0v3/555iPVfmYh72zVB7k7nC435Hj4xj2zlJ5EMZ7esfpf9ZeX6z016exTK3z3L2/V3t9sdBfnxvLXM/Len35LeynFvrrw/peGstYflmrJ3/G/p+Y0p5/bd83zK/a64im3D41pw8f5tfwmscV58RK7ZW2dJ+KzdfwmmvGbFp7S7WhBhJ9+Vz+rPl+ZVp7a6gNJeFcxOJ6zV6V2tMuBxvvV2oTvhe6JVdSczY8T223pYYzYgu1p2TIM+tnRM9q7TkHMSvtXaV9zdpZsHWpeFMvdMTmwz9XQ71oSeqMN9z5WqkXe6jR3vSMd0p8Bl+b1RotLXfG22ou9rL2b6HRp93L2t8jcs0Wcm07rH1bWPuAjFb7v1uTqhEWPnvVAqkaQS9zOak9hr1KhtQew14lQ2qPYa8C5vsH45lh7Q==
   </data>
  </layer>
  <objectgroup name="objects" width="100" height="100">
@@ -129,8 +129,6 @@
   <object name="ValidPosition" x="2609" y="2110" width="23" height="20"/>
   <object name="ValidPosition" x="2691" y="1926" width="23" height="20"/>
   <object name="ValidPosition" x="2867" y="2050" width="23" height="20"/>
-  <object name="ValidPosition" x="2975" y="2022" width="23" height="20"/>
-  <object name="ValidPosition" x="2993" y="1902" width="23" height="20"/>
   <object name="ValidPosition" x="2451" y="808" width="23" height="20"/>
   <object name="ValidPosition" x="2453" y="934" width="23" height="20"/>
   <object name="ValidPosition" x="2457" y="1080" width="23" height="20"/>
@@ -168,49 +166,6 @@
   <object name="ValidPosition" x="315" y="1282" width="23" height="20"/>
   <object name="ValidPosition" x="397" y="1220" width="23" height="20"/>
   <object name="ValidPosition" x="129" y="1464" width="23" height="20"/>
-  <object name="TargetDummy" x="1206" y="1847" width="23" height="20"/>
-  <object name="TargetDummy" x="1024" y="1835" width="23" height="20"/>
-  <object name="TargetDummy" x="972" y="1796" width="23" height="20"/>
-  <object name="TargetDummy" x="1061" y="1827" width="23" height="20"/>
-  <object name="TargetDummy" x="1092" y="1682" width="23" height="20"/>
-  <object name="TargetDummy" x="1067" y="1846" width="23" height="20"/>
-  <object name="TargetDummy" x="927" y="1844" width="23" height="20"/>
-  <object name="TargetDummy" x="979" y="1821" width="23" height="20"/>
-  <object name="TargetDummy" x="1209" y="1866" width="23" height="20"/>
-  <object name="TargetDummy" x="1101" y="1849" width="23" height="20"/>
-  <object name="TargetDummy" x="1112" y="1757" width="23" height="20"/>
-  <object name="TargetDummy" x="982" y="1798" width="23" height="20"/>
-  <object name="TargetDummy" x="1123" y="1782" width="23" height="20"/>
-  <object name="TargetDummy" x="1076" y="1696" width="23" height="20"/>
-  <object name="TargetDummy" x="1092" y="1743" width="23" height="20"/>
-  <object name="TargetDummy" x="1027" y="1878" width="23" height="20"/>
-  <object name="TargetDummy" x="1090" y="1814" width="23" height="20"/>
-  <object name="TargetDummy" x="1076" y="1801" width="23" height="20"/>
-  <object name="TargetDummy" x="1082" y="1730" width="23" height="20"/>
-  <object name="TargetDummy" x="1070" y="1792" width="23" height="20"/>
-  <object name="TargetDummy" x="967" y="1745" width="23" height="20"/>
-  <object name="TargetDummy" x="995" y="1780" width="23" height="20"/>
-  <object name="TargetDummy" x="1062" y="1853" width="23" height="20"/>
-  <object name="TargetDummy" x="1060" y="1702" width="23" height="20"/>
-  <object name="TargetDummy" x="996" y="1780" width="23" height="20"/>
-  <object name="TargetDummy" x="1055" y="1855" width="23" height="20"/>
-  <object name="TargetDummy" x="1149" y="1716" width="23" height="20"/>
-  <object name="TargetDummy" x="1092" y="1723" width="23" height="20"/>
-  <object name="TargetDummy" x="980" y="1769" width="23" height="20"/>
-  <object name="TargetDummy" x="967" y="1683" width="23" height="20"/>
-  <object name="TargetDummy" x="1178" y="1834" width="23" height="20"/>
-  <object name="TargetDummy" x="936" y="1784" width="23" height="20"/>
-  <object name="TargetDummy" x="1165" y="1878" width="23" height="20"/>
-  <object name="TargetDummy" x="927" y="1882" width="23" height="20"/>
-  <object name="TargetDummy" x="1236" y="1716" width="23" height="20"/>
-  <object name="TargetDummy" x="1013" y="1736" width="23" height="20"/>
-  <object name="TargetDummy" x="926" y="1678" width="23" height="20"/>
-  <object name="TargetDummy" x="1128" y="1747" width="23" height="20"/>
-  <object name="TargetDummy" x="1085" y="1674" width="23" height="20"/>
-  <object name="TargetDummy" x="1214" y="1831" width="23" height="20"/>
-  <object name="TargetDummy" x="997" y="1685" width="23" height="20"/>
-  <object name="TargetDummy" x="894" y="1806" width="23" height="20"/>
-  <object name="TargetDummy" x="1130" y="1651" width="23" height="20"/>
   <object name="ValidPosition" x="365" y="400" width="23" height="20"/>
   <object name="ValidPosition" x="361" y="462" width="23" height="20"/>
   <object name="ValidPosition" x="467" y="422" width="23" height="20"/>
@@ -225,6 +180,61 @@
     <property name="_the" value="respawnpoint"/>
    </properties>
   </object>
+  <object name="Cover" x="1622" y="99" width="262" height="117"/>
+  <object name="Cover" x="2566" y="1472" width="244" height="69"/>
+  <object name="Cover" x="1863" y="2250" width="208" height="175"/>
+  <object name="Cover" x="228" y="2371" width="188" height="183"/>
+  <object name="TargetDummy" x="627" y="2134" width="23" height="20"/>
+  <object name="TargetDummy" x="536" y="2040" width="23" height="20"/>
+  <object name="TargetDummy" x="723" y="2038" width="23" height="20"/>
+  <object name="TargetDummy" x="580" y="2025" width="23" height="20"/>
+  <object name="TargetDummy" x="597" y="1941" width="23" height="20"/>
+  <object name="TargetDummy" x="701" y="2105" width="23" height="20"/>
+  <object name="TargetDummy" x="728" y="2003" width="23" height="20"/>
+  <object name="TargetDummy" x="655" y="2111" width="23" height="20"/>
+  <object name="TargetDummy" x="527" y="2100" width="23" height="20"/>
+  <object name="TargetDummy" x="662" y="2109" width="23" height="20"/>
+  <object name="TargetDummy" x="836" y="1972" width="23" height="20"/>
+  <object name="TargetDummy" x="661" y="2083" width="23" height="20"/>
+  <object name="TargetDummy" x="670" y="2048" width="23" height="20"/>
+  <object name="TargetDummy" x="806" y="2103" width="23" height="20"/>
+  <object name="TargetDummy" x="690" y="2070" width="23" height="20"/>
+  <object name="TargetDummy" x="676" y="1952" width="23" height="20"/>
+  <object name="TargetDummy" x="494" y="2062" width="23" height="20"/>
+  <object name="TargetDummy" x="567" y="1939" width="23" height="20"/>
+  <object name="TargetDummy" x="712" y="2013" width="23" height="20"/>
+  <object name="TargetDummy" x="749" y="1972" width="23" height="20"/>
+  <object name="TargetDummy" x="685" y="1930" width="23" height="20"/>
+  <object name="TargetDummy" x="579" y="2077" width="23" height="20"/>
+  <object name="TargetDummy" x="613" y="1992" width="23" height="20"/>
+  <object name="TargetDummy" x="660" y="1958" width="23" height="20"/>
+  <object name="TargetDummy" x="692" y="1938" width="23" height="20"/>
+  <object name="TargetDummy" x="765" y="2134" width="23" height="20"/>
+  <object name="TargetDummy" x="567" y="2001" width="23" height="20"/>
+  <object name="TargetDummy" x="624" y="2091" width="23" height="20"/>
+  <object name="TargetDummy" x="676" y="2057" width="23" height="20"/>
+  <object name="TargetDummy" x="692" y="1999" width="23" height="20"/>
+  <object name="TargetDummy" x="778" y="2090" width="23" height="20"/>
+  <object name="TargetDummy" x="730" y="1907" width="23" height="20"/>
+  <object name="TargetDummy" x="582" y="2054" width="23" height="20"/>
+  <object name="TargetDummy" x="692" y="1979" width="23" height="20"/>
+  <object name="TargetDummy" x="814" y="2087" width="23" height="20"/>
+  <object name="TargetDummy" x="809" y="2122" width="23" height="20"/>
+  <object name="TargetDummy" x="596" y="2036" width="23" height="20"/>
+  <object name="TargetDummy" x="526" y="1934" width="23" height="20"/>
+  <object name="TargetDummy" x="667" y="2102" width="23" height="20"/>
+  <object name="TargetDummy" x="595" y="2036" width="23" height="20"/>
+  <object name="TargetDummy" x="527" y="2138" width="23" height="20"/>
+  <object name="TargetDummy" x="572" y="2052" width="23" height="20"/>
+  <object name="TargetDummy" x="682" y="1986" width="23" height="20"/>
+  <object name="Cover" x="960" y="1661" width="504" height="103"/>
+  <object name="Cover" x="642" y="1557" width="92" height="129"/>
+  <object name="Cover" x="968" y="2489" width="129" height="73"/>
+  <object name="Cover" x="856" y="3076" width="597" height="65"/>
+  <object name="Cover" x="1856" y="712" width="85" height="625"/>
+  <object name="ValidPosition" x="2828" y="1946" width="23" height="20"/>
+  <object name="ValidPosition" x="2846" y="1826" width="23" height="20"/>
+  <object name="Cover" x="3030" y="1804" width="77" height="349"/>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
   <object x="1866" y="2484" width="138" height="105"/>

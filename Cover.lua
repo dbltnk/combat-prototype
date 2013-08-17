@@ -23,7 +23,8 @@ Cover = Tile:extend
 		
 		drawDebugWrapper(self)
 		the.covers[self] = true
-		print(self.oid, self.visible, self.alpha, self.image)
+		
+		-- just a hack to make things visible
 		self.alpha = 1
 	end,
 	
