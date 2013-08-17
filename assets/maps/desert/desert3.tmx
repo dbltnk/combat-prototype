@@ -103,8 +103,6 @@
   <object name="ValidPosition" x="233" y="1886" width="23" height="20"/>
   <object name="ValidPosition" x="169" y="1992" width="23" height="20"/>
   <object name="ValidPosition" x="337" y="1748" width="23" height="20"/>
-  <object name="ValidPosition" x="2125" y="1614" width="23" height="20"/>
-  <object name="ValidPosition" x="2083" y="1680" width="23" height="20"/>
   <object name="ValidPosition" x="1985" y="1902" width="23" height="20"/>
   <object name="ValidPosition" x="1767" y="1898" width="23" height="20"/>
   <object name="ValidPosition" x="1619" y="1764" width="23" height="20"/>
@@ -211,17 +209,31 @@
     <property name="_the" value="barrier"/>
    </properties>
   </object>
-  <object name="spawnpoint" x="1364" y="388">
-   <properties>
-    <property name="_the" value="spawnpoint"/>
-   </properties>
-  </object>
   <object name="respawnpoint" x="1172" y="2668">
    <properties>
     <property name="_the" value="respawnpoint"/>
    </properties>
   </object>
-  <object name="Cover" x="2472" y="1720" width="256" height="236"/>
+  <object name="Cover" x="2411" y="1765" width="535" height="88"/>
+  <object name="Cover" x="2496" y="1989" width="471" height="82"/>
+  <object name="Cover" x="3008" y="895" width="170" height="91"/>
+  <object name="Cover" x="2760" y="62" width="205" height="152"/>
+  <object name="Cover" x="60" y="780" width="399" height="88"/>
+  <object name="Cover" x="60" y="74" width="156" height="140"/>
+  <object name="spawnpoint" x="1227" y="464">
+   <properties>
+    <property name="_the" value="spawnpoint"/>
+   </properties>
+  </object>
+  <object name="Cover" x="1495" y="139" width="80" height="276"/>
+  <object name="Cover" x="495" y="1454" width="271" height="82"/>
+  <object name="Cover" x="707" y="2012" width="232" height="198"/>
+  <object name="Cover" x="849" y="2957" width="438" height="167"/>
+  <object name="ValidPosition" x="1874" y="1926" width="23" height="20"/>
+  <object name="ValidPosition" x="1916" y="1860" width="23" height="20"/>
+  <object name="Cover" x="1964" y="1485" width="326" height="101"/>
+  <object name="Cover" x="1867" y="712" width="74" height="373"/>
+  <object name="Cover" x="1955" y="418" width="150" height="131"/>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
   <object x="1866" y="2484" width="138" height="105"/>
