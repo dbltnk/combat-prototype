@@ -244,7 +244,7 @@ Character = Animation:extend
 			
 			sequences = 
 			{
-				incapacitated = { frames = {1}, fps = config.animspeed },
+				incapacitated = { frames = {7}, fps = config.animspeed },
 				walk = { frames = {7, 8, 9}, fps = config.animspeed },
 				walk_down = { frames = {7, 8, 9}, fps = config.animspeed },
 				walk_left = { frames = {10, 11, 12}, fps = config.animspeed },
@@ -289,7 +289,7 @@ Character = Animation:extend
 			
 			sequences = 
 			{
-				incapacitated = { frames = {1}, fps = config.animspeed },
+				incapacitated = { frames = {7}, fps = config.animspeed },
 				walk = { frames = {7, 8, 9}, fps = config.animspeed },
 				walk_down = { frames = {7, 8, 9}, fps = config.animspeed },
 				walk_left = { frames = {10, 11, 12}, fps = config.animspeed },
@@ -303,6 +303,18 @@ Character = Animation:extend
 			
 			onNew = function(self)
 				the.app.view.layers.characters:add(self)
+				
+				if goSelf.team == "alpha" then
+					self.tint = config.colorAlpha
+				elseif goSelf.team == "beta" then
+					self.tint = config.colorBeta
+				elseif goSelf.team == "gamma" then
+					self.tint = config.colorGamma
+				elseif goSelf.team == "delta" then
+					self.tint = config.colorDelta
+				else 
+					self.tint = config.colorNeutral
+				end
 			end,
 			
 			onDie = function(self)
@@ -315,18 +327,6 @@ Character = Animation:extend
 				self.visible = goSelf.visible
 
 				if goSelf.anim_name then self:play(goSelf.anim_name) end
-				
-				if goSelf.team == "alpha" then
-					self.tint = {1,0.2,0.2}
-				elseif goSelf.team == "beta" then
-					self.tint = {0.2,0.2,1}
-				elseif goSelf.team == "gamma" then
-					self.tint = {0.2,1,0.2}
-				elseif goSelf.team == "delta" then
-					self.tint = {1,1,1}
-				else 
-					self.tint = {0.25,0.25,0.25}
-				end
 				
 				self.alpha = goSelf.alpha
 			end,
@@ -346,7 +346,7 @@ Character = Animation:extend
 			
 			sequences = 
 			{
-				incapacitated = { frames = {1}, fps = config.animspeed },
+				incapacitated = { frames = {7}, fps = config.animspeed },
 				walk = { frames = {7, 8, 9}, fps = config.animspeed },
 				walk_down = { frames = {7, 8, 9}, fps = config.animspeed },
 				walk_left = { frames = {10, 11, 12}, fps = config.animspeed },
@@ -680,6 +680,25 @@ Character = Animation:extend
 		end
 	end,
 	
+	blink = function (self)
+		if self.armorSprite.tint ~= {1,1,1} then
+			self.armorSprite.tint = {1,1,1}
+			self:after(0.2, function()
+				if self.team == "alpha" then
+					self.armorSprite.tint = config.colorAlpha
+				elseif self.team == "beta" then
+					self.armorSprite.tint = config.colorBeta
+				elseif self.team == "gamma" then
+					self.armorSprite.tint = config.colorGamma
+				elseif self.team == "delta" then
+					self.armorSprite.tint = config.colorDelta
+				else 
+					self.armorSprite.tint = config.colorNeutral
+				end	
+			end)
+		end
+	end,
+	
 	receiveBoth = function (self, message_name, ...)
 		--~ print("BOTH", message_name)
 		if message_name == "heal" then
@@ -740,7 +759,12 @@ Character = Animation:extend
 			if self.oid == the.player.oid then
 				playSound(sfx, audio.volume * loudness, 'short')		
 				--~ print("played", self.oid, source_oid)
-			end				
+			end	
+		elseif message_name == "blink" then
+			local source_oid = ...
+			if source_oid ~= self.oid then
+				self:blink()
+			end			
 		end	
 	end,
 	
@@ -997,7 +1021,7 @@ Character = Animation:extend
 			end)	
 		elseif message_name == "stop_dots" then
 			local duration, source_oid = ...
-			self.deaths = self.deaths + 1																							
+			self.deaths = self.deaths + 1	
 		end
 	end,
 	

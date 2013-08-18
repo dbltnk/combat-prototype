@@ -233,6 +233,7 @@ end)
 -- has: n/a
 action_handling.register_effect("gank", function (target, effect, source_oid)
 	object_manager.send(target.oid, "gank")
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: sneak ----------------------------------------------------------
@@ -256,6 +257,7 @@ end)
 action_handling.register_effect("heal", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "heal", effect.str * increase, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: healOnlyOthers ----------------------------------------------------------
@@ -263,7 +265,10 @@ end)
 -- has: str
 action_handling.register_effect("healOnlyOthers", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	if target.oid ~= source_oid then object_manager.send(target.oid, "heal", effect.str * increase, source_oid) end
+	if target.oid ~= source_oid then 
+		object_manager.send(target.oid, "heal", effect.str * increase, source_oid) 
+		object_manager.send(target.oid, "blink", source_oid)
+	end
 end)
 
 -- effect: heal_over_time ----------------------------------------------------------
@@ -272,6 +277,7 @@ end)
 action_handling.register_effect("heal_over_time", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "heal_over_time", effect.str * increase, effect.duration, effect.ticks, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: stamHeal ----------------------------------------------------------
@@ -280,6 +286,7 @@ end)
 action_handling.register_effect("stamHeal", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "stamHeal", effect.str * increase, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 	--print("actions",effect.str)
 end)
 
@@ -289,6 +296,7 @@ end)
 action_handling.register_effect("damage", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "damage", effect.str * increase, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: damageOnlyOthers ----------------------------------------------------------
@@ -296,7 +304,10 @@ end)
 -- has: str
 action_handling.register_effect("damageOnlyOthers", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	if target.oid ~= source_oid then object_manager.send(target.oid, "damage", effect.str * increase, source_oid) end
+	if target.oid ~= source_oid then 
+		object_manager.send(target.oid, "damage", effect.str * increase, source_oid) 
+		object_manager.send(target.oid, "blink", source_oid)
+	end
 end)
 
 -- effect: damage_over_time ----------------------------------------------------------
@@ -305,6 +316,7 @@ end)
 action_handling.register_effect("damage_over_time", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "damage_over_time", effect.str * increase, effect.duration, effect.ticks, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: runspeed ----------------------------------------------------------
@@ -313,6 +325,7 @@ end)
 action_handling.register_effect("runspeed", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "runspeed", effect.str, effect.duration, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: snare_only_others ----------------------------------------------------------
@@ -320,7 +333,10 @@ end)
 -- has: str, duration
 action_handling.register_effect("snare_only_others", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	if target.oid ~= source_oid then object_manager.send(target.oid, "runspeed", effect.str, effect.duration, source_oid) end
+	if target.oid ~= source_oid then 
+		object_manager.send(target.oid, "runspeed", effect.str, effect.duration, source_oid) 
+		object_manager.send(target.oid, "blink", source_oid)
+	end
 end)
 
 -- effect: snare_break ----------------------------------------------------------
@@ -328,6 +344,7 @@ end)
 -- has: 
 action_handling.register_effect("snare_break", function (target, effect, source_oid)
 	object_manager.send(target.oid, "snare_break", source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: stun ----------------------------------------------------------
@@ -336,6 +353,7 @@ end)
 action_handling.register_effect("stun", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "stun", effect.duration, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: stunOnlyOthers ----------------------------------------------------------
@@ -343,7 +361,10 @@ end)
 -- has: duration
 action_handling.register_effect("stunOnlyOthers", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	if target.oid ~= source_oid then object_manager.send(target.oid, "stun", effect.duration, source_oid) end
+	if target.oid ~= source_oid then 
+		object_manager.send(target.oid, "stun", effect.duration, source_oid) 
+		object_manager.send(target.oid, "blink", source_oid)
+	end
 end)
 
 -- effect: stun_break ----------------------------------------------------------
@@ -351,6 +372,7 @@ end)
 -- has: 
 action_handling.register_effect("stun_break", function (target, effect, source_oid)
 	object_manager.send(target.oid, "stun_break", source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: powerblock ----------------------------------------------------------
@@ -359,6 +381,7 @@ end)
 action_handling.register_effect("powerblock", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "powerblock", effect.duration, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: powerblockOnlyOthers ----------------------------------------------------------
@@ -366,7 +389,10 @@ end)
 -- has: powerblock
 action_handling.register_effect("powerblockOnlyOthers", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	if target.oid ~= source_oid then object_manager.send(target.oid, "powerblock", effect.duration, source_oid) end
+	if target.oid ~= source_oid then 
+		object_manager.send(target.oid, "powerblock", effect.duration, source_oid) 
+		object_manager.send(target.oid, "blink", source_oid)
+	end
 end)
 
 -- effect: mezz ----------------------------------------------------------
@@ -375,6 +401,7 @@ end)
 action_handling.register_effect("mezz", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "mezz", effect.duration, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: clarity ----------------------------------------------------------
@@ -382,6 +409,7 @@ end)
 -- has: 
 action_handling.register_effect("clarity", function (target, effect, source_oid)
 	object_manager.send(target.oid, "clarity", source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: root ----------------------------------------------------------
@@ -390,6 +418,7 @@ end)
 action_handling.register_effect("root", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "root", effect.duration, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: root_only_others ----------------------------------------------------------
@@ -397,7 +426,10 @@ end)
 -- has: duration
 action_handling.register_effect("root_only_others", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
-	if target.oid ~= source_oid then object_manager.send(target.oid, "root", effect.duration, source_oid) end
+	if target.oid ~= source_oid then 
+		object_manager.send(target.oid, "root", effect.duration, source_oid) 
+		object_manager.send(target.oid, "blink", source_oid)
+	end
 end)
 
 -- effect: root_break ----------------------------------------------------------
@@ -405,6 +437,7 @@ end)
 -- has: 
 action_handling.register_effect("root_break", function (target, effect, source_oid)
 	object_manager.send(target.oid, "root_break", source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: stop_dots ----------------------------------------------------------
@@ -412,6 +445,7 @@ end)
 -- has: 
 action_handling.register_effect("stop_dots", function (target, effect, source_oid)
 	object_manager.send(target.oid, "stop_dots", source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: dmgModifier ----------------------------------------------------------
@@ -420,6 +454,7 @@ end)
 action_handling.register_effect("dmgModifier", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "dmgModifier", effect.str, effect.duration, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: transfer ----------------------------------------------------------
@@ -451,6 +486,7 @@ action_handling.register_effect("moveToMe", function (target, effect, source_oid
 	local tx,ty = action_handling.get_target_position(target)
 	local dx, dy = (sx * 8 + tx) / 9, (sy * 8 + ty) / 9
 	object_manager.send(target.oid, "moveSelfTo", dx,dy)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: moveAwayFromMe ----------------------------------------------------------
@@ -460,7 +496,10 @@ action_handling.register_effect("moveAwayFromMe", function (target, effect, sour
 	local sx,sy = action_handling.get_target_position(object_manager.get(source_oid))
 	local tx,ty = action_handling.get_target_position(target)
 	local dx, dy = vector.fromToWithLen(sx,sy, tx,ty, effect.str)
-	if target.oid ~= source_oid then object_manager.send(target.oid, "moveSelfTo", tx+dx, ty+dy) end
+	if target.oid ~= source_oid then 
+		object_manager.send(target.oid, "moveSelfTo", tx+dx, ty+dy) 
+		object_manager.send(target.oid, "blink", source_oid)
+	end
 end)
 
 -- effect: buff_max_pain ----------------------------------------------------------
@@ -469,6 +508,7 @@ end)
 action_handling.register_effect("buff_max_pain", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "buff_max_pain", effect.str, effect.duration * increase, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: invul ----------------------------------------------------------
@@ -477,6 +517,7 @@ end)
 action_handling.register_effect("invul", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "invul", effect.duration * increase, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: changeSize ----------------------------------------------------------
@@ -485,6 +526,7 @@ end)
 action_handling.register_effect("changeSize", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "changeSize", effect.str, effect.duration, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)
 
 -- effect: mark ----------------------------------------------------------
@@ -493,4 +535,5 @@ end)
 action_handling.register_effect("mark", function (target, effect, source_oid)
 	local increase = (1 + config.strIncreaseFactor * object_manager.get_field(source_oid, "level", 0))
 	object_manager.send(target.oid, "mark", effect.duration, source_oid)
+	object_manager.send(target.oid, "blink", source_oid)
 end)

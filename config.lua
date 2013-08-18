@@ -97,4 +97,11 @@ config.map_width = 3200
 config.map_height = 3200
 config.zones = 10
 
+-- team colors
+config.colorAlpha = {1,0.2,0.2}
+config.colorBeta = {0.2,0.2,1}
+config.colorGamma = {0.2,1,0.2}
+config.colorDelta = {0.9,0.9,0.9}
+config.colorNeutral = {0.25,0.25,0.25}
+
 return config
