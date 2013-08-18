@@ -236,24 +236,24 @@ Character = Animation:extend
 			
 			-- 32x48, 4 per row, 4 rows
 			
-			width = 32,
-			height = 48,
-			image = '/assets/graphics/player_characters/' .. goSelf.armor .. "_" .. goSelf.weapon .. ".png",
+			width = 48,
+			height = 64,
+			image = "/assets/graphics/player_characters/body.png",
 			
 			solid = false,
 			
 			sequences = 
 			{
 				incapacitated = { frames = {1}, fps = config.animspeed },
-				walk = { frames = {1,2,3,4}, fps = config.animspeed },
-				walk_down = { frames = {1,2,3,4}, fps = config.animspeed },
-				walk_left = { frames = {5,6,7,8}, fps = config.animspeed },
-				walk_right = { frames = {9,10,11,12}, fps = config.animspeed },
-				walk_up = { frames = {13,14,15,16}, fps = config.animspeed },
-				idle_down = { frames = {1}, fps = config.animspeed },
-				idle_left = { frames = {5}, fps = config.animspeed },
-				idle_right = { frames = {9}, fps = config.animspeed },
-				idle_up = { frames = {13}, fps = config.animspeed },
+				walk = { frames = {7, 8, 9}, fps = config.animspeed },
+				walk_down = { frames = {7, 8, 9}, fps = config.animspeed },
+				walk_left = { frames = {10, 11, 12}, fps = config.animspeed },
+				walk_right = { frames = {4, 5, 6}, fps = config.animspeed },
+				walk_up = { frames = {1, 2, 3}, fps = config.animspeed },
+				idle_down = { frames = {7}, fps = config.animspeed },
+				idle_left = { frames = {10}, fps = config.animspeed },
+				idle_right = { frames = {4}, fps = config.animspeed },
+				idle_up = { frames = {1}, fps = config.animspeed },
 			},
 			
 			onNew = function(self)
@@ -265,7 +265,109 @@ Character = Animation:extend
 			end,
 			
 			onUpdate = function(self)
-				self.x = goSelf.x - 3
+				self.x = goSelf.x - 12
+				self.y = goSelf.y - self.height + goSelf.height
+				self.visible = goSelf.visible
+
+				if goSelf.anim_name then self:play(goSelf.anim_name) end
+				
+				self.alpha = goSelf.alpha
+			end,
+		}
+		
+		self.armorSprite = Animation:new{
+			x = self.x,
+			y = self.y,
+			
+			-- 32x48, 4 per row, 4 rows
+			
+			width = 48,
+			height = 64,
+			image = "/assets/graphics/player_characters/".. goSelf.armor ..".png",
+			
+			solid = false,
+			
+			sequences = 
+			{
+				incapacitated = { frames = {1}, fps = config.animspeed },
+				walk = { frames = {7, 8, 9}, fps = config.animspeed },
+				walk_down = { frames = {7, 8, 9}, fps = config.animspeed },
+				walk_left = { frames = {10, 11, 12}, fps = config.animspeed },
+				walk_right = { frames = {4, 5, 6}, fps = config.animspeed },
+				walk_up = { frames = {1, 2, 3}, fps = config.animspeed },
+				idle_down = { frames = {7}, fps = config.animspeed },
+				idle_left = { frames = {10}, fps = config.animspeed },
+				idle_right = { frames = {4}, fps = config.animspeed },
+				idle_up = { frames = {1}, fps = config.animspeed },
+			},
+			
+			onNew = function(self)
+				the.app.view.layers.characters:add(self)
+			end,
+			
+			onDie = function(self)
+				the.app.view.layers.characters:remove(self)
+			end,
+			
+			onUpdate = function(self)
+				self.x = goSelf.x - 12
+				self.y = goSelf.y - self.height + goSelf.height
+				self.visible = goSelf.visible
+
+				if goSelf.anim_name then self:play(goSelf.anim_name) end
+				
+				if goSelf.team == "alpha" then
+					self.tint = {1,0.2,0.2}
+				elseif goSelf.team == "beta" then
+					self.tint = {0.2,0.2,1}
+				elseif goSelf.team == "gamma" then
+					self.tint = {0.2,1,0.2}
+				elseif goSelf.team == "delta" then
+					self.tint = {1,1,1}
+				else 
+					self.tint = {0.25,0.25,0.25}
+				end
+				
+				self.alpha = goSelf.alpha
+			end,
+		}
+		
+		self.weaponSprite = Animation:new{
+			x = self.x,
+			y = self.y,
+			
+			-- 32x48, 4 per row, 4 rows
+			
+			width = 48,
+			height = 64,
+			image = "/assets/graphics/player_characters/" .. goSelf.weapon .. ".png",
+			
+			solid = false,
+			
+			sequences = 
+			{
+				incapacitated = { frames = {1}, fps = config.animspeed },
+				walk = { frames = {7, 8, 9}, fps = config.animspeed },
+				walk_down = { frames = {7, 8, 9}, fps = config.animspeed },
+				walk_left = { frames = {10, 11, 12}, fps = config.animspeed },
+				walk_right = { frames = {4, 5, 6}, fps = config.animspeed },
+				walk_up = { frames = {1, 2, 3}, fps = config.animspeed },
+				idle_down = { frames = {7}, fps = config.animspeed },
+				idle_left = { frames = {10}, fps = config.animspeed },
+				idle_right = { frames = {4}, fps = config.animspeed },
+				idle_up = { frames = {1}, fps = config.animspeed },
+			},
+			
+			onNew = function(self)
+				the.app.view.layers.characters:add(self)
+			end,
+			
+			onDie = function(self)
+				the.app.view.layers.characters:remove(self)
+			end,
+			
+			onUpdate = function(self)
+				self.x = goSelf.x - 12
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
 
