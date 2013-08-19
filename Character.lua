@@ -736,7 +736,9 @@ Character = Animation:extend
 			--print("CHARACTER HEAL_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				self:after(duration / ticks * i, function()
-					if not self.incapacitated then self:showDamage(-str) end
+					--~ if not self.incapacitated then 
+						self:showDamage(-str) 
+					--~ end
 				end)
 			end	
 		elseif message_name == "changeSize" then
@@ -876,10 +878,10 @@ Character = Animation:extend
 			local str, duration, ticks, source_oid = ...
 			for i=0,ticks do
 				self:after(duration / ticks * i, function()
-					if not self.incapacitated then  
+					--~ if not self.incapacitated then  
 						self:gainPain(-str, source_oid)
 						object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT)
-					end
+					--~ end
 				end)
 			end	
 			if self.hidden then self.hidden = false self.speedOverride = 0 end				
