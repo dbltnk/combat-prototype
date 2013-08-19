@@ -209,11 +209,6 @@
     <property name="_the" value="barrier"/>
    </properties>
   </object>
-  <object name="respawnpoint" x="1172" y="2668">
-   <properties>
-    <property name="_the" value="respawnpoint"/>
-   </properties>
-  </object>
   <object name="Cover" x="2411" y="1765" width="535" height="88"/>
   <object name="Cover" x="2496" y="1989" width="471" height="82"/>
   <object name="Cover" x="3008" y="895" width="170" height="91"/>
@@ -234,6 +229,11 @@
   <object name="Cover" x="1964" y="1485" width="326" height="101"/>
   <object name="Cover" x="1867" y="712" width="74" height="373"/>
   <object name="Cover" x="1955" y="418" width="150" height="131"/>
+  <object name="respawnpoint" x="1312" y="364">
+   <properties>
+    <property name="_the" value="respawnpoint"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
   <object x="1866" y="2484" width="138" height="105"/>
