@@ -18,6 +18,7 @@ GameView = View:extend
 		characters = Group:new(),
 		projectiles = Group:new(),
 		above = Group:new(),
+		lineOfSight = Group:new(),
 		ui = Group:new(),
 		debug = Group:new(),
 		topmost = Group:new(),
@@ -242,48 +243,7 @@ GameView = View:extend
 			table.insert(the.levelUI, ui)
 		end
 		
-		audio.init()
-	
-		self.covers = {}
-		table.insert(self.covers,Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war.png', width = 2048, height = 2048,
-			onUpdate = function (self)
-				local pX, pY = action_handling.get_target_position (the.player)
-				self.x = pX - self.width / 2
-				self.y = pY - self.height / 2
-			end	
-		})
-		table.insert(self.covers,Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war_extension.png', width = 1024, height = 1024,
-			onUpdate = function (self)
-				local pX, pY = action_handling.get_target_position (the.player)
-				self.x = pX - 2048
-				self.y = pY
-			end	
-		})
-		table.insert(self.covers,Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war_extension.png', width = 1024, height = 1024,
-			onUpdate = function (self)
-				local pX, pY = action_handling.get_target_position (the.player)
-				self.x = pX - 2048
-				self.y = pY - 1024
-			end	
-		})
-		table.insert(self.covers,Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war_extension.png', width = 1024, height = 1024,
-			onUpdate = function (self)
-				local pX, pY = action_handling.get_target_position (the.player)
-				self.x = pX + 1024
-				self.y = pY
-			end	
-		})
-		table.insert(self.covers,Tile:new{x = the.player.x, y = the.player.y, image = '/assets/graphics/fog_of_war_extension.png', width = 1024, height = 1024,
-			onUpdate = function (self)
-				local pX, pY = action_handling.get_target_position (the.player)
-				self.x = pX + 1024
-				self.y = pY - 1024
-			end	
-		})
-	
-		if config.show_fog_of_war then	
-			self:setupFog()
-		end
+		audio.init()		
 
 		self:setupNetworkHandler()
 		
@@ -334,25 +294,20 @@ GameView = View:extend
 		end
 
 		switchToGhost()
+		
+		the.lineOfSight = LineOfSight:new{}
+		self.layers.lineOfSight:add(the.lineOfSight)
     end,
     
     setFogEnabled = function (self, enabled)
 		if self.fogEnabled ~= enabled then
 			self.fogEnabled = enabled
 			
-			for _,v in pairs(self.covers) do
-				v.visible = enabled
-			end
+			-- TODO update fog or line of sight
 			
 			self.fogEnabled = enabled
 		end
 	end,
-	
-	setupFog = function(self)
-		for _,v in pairs(self.covers) do
-			self.layers.ui:add(v)
-		end
-    end,
 
     onUpdate = function (self, elapsed)
 		-- handle chat
