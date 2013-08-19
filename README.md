@@ -12,6 +12,7 @@ This prototype is being released unter the ["Attribution-ShareAlike 3.0 Unported
 ## Attributions
 
 ### Character Graphics by 
+- [The Charas Project] [15]
 - [Sithjester][2] (slightly modified)
 
 ### Environment Graphics by
@@ -50,3 +51,4 @@ This prototype is being released unter the ["Attribution-ShareAlike 3.0 Unported
 [12]: http://nodejs.org/
 [13]: http://enet.bespin.org/
 [14]: http://dkolf.de/src/dkjson-lua.fsl/home
+[15]: http://charas-project.net
