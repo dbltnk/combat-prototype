@@ -145,5 +145,20 @@ SkillBar = Class:extend
 				end
 			end
 		end
+		
+		for index, skillIcon in pairs(self.skillIcons) do
+			local skill = the.player.skills[index]
+			local highlight = self.skillSelectedIcons[index]
+			local t = skill:timeTillPossibleToUse()
+			if t < 0.25 then
+				highlight.visible = true
+			end
+			if t == 0 or t > 3 then
+				skillIcon.y = self.y
+				highlight.visible = false
+			else
+				skillIcon.y = self.y - 80 * t
+			end
+		end
 	end,
 }
