@@ -595,23 +595,23 @@ Character = Animation:extend
 		
 	respawn = function (self)
 		self.x, self.y = the.respawnpoint.x, the.respawnpoint.y
-		self.currentPain = 0
-		self.currentEnergy = 300
-		self:setIncapacitation(false)
-		self.rooted = false
-		self.stunned = false
-		self.dmgModified = config.dmgUnmodified
-		self.invul = false
-		self.mezzed = false
-		self.snared = false
-		self.powerblocked = false
-		self.marked = false
-		self.freezeMovementCounter = 0
-		self.freezeCastingCounter = 0
-		self.speedOverride = 0
-		self.markedSprite.scale = 1
-		self.charSprite.scale = 1
-		self:resetCooldowns()
+		--~ self.currentPain = 0
+		--~ self.currentEnergy = 300
+		--~ self:setIncapacitation(false)
+		--~ self.rooted = false
+		--~ self.stunned = false
+		--~ self.dmgModified = config.dmgUnmodified
+		--~ self.invul = false
+		--~ self.mezzed = false
+		--~ self.snared = false
+		--~ self.powerblocked = false
+		--~ self.marked = false
+		--~ self.freezeMovementCounter = 0
+		--~ self.freezeCastingCounter = 0
+		--~ self.speedOverride = 0
+		--~ self.markedSprite.scale = 1
+		--~ self.charSprite.scale = 1
+		--~ self:resetCooldowns()
 	end,	
 	
 	gainXP = function (self, str, xpType)
@@ -1311,7 +1311,7 @@ Character = Animation:extend
 		local Reminder = Text:extend
 		{
 			font = 18,
-			text = "Press SPACE to re-spawn now. Or wait to get up here at 50% pain.",
+			text = "You respawn here at 50% pain. Press SPACE to teleport away.",
 			x = 0,
 			y = 0, 
 			width = 600,
