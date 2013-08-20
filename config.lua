@@ -110,6 +110,6 @@ config.mezzDeterminationRatio = 7
 config.pbDeterminationRatio = 5
 config.rootDeterminationRatio = 5
 config.snareDeterminationRatio = 3
-config.determinationFade = 4
+config.determinationFade = 3
 
 return config
