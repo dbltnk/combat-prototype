@@ -298,12 +298,18 @@ CharDebuffDisplay = Text:extend
 	determination = 0,
 	
 	onUpdate = function (self)
-		self.y = self.y + 65			
+		self.y = self.y + 65	
+		local det = ""	
+		if self.determination > 0 then 
+			det = utils.round(self.determination) .. "% dt. " 
+		else
+			det = ""
+		end
 		if self.rooted ~= "" or self.stunned ~= "" or self.mezzed ~= "" or self.snared ~= "" or self.powerblocked ~= "" or self.exposed ~= "" or self.invul ~= "" then 
-			self.text = utils.round(self.determination) .. "% dt. " .. self.rooted .. " " .. self.stunned .. " " .. self.mezzed .. " " .. self.snared .. " " .. self.powerblocked .. " " .. self.exposed .. " " .. self.invul
+			self.text = det .. self.rooted .. " " .. self.stunned .. " " .. self.mezzed .. " " .. self.snared .. " " .. self.powerblocked .. " " .. self.exposed .. " " .. self.invul
 			--~ print(self.text)
 		else 
-			self.text = utils.round(self.determination) .. "% dt."
+			self.text = det
 		end
 		--~ print(self.x,self.y,self.alpha,self.visible)
 		--~ print(self.rooted,self.stunned,self.mezzed,self.snared,self.powerblocked,self.exposed)
