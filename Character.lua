@@ -15,12 +15,12 @@ Character = Animation:extend
 
 	props = {"viewRange", "x", "y", "rotation", "image", "width", "height", "currentPain", "maxPain", "level", "anim_name", 
 		"anim_speed", "velocity", "alive", "incapacitated", "hidden", "name", "weapon", "armor", "isInCombat", 
-		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", "kills"},
+		"team", "invul", "dmgModified", "marked", "maxPainOverdrive", "deaths", "xp", "kills", "determination"},
 		
 	sync_high = {"x", "y", "rotation", "currentPain", "maxPain", "rotation", "anim_name", "anim_speed",
 		"velocity", "alive", "incapacitated", "hidden", "isInCombat", 
 		"invul", "width", "height", "rotation", "dmgModified", "marked", "rooted", "snared", "mezzed", "stunned", "powerblocked",
-		"maxPainOverdrive", "viewRange"},	
+		"maxPainOverdrive", "viewRange", "determination"},	
 		
 	sync_low = {"image", "level", "name", "weapon", "armor", "team", "deaths", "xp", "kills", },
 	
@@ -64,6 +64,7 @@ Character = Animation:extend
 	feelRange = config.characterFeelRange,
 	viewAngle = config.characterViewAngle,
 	coverLocation = nil, 
+	determination = 0,
 	
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
@@ -887,6 +888,7 @@ Character = Animation:extend
 			if self.hidden then self.hidden = false self.speedOverride = 0 end				
 		elseif message_name == "stun" then
 			local duration, source_oid = ...
+			duration = duration/ 100 * (100 - self.determination)
 		--	print("STUN", duration)
 			self:freezeMovement()
 			self:freezeCasting()
@@ -898,8 +900,10 @@ Character = Animation:extend
 				self:unfreezeCasting()
 				self.stunned = false
 			end)
+			self:gainDetermination(duration * config.stunDeterminationRatio)
 		elseif message_name == "mezz" then
 			local duration, source_oid = ...
+			duration = duration/ 100 * (100 - self.determination)
 		--	print("MEZZ", duration)
 			self:freezeMovement()
 			self:freezeCasting()
@@ -911,6 +915,7 @@ Character = Animation:extend
 				self:unfreezeCasting()
 				self.mezzed = false
 			end)
+			self:gainDetermination(duration * config.mezzDeterminationRatio)
 		elseif message_name == "clarity" then
 			local duration, source_oid = ...
 			if self.mezzed then
@@ -929,6 +934,7 @@ Character = Animation:extend
 			end	
 		elseif message_name == "powerblock" then
 			local duration, source_oid = ...
+			duration = duration/ 100 * (100 - self.determination)			
 		--	print("POWERBLOCKED", duration)
 			self:freezeCasting()
 			self.powerblocked = true
@@ -937,15 +943,23 @@ Character = Animation:extend
 			self:after(duration, function()
 				self:unfreezeCasting()
 				self.powerblocked = false
-			end)									
+			end)
+			self:gainDetermination(duration * config.pbDeterminationRatio)									
 		elseif message_name == "runspeed" then
 			local str, duration, source_oid = ...
 			--print("SPEED", str, duration)
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self.speedOverride = str
+			if str < config.walkspeed then		
+				duration = duration/ 100 * (100 - self.determination)
+			end
 			self:after(duration, function()
 				self.speedOverride = 0
 			end)
+			if str < config.walkspeed then
+				self:gainDetermination(duration * config.snareDeterminationRatio)
+			end
+			--~ print("det", self.determination)
 		elseif message_name == "xp" then
 			local str, xpType = ...
 			--print("XP", str)
@@ -976,6 +990,7 @@ Character = Animation:extend
 			end)
 		elseif message_name == "root" then
 			local duration, source_oid = ...
+			duration = duration/ 100 * (100 - self.determination)
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
 			self:freezeMovement()
 			self.rooted = true
@@ -983,6 +998,8 @@ Character = Animation:extend
 				self:unfreezeMovement()
 				self.rooted = false
 			end)		
+			self:gainDetermination(duration * config.rootDeterminationRatio)
+			--~ print("det", self.determination)
 		elseif message_name == "root_break" then
 			local duration, source_oid = ...
 			if self.rooted then
@@ -1025,6 +1042,11 @@ Character = Animation:extend
 			local duration, source_oid = ...
 			self.deaths = self.deaths + 1	
 		end
+	end,
+	
+	gainDetermination = function (self, amount)
+		self.determination = self.determination + amount
+		if self.determination > 100 then self.determination = 100 end
 	end,
 	
 	isCasting = function (self)
@@ -1158,6 +1180,8 @@ Character = Animation:extend
 		self.charDebuffDisplay.x = self.x - 5
 		self.charDebuffDisplay.y = self.y - 8
 		self.charDebuffDisplay.alpha = self.alpha
+		self.charDebuffDisplay.determination = self.determination
+		--~ print(self.charDebuffDisplay.determination, self.determination)
 		
 		if self.rooted then self.charDebuffDisplay.rooted = "rooted" else self.charDebuffDisplay.rooted = "" end
 		if self.stunned then self.charDebuffDisplay.stunned = "stunned" else self.charDebuffDisplay.stunned = "" end		
@@ -1331,6 +1355,11 @@ Character = Animation:extend
 			
 			the.lineOfSight.sourceOids = list.keys(l)			
 			the.lineOfSight.allVisible = #the.lineOfSight.sourceOids == 0
+		end
+		
+		-- determination fades over time
+		if self.determination > 0 then
+			self.determination = self.determination - config.determinationFade * elapsed
 		end
 	end,
  

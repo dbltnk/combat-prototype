@@ -104,4 +104,12 @@ config.colorGamma = {0.2,1,0.2}
 config.colorDelta = {0.9,0.9,0.9}
 config.colorNeutral = {0.25,0.25,0.25}
 
+-- determination
+config.stunDeterminationRatio = 10
+config.mezzDeterminationRatio = 7
+config.pbDeterminationRatio = 5
+config.rootDeterminationRatio = 5
+config.snareDeterminationRatio = 3
+config.determinationFade = 4
+
 return config

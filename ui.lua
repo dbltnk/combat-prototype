@@ -295,17 +295,19 @@ CharDebuffDisplay = Text:extend
 	powerblocked = "",
 	exposed = "",
 	invul = "",
+	determination = 0,
 	
 	onUpdate = function (self)
 		self.y = self.y + 65			
 		if self.rooted ~= "" or self.stunned ~= "" or self.mezzed ~= "" or self.snared ~= "" or self.powerblocked ~= "" or self.exposed ~= "" or self.invul ~= "" then 
-			self.text = self.rooted .. " " .. self.stunned .. " " .. self.mezzed .. " " .. self.snared .. " " .. self.powerblocked .. " " .. self.exposed .. " " .. self.invul
+			self.text = utils.round(self.determination) .. "% dt. " .. self.rooted .. " " .. self.stunned .. " " .. self.mezzed .. " " .. self.snared .. " " .. self.powerblocked .. " " .. self.exposed .. " " .. self.invul
 			--~ print(self.text)
 		else 
-			self.text = "" 
+			self.text = utils.round(self.determination) .. "% dt."
 		end
 		--~ print(self.x,self.y,self.alpha,self.visible)
 		--~ print(self.rooted,self.stunned,self.mezzed,self.snared,self.powerblocked,self.exposed)
+		--~ print(self.determination)
 	end,
 	
 	onNew = function (self)
