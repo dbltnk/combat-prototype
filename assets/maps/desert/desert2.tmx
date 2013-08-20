@@ -175,11 +175,6 @@
   <object name="ValidPosition" x="563" y="352" width="23" height="20"/>
   <object name="ValidPosition" x="563" y="474" width="23" height="20"/>
   <object name="ValidPosition" x="435" y="466" width="23" height="20"/>
-  <object name="respawnpoint" x="2472" y="1548">
-   <properties>
-    <property name="_the" value="respawnpoint"/>
-   </properties>
-  </object>
   <object name="Cover" x="1622" y="99" width="262" height="117"/>
   <object name="Cover" x="2566" y="1472" width="244" height="69"/>
   <object name="Cover" x="1863" y="2250" width="208" height="175"/>
@@ -235,6 +230,11 @@
   <object name="ValidPosition" x="2828" y="1946" width="23" height="20"/>
   <object name="ValidPosition" x="2846" y="1826" width="23" height="20"/>
   <object name="Cover" x="3030" y="1804" width="77" height="349"/>
+  <object name="respawnpoint" x="3022" y="143">
+   <properties>
+    <property name="_the" value="respawnpoint"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
   <object x="1866" y="2484" width="138" height="105"/>
