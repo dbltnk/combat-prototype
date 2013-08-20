@@ -611,6 +611,8 @@ Character = Animation:extend
 		--~ self.speedOverride = 0
 		--~ self.markedSprite.scale = 1
 		--~ self.charSprite.scale = 1
+		--~ self.armorSprite.scale = 1
+		--~ self.weaponSprite.scale = 1
 		--~ self:resetCooldowns()
 	end,	
 	
@@ -745,9 +747,13 @@ Character = Animation:extend
 		elseif message_name == "changeSize" then
 			local str, duration, source_oid = ...
 			self.charSprite.scale = self.charSprite.scale / 100 * str
+			self.armorSprite.scale = self.armorSprite.scale / 100 * str
+			self.weaponSprite.scale = self.weaponSprite.scale / 100 * str
 			self.markedSprite.scale = self.charSprite.scale / 100 * str
 			self:after(duration, function()
 				self.markedSprite.scale = 1
+				self.armorSprite.scale = 1
+				self.weaponSprite.scale = 1			
 				self.charSprite.scale = 1
 			end)
 		elseif message_name == "mark" then
