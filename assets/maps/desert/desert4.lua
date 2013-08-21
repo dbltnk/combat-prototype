@@ -2486,6 +2486,118 @@ return {
           properties = {
             ["_the"] = "respawnpoint"
           }
+        },
+        {
+          name = "ValidPosition",
+          type = "",
+          shape = "rectangle",
+          x = 2679,
+          y = 1967,
+          width = 23,
+          height = 20,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "Cover",
+          type = "",
+          shape = "rectangle",
+          x = 2399,
+          y = 1710,
+          width = 477,
+          height = 172,
+          visible = true,
+          properties = {
+            ["id"] = "5"
+          }
+        },
+        {
+          name = "ValidPosition",
+          type = "",
+          shape = "rectangle",
+          x = 2242,
+          y = 1675,
+          width = 23,
+          height = 20,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "ValidPosition",
+          type = "",
+          shape = "rectangle",
+          x = 2454,
+          y = 1605,
+          width = 23,
+          height = 20,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "ValidPosition",
+          type = "",
+          shape = "rectangle",
+          x = 2228,
+          y = 1943,
+          width = 23,
+          height = 20,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "ValidPosition",
+          type = "",
+          shape = "rectangle",
+          x = 2320,
+          y = 1569,
+          width = 23,
+          height = 20,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "ValidPosition",
+          type = "",
+          shape = "rectangle",
+          x = 2377,
+          y = 1991,
+          width = 23,
+          height = 20,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "ValidPosition",
+          type = "",
+          shape = "rectangle",
+          x = 2553,
+          y = 2115,
+          width = 23,
+          height = 20,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "ValidPosition",
+          type = "",
+          shape = "rectangle",
+          x = 2429,
+          y = 2057,
+          width = 23,
+          height = 20,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "ValidPosition",
+          type = "",
+          shape = "rectangle",
+          x = 2661,
+          y = 2087,
+          width = 23,
+          height = 20,
+          visible = true,
+          properties = {}
         }
       }
     },
@@ -3080,50 +3192,6 @@ return {
           properties = {}
         },
         {
-          name = "ValidPosition",
-          type = "",
-          shape = "rectangle",
-          x = 2239,
-          y = 1685,
-          width = 23,
-          height = 20,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "ValidPosition",
-          type = "",
-          shape = "rectangle",
-          x = 2451,
-          y = 1615,
-          width = 23,
-          height = 20,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "ValidPosition",
-          type = "",
-          shape = "rectangle",
-          x = 2225,
-          y = 1953,
-          width = 23,
-          height = 20,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "ValidPosition",
-          type = "",
-          shape = "rectangle",
-          x = 2317,
-          y = 1579,
-          width = 23,
-          height = 20,
-          visible = true,
-          properties = {}
-        },
-        {
           name = "spawnpoint",
           type = "",
           shape = "rectangle",
@@ -3134,74 +3202,6 @@ return {
           visible = true,
           properties = {
             ["_the"] = "spawnpoint"
-          }
-        },
-        {
-          name = "ValidPosition",
-          type = "",
-          shape = "rectangle",
-          x = 2374,
-          y = 2001,
-          width = 23,
-          height = 20,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "ValidPosition",
-          type = "",
-          shape = "rectangle",
-          x = 2426,
-          y = 2067,
-          width = 23,
-          height = 20,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "ValidPosition",
-          type = "",
-          shape = "rectangle",
-          x = 2550,
-          y = 2125,
-          width = 23,
-          height = 20,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "ValidPosition",
-          type = "",
-          shape = "rectangle",
-          x = 2658,
-          y = 2097,
-          width = 23,
-          height = 20,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "ValidPosition",
-          type = "",
-          shape = "rectangle",
-          x = 2676,
-          y = 1977,
-          width = 23,
-          height = 20,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "Cover",
-          type = "",
-          shape = "rectangle",
-          x = 2396,
-          y = 1720,
-          width = 477,
-          height = 172,
-          visible = true,
-          properties = {
-            ["id"] = "5"
           }
         }
       }
