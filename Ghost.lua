@@ -31,8 +31,8 @@ Ghost = Sprite:extend
 			if o.class == "Character" then
 				index = index + 1
 				if index == number then
-					self.x = o.x
-					self.y = o.y
+					self.x = o.x + localconfig.screenWidth / 2
+					self.y = o.y + localconfig.screenHeight / 2
 				end
 			end
 		end)
