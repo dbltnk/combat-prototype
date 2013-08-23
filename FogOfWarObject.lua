@@ -15,8 +15,12 @@ FogOfWarObject = {
 			--~ fogAlpha = utils.mapIntoRange(dist, config.sightDistanceNear, config.sightDistanceFar, 1, 0)
 		--~ end
 		
-		if the.lineOfSight and the.lineOfSight:isObjectVisible(self) == false then
-			fogAlpha = 0
+		if the.player and the.player.class ~= "Ghost" then
+			if the.lineOfSight and the.lineOfSight:isObjectVisible(self) == false then
+				fogAlpha = 0
+			end
+		else
+			fogAlpha = 1
 		end
 
 		self.alpha = fogAlpha * (self.alphaWithoutFog or 1)
