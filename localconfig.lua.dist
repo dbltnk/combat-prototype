@@ -22,6 +22,7 @@ localconfig.weapon = "pick_one" -- You can use "bow", "scythe" or "staff".
 -- ### To pick a skill, remove the two dashes (--) in front of the skills line. Add them if you want to un-pick it. ###
 -- ### You can only have up to eight skills in total (1 weapon + 1 armor) so we advise to pick exactly four skills here. ###
 -- ### You will pick your four armor skills in the next block after this one. ###
+-- ### Here is a list of a skills, their skill icons and attributes: https://docs.google.com/spreadsheet/ccc?key=0AntfPfNv0q8ZdGRrRTBRU25lTkk3MVh3YXFTd3VUQ3c#gid=0 ###
 
 if localconfig.weapon == "bow" then -- The following lines are the six bow skills.
 	-- # Attention: We advise you to keep Shot as your first skill. # --
@@ -57,6 +58,7 @@ localconfig.armor = "pick_one" -- You can decide between "robe", "hide_armor" an
 
 -- ### Step 6: Now choose which skills you want to use in your selected armor class. ###
 -- ### Remember: You can only have up to eight skills in total so we advise to pick exactly four skills here, too. ###
+-- ### Here is a list of a skills, their skill icons and attributes: https://docs.google.com/spreadsheet/ccc?key=0AntfPfNv0q8ZdGRrRTBRU25lTkk3MVh3YXFTd3VUQ3c#gid=0 ###
 
 if localconfig.armor == "robe" then -- The following lines are the six robe skills.
 	table.insert(localconfig.skills,"robe_bandage") -- Heal yourself instantly.
