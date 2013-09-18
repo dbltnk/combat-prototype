@@ -193,6 +193,8 @@ setInterval(function() {
 	} else {
 		console.log("NO ONE CONNECTED");
 	}
+
+	updateOnlineStats();
 }, 5000 );
 
 function updateOnlineStats()
