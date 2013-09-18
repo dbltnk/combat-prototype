@@ -14,9 +14,9 @@
     "optimist": "*",
     "q": "*",
     "synchronized": "*",
-    "enet": "*",
+    "enet": "0.1.4",
     "toobusy": "*",
     "async": "*"
   },
   "engine": "node >= 0.10.0"
-}
+
