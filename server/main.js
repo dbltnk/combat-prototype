@@ -12,6 +12,8 @@ var toobusy = require('toobusy');
 var config = require('./config.js');
 var fs = require('fs');
 
+require('./web/app.js');
+
 function readJsonFile(filename, defaultContent)
 {
 	try {

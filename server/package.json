@@ -5,6 +5,10 @@
   "author": "Sebastian Dorda <hagish@schattenkind.net>",
   "dependencies": {
     "underscore": "*",
+    "winston": "*",
+    "jade": "*",
+    "stylus": "*",
+    "express": "*",
     "underscore.string": "*",
     "wilson": "*",
     "optimist": "*",

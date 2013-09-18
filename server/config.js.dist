@@ -1,6 +1,8 @@
 
 this.adminPassword = "lala";
 
+this.webPort = 12323;
+
 this.accounts = {
 	// name: "key",
 };
