@@ -17,3 +17,4 @@ log/*.dat
 log/*.log
 log/*.csv
 revision.txt
+online_history.json

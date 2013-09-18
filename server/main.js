@@ -12,6 +12,61 @@ var toobusy = require('toobusy');
 var config = require('./config.js');
 var fs = require('fs');
 
+function readJsonFile(filename, defaultContent)
+{
+	try {
+		return JSON.parse(fs.readFileSync(filename));
+	} catch(e) {
+		return defaultContent;
+	}
+}
+
+function writeJsonFile(filename, jsonObj)
+{
+	fs.writeFileSync(filename, JSON.stringify(jsonObj));
+}
+
+function dayBasedHistoryDropOldDays(history, maxDays)
+{
+	var keys = _.keys(history);
+	keys.sort();
+	if (_.size(keys) > maxDays) {
+		var removeKeys = _.first(keys, _.size(keys) - maxDays);
+		_.each(removeKeys, function(k) {
+			delete history[k];
+		});
+	}
+}
+
+function dayBasedHistoryAddValue(history, value)
+{
+	var key = currentDateAsDashboardString();
+	if (history[key]) {
+		history[key] = Math.max(history[key], value);
+	} else {
+		history[key] = value;
+	}
+}
+
+function dayBasedHistoryNotifyValue(filename, value, maxDays)
+{
+	var h = readJsonFile(filename, {"history":{},"current":0});
+	h["current"] = value;
+	dayBasedHistoryAddValue(h["history"], value);
+	dayBasedHistoryDropOldDays(h["history"], maxDays);
+	writeJsonFile(filename, h);
+}
+
+function currentDateAsDashboardString()
+{
+	var n = new Date();
+	var m = n.getMonth() + 1;
+	var d = n.getDate();
+	if (m < 10) m = "0" + m;
+	if (d < 10) d = "0" + d;
+	return n.getFullYear() + m + d;
+}
+
 function isNameReserved(name) {
 	if (name) {
 		console.log(config);
@@ -138,6 +193,12 @@ setInterval(function() {
 	}
 }, 5000 );
 
+function updateOnlineStats()
+{
+	var v = _.size(clients);
+	dayBasedHistoryNotifyValue("online_history.json", v, 7);
+}
+
 var storage = {};
 
 var next_free_client_id = 1;
@@ -190,6 +251,8 @@ var server = enet.createServer({
 
 var seed = Math.floor(Math.random() * 100000);
 
+var update
+
 server.on('connect', function(peer, data) {
     // Peer connected.
     // data is an integer with out-of-band data
@@ -217,12 +280,17 @@ server.on('connect', function(peer, data) {
 	send_to_other({channel: "server", ids: ids, cmd: "join", id: client.id}, client, clients);
 	send_to_one({time: os.uptime(), seed: seed, channel: "server", ids: ids, cmd: "id", id: client.id, first: clients_count == 1, }, client);
 
+	updateOnlineStats();
+
 }).on('disconnect', function(peer, data) {
     // Peer disconnected.
     console.log("DISCONNECT", peer, data);
     var client = client_by_peer(clients, peer);
 	console.log(client);
     disconnect(client, clients);
+
+    updateOnlineStats();
+
 }).on('message', function(peer, packet, channel)
 {
     // Peer sent a message to us in `packet' on `channel'.
@@ -294,6 +362,7 @@ server.on('connect', function(peer, data) {
 				console.log("BYE");
 				console.log(client);
 				disconnect(client, clients);
+				updateOnlineStats();
 			} else if (message.cmd == "time") {
 				//~ console.log("TIME");
 				send_to_one({seq: message.seq, time: os.uptime(), fin: true}, client, reliable);
