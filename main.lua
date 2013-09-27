@@ -162,9 +162,7 @@ the.app = App:new
 		-- show the highscore table 
 		if loveframes.GetState() == "none" then
 			if the.player and the.barrier then
-				if vector.lenFromTo(the.player.x, the.player.y, the.barrier.x, the.barrier.y) <= 1000 then
-					if the.keys:justPressed (localconfig.showHighscore) then the.barrier:showHighscore() end			
-				end
+				if the.keys:justPressed (localconfig.showHighscore) then the.barrier:showHighscore() end			
 			end
 		else
 			if the.keys:justPressed (localconfig.showHighscore) then the.barrier:showHighscore() end			

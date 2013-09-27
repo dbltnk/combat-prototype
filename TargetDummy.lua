@@ -9,9 +9,9 @@ TargetDummy = Animation:extend
 	class = "TargetDummy",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "velocity", "creation_time",
-		"maxPain", "xpWorth", "finalDamage", "focused_target", "deaths"},
+		"maxPain", "xpWorth", "finalDamage", "focused_target", "deaths", "animName"},
 	sync_high = {"x", "y", "currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified"},
-	sync_low = {"focused_target"},
+	sync_low = {"focused_target", "animName"},
 	
 	image = '/assets/graphics/dummy_full.png',
 	currentPain = 0,
@@ -153,6 +153,8 @@ TargetDummy = Animation:extend
 				self:after(duration / ticks * i, function()
 					if self.alive and self.deaths == oldDeaths then 
 						self:receiveLocal("damage", str, source_oid)
+						self.mezzed = false
+						self.rooted = false	
 					end
 				end)
 			end

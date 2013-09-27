@@ -17,8 +17,7 @@ config.dmgUnmodified = 100
 config.nextPlaytestAt = 1372960800
 
 -- progression and round time
-config.timecompression = 3
-config.barrierHealth = 50000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.timecompression = 2
 config.warmupTime = 600 -- in seconds
 config.roundTime = 3600 / config.timecompression -- in seconds
 config.afterTime = 60 -- in seconds
@@ -33,7 +32,7 @@ config.xpPerRessourceTick = config.xpCap * config.levelCap / config.roundTime * 
 config.strIncreaseFactor = 0.1 -- 10% stronger per lvl
 config.combatHealXP = 0.15 -- in % of damage / heal done
 config.crowdControlXP = 0.2 -- in % of duration in seconds
-config.ressourceQualityTable = {0.5, 0.5, 1, 2}
+config.ressourceQualityTable = {0.5, 1, 1.5, 3}
 config.numberOfMaps = 4
 config.mapNumber = 0 -- 0 means random
 
@@ -48,6 +47,31 @@ config.mobDamage = 20
 config.mobAnimSpeed = 3
 config.mobAttackTimer = 2
 config.dummyMaxPain = 90
+
+-- boss mob (= barrier)
+config.bossSightRange = 400
+config.bossAnimSpeed = 3
+config.bossAttackTimer = 2
+config.bossDamage_1 = 50
+config.bossDamage_2 = 75
+config.bossDamage_3 = 100
+config.bossDamage_4 = 150
+config.bossDamage_5 = 250
+config.bossHealth_1 = 2000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossHealth_2 = 5000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossHealth_3 = 8000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossHealth_4 = 12000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossHealth_5 = 23000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossMovementSpeed_1 = config.walkspeed * 0.55
+config.bossMovementSpeed_2 = config.walkspeed * 0.6
+config.bossMovementSpeed_3 = config.walkspeed * 0.65
+config.bossMovementSpeed_4 = config.walkspeed * 0.7
+config.bossMovementSpeed_5 = config.walkspeed * 0.75
+config.bossPoints_1 = 1
+config.bossPoints_2 = 3
+config.bossPoints_3 = 5
+config.bossPoints_4 = 7
+config.bossPoints_5 = 9
 
 -- visuals
 config.show_fog_of_war = true
