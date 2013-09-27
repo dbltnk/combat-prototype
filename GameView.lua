@@ -349,6 +349,13 @@ GameView = View:extend
 			self.water:subdisplace(the.player)
 		end
 		
+		if the.barrier then
+			--~ self.collision:displace(the.barrier)
+			self.layers.characters:displace(the.barrier)
+			self.landscape:subdisplace(the.barrier)
+			self.water:subdisplace(the.barrier)
+		end
+		
 		profile.stop()
 		
 		profile.start("update.projectile")

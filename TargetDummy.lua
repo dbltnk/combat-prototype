@@ -153,6 +153,8 @@ TargetDummy = Animation:extend
 				self:after(duration / ticks * i, function()
 					if self.alive and self.deaths == oldDeaths then 
 						self:receiveLocal("damage", str, source_oid)
+						self.mezzed = false
+						self.rooted = false	
 					end
 				end)
 			end
