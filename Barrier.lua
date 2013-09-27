@@ -242,6 +242,9 @@ Barrier = Animation:extend
 		self.powerblocked = false
 		self.dmgModified = config.dmgUnmodified
 		self:setStageVariables()
+		
+		-- animation fix
+		self.anim_name = "freeze_down"
 	end,
 	
 	updateTeamscore = function(self,source_oid,score)
