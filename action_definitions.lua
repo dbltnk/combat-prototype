@@ -38,7 +38,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 800, speed = 500, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_shot.png"},
 			effects = {
-				{effect_type = "damage", str = 15},
+				{effect_type = "damage", str = 9999},
 			},
 		},	
 	},

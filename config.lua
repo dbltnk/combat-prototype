@@ -18,7 +18,6 @@ config.nextPlaytestAt = 1372960800
 
 -- progression and round time
 config.timecompression = 1.5
-config.barrierHealth = 50000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
 config.warmupTime = 600 -- in seconds
 config.roundTime = 3600 / config.timecompression -- in seconds
 config.afterTime = 60 -- in seconds
@@ -48,6 +47,26 @@ config.mobDamage = 20
 config.mobAnimSpeed = 3
 config.mobAttackTimer = 2
 config.dummyMaxPain = 90
+
+-- boss mob (= barrier)
+config.bossSightRange = 400
+config.bossAnimSpeed = 3
+config.bossAttackTimer = 2
+config.bossDamage_1 = 50
+config.bossDamage_2 = 75
+config.bossDamage_3 = 100
+config.bossDamage_4 = 150
+config.bossDamage_5 = 250
+config.bossHealth_1 = 2000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossHealth_2 = 5000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossHealth_3 = 8000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossHealth_4 = 12000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossHealth_5 = 23000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossMovementSpeed_1 = config.walkspeed * 0.55
+config.bossMovementSpeed_2 = config.walkspeed * 0.6
+config.bossMovementSpeed_3 = config.walkspeed * 0.65
+config.bossMovementSpeed_4 = config.walkspeed * 0.7
+config.bossMovementSpeed_5 = config.walkspeed * 0.75
 
 -- visuals
 config.show_fog_of_war = true

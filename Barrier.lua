@@ -11,7 +11,7 @@ Barrier = Animation:extend
 
 	image = '/assets/graphics/boss_1.png',
 	currentPain = 0,
-	maxPain = config.barrierHealth,
+	maxPain = 0,
 	highscore = {},
 	teamscore = {},
 	owner = 0,
@@ -39,28 +39,26 @@ Barrier = Animation:extend
 	powerblocked = false,
 	dmgModified = config.dmgUnmodified,
 	
-	stage = 5,
+	spawnX = 0,
+	spawnY = 0,
+	
+	stage = 1,
 	
 	sequences = 
 			{
-				walk_down = { frames = {1,2,3,4}, fps = config.mobAnimSpeed },
-				walk_left = { frames = {5,6,7,8}, fps = config.mobAnimSpeed },
-				walk_right = { frames = {9,10,11,12}, fps = config.mobAnimSpeed },
-				walk_up = { frames = {13,14,15,16}, fps = config.mobAnimSpeed },
-				freeze_down = { frames = {1}, fps = config.mobAnimSpeed },
-				freeze_left = { frames = {5}, fps = config.mobAnimSpeed },
-				freeze_right = { frames = {9}, fps = config.mobAnimSpeed },
-				freeze_up = { frames = {13}, fps = config.mobAnimSpeed },
+				walk_down = { frames = {1,2,3,4}, fps = config.bossAnimSpeed },
+				walk_left = { frames = {5,6,7,8}, fps = config.bossAnimSpeed },
+				walk_right = { frames = {9,10,11,12}, fps = config.bossAnimSpeed },
+				walk_up = { frames = {13,14,15,16}, fps = config.bossAnimSpeed },
+				freeze_down = { frames = {1}, fps = config.bossAnimSpeed },
+				freeze_left = { frames = {5}, fps = config.bossAnimSpeed },
+				freeze_right = { frames = {9}, fps = config.bossAnimSpeed },
+				freeze_up = { frames = {13}, fps = config.bossAnimSpeed },
 			},
-	
-	onNew = function (self)		
-		the.barrier = self
+			
+	setStageVariables = function (self)
 		
-		self:mixin(GameObject)
-		self:mixin(GameObjectCommons)
-		self:mixin(FogOfWarObject)
-		
-		if self.stage == 2 or self.stage == 2 then
+		if self.stage == 1 or self.stage == 2 then
 			self.width = 64
 			self.height = 96
 		elseif self.stage == 3 then
@@ -74,7 +72,30 @@ Barrier = Animation:extend
 			self.height = 160	
 		end
 		
-		self.image = "/assets/graphics/boss_" .. self.stage .. ".png",
+		self.image = "/assets/graphics/boss_" .. self.stage .. ".png"
+		self.maxPain = config["bossHealth_" .. self.stage]
+		self.painBar.maxValue = self.maxPain
+		self.painBar.width = self.width
+		self.painBar.x = self.x
+		self.painBar.y = self.y
+		self.charDebuffDisplay.x = self.x + self.width / 2
+		self.charDebuffDisplay.y = self.y + self.height / 2 + 20
+	end,
+	
+	onNew = function (self)		
+	
+		self.width = 64
+		self.height = 96
+
+		self.image = "/assets/graphics/boss_1.png"
+		self.maxPain = config.bossHealth_1
+		
+		the.barrier = self
+		
+		self:mixin(GameObject)
+		self:mixin(GameObjectCommons)
+		self:mixin(FogOfWarObject)
+		
 		
 		self:updateQuad()
 		--print("NEW BARRIER", self.x, self.y, self.width, self.height)
@@ -99,6 +120,8 @@ Barrier = Animation:extend
 		self.charDebuffDisplay = CharDebuffDisplay:new{
 			x = self.x, y = self.y
 		}
+		
+		self.spawnX, self.spawnY = self.x, self.y
 	end,
 	
 	gainPain = function (self, str)
@@ -191,10 +214,21 @@ Barrier = Animation:extend
 	end,
 	
 	updatePain = function (self)
-		if self.currentPain > self.maxPain then 
-			self.currentPain = self.maxPain
+		if self.currentPain >= self.maxPain and self.stage == 5 then 
+			--~ print("died")
 			self:die()
 		end	
+		if self.currentPain > self.maxPain and self.stage < 5 then 
+			self:callNextBoss()
+		end	
+		--~ print(self.currentPain, self.maxPain, self.stage)
+	end,
+	
+	callNextBoss = function (self)
+		self.stage = self.stage + 1
+		self.x, self.y = self.spawnX, self.spawnY	
+		self.currentPain = 0	
+		self:setStageVariables()
 	end,
 	
 	updateHighscore = function(self,source_oid,score)
@@ -347,7 +381,7 @@ Barrier = Animation:extend
 					:where(function(p) 
 						local obj = p.obj
 						local dist = p.dist
-						return (dist <= config.mobSightRange or self.currentPain > 0) and obj.name and not obj.hidden and not obj.incapacitated
+						return (dist <= config.bossSightRange or self.currentPain > 0) and obj.name and not obj.hidden and not obj.incapacitated
 					end)
 					:orderby(function(a,b) return a.dist < b.dist end)
 					:take(1)
@@ -370,13 +404,13 @@ Barrier = Animation:extend
 			if self.rooted or self.stunned or self.mezzed then 
 				speed = 0 
 			elseif self.snared then 
-				speed = config.mobMovementSpeed / 2 
+				speed = config["bossMovementSpeed_" .. self.stage] / 2 
 			else 
-				speed = config.mobMovementSpeed 
+				speed = config["bossMovementSpeed_" .. self.stage]
 			end
 			
 			-- make mobs move towards the player
-			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.class == "Character" and not obj.hidden then 
+			if (dist <= config.bossSightRange or self.currentPain > 0) and obj.class == "Character" and not obj.hidden then 
 				local cx,cy = tools.object_center(self)
 				local px,py = tools.object_center(obj)
 				
@@ -409,9 +443,9 @@ Barrier = Animation:extend
 					local ox,oy = tools.object_center(obj)
 					
 					local dist = vector.lenFromTo(ox, oy, cx, cy)
-					if dist <= config.mobAttackRange and obj.class == "Character" and not obj.hidden then 
+					if dist <= self.height / 2 + 20 and obj.class == "Character" and not obj.hidden then 
 						-- really hurt someone
-						object_manager.send(obj.oid, "damage", config.mobDamage)
+						object_manager.send(obj.oid, "damage", config["bossDamage_" .. self.stage])
 						
 						-- visual
 						local rotation = vector.toVisualRotation(vector.fromTo(cx, cy, ox, oy))
@@ -422,7 +456,7 @@ Barrier = Animation:extend
 						
 						-- reset
 						self.attackPossible = false
-						self:after(config.mobAttackTimer, function()
+						self:after(config.bossAttackTimer, function()
 							self.attackPossible = true
 						end)
 					end	
@@ -456,7 +490,7 @@ Barrier = Animation:extend
 			local ddx,ddy = vector.fromVisualRotation(rot, 1)
 			local dir = vector.dirFromVisualRotation(ddx,ddy)
 
-			if (dist <= config.mobSightRange or self.currentPain > 0) and obj.name then 
+			if (dist <= config.bossSightRange or self.currentPain > 0) and obj.name then 
 				-- set rotation and animation
 				self.anim_name = "walk_" .. dir	
 			else
