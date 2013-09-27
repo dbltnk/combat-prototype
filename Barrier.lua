@@ -7,7 +7,7 @@ Barrier = Animation:extend
 	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "highscore", "teamscore", "focused_target", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage" },	
 	
 	sync_low = {"highscore", "teamscore", "focused_target"},
-	sync_high = {"currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage"},
+	sync_high = {"x", "y", "currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage"},
 
 	image = '/assets/graphics/boss_1.png',
 	currentPain = 0,
