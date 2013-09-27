@@ -124,10 +124,10 @@ Barrier = Animation:extend
 		self.spawnX, self.spawnY = self.x, self.y
 	end,
 	
-	gainPain = function (self, str)
+	gainPain = function (self, str, source_oid)
 	--	print(self.oid, "gain pain", str)
 		self.currentPain = self.currentPain + str
-		self:updatePain()
+		self:updatePain(source_oid)
 	end,
 	
 	showDamage = function (self, str)
@@ -154,7 +154,7 @@ Barrier = Animation:extend
 		if message_name == "damage" then
 			local str, source_oid = ...
 			--print("BARRIER DAMANGE", str)
-			self:gainPain(str)
+			self:gainPain(str, source_oid)
 			self:updateHighscore(source_oid,str)
 			self.mezzed = false
 			self.rooted = false	
@@ -167,7 +167,7 @@ Barrier = Animation:extend
 			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				self:after(duration / ticks * i, function()
-					self:gainPain(str)
+					self:gainPain(str, source_oid)
 					self:updateHighscore(source_oid,str)
 					self.mezzed = false
 					self.rooted = false	
@@ -213,12 +213,16 @@ Barrier = Animation:extend
 		end
 	end,
 	
-	updatePain = function (self)
+	updatePain = function (self, source_oid)
 		if self.currentPain >= self.maxPain and self.stage == 5 then 
 			--~ print("died")
+			local str = config["bossPoints_" .. self.stage]
+			self:updateTeamscore(source_oid, str)
 			self:die()
 		end	
 		if self.currentPain > self.maxPain and self.stage < 5 then 
+			local str = config["bossPoints_" .. self.stage]
+			self:updateTeamscore(source_oid, str)
 			self:callNextBoss()
 		end	
 		--~ print(self.currentPain, self.maxPain, self.stage)
@@ -237,17 +241,19 @@ Barrier = Animation:extend
 		self:setStageVariables()
 	end,
 	
-	updateHighscore = function(self,source_oid,score)
-		-- solo highscore
-		if not self.highscore[source_oid] then self.highscore[source_oid] = 0 end
-		self.highscore[source_oid] = self.highscore[source_oid] + score
+	updateTeamscore = function(self,source_oid,score)
 		-- team highscore
 		local src = object_manager.get(source_oid)
 		if src then
 			if not self.teamscore[src.team] then self.teamscore[src.team] = 0 end
 			self.teamscore[src.team] = self.teamscore[src.team] + score
 		end
-		
+	end,	
+	
+	updateHighscore = function(self,source_oid,score)
+		-- solo highscore
+		if not self.highscore[source_oid] then self.highscore[source_oid] = 0 end
+		self.highscore[source_oid] = self.highscore[source_oid] + score
 		-- dmg tracking
 		object_manager.send(source_oid, "inc", "barrier_dmg", score)
 	end,	
@@ -303,7 +309,7 @@ Barrier = Animation:extend
 				end
 			end	
 		
-			local txt = j .. ". Team " .. name .. " with " .. x.v .. " damage to the barrier"
+			local txt = j .. ". Team " .. name .. " with " .. x.v .. " points"
 			textListTeam[j]= txt	
 			j = j + 1
 
@@ -349,7 +355,7 @@ Barrier = Animation:extend
 				end
 			end	
 		
-			local txt = i .. ". " .. name .. " [" .. team .. "] with " .. x.v .. " damage to the barrier"
+			local txt = i .. ". " .. name .. " [" .. team .. "] with " .. x.v .. " damage to the jailers"
 			textList[i]= txt
 			i = i + 1
 

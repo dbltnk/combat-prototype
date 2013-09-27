@@ -17,7 +17,7 @@ config.dmgUnmodified = 100
 config.nextPlaytestAt = 1372960800
 
 -- progression and round time
-config.timecompression = 1.5
+config.timecompression = 12
 config.warmupTime = 600 -- in seconds
 config.roundTime = 3600 / config.timecompression -- in seconds
 config.afterTime = 60 -- in seconds
@@ -67,6 +67,11 @@ config.bossMovementSpeed_2 = config.walkspeed * 0.6
 config.bossMovementSpeed_3 = config.walkspeed * 0.65
 config.bossMovementSpeed_4 = config.walkspeed * 0.7
 config.bossMovementSpeed_5 = config.walkspeed * 0.75
+config.bossPoints_1 = 1
+config.bossPoints_2 = 3
+config.bossPoints_3 = 5
+config.bossPoints_4 = 7
+config.bossPoints_5 = 9
 
 -- visuals
 config.show_fog_of_war = true
