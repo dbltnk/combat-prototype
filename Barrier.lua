@@ -4,14 +4,15 @@ Barrier = Animation:extend
 {
 	class = "Barrier",
 
-	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "highscore", "teamscore", "focused_target", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage", "maxPain" },	
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "highscore", "teamscore", "focused_target", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage", "maxPain", "deaths" },	
 	
-	sync_low = {"highscore", "teamscore", "focused_target", "maxPain", "width", "height"},
+	sync_low = {"highscore", "teamscore", "focused_target", "maxPain", "width", "height", "deaths"},
 	sync_high = {"x", "y", "currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage"},
 
 	image = '/assets/graphics/boss_1.png',
 	currentPain = 0,
 	maxPain = 0,
+	deaths = 0,
 	highscore = {},
 	teamscore = {},
 	owner = 0,
@@ -134,10 +135,13 @@ Barrier = Animation:extend
 			self:showDamage(str)
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
+			local oldDeaths = self.deaths			
 			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
 			for i=0,ticks do
 				self:after(duration / ticks * i, function()
-					self:showDamage(str)
+					if self.deaths == oldDeaths then 
+						self:showDamage(str)
+					end
 				end)
 			end
 		end
@@ -159,12 +163,15 @@ Barrier = Animation:extend
 		elseif message_name == "damage_over_time" then
 			local str, duration, ticks, source_oid = ...
 			--print("BARRIER DAMAGE_OVER_TIME", str, duration, ticks)
+			local oldDeaths = self.deaths			
 			for i=0,ticks do
 				self:after(duration / ticks * i, function()
-					self:gainPain(str, source_oid)
-					self:updateHighscore(source_oid,str)
-					self.mezzed = false
-					self.rooted = false	
+					if self.deaths == oldDeaths then 
+						self:gainPain(str, source_oid)
+						self:updateHighscore(source_oid,str)
+						self.mezzed = false
+						self.rooted = false	
+					end
 				end)
 			end
 		elseif message_name == "runspeed" then
@@ -223,8 +230,10 @@ Barrier = Animation:extend
 	end,
 	
 	callNextBoss = function (self)
+		self.deaths = self.deaths + 1
 		self.stage = self.stage + 1
 		self.x, self.y = self.spawnX, self.spawnY	
+		self.focused_target = 0
 		self.currentPain = 0	
 		self.snared = false
 		self.rooted = false
