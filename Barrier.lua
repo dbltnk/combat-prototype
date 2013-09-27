@@ -4,9 +4,9 @@ Barrier = Animation:extend
 {
 	class = "Barrier",
 
-	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "highscore", "teamscore", "focused_target", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage", "maxPain", "deaths" },	
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "highscore", "teamscore", "focused_target", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage", "maxPain", "deaths", "animName" },	
 	
-	sync_low = {"highscore", "teamscore", "focused_target", "maxPain", "width", "height", "deaths"},
+	sync_low = {"highscore", "teamscore", "focused_target", "maxPain", "width", "height", "deaths", "animName"},
 	sync_high = {"x", "y", "currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage"},
 
 	image = '/assets/graphics/boss_1.png',
