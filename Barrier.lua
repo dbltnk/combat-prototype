@@ -4,9 +4,9 @@ Barrier = Animation:extend
 {
 	class = "Barrier",
 
-	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "highscore", "teamscore", "focused_target", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage" },	
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "highscore", "teamscore", "focused_target", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage", "maxPain" },	
 	
-	sync_low = {"highscore", "teamscore", "focused_target"},
+	sync_low = {"highscore", "teamscore", "focused_target", "maxPain", "width", "height"},
 	sync_high = {"x", "y", "currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage"},
 
 	image = '/assets/graphics/boss_1.png',
@@ -74,12 +74,6 @@ Barrier = Animation:extend
 		
 		self.image = "/assets/graphics/boss_" .. self.stage .. ".png"
 		self.maxPain = config["bossHealth_" .. self.stage]
-		self.painBar.maxValue = self.maxPain
-		self.painBar.width = self.width
-		self.painBar.x = self.x
-		self.painBar.y = self.y
-		self.charDebuffDisplay.x = self.x + self.width / 2
-		self.charDebuffDisplay.y = self.y + self.height / 2 + 20
 	end,
 	
 	onNew = function (self)		
@@ -479,9 +473,11 @@ Barrier = Animation:extend
 	
 	onUpdateBoth = function (self)	
 		self.painBar.currentValue = self.currentPain
-		self.painBar:updateBar()
+		self.painBar.maxValue = self.maxPain
+		self.painBar.width = self.width
 		self.painBar.x = self.x
 		self.painBar.y = self.y
+		self.painBar:updateBar()
 		self:updateFogAlpha()
 		self.painBar.bar.alpha = self.alpha
 		self.painBar.background.alpha = self.alpha
@@ -489,7 +485,7 @@ Barrier = Animation:extend
 		self.charDebuffDisplay.alpha = self.alpha
 		self.charDebuffDisplay.x = self.x + self.width / 2
 		self.charDebuffDisplay.y = self.y + self.height / 2 + 20
-		
+
 		self:play(self.anim_name)
 		
 		-- look at current focus
