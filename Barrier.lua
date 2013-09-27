@@ -228,6 +228,12 @@ Barrier = Animation:extend
 		self.stage = self.stage + 1
 		self.x, self.y = self.spawnX, self.spawnY	
 		self.currentPain = 0	
+		self.snared = false
+		self.rooted = false
+		self.mezzed = false
+		self.stunned = false
+		self.powerblocked = false
+		self.dmgModified = config.dmgUnmodified
 		self:setStageVariables()
 	end,
 	
