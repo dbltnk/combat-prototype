@@ -16,8 +16,10 @@ Projectile = Tile:extend
 
 	onCollideOnlyFirst = function(self, other, horizOverlap, vertOverlap)
 		if other.class == "TargetDummy" or other.class == "Character" or other.class == "Barrier" or other.class == "Ressource" then
-			track("skill_hit", self.origin_oid, other.class, self.image)
-			print("skill_hit", self.origin_oid, other.class, self.image)
+			local name = "";
+			name = string.sub(self.image, 37, -5)
+			track("skill_hit", self.origin_oid, other.class, name)			
+			--~ print("skill_hit", self.origin_oid, other.class, name)
 		end
 	end,
 	
@@ -39,8 +41,10 @@ Projectile = Tile:extend
 			self.y = self.target.y - self.height/2
 			self:die()
 			if not self.onCollideOnlyFirstAlreadyCalled then
-				track("skill_miss", self.origin_oid, self.image)
-				print("skill_miss", self.origin_oid, self.image)
+				local name = "";
+				name = string.sub(self.image, 37, -5)
+				track("skill_miss", self.origin_oid, name)
+				--~ print("skill_miss", self.origin_oid, name)
 			end
 		end
 		
