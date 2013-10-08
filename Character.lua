@@ -473,7 +473,7 @@ Character = Animation:extend
 			if self:isLocal() and the.phaseManager and the.phaseManager.phase == "playing" then
 				track("player_ot", self.oid, self.name, self.level, self.xp, self.deaths, self.kills_player, 
 					self.xp_gained_from_combat, self.xp_gained_from_creeps, self.xp_gained_from_resource, 
-					self.barrier_dmg, self.resource_dmg
+					self.barrier_dmg, self.resource_dmg, self.currentPain, self.maxPain, self.currentEnergy, self.maxEnergy
 					)
 			end
 		end)
