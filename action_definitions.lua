@@ -75,7 +75,7 @@ action_definitions = {
 		cast_particle_color = color_bow,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/bow_puncture.png"},
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/bow_snare.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_bow},
