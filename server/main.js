@@ -265,7 +265,7 @@ var notifyEndGame = function() {
 	gameRunning = false;
 
 	// spawn track processing
-	exec('./process_tracking_of_gameid.sh ' + oldGameId, function (error, stdout, stderr){
+	exec('./process_tracking_of_gameid.sh ' + trackId + " " + oldGameId, function (error, stdout, stderr){
 		console.log("TRACKING PROCESSING", error, stdout, stderr);
 	});
 };
