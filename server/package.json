@@ -16,6 +16,7 @@
     "synchronized": "*",
     "enet": "0.1.4",
     "toobusy": "*",
+    "mysql": "*",
     "async": "*"
   },
   "engine": "node >= 0.10.0"

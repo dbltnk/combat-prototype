@@ -6,3 +6,10 @@ this.webPort = 12323;
 this.accounts = {
 	// name: "key",
 };
+
+this.mysql = {
+        user: "dastal",
+        host: "localhost",
+        password: "dastal",
+	database: "dastal",
+};
