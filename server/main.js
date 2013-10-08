@@ -11,6 +11,14 @@ var enet = require("enet");
 var toobusy = require('toobusy');
 var config = require('./config.js');
 var fs = require('fs');
+var mysql = require('mysql');
+
+var connection = mysql.createConnection(config.mysql);
+connection.connect();
+
+connection.query('SELECT * FROM raw', function(err, rows, fields) {
+  if (err) throw err;
+});
 
 require('./web/app.js');
 
@@ -113,6 +121,8 @@ function tryToParseBuffer (buffer) {
 
 var clients = [];
 var clients_count = 0;
+var gameId = 1;
+var gameRunning = false;
 
 // returns {msg: message, rest: buffer }
 function decode_message(buffer) {
@@ -201,6 +211,7 @@ function updateOnlineStats()
 {
 	var v = _.size(clients);
 	dayBasedHistoryNotifyValue("online_history.json", v, 7);
+	if (v == 0) notifyEndGame();
 }
 
 var storage = {};
@@ -208,13 +219,19 @@ var storage = {};
 var next_free_client_id = 1;
 
 
-var taskTrack = function (id, time, event, parameters, callback)
+var taskTrack = function (id, time, gameId, event, parameters, callback)
 {
+	var sqlSetPart = "";
+
 	var ps = "";
-	_.each(parameters, function(p) {
+	_.each(parameters, function(p, i) {
 		ps = ps + p + ";";
+		sqlSetPart += ', p' + (i+1) + ' = ' + mysql.escape(p);
 	});
 	
+	var q = "INSERT INTO raw SET session = " + mysql.escape(id) + ", time = " + mysql.escape(time) + ", gameid = " + mysql.escape(gameId) + sqlSetPart + ", event = " + mysql.escape(event);
+	connection.query(q);
+
 	console.log("TRACK", id, time, event, parameters);
 	fs.appendFile('track.log', id + ";" + time + ";" + event + ";" + ps + "\n", function (err) {
 		callback(err);
@@ -223,11 +240,25 @@ var taskTrack = function (id, time, event, parameters, callback)
 		
 // task distribution
 var singleQueue = async.queue(function (task, callback) {
-	if (task.name == 'taskTrack') taskTrack(task.id, task.time, task.event, task.parameters, callback);
+	if (task.name == 'taskTrack') taskTrack(task.id, task.time, task.gameId, task.event, task.parameters, callback);
 	else callback('invalid task');
 }, 1);
 
 var trackId = Math.floor(Math.random() * 10000000);
+
+var notifyStartGame = function() {
+	if (gameRunning == true) return; 
+	gameId = gameId + 1;
+	console.log("GAME START id", gameId);
+	gameRunning = true;
+};
+
+var notifyEndGame = function() {
+	if (gameRunning == false) return; 
+	console.log("GAME END id", gameId);
+	gameId = gameId + 1;
+	gameRunning = false;
+};
 
 // varargs: parameters
 var track = function (event) {
@@ -238,7 +269,7 @@ var track = function (event) {
 	for (var i = 1; i < arguments.length; i++) {
 		parameters.push(arguments[i]);
 	}
-	singleQueue.push({name: 'taskTrack', id: id, time: time, event: event, parameters: parameters, });
+	singleQueue.push({name: 'taskTrack', gameId: gameId, id: id, time: time, event: event, parameters: parameters, });
 };
 
 track("server_start");
@@ -317,6 +348,10 @@ server.on('connect', function(peer, data) {
 				console.log("WHO");
 				var ids = _.map(clients, function(c) { return c.id; });
 				send_to_one({seq: message.seq, ids: ids, fin: true}, client, reliable);
+                        } else if (message.cmd == "game_start") {
+				notifyStartGame();
+                        } else if (message.cmd == "game_end") {
+				notifyEndGame();
                         } else if (message.cmd == "revision") {
                                 client.revision = message.rev;
                                 console.log("CLIENT REVISION", client.id, client.revision);
