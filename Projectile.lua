@@ -14,9 +14,18 @@ Projectile = Tile:extend
 	--~ image = '/assets/graphics/action_projectiles/bow_shot_projectile.png',
     -- target.x target.y start.x start.y	
 
+	onCollideOnlyFirst = function(self, other, horizOverlap, vertOverlap)
+		if other.class == "TargetDummy" or other.class == "Character" or other.class == "Barrier" or other.class == "Ressource" then
+			track("skill_hit", self.origin_oid, other.class, self.image)
+			print("skill_hit", self.origin_oid, other.class, self.image)
+		end
+	end,
+	
 	onCollide = function(self, other, horizOverlap, vertOverlap)
 	--	self:particle(self.x, self.y)
-		if self:isLocal() then self:die() end
+		if self:isLocal() then 
+			self:die() 
+		end
 	end,
 	
 	onUpdateLocal = function (self)
@@ -29,6 +38,10 @@ Projectile = Tile:extend
 			self.x = self.target.x - self.width/2
 			self.y = self.target.y - self.height/2
 			self:die()
+			if not self.onCollideOnlyFirstAlreadyCalled then
+				track("skill_miss", self.origin_oid, self.image)
+				print("skill_miss", self.origin_oid, self.image)
+			end
 		end
 		
 		if the.keys:pressed (localconfig.targetSelf) then self.target.x, self.target.y = self.start.x, self.start.y end

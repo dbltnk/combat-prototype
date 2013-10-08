@@ -156,6 +156,13 @@ action_handling.register_target_selection("projectile", function (start_target, 
 			doCollide = false
 		end
 		
+		if doCollide and projectile.onCollideOnlyFirst and 
+			not projectile.onCollideOnlyFirstAlreadyCalled 
+		then
+			projectile.onCollideOnlyFirstAlreadyCalled = true
+			projectile.onCollideOnlyFirst(self, other, horizOverlap, vertOverlap) 
+		end
+		
 		if doCollide and target_left > 0 then
 			last_target_oid = other.oid
 			if other.oid then targets_hit[other.oid] = true end
