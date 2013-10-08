@@ -117,6 +117,7 @@ PhaseManager = Sprite:extend
 			if network.time > self.round_end_time then
 				self:changePhaseToAfter()
 				track("game_end", the.barrier and the.barrier.alive == true)
+				network.send({channel = "server", cmd = "game_end"})
 				if the.barrier then
 					for team, points in pairs(the.barrier.teamscore) do
 						track("game_end_score_team", team, points)
