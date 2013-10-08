@@ -47,12 +47,32 @@ action_handling.register_target_selection("ae", function (start_target, target_s
 	--print(x,y, target_selection.range, target_selection.piercing_number)
 	--utils.vardump(l)
 	
+	local c = 0
+	
 	targets_selected_callback(utils.map1(l, function (o) 
 		local t = action_handling.object_to_target(o)
 		action_handling.add_view_on_demand(t, start_target)
-		--utils.vardump(t)
+		--~ utils.vardump(t)
+		
+		-- hit tracking
+		for k,v in pairs(t) do
+			if k == "oid" and t[k] ~= source_oid then
+				c = c + 1
+			end
+		end
+		
 		return t
 	end))
+	
+	local lastSkill = object_manager.get(source_oid).lastUsedSkill
+	if c > 0 then
+		track("skill_hit", lastSkill, source_oid, c)
+		print("skill_hit", lastSkill, source_oid, c)
+	else
+		track("skill_miss", lastSkill, source_oid, c)
+		print("skill_miss", lastSkill, source_oid, c)
+	end
+	
 end)
 
 -- target_selection: cone ----------------------------------------------------------
@@ -87,12 +107,31 @@ action_handling.register_target_selection("cone", function (start_target, target
 	--print(x,y, target_selection.range, target_selection.piercing_number)
 	--utils.vardump(l)
 	
+	local c = 0
+	
 	targets_selected_callback(utils.map1(l, function (o) 
 		local t = action_handling.object_to_target(o)
 		action_handling.add_view_on_demand(t, start_target)
 		--utils.vardump(t)
+		
+		-- hit tracking
+		for k,v in pairs(t) do
+			if k == "oid" and t[k] ~= source_oid then
+				c = c + 1
+			end
+		end
+		
 		return t
 	end))
+	
+	local lastSkill = object_manager.get(source_oid).lastUsedSkill
+	if c > 0 then
+		track("skill_hit", lastSkill, source_oid, c)
+		--~ print("skill_hit", lastSkill, source_oid, c)
+	else
+		track("skill_miss", lastSkill, source_oid, c)
+		--~ print("skill_miss", lastSkill, source_oid, c)
+	end
 end)
 
 

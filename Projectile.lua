@@ -18,8 +18,8 @@ Projectile = Tile:extend
 		if other.class == "TargetDummy" or other.class == "Character" or other.class == "Barrier" or other.class == "Ressource" then
 			local name = "";
 			name = string.sub(self.image, 37, -5)
-			track("skill_hit", self.origin_oid, other.class, name)			
-			--~ print("skill_hit", self.origin_oid, other.class, name)
+			track("skill_hit", name, self.origin_oid, other.class)			
+			--~ print("skill_hit", name, self.origin_oid, other.class)
 		end
 	end,
 	
@@ -43,8 +43,8 @@ Projectile = Tile:extend
 			if not self.onCollideOnlyFirstAlreadyCalled then
 				local name = "";
 				name = string.sub(self.image, 37, -5)
-				track("skill_miss", self.origin_oid, name)
-				--~ print("skill_miss", self.origin_oid, name)
+				track("skill_miss", name, self.origin_oid)
+				--~ print("skill_miss", name, self.origin_oid)
 			end
 		end
 		

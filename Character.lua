@@ -65,6 +65,7 @@ Character = Animation:extend
 	viewAngle = config.characterViewAngle,
 	coverLocation = nil, 
 	determination = 0,
+	lastUsedSkill = "",
 	
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
