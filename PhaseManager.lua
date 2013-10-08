@@ -93,12 +93,14 @@ PhaseManager = Sprite:extend
 				self:changePhaseToPlaying()
 				track("phase_playing")
 				track("game_start")
+				network.send({channel = "server", cmd = "game_start"})
 			end
 		elseif self.phase == "playing" then
 			if the.barrier and the.barrier.currentPain >= the.barrier.maxPain then
 				object_manager.send(self.oid, "barrier_died")
 				self:changePhaseToAfter()
 				track("game_end", the.barrier and the.barrier.alive == false)
+				network.send({channel = "server", cmd = "game_end"})
 				if the.barrier then
 					for team, points in pairs(the.barrier.teamscore) do
 						track("game_end_score_team", team, points)
