@@ -12,6 +12,8 @@ var toobusy = require('toobusy');
 var config = require('./config.js');
 var fs = require('fs');
 var mysql = require('mysql');
+var util = require('util');
+var exec = require('child_process').exec;
 
 var connection = mysql.createConnection(config.mysql);
 connection.connect();
@@ -256,8 +258,16 @@ var notifyStartGame = function() {
 var notifyEndGame = function() {
 	if (gameRunning == false) return; 
 	console.log("GAME END id", gameId);
+	
+	oldGameId = gameId;
+
 	gameId = gameId + 1;
 	gameRunning = false;
+
+	// spawn track processing
+	exec('./process_tracking_of_gameid.sh ' + oldGameId, function (error, stdout, stderr){
+		console.log("TRACKING PROCESSING", error, stdout, stderr);
+	});
 };
 
 // varargs: parameters
