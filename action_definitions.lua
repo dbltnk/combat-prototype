@@ -276,7 +276,27 @@ action_definitions = {
 			},
 		},		
 	},	
-	-- -----------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------
+		scythe_barrier = {
+		name = "Barrier",
+		description = "Create a barrier at that location.",
+		icon = "/assets/graphics/action_icons/bow_shot.png",
+		sound = nil,
+		cast_time = 1.5,
+		timeout = 12,
+		energy = 40,
+		on_the_run = true,
+		cast_particle_color = color_scythe,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 1200, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_jump.png"},
+			effects = {
+				{effect_type = "createBarrierAt"},	
+			},
+		},	
+
+	},	
+-- -----------------------------------------------------------------------------------
 	staff_magic_bolt = {
 		name = "Magic Bolt",
 		description = "Shoot a small projectile that explodes on impact and damages a few targets in a small area.",

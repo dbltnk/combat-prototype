@@ -342,6 +342,13 @@ GameView = View:extend
 			self.water:subdisplace(dummy)		
 		end
 		
+		for blocker,v in pairs(the.blockers) do
+			self.collision:displace(blocker)
+			self.layers.characters:displace(blocker)
+			self.landscape:subdisplace(blocker)
+			self.water:subdisplace(blocker)		
+		end
+		
 		if the.player and the.player.class ~= "Ghost" then
 			self.collision:displace(the.player)
 			self.layers.characters:displace(the.player)

@@ -524,6 +524,14 @@ action_handling.register_effect("moveSelfTo", function (target, effect, source_o
 	object_manager.send(source_oid, "moveSelfTo", x,y)
 end)
 
+-- effect: createBarrierAt ----------------------------------------------------------
+-- eg. {effect_type = "createBarrierAt"},
+-- has: 
+action_handling.register_effect("createBarrierAt", function (target, effect, source_oid)
+	local x,y = action_handling.get_target_position(target)
+	object_manager.send(source_oid, "createBarrierAt", x,y)
+end)
+
 -- effect: moveToMe ----------------------------------------------------------
 -- eg. {effect_type = "moveToMe"},
 -- has: 

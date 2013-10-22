@@ -179,6 +179,7 @@ Character = Animation:extend
 			splint_mail_grow = true,
 			splint_mail_shout = true,
 			splint_mail_invulnerability = true,
+			scythe_barrier = true,
 		}
 		
 		-- overwrite invalid skills
@@ -443,6 +444,7 @@ Character = Animation:extend
 		end)
 		
 		if self:isLocal() and globalOneTimeStatsSend then
+		
 			globalOneTimeStatsSend = true
 			 
 			-- send selected skills
@@ -478,6 +480,8 @@ Character = Animation:extend
 					)
 			end
 		end)
+		
+
 	end,
 	
 	updateAndSendZones = function (self)
@@ -1048,6 +1052,9 @@ Character = Animation:extend
 		elseif message_name == "stop_dots" then
 			local duration, source_oid = ...
 			self.deaths = self.deaths + 1	
+		elseif message_name == "createBarrierAt" then
+			local x,y = ...
+			SpawnMobAt(x,y)
 		end
 	end,
 	
@@ -1278,6 +1285,7 @@ Character = Animation:extend
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
+	
 		self:refreshLevelBar()
 		
 		-- move back into map if outside
