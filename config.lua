@@ -1,5 +1,6 @@
 
 local config = {}
+
  
 -- combat balancing
 config.walkspeed = 200
@@ -72,6 +73,10 @@ config.bossPoints_2 = 3
 config.bossPoints_3 = 5
 config.bossPoints_4 = 7
 config.bossPoints_5 = 9
+
+-- blockers
+config.blockerMaxPain = 100
+config.blockerDecaySpeed = 0.5
 
 -- visuals
 config.show_fog_of_war = true

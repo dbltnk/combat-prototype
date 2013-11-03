@@ -524,12 +524,54 @@ action_handling.register_effect("moveSelfTo", function (target, effect, source_o
 	object_manager.send(source_oid, "moveSelfTo", x,y)
 end)
 
--- effect: createBarrierAt ----------------------------------------------------------
--- eg. {effect_type = "createBarrierAt"},
+-- effect: createWallAt ----------------------------------------------------------
+-- eg. {effect_type = "createWallAt"},
 -- has: 
-action_handling.register_effect("createBarrierAt", function (target, effect, source_oid)
+action_handling.register_effect("createWallAt", function (target, effect, source_oid)
 	local x,y = action_handling.get_target_position(target)
-	object_manager.send(source_oid, "createBarrierAt", x,y)
+	local sx, sy = action_handling.get_target_position(object_manager.get(source_oid))
+	local dx, dy = x - sx, y - sy	
+	local displacement = 33
+	
+	if math.abs(dx) >= math.abs(dy) then 
+		object_manager.send(source_oid, "createBlockerAt", x,y)
+		for i = 1, 2 do
+			object_manager.send(source_oid, "createBlockerAt", x,y+displacement*i)
+		end
+			for i = 1, 2 do
+			object_manager.send(source_oid, "createBlockerAt", x,y+(displacement*i*-1))
+		end
+	else
+		object_manager.send(source_oid, "createBlockerAt", x,y)
+		for i = 1, 2 do
+			object_manager.send(source_oid, "createBlockerAt", x+displacement*i,y)
+		end
+			for i = 1, 2 do
+			object_manager.send(source_oid, "createBlockerAt", x+(displacement*i*-1),y)
+		end
+	end
+end)
+
+-- effect: createBollwerkAt ----------------------------------------------------------
+-- eg. {effect_type = "createBollwerkAt"},
+-- has: radius
+action_handling.register_effect("createBollwerkAt", function (target, effect, source_oid)
+	local x,y = action_handling.get_target_position(target)
+	local sx, sy = action_handling.get_target_position(object_manager.get(source_oid))
+	local dx, dy = x - sx, y - sy	
+	local displacement = 33
+	local r = effect.radius
+	
+	object_manager.send(source_oid, "createBlockerAt", x + r, y + r)
+	object_manager.send(source_oid, "createBlockerAt", x + r, y - r)
+	object_manager.send(source_oid, "createBlockerAt", x - r, y + r)
+	object_manager.send(source_oid, "createBlockerAt", x - r, y - r)
+
+	object_manager.send(source_oid, "createBlockerAt", x, y + r * 1.5)
+	object_manager.send(source_oid, "createBlockerAt", x, y - r * 1.5)
+	object_manager.send(source_oid, "createBlockerAt", x + r * 1.5, y)
+	object_manager.send(source_oid, "createBlockerAt", x - r * 1.5, y)		
+	
 end)
 
 -- effect: moveToMe ----------------------------------------------------------

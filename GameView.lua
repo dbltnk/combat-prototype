@@ -86,22 +86,14 @@ GameView = View:extend
     
 		-- object -> true map for easy remove, key contains projectile references
 		the.projectiles = {}
-		
-		-- object -> true map for easy remove, key contains targetDummy references
 		the.targetDummies = {}
-		
-		-- object -> true map for easy remove, key contains footstep references
 		the.footsteps = {}
-		
-		-- object -> true map for easy remove, key contains ressource references
 		the.ressources = {}
 		the.ressourceObjects = {}
-		the.validPositions = {} 
-		--~ the.ressourceDisplay = RessourceDisplay:new{ x = 0, y = 0, text = "ressources uninitialized" }
-		--~ the.hud:add(the.ressourceDisplay) 
-		
+		the.validPositions = {} 		
 		the.covers = {}
 		the.characters = {}
+		the.blockers = {}
 		
 		local mapIdx = 1 + (network.seed % config.numberOfMaps)		
 		if config.mapNumber ~= 0 and config.mapNumber then			
@@ -344,7 +336,7 @@ GameView = View:extend
 		
 		for blocker,v in pairs(the.blockers) do
 			self.collision:displace(blocker)
-			self.layers.characters:displace(blocker)
+			--self.layers.characters:displace(blocker)
 			self.landscape:subdisplace(blocker)
 			self.water:subdisplace(blocker)		
 		end

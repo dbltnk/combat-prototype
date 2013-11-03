@@ -51,6 +51,7 @@ elseif localconfig.weapon == "staff" then -- The following lines are the six sta
 	-- table.insert(localconfig.skills,"staff_healing_orb") -- Shoot a projectile that heals one target.
 	-- table.insert(localconfig.skills,"staff_healing_breeze") -- Shoot a projectile that heals one target slowly over time.
 	-- table.insert(localconfig.skills,"staff_mezz") -- Shoot a projectile that mesmerizes one target for some time. Breaks on damage.
+	-- table.insert(localconfig.skills,"staff_wall") -- Creates a wall at the target location.
 end	
 
 -- ### Step 5: Now pick your armor of choice. ###
@@ -84,7 +85,7 @@ elseif localconfig.armor == "splint_mail" then -- The following lines are the si
 	table.insert(localconfig.skills,"splint_mail_invulnerability") -- Renders you invulnerable to damage for a short amount of time.
 	-- table.insert(localconfig.skills,"splint_mail_ignore_pain") -- Increases your pain resistance for some time.
 	-- table.insert(localconfig.skills,"splint_mail_clarity") -- Break all stun, mezz and powerblock effects in a large area around you.
-
+	-- table.insert(localconfig.skills,"splint_mail_bulwark") -- Creates a bulwark at your location.
 end
 
 -- ### Step 7: Customize your keyboard layout (if you want). ###

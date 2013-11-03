@@ -13,6 +13,7 @@ LineOfSight = Sprite:extend
 	visibility = {},
 	alreadySeen = {},
 	collision = nil,
+	dirty = false,
 	
 	scanline = 0,
 	
@@ -29,6 +30,15 @@ LineOfSight = Sprite:extend
 		self.width = config.map_width
 		self.height = config.map_height
 		self.scanline = math.floor(config.map_width / self.cell) + 200
+		
+		the.app.view.timer:every(0.5, function()
+			--~ print("tick")
+			if self.dirty == true then
+				--~ print("dirty")
+				self.dirty = false
+				self:dropCache()
+			end
+		end)
 	end,
 	
 	cell2px = function (self, cx, cy)
@@ -52,7 +62,7 @@ LineOfSight = Sprite:extend
 		c0x, c0y = vector.add(c0x, c0y, -b,-b)
 		c1x, c1y = vector.add(c1x, c1y, b, b)
 		
-		print("build collision cache")
+		--~ print("build collision cache")
 		
 		local count = 0
 		
@@ -65,7 +75,7 @@ LineOfSight = Sprite:extend
 		end
 		end
 		
-		print("found", count, "collision cells")
+		--~ print("found", count, "collision cells")
 		
 		self.collision = c
 	end,
@@ -98,9 +108,19 @@ LineOfSight = Sprite:extend
 			if collision == false and obj:collide(s) then collision = true end
 		end
 		
+		-- blockers
+		for obj,_ in pairs(the.blockers) do
+			if collision == false and obj:collide(s) then collision = true end
+		end		
+		
 		-- profile.stop()
 		
 		return collision
+	end,
+	
+	dropCache = function (self)
+		self.collision = nil
+		--~ print("drop", network.time)
 	end,
 	
 	calculateVisibilityAddSource = function (self, px,py, range, angle, rotation, feelRange)

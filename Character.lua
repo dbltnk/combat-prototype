@@ -161,6 +161,7 @@ Character = Animation:extend
 			staff_healing_orb = true,
 			staff_healing_breeze = true,
 			staff_mezz = true,
+			staff_wall = true,
 			robe_bandage = true,
 			robe_shrink = true,
 			robe_sonic_boom = true,
@@ -179,7 +180,7 @@ Character = Animation:extend
 			splint_mail_grow = true,
 			splint_mail_shout = true,
 			splint_mail_invulnerability = true,
-			scythe_barrier = true,
+			splint_mail_bulwark = true,
 		}
 		
 		-- overwrite invalid skills
@@ -1052,9 +1053,9 @@ Character = Animation:extend
 		elseif message_name == "stop_dots" then
 			local duration, source_oid = ...
 			self.deaths = self.deaths + 1	
-		elseif message_name == "createBarrierAt" then
+		elseif message_name == "createBlockerAt" then
 			local x,y = ...
-			SpawnMobAt(x,y)
+			Blocker:new{x=x, y=y}
 		end
 	end,
 	

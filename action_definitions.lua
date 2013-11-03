@@ -275,27 +275,7 @@ action_definitions = {
 				{effect_type = "gank"},
 			},
 		},		
-	},	
--- -----------------------------------------------------------------------------------
-		scythe_barrier = {
-		name = "Barrier",
-		description = "Create a barrier at that location.",
-		icon = "/assets/graphics/action_icons/bow_shot.png",
-		sound = nil,
-		cast_time = 1.5,
-		timeout = 12,
-		energy = 40,
-		on_the_run = true,
-		cast_particle_color = color_scythe,		
-		
-		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 1200, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_jump.png"},
-			effects = {
-				{effect_type = "createBarrierAt"},	
-			},
-		},	
-
-	},	
+	},		
 -- -----------------------------------------------------------------------------------
 	staff_magic_bolt = {
 		name = "Magic Bolt",
@@ -464,6 +444,27 @@ action_definitions = {
 			},
 		},	
 	},		
+	
+	-- -----------------------------------------------------------------------------------
+		staff_wall = {
+		name = "Wall",
+		description = "Creates a wall at the target location.",
+		icon = nil,
+		sound = nil,
+		cast_time = 1,
+		timeout = 12,
+		energy = 60,
+		on_the_run = true,
+		cast_particle_color = color_staff,		
+		
+		application = {
+			target_selection = {target_selection_type = "projectile", range = 500, speed = 1200, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_jump.png"},
+			effects = {
+				{effect_type = "createWallAt"},	
+			},
+		},	
+
+	},	
 	-- -----------------------------------------------------------------------------------	
 	robe_bandage = {
 		name = "Bandage",
@@ -818,6 +819,27 @@ action_definitions = {
 		},	
 	},	
 	-- -----------------------------------------------------------------------------------		
+		splint_mail_bulwark = {
+		name = "Bulwark",
+		description = "Creates a bulwark at your location.",
+		icon = nil,
+		sound = nil,
+		cast_time = 0.1,
+		timeout = 30,
+		energy = 30,
+		on_the_run = false,
+		cast_particle_color = color_splint_mail,		
+		
+		application = {
+			target_selection = {target_selection_type = "self"},
+			effects = {
+				{effect_type = "createBollwerkAt", radius = 50},
+			},
+		},	
+
+	},
+	-- -----------------------------------------------------------------------------------
+
 }
 
 -- fill up asset names with identifiers
