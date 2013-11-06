@@ -93,6 +93,17 @@ TargetDummy = Animation:extend
 		}
 		
 		self.spawnX, self.spawnY = 0, 0
+		
+		-- keep character index in sync		
+		the.gridIndexTargetDummys:insertAt(self.x,self.y,self)
+		self.xyMonitor = XYMonitor:new{
+			obj = self,
+			onChangeFunction = function(ox,oy, nx,ny)
+				print("XY CHANGE", ox,oy, nx,ny)
+				the.gridIndexTargetDummys:removeAt(ox,oy,self)
+				the.gridIndexTargetDummys:insertAt(nx,ny,self)
+			end,
+		}
 	end,
 	
 	gainPain = function (self, str)
@@ -224,6 +235,7 @@ TargetDummy = Animation:extend
 	end,
 	
 	onDieBoth = function (self)
+		the.gridIndexTargetDummys:removeObject(self)
 		self.painBar:die()
 		self.charDebuffDisplay:die()
 		the.targetDummies[self] = nil		

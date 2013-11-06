@@ -31,7 +31,9 @@ GameView = View:extend
 	-- GridIndex
 	gridIndexWaterAndLandscape = nil,
 	-- GridIndex
-	gridIndexCharactersgridIndexCharacters = nil,
+	gridIndexCharacters = nil,
+	-- GridIndex
+	gridIndexTargetDummys = nil,
 
 	loadMap = function (self, file, filter)
 		local ok, data = pcall(loadstring(Cached:text(file)))
@@ -91,6 +93,9 @@ GameView = View:extend
     
 		self.gridIndexCharacters = GridIndex:new{}
 		the.gridIndexCharacters = self.gridIndexCharacters
+		
+		self.gridIndexTargetDummys = GridIndex:new{}
+		the.gridIndexTargetDummys = self.gridIndexTargetDummys
 
 		-- object -> true map for easy remove, key contains projectile references
 		the.projectiles = {}
@@ -348,6 +353,7 @@ GameView = View:extend
 		for dummy,v in pairs(the.targetDummies) do
 			profile.start("update.displace.collision") self.collision:displace(dummy) profile.stop()
 			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) print("DISPLACE") o:displace(dummy) end) profile.stop()
+			profile.start("update.displace.dummy") self.gridIndexTargetDummys:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) print("DISPLACE DUMMY") o:displace(dummy) end) profile.stop()
 			profile.start("update.displace.landscape") self.landscape:subdisplace(dummy) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(dummy)		 profile.stop()
 		end
@@ -402,7 +408,7 @@ GameView = View:extend
 		
 		print("XXX FPS AND MEM", love.timer.getFPS(), collectgarbage("count"))
 		
-		for k,v in pairs(self.gridIndexCharacters.grid) do
+		for k,v in pairs(self.gridIndexTargetDummys.grid) do
 			for kk,vv in pairs(v) do print(">", k,kk,vv,kk.x,kk.y,kk.class) end
 		end
     end,	
