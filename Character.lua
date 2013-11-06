@@ -67,6 +67,8 @@ Character = Animation:extend
 	determination = 0,
 	lastUsedSkill = "",
 	
+	xyMonitor = nil,
+	
 	--~ "bow" or "scythe" or "staff"
 	weapon = "bow",
 	--~ "robe" or "hide_armor" or "splint_mail"
@@ -269,6 +271,8 @@ Character = Animation:extend
 			end,
 			
 			onUpdate = function(self)
+				profile.start("char.update.1")
+
 				self.x = goSelf.x - 12
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
@@ -276,6 +280,8 @@ Character = Animation:extend
 				if goSelf.anim_name then self:play(goSelf.anim_name) end
 				
 				self.alpha = goSelf.alpha
+				
+				profile.stop()
 			end,
 		}
 		
@@ -326,6 +332,8 @@ Character = Animation:extend
 			end,
 			
 			onUpdate = function(self)
+				profile.start("char.update.2")
+			
 				self.x = goSelf.x - 12
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
@@ -333,6 +341,8 @@ Character = Animation:extend
 				if goSelf.anim_name then self:play(goSelf.anim_name) end
 				
 				self.alpha = goSelf.alpha
+				
+				profile.stop()
 			end,
 		}
 		
@@ -371,6 +381,8 @@ Character = Animation:extend
 			end,
 			
 			onUpdate = function(self)
+				profile.start("char.update.3")
+				
 				self.x = goSelf.x - 12
 				self.y = goSelf.y - self.height + goSelf.height
 				self.visible = goSelf.visible
@@ -378,6 +390,8 @@ Character = Animation:extend
 				if goSelf.anim_name then self:play(goSelf.anim_name) end
 				
 				self.alpha = goSelf.alpha
+				
+				profile.stop()
 			end,
 		}
 		
@@ -482,7 +496,16 @@ Character = Animation:extend
 			end
 		end)
 		
-
+		-- keep character index in sync		
+		the.gridIndexCharacters:insertAt(self.x,self.y,self)
+		self.xyMonitor = XYMonitor:new{
+			obj = self,
+			onChangeFunction = function(ox,oy, nx,ny)
+				print("XY CHANGE", ox,oy, nx,ny)
+				the.gridIndexCharacters:removeAt(ox,oy,self)
+				the.gridIndexCharacters:insertAt(nx,ny,self)
+			end,
+		}
 	end,
 	
 	updateAndSendZones = function (self)
@@ -497,6 +520,7 @@ Character = Animation:extend
 	end,
 	
 	onDieBoth = function (self)
+		the.gridIndexCharacters:removeObject(self)
 		the.app.view.layers.characters:remove(self)
 		the.characters[self] = nil
 		self.painBar:die()
@@ -1177,6 +1201,8 @@ Character = Animation:extend
 	end,
 	
 	onUpdateBoth = function (self, elapsed)
+		profile.start("character.onupdateboth")
+	
 		if self.incapacitated then
 			self.tint = {0.5,0.5,0.5}
 			self.charSprite.tint = {0.5,0.5,0.5}
@@ -1283,6 +1309,9 @@ Character = Animation:extend
 		
 		self:updateFogAlpha()
 
+		self.xyMonitor:checkAndCall()
+		
+		profile.stop()
 	end,
 	
 	onUpdateLocal = function (self, elapsed)

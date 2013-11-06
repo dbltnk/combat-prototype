@@ -447,7 +447,9 @@ Sprite = Class:extend{
 		if minVel.rotation and vel.rotation < minVel.rotation then vel.rotation = minVel.rotation end
 		if maxVel.rotation and vel.rotation > maxVel.rotation then vel.rotation = maxVel.rotation end
 		
+		profile.start("sprite.update.onUpdate")
 		if self.onUpdate then self:onUpdate(elapsed) end
+		profile.stop()
 		
 		profile.stop()
 	end,

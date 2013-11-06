@@ -7,6 +7,8 @@ FocusSprite = Sprite:extend
 	height = 1,
 	
 	onUpdate = function (self)
+		profile.start("onupdate.focussprite")
+	
 		local worldCursorX, worldCursorY = tools.ScreenPosToWorldPos(input.cursor.x, input.cursor.y)
 		local x,y = 0,0
 		-- weighted average
@@ -28,6 +30,8 @@ FocusSprite = Sprite:extend
 			self.x = utils.clamp(self.x, px - cap, px + cap)
 			self.y = utils.clamp(self.y, py - cap * widthToHeightRatio, py + cap * widthToHeightRatio)
 		end
+		
+		profile.stop()
 	end,
 	
 	__tostring = function (self)

@@ -20,5 +20,5 @@ function love.conf(t)
     t.modules.timer = true      -- Enable the timer module (boolean)
     t.modules.mouse = true      -- Enable the mouse module (boolean)
     t.modules.sound = true      -- Enable the sound module (boolean)
-    t.modules.physics = true    -- Enable the physics module (boolean)
+    t.modules.physics = false    -- Enable the physics module (boolean)
 end

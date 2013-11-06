@@ -114,6 +114,78 @@ require 'loveframes'
 require 'ValidPosition' 
 require 'Cover' 
 require 'Blocker'
+require 'GridIndex'
+require 'XYMonitor'
+
+
+collectgarbage("stop")
+
+local a = collectgarbage("count")
+
+--~ local x = 1
+--~ local y = 1
+--~ local z = 1
+--~ local l = {}
+--~ for i=1,100 do
+	--~ table.insert(l, i)
+--~ end
+
+
+--[[
+
+profile.start("build")
+
+local grid = GridIndex:new{cellLine = 100}
+
+grid:insertAt(-10,-10,1)
+grid:insertAt(20,10,2)
+grid:insertAt(10,20,3)
+grid:insertAt(100,100,4)
+grid:insertAt(200,10,5)
+grid:insertAt(10,120,6)
+
+profile.stop()
+
+profile.start("use")
+
+grid:visitInAABB(-10,-10,10,10,function(o) print(o) end)
+
+profile.stop()
+
+profile.start("clear")
+
+grid:clear()
+
+for k,v in pairs(grid.grid) do
+	for kk,vv in pairs(v) do print("X", k,kk,vv) end
+end
+
+profile.stop()
+
+profile.start("rebuild")
+
+grid:insertAt(-10,-10,1)
+grid:insertAt(20,10,2)
+grid:insertAt(10,20,3)
+grid:insertAt(100,100,4)
+grid:insertAt(200,10,5)
+grid:insertAt(10,120,6)
+
+profile.stop()
+
+profile.print()
+
+local b = collectgarbage("count")
+
+print(math.floor((b-a)*1024))
+
+os.exit()
+
+]]--
+
+
+
+
 
 -- stats ----------------------------
 gameStats = storage.load("stats.json") or {}
@@ -134,6 +206,9 @@ function track(event, ...)
 	network.send({channel = "server", cmd = "track", event = event, params = list.concat({network.client_id}, {...})})
 end
 
+--~ collectgarbage("setpause", 200)
+--~ collectgarbage("setstepmul", 400)
+
 the.app = App:new
 {
 	deactivateOnBlur = false,
@@ -143,7 +218,8 @@ the.app = App:new
 	running = true,
 
 	onUpdate = function (self, elapsed)
-		collectgarbage("step", 1)
+		--~ collectgarbage("step", 10)
+		
 		profile.start("network.update")
 		network.update(elapsed)
 		profile.stop()
@@ -192,6 +268,7 @@ the.app = App:new
 
 		-- easy exit
 		if the.keys:justPressed(localconfig.quitGame) then 
+			quitClient()
 			
 			if not the.quitGameButton then
 				-- make me a frame
@@ -234,6 +311,7 @@ the.app = App:new
 		--~ if the.player then
 			--~ print("ZONE", the.player.zone, "ZONES", json.encode(the.player.zones))
 		--~ end
+		
 	end,
 
     onRun = function (self)
@@ -257,6 +335,16 @@ the.app = App:new
 				oldDraw(self)
 			end
 		end		
+		
+		-- overload update
+		local oldUpdate = self.update 
+		self.update = function(self, elapsed)
+			collectgarbage()
+			local mem_start = collectgarbage("count")
+			oldUpdate(self, elapsed)
+			local mem_end = collectgarbage("count")
+			print("MEMORY THIS FRAME", mem_end - mem_start)			
+		end
     end,
 }
 

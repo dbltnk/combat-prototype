@@ -294,6 +294,8 @@ LineOfSight = Sprite:extend
 	end,
 
 	onUpdate = function (self, elapsed)
+		profile.start("onupdate.los")
+	
 		if self.framesUntilUpdate <= 0 then
 			--~ print("UPDATE")
 			self:calculateVisibility()
@@ -302,6 +304,8 @@ LineOfSight = Sprite:extend
 			--~ print("SKIP")
 			self.framesUntilUpdate = self.framesUntilUpdate - 1
 		end		
+		
+		profile.stop()
 	end,
 
 	reset = function (self)

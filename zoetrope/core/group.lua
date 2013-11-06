@@ -203,6 +203,7 @@ Group = Class:extend
 	end,
 	
 	updateGrid = function (self)
+		print("UPDATE GRID", self)
 		self._cachedGrid = self:grid()
 	end,
 

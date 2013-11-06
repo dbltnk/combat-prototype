@@ -10,7 +10,7 @@ MonitorChanges = Class:extend
 	last_zoneless_time = 0,
 	last_complete_time = 0,
 	
-	-- returns nli or table of changed keys
+	-- returns nil or table of changed keys
 	changed = function  (self)
 		local obj = self.obj
 		local last = self.last

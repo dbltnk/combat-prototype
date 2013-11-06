@@ -50,12 +50,16 @@ Effect = Sprite:extend
 			end,
 			
 			onUpdate = function (self, elapsed)
+				profile.start("effect.onupdate")
+			
 				local o = object_manager.get(objSelf.follow_oid)
 				if o then
 					self.x, self.y = o.x + o.width / 2, o.y + o.height / 2
 				end
 				
 				self:updateFogAlpha()
+				
+				profile.stop()
 			end,
 		}
 	end,

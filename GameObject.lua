@@ -79,6 +79,7 @@ GameObject = {
 	end,
 	
 	onUpdate = function (self, ...)
+		profile.start("onupdate.gameobject." .. self.class)
 		--~ print("GO UPDATE")
 
 		if self:isLocal() then
@@ -93,6 +94,8 @@ GameObject = {
 		if self.onUpdateBoth then self:onUpdateBoth(...) end
 		
 		self:calculateOwnZone()
+		
+		profile.stop()
 	end,
 	
 	after = function (self, duration, fun)

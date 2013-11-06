@@ -27,6 +27,11 @@ GameView = View:extend
 	game_start_time = 0,
 	
 	fogEnabled = nil,
+	
+	-- GridIndex
+	gridIndexWaterAndLandscape = nil,
+	-- GridIndex
+	gridIndexCharactersgridIndexCharacters = nil,
 
 	loadMap = function (self, file, filter)
 		local ok, data = pcall(loadstring(Cached:text(file)))
@@ -84,6 +89,9 @@ GameView = View:extend
 		the.app.view = self
 		print("the.app.view", the.app.view)
     
+		self.gridIndexCharacters = GridIndex:new{}
+		the.gridIndexCharacters = self.gridIndexCharacters
+
 		-- object -> true map for easy remove, key contains projectile references
 		the.projectiles = {}
 		the.targetDummies = {}
@@ -289,6 +297,14 @@ GameView = View:extend
 		
 		the.lineOfSight = LineOfSight:new{}
 		self.layers.lineOfSight:add(the.lineOfSight)
+		
+		-- prepare collision indexes
+		-- xxx
+		self.gridIndexWaterAndLandscape = GridIndex:new{}
+		for k,v in pairs(self.landscape.sprites) do
+			--~ print(k,v,v.x,v.y)
+			self.gridIndexWaterAndLandscape:insertAt(v.x,v.y,v)
+		end
     end,
     
     setFogEnabled = function (self, enabled)
@@ -302,6 +318,8 @@ GameView = View:extend
 	end,
 
     onUpdate = function (self, elapsed)
+		profile.start("gameview.onupdate")
+    
 		-- handle chat
 		if the.keys:justPressed("return") then
 			print(the.frameChatInput.visible, the.frameChatInput.focus)
@@ -324,37 +342,37 @@ GameView = View:extend
 		end
 		
 		profile.start("update.displace")
-		
-		
-		
+				
+		local characterDisplaceRange = 50
+				
 		for dummy,v in pairs(the.targetDummies) do
-			self.collision:displace(dummy)
-			self.layers.characters:displace(dummy)
-			self.landscape:subdisplace(dummy)
-			self.water:subdisplace(dummy)		
+			profile.start("update.displace.collision") self.collision:displace(dummy) profile.stop()
+			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) o:displace(dummy) end) profile.stop()
+			profile.start("update.displace.landscape") self.landscape:subdisplace(dummy) profile.stop()
+			profile.start("update.displace.water") self.water:subdisplace(dummy)		 profile.stop()
 		end
 		
 		for blocker,v in pairs(the.blockers) do
-			self.collision:displace(blocker)
-			--self.layers.characters:displace(blocker)
-			self.landscape:subdisplace(blocker)
-			self.water:subdisplace(blocker)		
+			profile.start("update.displace.collision") self.collision:displace(blocker) profile.stop()
+			--self.layers.characters:displace(blocker) 
+			profile.start("update.displace.landscape") self.landscape:subdisplace(blocker) profile.stop()
+			profile.start("update.displace.water") self.water:subdisplace(blocker)		 profile.stop()
 		end
 		
 		if the.player and the.player.class ~= "Ghost" then
-			self.collision:displace(the.player)
-			self.layers.characters:displace(the.player)
-			self.landscape:subdisplace(the.player)
-			self.water:subdisplace(the.player)
+			profile.start("update.displace.collision") self.collision:displace(the.player) profile.stop()
+			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) o:displace(the.player) end) profile.stop()
+			profile.start("update.displace.landscape") self.landscape:subdisplace(the.player) profile.stop()
+			profile.start("update.displace.water") self.water:subdisplace(the.player) profile.stop()
 		end
 		
 		if the.barrier then
 			--~ self.collision:displace(the.barrier)
-			self.layers.characters:displace(the.barrier)
-			self.landscape:subdisplace(the.barrier)
-			self.water:subdisplace(the.barrier)
+			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(the.barrier.x, the.barrier.y, characterDisplaceRange, function(o) o:displace(the.barrier) end) profile.stop()
+			profile.start("update.displace.landscape") self.landscape:subdisplace(the.barrier) profile.stop()
+			profile.start("update.displace.water") self.water:subdisplace(the.barrier) profile.stop()
 		end
-		
+
 		profile.stop()
 		
 		profile.start("update.projectile")
@@ -370,13 +388,19 @@ GameView = View:extend
 		if config.show_profile_info then profile.print() end
 		profile.clear()
 		
-		local s = ""
-		for k, v in pairs(the.ressources) do
-			s = s .. k .. ": " .. v .. "\n"
-		end
+		--~ local s = ""
+		--~ for k, v in pairs(the.ressources) do
+			--~ s = s .. k .. ": " .. v .. "\n"
+		--~ end
 		--~ the.ressourceDisplay.text = s
 		
+		profile.start("AUDIO")
 		audio.update()
+		profile.stop()
+		
+		profile.stop()
+		
+		print("XXX", love.timer.getFPS(), collectgarbage("count"))
     end,	
 
 	resyncAllLocalObjects = function (self)
