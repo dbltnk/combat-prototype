@@ -344,10 +344,10 @@ GameView = View:extend
 		profile.start("update.displace")
 				
 		local characterDisplaceRange = 50
-				
+		-- xxx
 		for dummy,v in pairs(the.targetDummies) do
 			profile.start("update.displace.collision") self.collision:displace(dummy) profile.stop()
-			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) o:displace(dummy) end) profile.stop()
+			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) print("DISPLACE") o:displace(dummy) end) profile.stop()
 			profile.start("update.displace.landscape") self.landscape:subdisplace(dummy) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(dummy)		 profile.stop()
 		end
@@ -361,14 +361,14 @@ GameView = View:extend
 		
 		if the.player and the.player.class ~= "Ghost" then
 			profile.start("update.displace.collision") self.collision:displace(the.player) profile.stop()
-			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) o:displace(the.player) end) profile.stop()
+			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) print("DISPLACE") o:displace(the.player) end) profile.stop()
 			profile.start("update.displace.landscape") self.landscape:subdisplace(the.player) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(the.player) profile.stop()
 		end
 		
 		if the.barrier then
 			--~ self.collision:displace(the.barrier)
-			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(the.barrier.x, the.barrier.y, characterDisplaceRange, function(o) o:displace(the.barrier) end) profile.stop()
+			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(the.barrier.x, the.barrier.y, characterDisplaceRange, function(o) print("DISPLACE") o:displace(the.barrier) end) profile.stop()
 			profile.start("update.displace.landscape") self.landscape:subdisplace(the.barrier) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(the.barrier) profile.stop()
 		end
@@ -400,7 +400,11 @@ GameView = View:extend
 		
 		profile.stop()
 		
-		print("XXX", love.timer.getFPS(), collectgarbage("count"))
+		print("XXX FPS AND MEM", love.timer.getFPS(), collectgarbage("count"))
+		
+		for k,v in pairs(self.gridIndexCharacters.grid) do
+			for kk,vv in pairs(v) do print(">", k,kk,vv,kk.x,kk.y,kk.class) end
+		end
     end,	
 
 	resyncAllLocalObjects = function (self)

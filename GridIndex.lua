@@ -62,7 +62,7 @@ GridIndex = Class:extend{
 	removeObject = function (self, o)
 		local grid = self.grid
 		for k,v in pairs(self.grid) do
-			grid[o] = nil
+			v[o] = nil
 		end
 	end,
 }
