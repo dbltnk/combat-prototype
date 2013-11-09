@@ -30,6 +30,8 @@ GameView = View:extend
 	
 	-- GridIndex
 	gridIndexMovable = nil,
+	-- GridIndex
+	gridIndexCollision = nil,
 
 	loadMap = function (self, file, filter)
 		local ok, data = pcall(loadstring(Cached:text(file)))
@@ -89,6 +91,8 @@ GameView = View:extend
     
 		self.gridIndexMovable = GridIndex:new{}
 		the.gridIndexMovable = self.gridIndexMovable
+		self.gridIndexCollision = GridIndex:new{}
+		the.gridIndexCollision = self.gridIndexCollision
 		
 		self.gridIndexTargetDummys = GridIndex:new{}
 		the.gridIndexTargetDummys = self.gridIndexTargetDummys
@@ -298,6 +302,11 @@ GameView = View:extend
 		
 		the.lineOfSight = LineOfSight:new{}
 		self.layers.lineOfSight:add(the.lineOfSight)
+
+		-- prepare collision layer
+		for k,v in pairs(self.collision.sprites) do
+		    self.gridIndexCollision:insertAt(v.x,v.y,v)
+		end
     end,
     
     setFogEnabled = function (self, enabled)
@@ -336,10 +345,10 @@ GameView = View:extend
 		
 		profile.start("update.displace")
 		
-		local characterDisplaceRange = 100
+		local characterDisplaceRange = 50
 		-- xxx
 		for dummy,v in pairs(the.targetDummies) do
-			profile.start("update.displace.collision") self.collision:displace(dummy) profile.stop()
+			profile.start("update.displace.collision") self.gridIndexCollision:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) o:displace(dummy) end) profile.stop()
 			profile.start("update.displace.landscape") self.landscape:subdisplace(dummy) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(dummy)		 profile.stop()
 			profile.start("update.displace.characters") self.gridIndexMovable:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) o:displace(dummy) end) profile.stop()
@@ -347,14 +356,14 @@ GameView = View:extend
 		end
 		
 		for blocker,v in pairs(the.blockers) do
-			profile.start("update.displace.collision") self.collision:displace(blocker) profile.stop()
+			profile.start("update.displace.collision") self.gridIndexCollision:visitInRange(blocker.x, blocker.y, characterDisplaceRange, function(o) o:displace(blocker) end) profile.stop()
 			--self.layers.characters:displace(blocker) 
 			profile.start("update.displace.landscape") self.landscape:subdisplace(blocker) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(blocker)		 profile.stop()
 		end
 		
 		if the.player and the.player.class ~= "Ghost" then
-			profile.start("update.displace.collision") self.collision:displace(the.player) profile.stop()
+			profile.start("update.displace.collision") self.gridIndexCollision:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) o:displace(the.player) end) profile.stop()
 			profile.start("update.displace.landscape") self.landscape:subdisplace(the.player) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(the.player) profile.stop()
 			profile.start("update.displace.characters") self.gridIndexMovable:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) print("DISPLACE") o:displace(the.player) end) profile.stop()
