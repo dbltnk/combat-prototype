@@ -12,7 +12,8 @@ LineOfSight = Sprite:extend
 	
 	visibility = {},
 	alreadySeen = {},
-	collision = nil,
+	collision = {},
+	rebuildCollision = false,
 	dirty = false,
 	
 	scanline = 0,
@@ -36,7 +37,7 @@ LineOfSight = Sprite:extend
 			if self.dirty == true then
 				--~ print("dirty")
 				self.dirty = false
-				self:dropCache()
+				self.rebuildCollision = true
 			end
 		end)
 	end,
@@ -50,8 +51,12 @@ LineOfSight = Sprite:extend
 	end,
 	
 	calculateCollision = function (self)
-		local c = {}
-		
+		this.rebuildCollision = false
+
+		-- clear
+		for k,v in pairs(self.collision) do self.collision[k] = nil end
+		local c = self.collision
+
 		local c0x, c0y = self:px2cell(0,0)
 		local c1x, c1y = self:px2cell(config.map_width, config.map_height)
 		local cell = self.cell
@@ -76,8 +81,6 @@ LineOfSight = Sprite:extend
 		end
 		
 		--~ print("found", count, "collision cells")
-		
-		self.collision = c
 	end,
 
 	isCollisionOnCell = function (self, cx,cy)
@@ -118,11 +121,6 @@ LineOfSight = Sprite:extend
 		return collision
 	end,
 	
-	dropCache = function (self)
-		self.collision = nil
-		--~ print("drop", network.time)
-	end,
-	
 	calculateVisibilityAddSource = function (self, px,py, range, angle, rotation, feelRange)
 		local self_cellKey = self.cellKey
 		local vector_sqLenFromTo = vector.sqLenFromTo
@@ -133,11 +131,13 @@ LineOfSight = Sprite:extend
 		
 		local colFun = nil
 
-		if self.collision then 
-			colFun = function(k,cx,cy) return self_collision[k] end
+		if self.rebuildCollision then 
+		    profile.start("onupdate.los.calculate.rebuild")
+		    self:calculateCollision()
+		    profile.stop()
+		    colFun = function(k,cx,cy) return self:isCollisionOnCell(cx,cy) end
 		else
-			self:calculateCollision()
-			colFun = function(k,cx,cy) return self:isCollisionOnCell(cx,cy) end
+		    colFun = function(k,cx,cy) return self_collision[k] end
 		end
 		
 		
@@ -188,7 +188,9 @@ LineOfSight = Sprite:extend
 			local angleHRad = (angle / 2) / 180 * math.pi
 			
 			local srcViewX, srcViewY = vector.fromVisualRotation(rotation, 1)
-			
+		
+			local rasterResult = {}
+
 			for cx = c0x, c1x do
 			for cy = c0y, c1y do
 				if cx == c0x or cx == c1x or cy == c0y or cy == c1y then
@@ -196,7 +198,7 @@ LineOfSight = Sprite:extend
 					local free = true
 					local cellsUntilDark = cellsUntilDarkMax
 					
-					-- profile.start("los 1 step")
+					--profile.start("los 1 step")
 
 					-- in fov?
 					local a = vector.angleFromTo(srcViewX, srcViewY, vector.fromTo(px,py, self_cell2px(self,cx,cy)))
@@ -204,9 +206,14 @@ LineOfSight = Sprite:extend
 					--~ print(a, angleHRad)
 					
 					if a <= angleHRad then
-						-- profile.start("los 1 raster")
-						for x,y,cellNumInLine in geometry.raster_line_it(pcx,pcy,cx,cy) do
-							-- profile.start("los 1 sub step")
+						--profile.start("los 1 raster")
+						-- clear raster result
+						for k,v in pairs(rasterResult) do rasterResult[k] = nil end
+						-- and run a new raster run
+						geometry.raster_line_it(pcx,pcy,cx,cy,rasterResult)
+						for i=1,#rasterResult,3 do
+							local x,y,cellNumInLine = rasterResult[i], rasterResult[i+1], rasterResult[i+2]
+							--profile.start("los 1 sub step")
 							local k = self_cellKey(self, x,y)
 							if (v[k] or 0) <= 1 then 
 								if cellNumInLine > 0 then
@@ -227,18 +234,18 @@ LineOfSight = Sprite:extend
 										v[k] = 1
 										cellsUntilDark = cellsUntilDark - 1
 									else
-										-- profile.stop()
+										--profile.stop()
 										break
 									end
 								end
 							end
 							--~ print("free", free, x,y)
-							-- profile.stop()
+							--profile.stop()
 						end
-						-- profile.stop()
+						--profile.stop()
 					end
 					
-					-- profile.stop()
+					--profile.stop()
 				end
 			end
 			end
@@ -253,7 +260,9 @@ LineOfSight = Sprite:extend
 			local o = object_manager.get(oid)
 			if o then
 				local ox, oy = tools.object_center(o)
+				profile.start("onupdate.los.calculate")
 				self:calculateVisibilityAddSource(ox,oy, o.viewRange or 0, o.viewAngle or 0, o.rotation, o.feelRange or 0)
+				profile.stop()
 			end
 		end
 	end,

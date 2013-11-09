@@ -30,34 +30,39 @@ function geometry.raster_line(x0,y0, x1,y1, fun)
 end
 
 
--- x,y,numInLine
-function geometry.raster_line_it(x0,y0, x1,y1)
-	return coroutine.wrap(function () 
-		local numInLine = 0
-		local dx = math.abs(x1-x0)
-		local dy = math.abs(y1-y0) 
-		if x0 < x1 then sx = 1 else sx = -1 end
-		if y0 < y1 then sy = 1 else sy = -1 end
-		local err = dx-dy
+-- result = {x,y,numInLine,x,y,numLine,...} using table.insert
+function geometry.raster_line_it(x0,y0, x1,y1, result)
+	local numInLine = 0
+	local dx = math.abs(x1-x0)
+	local dy = math.abs(y1-y0) 
+	if x0 < x1 then sx = 1 else sx = -1 end
+	if y0 < y1 then sy = 1 else sy = -1 end
+	local err = dx-dy
 
-		while true do
-			coroutine.yield(x0,y0,numInLine) numInLine = numInLine + 1
-			if x0 == x1 and y0 == y1 then return end
-			local e2 = 2*err
-			if e2 > -dy then 
-				err = err - dy
-				x0 = x0 + sx
-			end
-			if x0 == x1 and y0 == y1 then 
-				coroutine.yield(x0,y0,numInLine) numInLine = numInLine + 1
-				return
-			end
-			if e2 < dx then 
-				err = err + dx
-				y0 = y0 + sy 
-			end
+	while true do
+		table.insert(result, x0)
+		table.insert(result, y0)
+		table.insert(result, numInLine)
+		numInLine = numInLine + 1
+		
+		if x0 == x1 and y0 == y1 then return end
+		local e2 = 2*err
+		if e2 > -dy then 
+			err = err - dy
+			x0 = x0 + sx
 		end
-	end)
+		if x0 == x1 and y0 == y1 then 
+			table.insert(result, x0)
+			table.insert(result, y0)
+			table.insert(result, numInLine)
+			numInLine = numInLine + 1
+			return
+		end
+		if e2 < dx then 
+			err = err + dx
+			y0 = y0 + sy 
+		end
+	end
 end
     
 --~ geometry.raster_line(0,0, 10,0, function(x,y) print(x,y) end)
