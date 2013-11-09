@@ -502,7 +502,6 @@ Character = Animation:extend
 		self.xyMonitor = XYMonitor:new{
 			obj = self,
 			onChangeFunction = function(ox,oy, nx,ny)
-				print("XY CHANGE", ox,oy, nx,ny)
 				the.gridIndexMovable:removeAt(ox,oy,self)
 				the.gridIndexMovable:insertAt(nx,ny,self)
 			end,

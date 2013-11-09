@@ -13,8 +13,8 @@ LineOfSight = Sprite:extend
 	visibility = {},
 	alreadySeen = {},
 	collision = {},
-	rebuildCollision = false,
-	dirty = false,
+	rebuildCollision = true,
+	dirty = true,
 	
 	scanline = 0,
 	
