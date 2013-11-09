@@ -246,6 +246,7 @@ TargetDummy = Animation:extend
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
+		profile.start("DUMMY")
 		if self.spawnX == 0 and self.spawnY == 0 then
 			local amount = #the.validPositions
 			local randomNumber = math.random(1,amount)
@@ -317,6 +318,8 @@ TargetDummy = Animation:extend
 			-- let's attack the player here
 			self:attack()
 		end
+
+		profile.stop()
 	end,
 	
 	attack = function(self)

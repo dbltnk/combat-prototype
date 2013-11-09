@@ -31,6 +31,7 @@ function profile.print ()
 		end
 	end
 	print("--------------------------------")
+	if current_stack_pos > 0 then print ("ERROR profile stack is not clean", current_stack_pos) end
 end
 
 function profile.start (name)

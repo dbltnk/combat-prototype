@@ -53,7 +53,8 @@ GameObject = {
 	-- you need to manually call this
 	calculateZones = function (self, overlap)
 		overlap = overlap or 400
-		self.zones = {}
+		-- clear zones
+		for k,v in pairs(self.zones) do self.zones[k] = nil end
 		self.zone = 0
 		
 		local w = config.map_width
@@ -82,6 +83,7 @@ GameObject = {
 		profile.start("onupdate.gameobject." .. self.class)
 		--~ print("GO UPDATE")
 
+		profile.start("onupdatelocal.gameobject." .. self.class)
 		if self:isLocal() then
 			if self.onUpdateLocal then self:onUpdateLocal(...) end
 			
@@ -90,10 +92,15 @@ GameObject = {
 		else
 			if self.onUpdateRemote then self:onUpdateRemote(...) end
 		end
+		profile.stop()
 		
+		profile.start("onupdateboth.gameobject." .. self.class)
 		if self.onUpdateBoth then self:onUpdateBoth(...) end
+		profile.stop()
 		
+		profile.start("onupdate.zone")
 		self:calculateOwnZone()
+		profile.stop()
 		
 		profile.stop()
 	end,

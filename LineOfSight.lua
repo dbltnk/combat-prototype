@@ -120,6 +120,8 @@ LineOfSight = Sprite:extend
 		
 		return collision
 	end,
+
+	rasterResult = {},
 	
 	calculateVisibilityAddSource = function (self, px,py, range, angle, rotation, feelRange)
 		local self_cellKey = self.cellKey
@@ -189,7 +191,7 @@ LineOfSight = Sprite:extend
 			
 			local srcViewX, srcViewY = vector.fromVisualRotation(rotation, 1)
 		
-			local rasterResult = {}
+			local rasterResult = self.rasterResult
 
 			for cx = c0x, c1x do
 			for cy = c0y, c1y do
@@ -255,7 +257,9 @@ LineOfSight = Sprite:extend
 	end,
 	
 	calculateVisibility = function (self)
-		self.visibility = {}
+		-- clear visibility
+		for k,v in pairs(self.visibility) do self.visibility[k] = nil end
+		
 		for _,oid in pairs(self.sourceOids) do
 			local o = object_manager.get(oid)
 			if o then
