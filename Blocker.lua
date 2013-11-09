@@ -48,6 +48,7 @@ Blocker = Animation:extend
 		}
 		
 		drawDebugWrapper(self)
+		the.gridIndexCollision:insertAt(self.x,self.y,self)
 	end,
 	
 	gainPain = function (self, str)
@@ -116,6 +117,7 @@ Blocker = Animation:extend
 	end,
 	
 	onDieBoth = function (self)
+		the.gridIndexCollision:removeObject(self)
 		self.painBar:die()
 		the.blockers[self] = nil		
 		the.app.view.layers.characters:remove(self)

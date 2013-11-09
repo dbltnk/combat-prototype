@@ -117,6 +117,17 @@ Barrier = Animation:extend
 		}
 		
 		self.spawnX, self.spawnY = self.x, self.y
+		
+		-- keep character index in sync		
+		the.gridIndexMovable:insertAt(self.x,self.y,self)
+		print("INSERT INTO GRID", self.oid, self.x, self.y)
+		self.xyMonitor = XYMonitor:new{
+			obj = self,
+			onChangeFunction = function(ox,oy, nx,ny)
+				the.gridIndexMovable:removeAt(ox,oy,self)
+				the.gridIndexMovable:insertAt(nx,ny,self)
+			end,
+		}
 	end,
 	
 	gainPain = function (self, str, source_oid)
@@ -376,6 +387,7 @@ Barrier = Animation:extend
 	end,
 	
 	onDieBoth = function (self)
+		the.gridIndexMovable:removeObject(self)
 		self.painBar:die()
 		self.charDebuffDisplay:die()
 	end,
