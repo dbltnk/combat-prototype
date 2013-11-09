@@ -76,7 +76,7 @@ function currentDateAsDashboardString()
 	var d = n.getDate();
 	if (m < 10) m = "0" + m;
 	if (d < 10) d = "0" + d;
-	return n.getFullYear() + m + d;
+	return [n.getFullYear(),m,d].join("");
 }
 
 function isNameReserved(name) {
