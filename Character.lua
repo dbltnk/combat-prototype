@@ -497,13 +497,14 @@ Character = Animation:extend
 		end)
 		
 		-- keep character index in sync		
-		the.gridIndexCharacters:insertAt(self.x,self.y,self)
+		the.gridIndexMovable:insertAt(self.x,self.y,self)
+		print("INSERT INTO GRID", self.oid, self.x, self.y)
 		self.xyMonitor = XYMonitor:new{
 			obj = self,
 			onChangeFunction = function(ox,oy, nx,ny)
 				print("XY CHANGE", ox,oy, nx,ny)
-				the.gridIndexCharacters:removeAt(ox,oy,self)
-				the.gridIndexCharacters:insertAt(nx,ny,self)
+				the.gridIndexMovable:removeAt(ox,oy,self)
+				the.gridIndexMovable:insertAt(nx,ny,self)
 			end,
 		}
 	end,
@@ -520,7 +521,7 @@ Character = Animation:extend
 	end,
 	
 	onDieBoth = function (self)
-		the.gridIndexCharacters:removeObject(self)
+		the.gridIndexMovable:removeObject(self)
 		the.app.view.layers.characters:remove(self)
 		the.characters[self] = nil
 		self.painBar:die()

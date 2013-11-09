@@ -29,11 +29,7 @@ GameView = View:extend
 	fogEnabled = nil,
 	
 	-- GridIndex
-	gridIndexWaterAndLandscape = nil,
-	-- GridIndex
-	gridIndexCharacters = nil,
-	-- GridIndex
-	gridIndexTargetDummys = nil,
+	gridIndexMovable = nil,
 
 	loadMap = function (self, file, filter)
 		local ok, data = pcall(loadstring(Cached:text(file)))
@@ -91,8 +87,8 @@ GameView = View:extend
 		the.app.view = self
 		print("the.app.view", the.app.view)
     
-		self.gridIndexCharacters = GridIndex:new{}
-		the.gridIndexCharacters = self.gridIndexCharacters
+		self.gridIndexMovable = GridIndex:new{}
+		the.gridIndexMovable = self.gridIndexMovable
 		
 		self.gridIndexTargetDummys = GridIndex:new{}
 		the.gridIndexTargetDummys = self.gridIndexTargetDummys
@@ -302,14 +298,6 @@ GameView = View:extend
 		
 		the.lineOfSight = LineOfSight:new{}
 		self.layers.lineOfSight:add(the.lineOfSight)
-		
-		-- prepare collision indexes
-		-- xxx
-		self.gridIndexWaterAndLandscape = GridIndex:new{}
-		for k,v in pairs(self.landscape.sprites) do
-			--~ print(k,v,v.x,v.y)
-			self.gridIndexWaterAndLandscape:insertAt(v.x,v.y,v)
-		end
     end,
     
     setFogEnabled = function (self, enabled)
@@ -347,15 +335,15 @@ GameView = View:extend
 		end
 		
 		profile.start("update.displace")
-				
-		local characterDisplaceRange = 50
+		
+		local characterDisplaceRange = 100
 		-- xxx
 		for dummy,v in pairs(the.targetDummies) do
 			profile.start("update.displace.collision") self.collision:displace(dummy) profile.stop()
-			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) print("DISPLACE") o:displace(dummy) end) profile.stop()
-			profile.start("update.displace.dummy") self.gridIndexTargetDummys:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) print("DISPLACE DUMMY") o:displace(dummy) end) profile.stop()
 			profile.start("update.displace.landscape") self.landscape:subdisplace(dummy) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(dummy)		 profile.stop()
+			profile.start("update.displace.characters") self.gridIndexMovable:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) o:displace(dummy) end) profile.stop()
+			profile.start("update.displace.dummy") self.gridIndexTargetDummys:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) o:displace(dummy) end) profile.stop()
 		end
 		
 		for blocker,v in pairs(the.blockers) do
@@ -367,16 +355,16 @@ GameView = View:extend
 		
 		if the.player and the.player.class ~= "Ghost" then
 			profile.start("update.displace.collision") self.collision:displace(the.player) profile.stop()
-			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) print("DISPLACE") o:displace(the.player) end) profile.stop()
 			profile.start("update.displace.landscape") self.landscape:subdisplace(the.player) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(the.player) profile.stop()
+			profile.start("update.displace.characters") self.gridIndexMovable:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) print("DISPLACE") o:displace(the.player) end) profile.stop()
 		end
 		
 		if the.barrier then
 			--~ self.collision:displace(the.barrier)
-			profile.start("update.displace.characters") self.gridIndexCharacters:visitInRange(the.barrier.x, the.barrier.y, characterDisplaceRange, function(o) print("DISPLACE") o:displace(the.barrier) end) profile.stop()
 			profile.start("update.displace.landscape") self.landscape:subdisplace(the.barrier) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(the.barrier) profile.stop()
+			profile.start("update.displace.characters") self.gridIndexMovable:visitInRange(the.barrier.x, the.barrier.y, characterDisplaceRange, function(o) print("DISPLACE") o:displace(the.barrier) end) profile.stop()
 		end
 
 		profile.stop()

@@ -33,7 +33,9 @@ TargetDummy = Animation:extend
 	dmgModified = config.dmgUnmodified,
 	spawnX = 0,
 	spawnY = 0,
-	
+
+	xyMonitor = nil,
+
 	-- oid that this mob is focused on
 	focused_target = 0,
 	last_refocus_time = 0,
@@ -95,13 +97,14 @@ TargetDummy = Animation:extend
 		self.spawnX, self.spawnY = 0, 0
 		
 		-- keep character index in sync		
-		the.gridIndexTargetDummys:insertAt(self.x,self.y,self)
+		the.gridIndexMovable:insertAt(self.x,self.y,self)
+		print("INSERT INTO GRID", self.oid, self.x, self.y)
 		self.xyMonitor = XYMonitor:new{
 			obj = self,
 			onChangeFunction = function(ox,oy, nx,ny)
-				print("XY CHANGE", ox,oy, nx,ny)
-				the.gridIndexTargetDummys:removeAt(ox,oy,self)
-				the.gridIndexTargetDummys:insertAt(nx,ny,self)
+				print("XY CHANGE", self.oid, ox,oy, nx,ny)
+				the.gridIndexMovable:removeAt(ox,oy,self)
+				the.gridIndexMovable:insertAt(nx,ny,self)
 			end,
 		}
 	end,
@@ -235,7 +238,7 @@ TargetDummy = Animation:extend
 	end,
 	
 	onDieBoth = function (self)
-		the.gridIndexTargetDummys:removeObject(self)
+		the.gridIndexMovable:removeObject(self)
 		self.painBar:die()
 		self.charDebuffDisplay:die()
 		the.targetDummies[self] = nil		
@@ -388,5 +391,7 @@ TargetDummy = Animation:extend
 		if self.snared then self.charDebuffDisplay.snared = "snared" else self.charDebuffDisplay.snared = "" end			
 		if self.powerblocked then self.charDebuffDisplay.powerblocked = "pb'ed" else self.charDebuffDisplay.powerblocked = "" end	
 		if self.dmgModified > config.dmgUnmodified then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
+		
+		self.xyMonitor:checkAndCall()
 	end,
 }

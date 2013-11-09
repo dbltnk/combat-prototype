@@ -52,7 +52,7 @@ GridIndex = Class:extend{
 			for cx = cx0,cx1 do
 				local i = cy * self.cellLine + cx
 				if grid[i] then
-					for k,v in pairs(grid[i]) do print("CALLBACK") fun(k) end
+					for k,v in pairs(grid[i]) do fun(k) end
 				end
 			end
 		end
