@@ -108,4 +108,6 @@ localconfig.quitGame = "escape"
 localconfig.max_chat_lines = 10
 localconfig.audioVolume = 20 -- 0 = off, 100 = very loud
 
+localconfig.quickQuit = false
+
 return localconfig

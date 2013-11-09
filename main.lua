@@ -271,7 +271,7 @@ the.app = App:new
 
 		-- easy exit
 		if the.keys:justPressed(localconfig.quitGame) then 
-			quitClient()
+			if localconfig.quickQuit then quitClient() end
 			
 			if not the.quitGameButton then
 				-- make me a frame
