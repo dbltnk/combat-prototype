@@ -187,6 +187,11 @@ Map = Sprite:extend{
 								spr.y = self.y + (y - 1) * self.spriteHeight
 								
 								hit = spr:collide(othSpr) or hit
+								-- stop on first hit because its
+								-- faster and we are not interested
+								-- in the onCollide callbacks in the
+								-- map
+								if hit then return hit end
 							end
 						end
 					end

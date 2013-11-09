@@ -246,7 +246,6 @@ TargetDummy = Animation:extend
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
-
 		if self.spawnX == 0 and self.spawnY == 0 then
 			local amount = #the.validPositions
 			local randomNumber = math.random(1,amount)
@@ -353,7 +352,7 @@ TargetDummy = Animation:extend
 	
 	onUpdateBoth = function (self)
 		self:play(self.anim_name)
-		
+
 		-- look at current focus
 		local obj = object_manager.get(self.focused_target)
 		if obj then

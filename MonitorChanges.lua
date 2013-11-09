@@ -9,14 +9,19 @@ MonitorChanges = Class:extend
 	timeout = 1/10,
 	last_zoneless_time = 0,
 	last_complete_time = 0,
+	-- local reuse of var to reduce gc pressure
+	changedKeys = {},
 	
 	-- returns nil or table of changed keys
 	changed = function  (self)
 		local obj = self.obj
 		local last = self.last
 		local keys = self.keys
-		local changedKeys = {}
-		
+		local changedKeys = self.changedKeys
+
+		-- clear to reuse
+		for k,v in pairs(changedKeys) do changedKeys[k] = nil end
+
 		if not obj then return false end
 		local t = love.timer.getTime()
 		
@@ -25,7 +30,7 @@ MonitorChanges = Class:extend
 		local c = false
 		
 		for _,key in pairs(keys) do
-			local s = json.encode(obj[key])
+			local s = self:toReadable(obj[key])
 			if last[key] ~= s then 
 				c = true 
 				last[key] = s 
@@ -39,6 +44,12 @@ MonitorChanges = Class:extend
 		else
 			return nil
 		end
+	end,
+
+	toReadable = function (self, x)
+	    local t = type(x)
+	    if t == "table" then return json.encode(x) end
+	    return tostring(x)
 	end,
 	
 	-- its possible to notify the changed keys to reduce network message size
@@ -88,7 +99,7 @@ MonitorChanges = Class:extend
 	checkAndSend = function (self)
 		local changedKeys = self:changed()
 		if changedKeys then
-			self:send(changedKeys)
+		    self:send(changedKeys)
 		end
 	end,
 }
