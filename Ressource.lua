@@ -83,6 +83,8 @@ Ressource = Tile:extend
 		self.quality = config.ressourceQualityTable[randomNumber]
 
 		the.ressourceObjects[self] = true
+		
+		the.gridIndexCollision:insertAt(self.x,self.y,self)
 	end,
 	
 	gainPain = function (self, str, source_oid)
@@ -230,6 +232,7 @@ Ressource = Tile:extend
 	end,
 	
 	onDieBoth = function (self)
+		the.gridIndexCollision:removeObject(self)
 		self.painBar:die()
 		self.painBar = nil
 		
