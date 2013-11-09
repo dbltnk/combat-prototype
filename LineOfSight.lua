@@ -51,7 +51,7 @@ LineOfSight = Sprite:extend
 	end,
 	
 	calculateCollision = function (self)
-		this.rebuildCollision = false
+		self.rebuildCollision = false
 
 		-- clear
 		for k,v in pairs(self.collision) do self.collision[k] = nil end
