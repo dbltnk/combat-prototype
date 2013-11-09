@@ -118,9 +118,9 @@ require 'GridIndex'
 require 'XYMonitor'
 
 
-collectgarbage("stop")
+-- collectgarbage("stop")
 
-local a = collectgarbage("count")
+-- local a = collectgarbage("count")
 
 --~ local x = 1
 --~ local y = 1
@@ -254,7 +254,10 @@ the.app = App:new
 		-- toggle fullscreen
 		if the.keys:justPressed (localconfig.toggleFullscreen) then self:toggleFullscreen() end
 		-- toggle profile
-		if not the.keys:pressed("lctrl") and the.keys:justPressed ("f11") then config.show_profile_info = not config.show_profile_info end
+		if not the.keys:pressed("lctrl") and the.keys:justPressed ("f11") then 
+		    config.show_profile_info = not config.show_profile_info 
+		    profile.setActive(config.show_profile_info)
+		end
 		-- toggle debug draw
 		if not the.keys:pressed("lctrl") and the.keys:justPressed ("f12") then config.draw_debug_info = not config.draw_debug_info end
 		
@@ -282,7 +285,7 @@ the.app = App:new
 				the.quitGameButton:SetPos(love.graphics.getWidth() / 2 - 100, love.graphics.getHeight() / 2)
 				the.quitGameButton:SetText("Yes, quit the game")
 				the.quitGameButton.OnClick = function(object)
-					--~ profiler.stop()
+					--~ profile.stop()
 					quitClient()					
 				end
 				-- make me a cancel button
@@ -315,6 +318,8 @@ the.app = App:new
 	end,
 
     onRun = function (self)
+		profile.setActive(config.show_profile_info)
+	
 		-- disable the hardware cursor
 		self:useSysCursor(false)	
 		
@@ -339,11 +344,11 @@ the.app = App:new
 		-- overload update
 		local oldUpdate = self.update 
 		self.update = function(self, elapsed)
-			collectgarbage()
+			-- collectgarbage()
 			local mem_start = collectgarbage("count")
 			oldUpdate(self, elapsed)
 			local mem_end = collectgarbage("count")
-			print("MEMORY THIS FRAME", mem_end - mem_start)			
+			-- print("memory increase this frame", math.floor(mem_end - mem_start), "k")			
 		end
     end,
 }

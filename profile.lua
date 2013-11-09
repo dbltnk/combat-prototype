@@ -3,15 +3,25 @@ local list = require 'list'
 
 local profile = {}
 
+local enabled = false
+
 local data = {}
 local current_stack_pos = 0
 local stack = {}
 
+function profile.setActive (active)
+    enabled = active
+    print("profiler is", enabled)
+end
+
 function profile.clear ()
+	if not enabled then return end
 	data = {}
 end
 
 function profile.print ()
+	if not enabled then print("profiler disabled") return end
+
 	print("--TIME--------------------------")
 	local ordered = list.process_values(data)
 		:orderby(function (a,b) return a.sum > b.sum end)
@@ -35,12 +45,14 @@ function profile.print ()
 end
 
 function profile.start (name)
+	if not enabled then return end
 	current_stack_pos = current_stack_pos + 1
 	stack[current_stack_pos] = { name = name, start = love.timer.getTime() * 1000, 
 		mem_start = math.floor(collectgarbage("count")*1024) }
 end
 
 function profile.stop ()
+	if not enabled then return end
 	if current_stack_pos > 0 then
 		local entry = stack[current_stack_pos]
 		local dt = love.timer.getTime() * 1000 - entry.start

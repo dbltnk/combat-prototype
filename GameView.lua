@@ -388,9 +388,6 @@ GameView = View:extend
 		end
 		profile.stop()
 		
-		if config.show_profile_info then profile.print() end
-		profile.clear()
-		
 		--~ local s = ""
 		--~ for k, v in pairs(the.ressources) do
 			--~ s = s .. k .. ": " .. v .. "\n"
@@ -403,11 +400,12 @@ GameView = View:extend
 		
 		profile.stop()
 		
-		print("XXX FPS AND MEM", love.timer.getFPS(), collectgarbage("count"))
-		
 		for k,v in pairs(self.gridIndexTargetDummys.grid) do
 			for kk,vv in pairs(v) do print(">", k,kk,vv,kk.x,kk.y,kk.class) end
 		end
+		
+		if config.show_profile_info then profile.print() end
+		profile.clear()
     end,	
 
 	resyncAllLocalObjects = function (self)
