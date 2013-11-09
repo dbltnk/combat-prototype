@@ -110,4 +110,8 @@ localconfig.audioVolume = 20 -- 0 = off, 100 = very loud
 
 localconfig.quickQuit = false
 
+-- Don't change these if you don't know what you're doing. =D
+localconfig.server_hostname = "buffy.leenox.de"
+localconfig.server_port = 9998
+
 return localconfig
