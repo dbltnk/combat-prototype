@@ -240,7 +240,7 @@ the.app = App:new
 		-- disable the hardware cursor
 		self:useSysCursor(false)	
 		
-		network.connect(config.server_hostname, config.server_port)
+		network.connect(localconfig.server_hostname, localconfig.server_port)
 		
 		--~ the.app.console:watch("viewx", "the.app.view.translate.x")
 		--~ the.app.console:watch("viewy", "the.app.view.translate.y")
