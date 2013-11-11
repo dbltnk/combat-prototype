@@ -535,18 +535,18 @@ action_handling.register_effect("createWallAt", function (target, effect, source
 	
 	if math.abs(dx) >= math.abs(dy) then 
 		object_manager.send(source_oid, "createBlockerAt", x,y)
-		for i = 1, 2 do
+		for i = 1, 3 do
 			object_manager.send(source_oid, "createBlockerAt", x,y+displacement*i)
 		end
-			for i = 1, 2 do
+			for i = 1, 3 do
 			object_manager.send(source_oid, "createBlockerAt", x,y+(displacement*i*-1))
 		end
 	else
 		object_manager.send(source_oid, "createBlockerAt", x,y)
-		for i = 1, 2 do
+		for i = 1, 3 do
 			object_manager.send(source_oid, "createBlockerAt", x+displacement*i,y)
 		end
-			for i = 1, 2 do
+			for i = 1, 3 do
 			object_manager.send(source_oid, "createBlockerAt", x+(displacement*i*-1),y)
 		end
 	end

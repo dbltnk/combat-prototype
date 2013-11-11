@@ -102,6 +102,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_mark_target.png"},
 			effects = {
+				{effect_type = "damage", str = 45},						
 				{effect_type = "dmgModifier", str = 125, duration = 30},
 				{effect_type = "mark", duration = 30},
 			},
@@ -137,16 +138,16 @@ action_definitions = {
 		icon = nil,
 		sound = nil,				
 		cast_time = 1.5,
-		timeout = 12,
-		energy = 24,
+		timeout = 6,
+		energy = 36,
 		on_the_run = true,
 		cast_particle_color = color_bow,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_blunt_arrow.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_blunt_arrow.png"},
 			effects = {
 				{effect_type = "moveAwayFromMe", str = 200},
-				{effect_type = "damage", str = 50},
+				{effect_type = "damage", str = 45},
 			},
 		},
 	},		
@@ -188,6 +189,7 @@ action_definitions = {
 				range = 100, piercing_number = 12},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 50},
+				{effect_type = "moveAwayFromMe", str = 20},				
 			},
 		},	
 	},	
@@ -228,7 +230,7 @@ action_definitions = {
 			effects = {
 				{effect_type = "damage", str = 25},
 				{effect_type = "stun", duration = 0.2},
-				{effect_type = "runspeed", duration = 3, str = config.walkspeed / 2},						
+				{effect_type = "runspeed", duration = 6, str = config.walkspeed / 2},						
 				{effect_type = "moveToMe"},	
 			},
 		},	
@@ -261,9 +263,9 @@ action_definitions = {
 		description = "Gank one target in front of you.",
 		icon = nil,
 		sound = nil,
-		cast_time = 5,
+		cast_time = 4,
 		timeout = 0,
-		energy = 50,
+		energy = 0,
 		on_the_run = false,
 		cast_particle_color = color_scythe,		
 		
@@ -331,7 +333,7 @@ action_definitions = {
 		icon = nil,
 		sound = nil,
 		cast_time = 0.5,
-		timeout = 6,
+		timeout = 9,
 		energy = 36,
 		on_the_run =  true,
 		cast_particle_color = color_staff,		
@@ -340,9 +342,9 @@ action_definitions = {
 			target_selection = {target_selection_type = "projectile", range = 300, speed = 500, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_life_leech.png"},
 			effects = {
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 2, explosion_color = color_staff},
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 6, explosion_color = color_staff},
 					effects = {
-						{effect_type = "transfer", eff = 0.5, ticks = 6, duration = 30, str = 10}
+						{effect_type = "transfer", eff = 1, ticks = 6, duration = 30, str = 10}
 					},
 				}},	
 			},
@@ -378,7 +380,7 @@ action_definitions = {
 		description = "Shoot a projectile that heals one target.",
 		icon = nil,
 		sound = nil,				
-		cast_time = 1,
+		cast_time = .5,
 		timeout = 6,
 		energy = 20,
 		on_the_run = false,
@@ -402,7 +404,7 @@ action_definitions = {
 		description = "Shoot a projectile that heals one target slowly over time.",
 		icon = nil,
 		sound = nil,				
-		cast_time = 1,
+		cast_time = .5,
 		timeout = 10,
 		energy = 50,
 		on_the_run = false,
@@ -412,7 +414,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "projectile", range = 700, speed = 600, piercing_number = 1, gfx = "/assets/graphics/action_projectiles/staff_healing_breeze.png"},
 			effects = {
 				{effect_type = "spawn", application = {
-					target_selection = {target_selection_type = "ae", range = 75, piercing_number = 1, explosion_color = color_staff},
+					target_selection = {target_selection_type = "ae", range = 75, piercing_number = 3, explosion_color = color_staff},
 					effects = {
 						{effect_type = "heal_over_time", ticks = 6, duration = 30, str = 25},
 					},
@@ -453,7 +455,7 @@ action_definitions = {
 		sound = nil,
 		cast_time = 1,
 		timeout = 12,
-		energy = 60,
+		energy = 20,
 		on_the_run = true,
 		cast_particle_color = color_staff,		
 		
@@ -491,15 +493,15 @@ action_definitions = {
 		icon = nil,
 		sound = nil,				
 		cast_time = .1,
-		timeout = 60,
-		energy = 40,
+		timeout = 30,
+		energy = 30,
 		on_the_run = true,
 		cast_particle_color = color_robe,		
 		
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "changeSize", str = 75, duration = 15},
+				{effect_type = "changeSize", str = 66, duration = 15},
 				{effect_type = "dmgModifier", str = 125, duration = 15},
 			},
 		},	
@@ -656,6 +658,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
 				{effect_type = "stop_dots"},
+				{effect_type = "heal", str = 20},
 			},
 		},		
 	},		
@@ -715,7 +718,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_splint_mail},
 					effects = {
-						{effect_type = "transfer", eff = 1, ticks = 1, duration = 5, str = 100}
+						{effect_type = "transfer", eff = 1, ticks = 1, duration = .1, str = 100}
 					},
 				}},
 			},	
@@ -736,7 +739,7 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "self"},
 			effects = {
-				{effect_type = "buff_max_pain", str = 100, duration = 30},
+				{effect_type = "buff_max_pain", str = 150, duration = 30},
 			},
 		},	
 	},		
@@ -756,6 +759,7 @@ action_definitions = {
 			target_selection = {target_selection_type = "ae", range = 400, piercing_number = 20, explosion_color = color_splint_mail},
 				effects = {
 					{effect_type = "clarity"},
+					{effect_type = "heal_only_others", str = 20}
 				},
 		},	
 	},		

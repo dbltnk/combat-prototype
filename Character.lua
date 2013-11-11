@@ -985,7 +985,14 @@ Character = Animation:extend
 			local str, duration, source_oid = ...
 			--print("SPEED", str, duration)
 			object_manager.send(source_oid, "xp", duration * config.crowdControlXP, CHARACTER_XP_COMBAT)
-			self.speedOverride = str
+			
+			
+			if self.snared and str == config.runspeed then
+				-- nothing happens
+			else
+				self.speedOverride = str
+			end
+			
 			if str < config.walkspeed then		
 				duration = duration/ 100 * (100 - self.determination)
 			end
