@@ -369,8 +369,8 @@ GameView = View:extend
 			profile.start("update.displace.characters") self.gridIndexMovable:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) o:displace(the.player) end) profile.stop()
 		end
 		
-		if the.barrier then
-			--~ self.collision:displace(the.barrier)
+		if the.barrier then			
+			profile.start("update.displace.collision") self.gridIndexCollision:visitInRange(the.barrier.x, the.barrier.y, characterDisplaceRange, function(o) o:displace(the.barrier) end) profile.stop()
 			profile.start("update.displace.landscape") self.landscape:subdisplace(the.barrier) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(the.barrier) profile.stop()
 			profile.start("update.displace.characters") self.gridIndexMovable:visitInRange(the.barrier.x, the.barrier.y, characterDisplaceRange, function(o) o:displace(the.barrier) end) profile.stop()
