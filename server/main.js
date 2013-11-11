@@ -19,7 +19,7 @@ var connection = mysql.createConnection(config.mysql);
 connection.connect();
 
 connection.query('SELECT * FROM raw', function(err, rows, fields) {
-  if (err) throw err;
+  //if (err) throw err;
 });
 
 require('./web/app.js');

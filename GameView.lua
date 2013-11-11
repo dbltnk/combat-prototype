@@ -320,6 +320,8 @@ GameView = View:extend
 	end,
 
     onUpdate = function (self, elapsed)
+		collectgarbage("step", 1)
+
 		profile.start("gameview.onupdate")
     
 		-- handle chat

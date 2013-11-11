@@ -251,6 +251,7 @@ PhaseManager = Sprite:extend
 	end,
 	
 	changePhaseToPlaying = function (self)
+		the.lineOfSight.rebuildCollision = true
 		self.phase = "playing"	
 		the.lineOfSight:reset()
 		self.next_xp_reset_time = network.time + config.xpCapTimer
