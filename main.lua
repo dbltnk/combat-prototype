@@ -321,7 +321,9 @@ the.app = App:new
 		profile.setActive(config.show_profile_info)
 	
 		-- disable the hardware cursor
-		self:useSysCursor(false)	
+		if localconfig.spectator == false then
+			self:useSysCursor(false)	
+		end
 		
 		network.connect(localconfig.server_hostname or "buffy.leenox.de", localconfig.server_port or 9998)
 		
