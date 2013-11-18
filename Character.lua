@@ -1112,11 +1112,19 @@ Character = Animation:extend
 		-- health regeneration
 		if self.currentPain < 0 then self.currentPain = 0 end
 		local regenerating = true		
+		
+		-- don't regenerate when you have used a skill
 		for k,v in pairs(self.skills) do
 			if (v:isOutOfCombat() == false) then
 				regenerating = false
 			end
 		end
+		
+		-- or when you are affected by crowd control
+		if self.determination > 0 then regenerating = false end
+		
+		-- to do: no regeneration when someone has attacked you recently
+		
 		if self.incapacitated then
 			if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed / 2 end
 		else
