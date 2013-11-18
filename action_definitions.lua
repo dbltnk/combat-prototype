@@ -36,7 +36,7 @@ action_definitions = {
 		cast_particle_color = color_bow,
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 800, speed = 500, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_shot.png"},
+			target_selection = {target_selection_type = "projectile", range = 800, speed = 700, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_shot.png"},
 			effects = {
 				{effect_type = "damage", str = 15},
 			},
@@ -55,7 +55,7 @@ action_definitions = {
 		cast_particle_color = color_bow,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 600, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 5,  gfx = "/assets/graphics/action_projectiles/bow_puncture.png"},
+			target_selection = {target_selection_type = "projectile", range = 600, speed = 700, ae_size = 0, ae_targets = 0, piercing_number = 5,  gfx = "/assets/graphics/action_projectiles/bow_puncture.png"},
 			effects = {
 				{effect_type = "damage", str = 65},
 				{effect_type = "damage_over_time", ticks = 4, duration = 20, str = 5},	
@@ -144,7 +144,7 @@ action_definitions = {
 		cast_particle_color = color_bow,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 300, speed = 300, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_blunt_arrow.png"},
+			target_selection = {target_selection_type = "projectile", range = 300, speed = 400, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/bow_blunt_arrow.png"},
 			effects = {
 				{effect_type = "moveAwayFromMe", str = 200},
 				{effect_type = "damage", str = 45},
