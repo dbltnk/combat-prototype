@@ -6,6 +6,17 @@ ControlUI = Tile:extend
 	width = 287,
 	height = 54,
 	image = '/assets/graphics/controls_mouse.png',
+	t = Text:new{
+				font = 14,
+				text = "",
+				x = 0,
+				y = 0, 
+				width = 400,
+			},
+			
+	onDraw = function(self)
+		if the.hud:contains(self.t) == false then the.hud:add(self.t) end	
+	end,		
     
 	onUpdate = function (self)
 		self.x = love.graphics.getWidth() / 2 - self.width / 2 - 6 --TODO: dummen hack (-7) entfernen
@@ -15,6 +26,12 @@ ControlUI = Tile:extend
 			elseif input.getMode() == 1 then
 			self.image = '/assets/graphics/controls_mouse.png'
 		end
+		
+		local spacer = ") .. ("
+		local spacer2 = ") .... ("
+		self.t.text = "(" .. localconfig.skillOne .. spacer .. localconfig.skillTwo .. spacer2 ..  localconfig.skillThree .. spacer ..  localconfig.skillFour .. spacer ..  localconfig.skillFive .. spacer ..  localconfig.skillSix .. spacer ..  localconfig.skillSeven .. spacer ..  localconfig.skillEight .. ")"	
+		self.t.x = love.graphics.getWidth() / 2 - self.width / 2 + 16
+		self.t.y = love.graphics.getHeight() - self.height + 2
 	end
 }
 
