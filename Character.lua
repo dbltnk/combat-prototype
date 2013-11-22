@@ -203,13 +203,28 @@ Character = Animation:extend
 			currentValue = self.currentPain, maxValue = self.maxPain, inc = false,
 			width = self.pain_bar_size,
 		}
-		
+	
+		-- colored name
+		local nameColor = {0.1, 0.1, 0.1}
+		if self.team == "alpha" then
+			nameColor = config.colorAlpha
+		elseif self.team == "beta" then
+			nameColor = config.colorBeta
+		elseif self.team == "gamma" then
+			nameColor = config.colorGamma
+		elseif self.team == "delta" then
+			nameColor = config.colorDelta
+		else 
+			nameColor = config.colorNeutral
+		end	
+
 		self.nameLevel = NameLevel:new{
 			x = self.x, y = self.y, 
 			level = self.level, name = self.name,
 			weapon = self.weapon, armor = self.armor, team = self.team,
 			width = self.pain_bar_size * 2, cover = self.coverLocation
-		}	
+		}
+		self.nameLevel.tint = nameColor 
 		
 		self.charDebuffDisplay = CharDebuffDisplay:new{
 			x = self.x, y = self.y, 
