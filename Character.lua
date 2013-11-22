@@ -1208,6 +1208,13 @@ Character = Animation:extend
 	end,
 	
 	onUpdateRemote = function (self, elapsed)
+		-- reset velocity after 500ms
+		local t = love.timer.getTime()
+		if self.last_net_sync_time and t - self.last_net_sync_time > 0.5 then
+		    self.velocity.x = 0
+		    self.velocity.y = 0
+		end
+
 		if self.anim_freeze then 
 			--~ xxx self:freeze(self.anim_freeze)
 		elseif self.anim_play then

@@ -469,6 +469,8 @@ GameView = View:extend
 							for _,v in pairs(m.nils) do o[v] = nil end
 						end
 						--~ print("SYNC REMOTE OBJECT", o.oid)
+					
+						o.last_net_sync_time = love.timer.getTime()
 					else
 						--~ print("SYNC REQUEST REMOTE OBJECT", m.oid)
 						network.send ({ channel = "game", cmd = "request", oid = m.oid })
