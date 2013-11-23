@@ -189,7 +189,6 @@ action_definitions = {
 				range = 100, piercing_number = 12},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 50},
-				{effect_type = "moveAwayFromMe", str = 20},				
 			},
 		},	
 	},	
@@ -264,8 +263,8 @@ action_definitions = {
 		icon = nil,
 		sound = nil,
 		cast_time = 4,
-		timeout = 0,
-		energy = 0,
+		timeout = 8,
+		energy = 50,
 		on_the_run = false,
 		cast_particle_color = color_scythe,		
 		
@@ -275,6 +274,7 @@ action_definitions = {
 				range = 100, cone = 120, piercing_number = 3},
 			effects = {
 				{effect_type = "gank"},
+				{effect_type = "damageOnlyOthers", str = 96},
 			},
 		},		
 	},		
