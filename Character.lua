@@ -328,18 +328,7 @@ Character = Animation:extend
 			
 			onNew = function(self)
 				the.app.view.layers.characters:add(self)
-				
-				if goSelf.team == "alpha" then
-					self.tint = config.colorAlpha
-				elseif goSelf.team == "beta" then
-					self.tint = config.colorBeta
-				elseif goSelf.team == "gamma" then
-					self.tint = config.colorGamma
-				elseif goSelf.team == "delta" then
-					self.tint = config.colorDelta
-				else 
-					self.tint = config.colorNeutral
-				end
+				self.tint = getTeamColor(goSelf.team)	
 			end,
 			
 			onDie = function(self)
@@ -732,17 +721,7 @@ Character = Animation:extend
 		if self.armorSprite.tint ~= {1,1,1} then
 			self.armorSprite.tint = {1,1,1}
 			self:after(0.2, function()
-				if self.team == "alpha" then
-					self.armorSprite.tint = config.colorAlpha
-				elseif self.team == "beta" then
-					self.armorSprite.tint = config.colorBeta
-				elseif self.team == "gamma" then
-					self.armorSprite.tint = config.colorGamma
-				elseif self.team == "delta" then
-					self.armorSprite.tint = config.colorDelta
-				else 
-					self.armorSprite.tint = config.colorNeutral
-				end	
+				self.armorSprite.tint = getTeamColor(self.team)
 			end)
 		end
 	end,

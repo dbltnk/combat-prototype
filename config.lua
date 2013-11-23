@@ -126,11 +126,14 @@ config.map_height = 3200
 config.zones = 10
 
 -- team colors
-config.colorAlpha = {1,0.2,0.2}
-config.colorBeta = {0.2,0.2,1}
-config.colorGamma = {0.2,1,0.2}
-config.colorDelta = {0.9,0.9,0.9}
-config.colorNeutral = {0.25,0.25,0.25}
+config.teamColors = {
+	alpha = {1,0.2,0.2},
+	beta = {0.2,0.2,1},
+	gamma = {0.2,1,0.2},
+	delta = {0.9,0.9,0.9},
+	dev = {0.1,0.2,0.3},
+	neutral = {0.25,0.25,0.25},
+}
 
 -- determination
 config.stunDeterminationRatio = 10
