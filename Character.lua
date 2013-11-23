@@ -1199,6 +1199,45 @@ Character = Animation:extend
 			-- patched speed?
 			if self.speedOverride and self.speedOverride > 0 then s = self.speedOverride end
 			
+			-- reduce speed if running backwards / sideways
+			if the.keys:pressed('left', 'a') then
+				if dir == "right" then 
+					s = s * config.walkBackwardsPenalty
+				elseif dir == "up" or dir == "down" then
+					s = s * config.walkSidewaysPenalty
+				else
+					-- nothing happens because you're running forward
+				end	
+			elseif the.keys:pressed('right', 'd') then
+				if dir == "left" then 
+					s = s * config.walkBackwardsPenalty
+				elseif dir == "up" or dir == "down" then
+					s = s * config.walkSidewaysPenalty
+				else
+					-- nothing happens because you're running forward
+				end	
+			elseif the.keys:pressed('up', 'w') then
+				if dir == "down" then 
+					s = s * config.walkBackwardsPenalty
+				elseif dir == "left" or dir == "right" then
+					s = s * config.walkSidewaysPenalty
+				else
+					-- nothing happens because you're running forward
+				end				
+			elseif the.keys:pressed('down', 's') then
+				if dir == "up" then 
+					s = s * config.walkBackwardsPenalty
+				elseif dir == "left" or dir == "right" then
+					s = s * config.walkSidewaysPenalty
+				else
+					-- nothing happens because you're running forward
+				end				
+			else 
+				--nothing happens
+			end
+			
+			print(dir, s)
+			
 			self.velocity.x, self.velocity.y = vector.normalizeToLen(ipt.movex, ipt.movey, s)
 			
 			self.anim_name = "walk_" .. dir

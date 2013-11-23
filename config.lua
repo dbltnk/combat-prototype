@@ -5,6 +5,8 @@ local config = {}
 -- combat balancing
 config.walkspeed = 200
 config.runspeed = 250
+config.walkBackwardsPenalty = 0.75
+config.walkSidewaysPenalty = 0.9
 config.animspeed = 4 * config.walkspeed / 50
 config.projectilespeed = 500
 config.energyreg = 8
