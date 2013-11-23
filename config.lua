@@ -75,7 +75,7 @@ config.bossPoints_4 = 7
 config.bossPoints_5 = 9
 
 -- blockers
-config.blockerMaxPain = 100
+config.blockerMaxPain = 200
 config.blockerDecaySpeed = 0.5
 
 -- visuals
