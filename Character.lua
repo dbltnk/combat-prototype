@@ -1236,7 +1236,7 @@ Character = Animation:extend
 				--nothing happens
 			end
 			
-			print(dir, s)
+			--~ print(dir, s)
 			
 			self.velocity.x, self.velocity.y = vector.normalizeToLen(ipt.movex, ipt.movey, s)
 			
