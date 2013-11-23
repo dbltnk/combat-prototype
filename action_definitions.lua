@@ -180,7 +180,7 @@ action_definitions = {
 		sound = nil,
 		cast_time = 1,
 		timeout = 5,
-		energy = 30,
+		energy = 24,
 		on_the_run =  true,
 		cast_particle_color = color_scythe,			
 		
@@ -200,7 +200,7 @@ action_definitions = {
 		sound = nil,
 		cast_time = 1.5,
 		timeout = 12,
-		energy = 40,
+		energy = 20,
 		on_the_run = true,
 		cast_particle_color = color_scythe,		
 		
@@ -220,7 +220,7 @@ action_definitions = {
 		sound = nil,				
 		cast_time = 1.5,
 		timeout = 9,
-		energy = 50,
+		energy = 15,
 		on_the_run = true,
 		cast_particle_color = color_scythe,		
 		
