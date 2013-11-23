@@ -227,10 +227,15 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "projectile", range = 400, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_harpoon.png"},
 			effects = {
-				{effect_type = "damage", str = 25},
-				{effect_type = "stun", duration = 0.2},
-				{effect_type = "runspeed", duration = 6, str = config.walkspeed / 2},						
-				{effect_type = "moveToMe"},	
+				{effect_type = "spawn", application = {
+					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_scythe},
+					effects = {
+						{effect_type = "damage", str = 25},
+						{effect_type = "stun", duration = 0.2},
+						{effect_type = "runspeed", duration = 6, str = config.walkspeed / 2},						
+						{effect_type = "moveToMe"},	
+					},
+				}},	
 			},
 		},	
 	},		
