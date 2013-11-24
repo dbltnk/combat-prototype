@@ -347,7 +347,7 @@ GameView = View:extend
 		
 		profile.start("update.displace")
 		
-		local characterDisplaceRange = 50
+		local characterDisplaceRange = 100
 		-- xxx
 		for dummy,v in pairs(the.targetDummies) do
 			profile.start("update.displace.collision") self.gridIndexCollision:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) o:displace(dummy) end) profile.stop()
