@@ -406,7 +406,9 @@ server.on('connect', function(peer, data) {
 				}
 			} else if (message.cmd == "ping") {
 				//~ console.log("PING");
-				send_to_one({seq: message.seq, time: message.time, lag: toobusy.lag(), fin: true}, client, reliable);
+				var lag = -1;
+				if (toobusy) lag = toobusy.lag();
+				send_to_one({seq: message.seq, time: message.time, lag: lag, fin: true}, client, reliable);
 			} else if (message.cmd == "bye") {
 				console.log("BYE");
 				console.log(client);

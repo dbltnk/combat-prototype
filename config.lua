@@ -119,6 +119,8 @@ config.sync_high = 1 / 20
 config.sync_low = 1
 config.sync_zoneless_timeout = 3
 config.sync_complete_timeout = 1
+config.network_fps = 60
+config.network_ms_to_wait_in_service = 3
 
 -- map
 config.map_width = 3200

@@ -110,7 +110,9 @@ function network.update_lowest_client_id ()
 	network.lowest_client_id = l
 end
 
-function network.update (dt)
+function network.update (dt, msToWaitForMessages)
+	msToWaitForMessages = msToWaitForMessages or 0
+
 	--~ for k,v in pairs(open_requests_payload) do print(k,v) end
 
 	-- update time and keep in sync
@@ -153,12 +155,16 @@ function network.update (dt)
 	profile.stop()
 	
 	profile.start("network.messages")
+	local msToWait = config.network_ms_to_wait_in_service
 	while true do
-		local event = host:service(1)
-		if event == nil then break end
+		local event = host:service(msToWait)
+		msToWaitForMessages = msToWaitForMessages - msToWait
+		if event == nil then
+			if msToWaitForMessages <= 0 then break end
+		end
 		
 		-- count reliable
-		if event.channel == 1 then 
+		if event and event.channel == 1 then 
 			network.messages_received = network.messages_received + 1
 		end
 		

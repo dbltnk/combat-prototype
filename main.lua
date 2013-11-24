@@ -117,6 +117,8 @@ require 'Blocker'
 require 'GridIndex'
 require 'XYMonitor'
 
+require 'teamcolors'
+
 
 -- collectgarbage("stop")
 
@@ -218,6 +220,7 @@ the.app = App:new
 	running = true,
 
 	onUpdate = function (self, elapsed)
+		local frameStartTime = love.timer.getTime()
 		--~ collectgarbage("step", 10)
 		
 		profile.start("network.update")
@@ -314,7 +317,9 @@ the.app = App:new
 		--~ if the.player then
 			--~ print("ZONE", the.player.zone, "ZONES", json.encode(the.player.zones))
 		--~ end
-		
+
+		local remainingMs = 1000 / config.network_fps - love.timer.getTime() - frameStartTime
+		network.update(0, math.max(1, remainingMs))
 	end,
 
     onRun = function (self)

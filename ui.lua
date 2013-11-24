@@ -504,7 +504,7 @@ NetworkDisplay = Text:extend
 	end,
 	
 	onNew = function (self)
-		the.app.view.timer:every(5, function()
+		the.app.view.timer:every(1, function()
 			self:requestOnline()
 			self:requestPing()
 		end)

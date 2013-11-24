@@ -77,7 +77,9 @@ Character = Animation:extend
 	-- for anim sync
 	anim_name = nil,
 	anim_speed = nil,
-			
+	
+	send_zones = false,
+		
 	-- list of Skill
 	skills = localconfig.skills or {
 		"noskill",
@@ -456,10 +458,10 @@ Character = Animation:extend
 		self:refreshLevelBar()
 		
 		-- update zones
-		self:updateAndSendZones()
+		if self.send_zones then self:updateAndSendZones() end
 		
 		self:every(1, function()
-			self:updateAndSendZones()
+			if self.send_zones then self:updateAndSendZones() end
 		end)
 		
 		if self:isLocal() and globalOneTimeStatsSend then
