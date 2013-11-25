@@ -166,4 +166,20 @@ function utils.round(num, idp)
   return math.floor(num * mult + 0.5) / mult
 end
 
+function utils.color255to1(color)
+	local c = {color[1],color[2],color[3]}
+	c[1] = utils.mapIntoRange(color[1], 0, 255, 0, 1)
+	c[2] = utils.mapIntoRange(color[2], 0, 255, 0, 1)
+	c[3] = utils.mapIntoRange(color[3], 0, 255, 0, 1)
+	return c
+end
+
+function utils.color1to255(color)
+	local c = {color[1],color[2],color[3]}
+	c[1] = utils.mapIntoRange(color[1], 0, 1, 0, 255)
+	c[2] = utils.mapIntoRange(color[2], 0, 1, 0, 255)
+	c[3] = utils.mapIntoRange(color[3], 0, 1, 0, 255) 
+	return c
+end
+
 return utils

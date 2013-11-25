@@ -18,6 +18,10 @@ EffectImage = Sprite:extend
 	onNew = function (self)
 		self:mixin(GameObject)
 		drawDebugWrapper(self)
+		
+		--~ utils.vardump(self.color)
+		self.color = utils.color255to1(self.color)
+		--~ utils.vardump(self.color)
 
 		local d = Tile:new{ x = self.x-self.r, y = self.y-self.r, width = self.r*2, height = self.r*2, tint = self.color, image = self.image, rotation = self.rotation, }
 		d:mixin(FogOfWarObject)
