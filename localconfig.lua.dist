@@ -40,7 +40,7 @@ elseif localconfig.weapon == "scythe" then -- The following lines are the six sc
 	table.insert(localconfig.skills,"scythe_stun") -- Stun one target in front of you.
 	table.insert(localconfig.skills,"scythe_jump") -- Jump to your target location.
 	-- table.insert(localconfig.skills,"scythe_harpoon") -- Shoots a projectile that pulls one target to your location. 
-	-- table.insert(localconfig.skills,"scythe_gank") -- Gank one target in front of you.
+	-- table.insert(localconfig.skills,"scythe_gank") -- Deals a lot of damage and forces your target to respawn if incapacitated.
 
 elseif localconfig.weapon == "staff" then -- The following lines are the six staff skills.
 	-- # Attention: We advise you to keep Magic Bolt as your first skill. # --
@@ -75,7 +75,7 @@ elseif localconfig.armor == "hide_armor" then -- The following lines are the six
 	table.insert(localconfig.skills,"hide_armor_regenerate") -- Decreases your pain slowly over time.
 	table.insert(localconfig.skills,"hide_armor_second_wind") -- Instantly decreases your fatigue a little.
 	-- table.insert(localconfig.skills,"hide_armor_freedom") -- Break all root and snare effects.
-	-- table.insert(localconfig.skills,"hide_armor_mend_wounds") -- Break all damage-over-time effects.
+	-- table.insert(localconfig.skills,"hide_armor_mend_wounds") -- Break all damage-over-time effects and heals you a little bit.
 
 
 elseif localconfig.armor == "splint_mail" then -- The following lines are the six splint mail skills.
@@ -84,7 +84,7 @@ elseif localconfig.armor == "splint_mail" then -- The following lines are the si
 	table.insert(localconfig.skills,"splint_mail_shout") -- Makes a lot of targets in the area around you unable to use actions for a brief time.
 	table.insert(localconfig.skills,"splint_mail_invulnerability") -- Renders you invulnerable to damage for a short amount of time.
 	-- table.insert(localconfig.skills,"splint_mail_ignore_pain") -- Increases your pain resistance for some time.
-	-- table.insert(localconfig.skills,"splint_mail_clarity") -- Break all stun, mezz and powerblock effects in a large area around you.
+	-- table.insert(localconfig.skills,"splint_mail_clarity") -- Break all stun, mezz and powerblock effects and heals everybody in a large area around you.
 	-- table.insert(localconfig.skills,"splint_mail_bulwark") -- Creates a bulwark at your location.
 end
 
