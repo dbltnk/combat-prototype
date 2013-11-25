@@ -9,8 +9,8 @@ TargetDummy = Animation:extend
 	class = "TargetDummy",
 
 	props = {"x", "y", "rotation", "image", "width", "height", "velocity", "creation_time",
-		"maxPain", "xpWorth", "finalDamage", "focused_target", "deaths", "animName"},
-	sync_high = {"x", "y", "currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified"},
+		"maxPain", "xpWorth", "finalDamage", "focused_target", "deaths", "animName", "blockStack"},
+	sync_high = {"x", "y", "currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "blockStack"},
 	sync_low = {"focused_target", "animName"},
 	
 	image = '/assets/graphics/dummy_full.png',
@@ -33,6 +33,7 @@ TargetDummy = Animation:extend
 	dmgModified = config.dmgUnmodified,
 	spawnX = 0,
 	spawnY = 0,
+	blockStack = 0,
 
 	xyMonitor = nil,
 
@@ -154,6 +155,11 @@ TargetDummy = Animation:extend
 			self:gainPain(str / 100 * self.dmgModified) 
 			self.mezzed = false
 			self.rooted = false
+			-- pb to so mobs can be killed without kiting
+			self.blockStack = self.blockStack + 1
+			self:after(config.pBDuration , function()
+				self.blockStack = self.blockStack - 1
+			end)
 		elseif message_name == "moveSelfTo" then
 			local x,y = ...
 			self.x = x
@@ -168,6 +174,11 @@ TargetDummy = Animation:extend
 						self:receiveLocal("damage", str, source_oid)
 						self.mezzed = false
 						self.rooted = false	
+						-- pb to so mobs can be killed without kiting
+						self.blockStack = self.blockStack + 1
+						self:after(config.pBDuration , function()
+							self.blockStack = self.blockStack - 1
+						end)
 					end
 				end)
 			end
@@ -252,6 +263,12 @@ TargetDummy = Animation:extend
 			self.x, self.y = the.validPositions[randomNumber].x, the.validPositions[randomNumber].y	
 			self.spawnX, self.spawnY = self.x, self.y
 		end	
+		
+		if self.blockStack > 0 then
+			self.powerblocked = true
+		else
+			self.powerblocked = false
+		end
 
 		-- refocus needed?
 		if love.timer.getTime() - self.last_refocus_time > self.refocus_timeout then

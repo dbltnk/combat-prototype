@@ -50,6 +50,7 @@ config.mobDamage = 20
 config.mobAnimSpeed = 3
 config.mobAttackTimer = 2
 config.dummyMaxPain = 90
+config.pBDuration = 1.6
 
 -- boss mob (= barrier)
 config.bossSightRange = 400
