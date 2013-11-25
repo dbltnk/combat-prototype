@@ -69,7 +69,7 @@ Character = Animation:extend
 	
 	xyMonitor = nil,
 	
-	--~ "bow" or "scythe" or "staff"
+	--~ "bow" or "scythe" or "staff or "dagger"
 	weapon = "bow",
 	--~ "robe" or "hide_armor" or "splint_mail"
 	armor = "robe",
@@ -166,6 +166,7 @@ Character = Animation:extend
 			staff_healing_breeze = true,
 			staff_mezz = true,
 			staff_wall = true,
+			dagger_flurry = true,
 			robe_bandage = true,
 			robe_shrink = true,
 			robe_sonic_boom = true,
@@ -239,7 +240,9 @@ Character = Animation:extend
 		if goSelf.weapon ~= "bow" then
 			if goSelf.weapon ~= "scythe" then
 				if goSelf.weapon ~= "staff" then
-					goSelf.weapon = "bow"
+					if goSelf.weapon ~= "dagger" then
+						goSelf.weapon = "bow"
+					end
 				end
 			end
 		end

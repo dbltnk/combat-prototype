@@ -3,6 +3,7 @@
 local color_bow = {128,0,0}
 local color_scythe = {128,128,128}
 local color_staff = {255,64,0}
+local color_dagger = {255,255,0}
 local color_robe = {0,0,255}
 local color_hide_armor = {0,255,64}
 local color_splint_mail = {128,0,255}
@@ -468,6 +469,29 @@ action_definitions = {
 			target_selection = {target_selection_type = "projectile", range = 500, speed = 1200, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_jump.png"},
 			effects = {
 				{effect_type = "createWallAt"},	
+			},
+		},	
+
+	},	
+	-- -----------------------------------------------------------------------------------	
+		dagger_flurry = {
+		name = "Flurry",
+		description = "Attack targets in front of you in an astonishing speed.",
+		icon = nil,
+		sound = nil,
+		cast_time = 0,
+		timeout = 0.5,
+		energy = 12,
+		on_the_run = true,
+		cast_particle_color = color_dagger,		
+		
+		application = {
+			target_selection = {target_selection_type = "cone", 
+				gfx_radius = 75, gfx = "assets/graphics/melee_radians/30_150.png",
+				range = 75, cone = 30, piercing_number = 2, explosion_color = color_dagger},
+			effects = {
+				{effect_type = "damageOnlyOthers", str = 8},
+				{effect_type = "snare_only_others", duration = 0.5, str = config.walkspeed / 2},	
 			},
 		},	
 
