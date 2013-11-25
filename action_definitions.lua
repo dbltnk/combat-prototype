@@ -488,10 +488,34 @@ action_definitions = {
 		application = {
 			target_selection = {target_selection_type = "cone", 
 				gfx_radius = 75, gfx = "assets/graphics/melee_radians/60_200.png",
-				range = 100, cone = 30, piercing_number = 4, explosion_color = color_dagger},
+				range = 100, cone = 30, piercing_number = 5, explosion_color = color_dagger},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 8},
 				{effect_type = "snare_only_others", duration = 0.5, str = config.walkspeed / 2},	
+			},
+		},	
+
+	},	
+	-- -----------------------------------------------------------------------------------	
+		dagger_rend = {
+		name = "Rend",
+		description = "Attack targets in front of you and diminishes your fatigue.",
+		icon = nil,
+		sound = nil,
+		cast_time = 1,
+		timeout = 5,
+		energy = 0,
+		on_the_run = true,
+		cast_particle_color = color_dagger,		
+		
+		application = {
+			target_selection = {target_selection_type = "cone", 
+				gfx_radius = 75, gfx = "assets/graphics/melee_radians/60_200.png",
+				range = 100, cone = 30, piercing_number = 5, explosion_color = color_dagger},
+			effects = {
+				{effect_type = "damageOnlyOthers", str = 30},
+				-- TODO: hit-check: if more than one target was hit
+				{effect_type = "stamHeal", str = 60},
 			},
 		},	
 

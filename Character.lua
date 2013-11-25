@@ -167,6 +167,7 @@ Character = Animation:extend
 			staff_mezz = true,
 			staff_wall = true,
 			dagger_flurry = true,
+			dagger_rend = true,
 			robe_bandage = true,
 			robe_shrink = true,
 			robe_sonic_boom = true,
