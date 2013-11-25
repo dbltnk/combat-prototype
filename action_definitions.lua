@@ -487,8 +487,8 @@ action_definitions = {
 		
 		application = {
 			target_selection = {target_selection_type = "cone", 
-				gfx_radius = 75, gfx = "assets/graphics/melee_radians/30_150.png",
-				range = 75, cone = 30, piercing_number = 2, explosion_color = color_dagger},
+				gfx_radius = 75, gfx = "assets/graphics/melee_radians/60_200.png",
+				range = 100, cone = 30, piercing_number = 4, explosion_color = color_dagger},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 8},
 				{effect_type = "snare_only_others", duration = 0.5, str = config.walkspeed / 2},	
