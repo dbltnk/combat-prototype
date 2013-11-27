@@ -3,7 +3,7 @@
 local color_bow = {128,0,0}
 local color_scythe = {128,128,128}
 local color_staff = {255,64,0}
-local color_dagger = {255,255,0}
+local color_spear = {255,255,0}
 local color_robe = {0,0,255}
 local color_hide_armor = {0,255,64}
 local color_splint_mail = {128,0,255}
@@ -474,7 +474,7 @@ action_definitions = {
 
 	},	
 	-- -----------------------------------------------------------------------------------	
-		dagger_flurry = {
+		spear_flurry = {
 		name = "Flurry",
 		description = "Attack targets in front of you in an astonishing speed.",
 		icon = nil,
@@ -483,12 +483,12 @@ action_definitions = {
 		timeout = 0.5,
 		energy = 12,
 		on_the_run = true,
-		cast_particle_color = color_dagger,		
+		cast_particle_color = color_spear,		
 		
 		application = {
 			target_selection = {target_selection_type = "cone", 
 				gfx_radius = 75, gfx = "assets/graphics/melee_radians/60_200.png",
-				range = 100, cone = 30, piercing_number = 5, explosion_color = color_dagger},
+				range = 100, cone = 30, piercing_number = 5, explosion_color = color_spear},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 8},
 				{effect_type = "snare_only_others", duration = 0.5, str = config.walkspeed / 2},	
@@ -497,7 +497,7 @@ action_definitions = {
 
 	},	
 	-- -----------------------------------------------------------------------------------	
-		dagger_rend = {
+		spear_rend = {
 		name = "Rend",
 		description = "Attack targets in front of you and diminishes your fatigue.",
 		icon = nil,
@@ -506,12 +506,12 @@ action_definitions = {
 		timeout = 5,
 		energy = 0,
 		on_the_run = true,
-		cast_particle_color = color_dagger,		
+		cast_particle_color = color_spear,		
 		
 		application = {
 			target_selection = {target_selection_type = "cone", 
 				gfx_radius = 75, gfx = "assets/graphics/melee_radians/60_200.png",
-				range = 100, cone = 30, piercing_number = 5, explosion_color = color_dagger},
+				range = 100, cone = 30, piercing_number = 5, explosion_color = color_spear},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 30},
 				-- TODO: hit-check: if more than one target was hit
