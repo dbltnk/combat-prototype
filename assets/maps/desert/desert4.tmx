@@ -268,9 +268,9 @@
     <property name="id" value="5"/>
    </properties>
   </object>
-  <object name="respawnpoint" x="2871" y="2904">
+  <object name="respawnpoint1" x="2871" y="2904">
    <properties>
-    <property name="_the" value="respawnpoint"/>
+    <property name="_the" value="respawnpoint1"/>
    </properties>
   </object>
   <object name="ValidPosition" x="2679" y="1967" width="23" height="20"/>
@@ -287,6 +287,21 @@
   <object name="ValidPosition" x="2553" y="2115" width="23" height="20"/>
   <object name="ValidPosition" x="2429" y="2057" width="23" height="20"/>
   <object name="ValidPosition" x="2661" y="2087" width="23" height="20"/>
+  <object name="respawnpoint2" x="604" y="2316">
+   <properties>
+    <property name="_the" value="respawnpoint2"/>
+   </properties>
+  </object>
+  <object name="respawnpoint3" x="2229" y="544">
+   <properties>
+    <property name="_the" value="respawnpoint3"/>
+   </properties>
+  </object>
+  <object name="respawnpoint4" x="172" y="756">
+   <properties>
+    <property name="_the" value="respawnpoint4"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
   <object x="1866" y="2484" width="138" height="105"/>

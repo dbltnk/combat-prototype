@@ -230,9 +230,24 @@
   <object name="ValidPosition" x="2828" y="1946" width="23" height="20"/>
   <object name="ValidPosition" x="2846" y="1826" width="23" height="20"/>
   <object name="Cover" x="3030" y="1804" width="77" height="349"/>
-  <object name="respawnpoint" x="3022" y="143">
+  <object name="respawnpoint1" x="3022" y="143">
    <properties>
-    <property name="_the" value="respawnpoint"/>
+    <property name="_the" value="respawnpoint1"/>
+   </properties>
+  </object>
+  <object name="respawnpoint2" x="2952" y="2956">
+   <properties>
+    <property name="_the" value="respawnpoint2"/>
+   </properties>
+  </object>
+  <object name="respawnpoint3" x="160" y="172">
+   <properties>
+    <property name="_the" value="respawnpoint3"/>
+   </properties>
+  </object>
+  <object name="respawnpoint4" x="973" y="2909">
+   <properties>
+    <property name="_the" value="respawnpoint4"/>
    </properties>
   </object>
  </objectgroup>

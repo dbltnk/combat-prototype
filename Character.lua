@@ -66,6 +66,7 @@ Character = Animation:extend
 	coverLocation = nil, 
 	determination = 0,
 	lastUsedSkill = "",
+	respawned = false,
 	
 	xyMonitor = nil,
 	
@@ -585,6 +586,7 @@ Character = Animation:extend
 			self.incapacitated = false
 			self:unfreezeCasting()
 			self:unfreezeMovement()
+			self.respawned = false
 		end
 	end,
 	
@@ -630,7 +632,20 @@ Character = Animation:extend
 	end,
 		
 	respawn = function (self)
-		self.x, self.y = the.respawnpoint.x, the.respawnpoint.y
+		--self.x, self.y = the.respawnpoint.x, the.respawnpoint.y
+		
+		local randomNumber = math.random(1,4)
+		
+		if randomNumber == 1 then
+			self.x, self.y = the.respawnpoint1.x, the.respawnpoint1.y
+		elseif randomNumber == 2 then
+			self.x, self.y = the.respawnpoint2.x, the.respawnpoint2.y
+		elseif randomNumber == 3 then
+			self.x, self.y = the.respawnpoint3.x, the.respawnpoint3.y
+		else
+			self.x, self.y = the.respawnpoint4.x, the.respawnpoint4.y
+		end
+		
 		--~ self.currentPain = 0
 		--~ self.currentEnergy = 300
 		--~ self:setIncapacitation(false)
@@ -1008,7 +1023,8 @@ Character = Animation:extend
 			self.x = x
 			self.y = y
 		elseif message_name == "gank" then
-			if self.incapacitated == true then 
+			if self.incapacitated == true and not self.respawned then 
+				self.respawned = true
 				self:respawn() 
 			end
 		elseif message_name == "sneak" then

@@ -2475,7 +2475,7 @@ return {
           }
         },
         {
-          name = "respawnpoint",
+          name = "respawnpoint1",
           type = "",
           shape = "rectangle",
           x = 2871,
@@ -2484,7 +2484,7 @@ return {
           height = 0,
           visible = true,
           properties = {
-            ["_the"] = "respawnpoint"
+            ["_the"] = "respawnpoint1"
           }
         },
         {
@@ -2598,6 +2598,45 @@ return {
           height = 20,
           visible = true,
           properties = {}
+        },
+        {
+          name = "respawnpoint2",
+          type = "",
+          shape = "rectangle",
+          x = 604,
+          y = 2316,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["_the"] = "respawnpoint2"
+          }
+        },
+        {
+          name = "respawnpoint3",
+          type = "",
+          shape = "rectangle",
+          x = 2229,
+          y = 544,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["_the"] = "respawnpoint3"
+          }
+        },
+        {
+          name = "respawnpoint4",
+          type = "",
+          shape = "rectangle",
+          x = 172,
+          y = 756,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["_the"] = "respawnpoint4"
+          }
         }
       }
     },
