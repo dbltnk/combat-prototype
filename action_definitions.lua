@@ -362,8 +362,8 @@ action_definitions = {
 		icon = nil,
 		sound = nil,
 		cast_time = 1.5,
-		timeout = 9,
-		energy = 40,
+		timeout = 15,
+		energy = 50,
 		on_the_run =  false,
 		cast_particle_color = color_staff,		
 		
