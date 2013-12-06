@@ -204,8 +204,6 @@
     <property name="_the" value="barrier"/>
    </properties>
   </object>
-  <object x="832" y="1312"/>
-  <object x="564" y="1351"/>
   <object name="Cover" x="93" y="2152" width="246" height="665">
    <properties>
     <property name="id" value="1"/>
@@ -302,6 +300,11 @@
     <property name="_the" value="respawnpoint4"/>
    </properties>
   </object>
+  <object name="spawnpoint" x="704" y="1305">
+   <properties>
+    <property name="_the" value="spawnpoint"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="collision" width="100" height="100">
   <object x="1866" y="2484" width="138" height="105"/>
@@ -355,10 +358,5 @@
   <object x="262" y="1960" width="22" height="24"/>
   <object x="1284" y="1961" width="22" height="24"/>
   <object x="139" y="1324" width="37" height="36"/>
-  <object name="spawnpoint" x="716" y="1304">
-   <properties>
-    <property name="_the" value="spawnpoint"/>
-   </properties>
-  </object>
  </objectgroup>
 </map>
