@@ -210,15 +210,17 @@ Character = Animation:extend
 		-- colored name
 		local nameColor = {0.1, 0.1, 0.1}
 		if self.team == "alpha" then
-			nameColor = config.colorAlpha
+			nameColor = config.teamColors.alpha
 		elseif self.team == "beta" then
-			nameColor = config.colorBeta
+			nameColor = config.teamColors.beta
 		elseif self.team == "gamma" then
-			nameColor = config.colorGamma
+			nameColor = config.teamColors.gamma
 		elseif self.team == "delta" then
-			nameColor = config.colorDelta
+			nameColor = config.teamColors.delta
+		elseif self.team == "dev" then
+			nameColor = config.teamColors.dev
 		else 
-			nameColor = config.colorNeutral
+			nameColor = config.teamColors.neutral
 		end	
 
 		self.nameLevel = NameLevel:new{
