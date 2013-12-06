@@ -18,6 +18,32 @@ collision.minDistPointToSegment = function(x,y, x0,y0,x1,y1)
     return vector.lenFromTo(x,y,px,py)
 end
 
+
+-- x,y cone start, dx,dy cone direction, cx,cy destination to hit
+collision.isUnlimitedConeHittingXY = function(x,y,dx,dy,cx,cy,coneDeltaRadians)
+    local dcx,dcy = vector.fromTo(x,y, cx,cy)
+    -- early out if same point
+    if (vector.len(dcx,dcy) < 0.001) then return true end
+    local angle = vector.angleFromTo(dcx,dcy, dx,dy)
+    return angle <= coneDeltaRadians
+end
+
+-- x,y cone start, dx,dy is cone direction, range is cone range, f (x,y,width,height) is aabb
+collision.isConeHittingAABB = function(x,y,dx,dy,range,f,coneDeltaRadians)
+    local minDist = collision.minDistPointToAABB (x,y, f.x, f.y, f.x+f.width, f.y+f.height)
+    if minDist > range then return false end
+
+    -- corners
+    if collision.isUnlimitedConeHittingXY(x,y, dx,dy, f.x,f.y, coneDeltaRadians) then return true end
+    if collision.isUnlimitedConeHittingXY(x,y, dx,dy, f.x+f.width,f.y, coneDeltaRadians) then return true end
+    if collision.isUnlimitedConeHittingXY(x,y, dx,dy, f.x+f.width,f.y+f.height, coneDeltaRadians) then return true end
+    if collision.isUnlimitedConeHittingXY(x,y, dx,dy, f.x,f.y+f.height, coneDeltaRadians) then return true end
+    -- center
+    if collision.isUnlimitedConeHittingXY(x,y, dx,dy, f.x+f.width/2,f.y+f.height/2, coneDeltaRadians) then return true end
+
+    return false
+end
+
 -- returns dist
 collision.minDistPointToAABB = function(x,y, x0,y0,x1,y1)
 	-- inside?

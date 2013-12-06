@@ -158,25 +158,15 @@ function action_handling.find_cone_targets (x,y, dx,dy, coneDeltaRadians, range,
 	
 	-- 2 * maxObjectSize : start and end object range
 	local l = object_manager.find_in_sphere(x,y, range + 2 * maxObjectSize)
-	--~ utils.vardump(l)
-	--~ print(x,y, range)
+	-- utils.vardump(l)
+	print(x,y, range)
 	
 	l = list.process_values(l)
 		:where(function(f) 
 			return f.targetable
 		end)
 		:where(function(f)
-			--~ print("---------", f.oid, f.class)
-			return collision.minDistPointToAABB (x,y, f.x, f.y, f.x+f.width, f.y+f.height) <= range
-		end)
-		:where(function(f)
-			local cx,cy = f.x + f.width/2, f.y + f.height/2
-			local dcx,dcy = vector.fromTo(x,y, cx,cy)
-			-- early out if same point
-			if (vector.len(dcx,dcy) < 0.001) then return true end
-			local angle = vector.angleFromTo(dcx,dcy, dx,dy)
-			--~ print("------- ANGLE", angle * 180 / math.pi)
-			return angle <= coneDeltaRadians
+			return collision.isConeHittingAABB(x,y,dx,dy,range,f,coneDeltaRadians)
 		end)
 		:select(function(t) 
 			local xx,yy = action_handling.get_target_position(t)
