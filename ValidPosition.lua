@@ -13,15 +13,15 @@ ValidPosition = Tile:extend
 		self:mixin(GameObject)
 		the.app.view.layers.ground:add(self)		
 		drawDebugWrapper(self)
-		table.insert(the.validPositions,self)
+		the.validPositions[self] = true
 	end,
 	
 	onUpdateLocal = function (self)
-		if not the.validPositions[self] then the.validPositions[self] = true end
+	
 	end,
 
 	onUpdateBoth = function (self, elapsed)
-
+	
 	end,
 	
 	onDieBoth = function (self)
