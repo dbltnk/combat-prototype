@@ -228,7 +228,7 @@ TargetDummy = Animation:extend
 			self.currentPain = self.maxPain
 			self.alive = false
 			local x,y = self.x, self.y
-			the.app.view.timer:after(config.dummyRespawn, function() SpawnMobAt(self.spawnX, self.spawnY) end)
+			self:after(config.dummyRespawn, function() SpawnMobAt(self.spawnX, self.spawnY) end)
 			self:die()
 		end	
 	end,

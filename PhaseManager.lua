@@ -221,10 +221,13 @@ PhaseManager = Sprite:extend
 			local l = object_manager.find_where(function(oid, o) 
 				return o.class and NetworkSyncedObjects[o.class]
 			end)
-			for _,o in pairs(l) do o:die() end
-			
+			for _,o in pairs(l) do 
+			    print("KILL", o.class, o.oid)
+			    o:die()
+			end
+		
 			-- recreate map objects
-                        print("MAP", the.mapFile)
+			print("MAP", the.mapFile)
 			the.app.view:loadMap(the.mapFile, function (o) return o.name and NetworkSyncedObjects[o.name] end)
 		elseif message_name == "force_next_phase" then
 			self:forceNextPhase()

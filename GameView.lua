@@ -111,7 +111,7 @@ GameView = View:extend
 		local mapIdx = 1 + (network.seed % config.numberOfMaps)		
 		if config.mapNumber ~= 0 and config.mapNumber then			
 			mapIdx = config.mapNumber            
-        end
+		end
                 
 		the.mapFile = '/assets/maps/desert/desert' .. mapIdx .. '.lua'
                 print("using map", the.mapFile)
@@ -124,7 +124,7 @@ GameView = View:extend
 		
 		-- first client -> setup "new" world
 		if is_server then
-			PhaseManager:new{}
+		    PhaseManager:new{}
 		end
 		
 		self.collision.visible = false
