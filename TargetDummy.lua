@@ -259,11 +259,11 @@ TargetDummy = Animation:extend
 		profile.start("DUMMY")
 		if self.spawnX == 0 and self.spawnY == 0 then
 			local amount = 0
-			for _,_ in pairs(the.ValidPositions) do amount = amount + 1 end 
+			for _,_ in pairs(the.validPositions) do amount = amount + 1 end 
 			if amount > 0 then
 			    local randomNumber = math.random(1,amount)
 			    -- pick random
-			    for validPosition,_ in pairs(the.ValidPositions) do 
+			    for validPosition,_ in pairs(the.validPositions) do 
 				randomNumber = randomNumber - 1
 				if randomNumber == 0 then
 				    self.x, self.y = validPosition.x, validPosition.y	
