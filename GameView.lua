@@ -483,11 +483,13 @@ GameView = View:extend
 					print("new player send objects#############")
 					self:resyncAllLocalObjects();
 					print("DONE new player send objects#############")
+					showChatText("SYSTEM", "player joined the game")
 				elseif m.cmd == "disconnect" then
 					print("DISCONNECTED BY SERVER")
 					os.exit()
 				elseif m.cmd == "left" then
 					-- player left so kill all objects from the player
+					showChatText("SYSTEM", "player left the game")
 					for oid,obj in pairs(object_manager.objects) do
 						--~ print("LEFT", oid, obj.owner, m.id)
 						if obj.owner == m.id then
