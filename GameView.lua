@@ -363,14 +363,12 @@ GameView = View:extend
 			profile.start("update.displace.landscape") self.landscape:subdisplace(blocker) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(blocker)		 profile.stop()
 		end
-		
-		for character,_ in pairs(the.characters) do
-			if character and character.class ~= "Ghost" then
-				profile.start("update.displace.collision") self.gridIndexCollision:visitInRange(character.x, character.y, characterDisplaceRange, function(o) o:displace(character) end) profile.stop()
-				profile.start("update.displace.landscape") self.landscape:subdisplace(character) profile.stop()
-				profile.start("update.displace.water") self.water:subdisplace(character) profile.stop()
-				profile.start("update.displace.characters") self.gridIndexMovable:visitInRange(character.x, character.y, characterDisplaceRange, function(o) o:displace(character) end) profile.stop()
-			end
+	
+		if the.player and the.player.class ~= "Ghost" then
+			profile.start("update.displace.collision") self.gridIndexCollision:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) o:displace(the.player) end) profile.stop()
+			profile.start("update.displace.landscape") self.landscape:subdisplace(the.player) profile.stop()
+			profile.start("update.displace.water") self.water:subdisplace(the.player) profile.stop()
+			profile.start("update.displace.characters") self.gridIndexMovable:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) o:displace(the.player) end) profile.stop()
 		end
 		
 		if the.barrier then			
