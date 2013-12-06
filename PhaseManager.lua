@@ -101,11 +101,11 @@ PhaseManager = Sprite:extend
 				self:changePhaseToAfter()
 				track("game_end", the.barrier and the.barrier.alive == false)
 				network.send({channel = "server", cmd = "game_end"})
-				if the.barrier then
-					for team, points in pairs(the.barrier.teamscore) do
+				if the.score then
+					for team, points in pairs(the.score.teamscore) do
 						track("game_end_score_team", team, points)
 					end
-					for oid, points in pairs(the.barrier.highscore) do
+					for oid, points in pairs(the.score.highscore) do
 						local name = object_manager.get_field(oid, "name", "?")
 						local team = object_manager.get_field(oid, "team", "?")
 						track("game_end_score_player", oid, name, team, points)
@@ -118,11 +118,11 @@ PhaseManager = Sprite:extend
 				self:changePhaseToAfter()
 				track("game_end", the.barrier and the.barrier.alive == true)
 				network.send({channel = "server", cmd = "game_end"})
-				if the.barrier then
-					for team, points in pairs(the.barrier.teamscore) do
+				if the.score then
+					for team, points in pairs(the.score.teamscore) do
 						track("game_end_score_team", team, points)
 					end
-					for oid, points in pairs(the.barrier.highscore) do
+					for oid, points in pairs(the.score.highscore) do
 						local name = object_manager.get_field(oid, "name", "?")
 						local team = object_manager.get_field(oid, "team", "?")
 						track("game_end_score_player", oid, name, team, points)
