@@ -234,6 +234,7 @@ PhaseManager = Sprite:extend
 	
 	resetGame = function (self)
 		object_manager.send(self.oid, "reset_game")
+		if the.score then object_manager.send(the.score.oid, "reset_game") end
 	end,
 	
 	ghostAllPlayers = function (self)

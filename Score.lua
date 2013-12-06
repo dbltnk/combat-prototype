@@ -29,6 +29,13 @@ Score = Animation:extend
 		end
 	end,
 	
+	receiveLocal = function (self, message_name, ...)
+		if message_name == "reset_game" then
+		    self.highscore = {}
+		    self.teamscore = {}
+		end
+	end,
+	
 	updateTeamscore = function(self,source_oid,score)
 		-- team highscore
 		local src = object_manager.get(source_oid)
