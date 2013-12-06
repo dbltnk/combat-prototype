@@ -398,6 +398,13 @@ Barrier = Animation:extend
 	
 	onUpdateLocal = function (self, elapsed)
 	
+		-- move back into map if outside
+		local px,py = self.x+self.width/2, self.y+self.height/2
+		if px < 0 or px > config.map_width or py < 0 or py > config.map_height then
+			local dx,dy = vector.fromToWithLen(px,py,config.map_width/2,config.map_height/2,200)
+			self.x, self.y = self.x+dx,self.y+dy
+		end
+	
 		-- refocus needed?
 		if love.timer.getTime() - self.last_refocus_time > self.refocus_timeout then
 			-- find a player close by
