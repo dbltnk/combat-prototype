@@ -154,7 +154,7 @@ PhaseManager = Sprite:extend
 		if self.phase == "after" then
 			if self.highscore_displayed == false then
 				local text = "The players lost, here's how you did:"
-				the.barrier:showHighscore(text)
+				if the.barrier then the.barrier:showHighscore(text) end
 				self.highscore_displayed = true
 			end
 		end

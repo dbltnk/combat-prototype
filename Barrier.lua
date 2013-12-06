@@ -44,6 +44,8 @@ Barrier = Animation:extend
 	spawnY = 0,
 	
 	stage = 1,
+		
+	xyMonitor = nil,
 	
 	sequences = 
 			{
@@ -124,8 +126,7 @@ Barrier = Animation:extend
 		self.xyMonitor = XYMonitor:new{
 			obj = self,
 			onChangeFunction = function(ox,oy, nx,ny)
-				the.gridIndexMovable:removeAt(ox,oy,self)
-				the.gridIndexMovable:insertAt(nx,ny,self)
+				the.gridIndexMovable:moveFromTo(self, ox,oy, nx,ny)
 			end,
 		}
 	end,
@@ -543,6 +544,7 @@ Barrier = Animation:extend
 		if self.snared then self.charDebuffDisplay.snared = "snared" else self.charDebuffDisplay.snared = "" end			
 		if self.powerblocked then self.charDebuffDisplay.powerblocked = "pb'ed" else self.charDebuffDisplay.powerblocked = "" end	
 		if self.dmgModified > config.dmgUnmodified then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
-
+		
+		self.xyMonitor:checkAndCall()
 	end,	
 }
