@@ -229,6 +229,9 @@ Barrier = Animation:extend
 			--~ print("died")
 			local str = config["bossPoints_" .. self.stage]
 			self:updateTeamscore(source_oid, str)
+			if the.score then
+			    object_manager.send(the.score.oid, "show") 
+			end
 			self:die()
 		end	
 		if self.currentPain > self.maxPain and self.stage < 5 then 

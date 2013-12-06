@@ -15,7 +15,6 @@ PhaseManager = Sprite:extend
 	round_start_time = 0,
 	next_xp_reset_time = 0,
 	round_end_time = 0,
-	highscore_displayed = false,
 
 	width = 1,
 	height = 1,
@@ -150,13 +149,6 @@ PhaseManager = Sprite:extend
 
 	onUpdateBoth = function (self, elapsed)
 		the.app.view.game_start_time = self.round_start_time
-		
-		if self.phase == "after" then
-			if self.highscore_displayed == false then
-				if the.score then the.score:showHighscore() end
-				self.highscore_displayed = true
-			end
-		end
 	end,
 	
 	onDieBoth = function (self)
@@ -203,6 +195,7 @@ PhaseManager = Sprite:extend
 		elseif message_name == "set_phase" then
 			local phase_name = ...
 			if the.score and phase_name == "warmup" then the.score:hideHighscore() end
+			if the.score and phase_name == "after" then the.score:showHighscore() end
 		elseif message_name == "ghost_all_players" then
 			switchToGhost()
 		end
@@ -244,7 +237,6 @@ PhaseManager = Sprite:extend
 	changePhaseToWarmup = function (self)
 		self.round_start_time = network.time + config.warmupTime
 		self.round_end_time = self.round_start_time  + config.roundTime
-		self.highscore_displayed = false
 		self.phase = "warmup"
 		object_manager.send(self.oid, "set_phase", self.phase)
 		self.round = self.round + 1

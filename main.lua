@@ -241,13 +241,7 @@ the.app = App:new
 		--~ end	
 		
 		-- show the highscore table 
-		if loveframes.GetState() == "none" then
-			if the.player and the.barrier then
-				if the.keys:justPressed (localconfig.showHighscore) then the.score:showHighscore() end			
-			end
-		else
-			if the.keys:justPressed (localconfig.showHighscore) then the.score:showHighscore() end			
-		end
+		if the.keys:justPressed (localconfig.showHighscore) and the.score then the.score:toggleHighscore() end			
 
 		-- resync
 		if the.keys:justPressed ("f7") then the.app.view:resyncAllLocalObjects() end					
