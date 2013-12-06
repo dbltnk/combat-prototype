@@ -229,6 +229,10 @@ PhaseManager = Sprite:extend
 			-- recreate map objects
 			print("MAP", the.mapFile)
 			the.app.view:loadMap(the.mapFile, function (o) return o.name and NetworkSyncedObjects[o.name] end)
+
+			self:after(1, function()
+			    the.app.view:resyncAllLocalObjects()
+			end)
 		elseif message_name == "force_next_phase" then
 			self:forceNextPhase()
 		end
