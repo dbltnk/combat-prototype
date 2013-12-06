@@ -345,6 +345,12 @@ the.app = App:new
 				-- nop
 			else
 				oldDraw(self)
+		
+				if config.draw_collision_info and self.view.gridIndexTargetDummys then
+				    self.view.gridIndexCollision:drawDebug(255,0,0)
+				    self.view.gridIndexMovable:drawDebug(0,255,0)
+				    self.view.gridIndexTargetDummys:drawDebug(0,0,255)
+				end
 			end
 		end		
 		
