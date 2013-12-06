@@ -99,6 +99,7 @@ require 'Projectile'
 require 'GameView'
 require 'TestView'
 require 'PhaseManager'
+require 'Score'
 require 'Footstep'
 require 'Barrier'
 require 'Ressource'
@@ -242,10 +243,10 @@ the.app = App:new
 		-- show the highscore table 
 		if loveframes.GetState() == "none" then
 			if the.player and the.barrier then
-				if the.keys:justPressed (localconfig.showHighscore) then the.barrier:showHighscore() end			
+				if the.keys:justPressed (localconfig.showHighscore) then the.score:showHighscore() end			
 			end
 		else
-			if the.keys:justPressed (localconfig.showHighscore) then the.barrier:showHighscore() end			
+			if the.keys:justPressed (localconfig.showHighscore) then the.score:showHighscore() end			
 		end
 
 		-- resync

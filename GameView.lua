@@ -125,6 +125,7 @@ GameView = View:extend
 		-- first client -> setup "new" world
 		if is_server then
 		    PhaseManager:new{}
+		    Score:new{}
 		end
 		
 		self.collision.visible = false

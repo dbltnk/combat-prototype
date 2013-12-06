@@ -153,8 +153,7 @@ PhaseManager = Sprite:extend
 		
 		if self.phase == "after" then
 			if self.highscore_displayed == false then
-				local text = "The players lost, here's how you did:"
-				if the.barrier then the.barrier:showHighscore(text) end
+				if the.score then the.score:showHighscore() end
 				self.highscore_displayed = true
 			end
 		end
@@ -198,17 +197,12 @@ PhaseManager = Sprite:extend
 	receiveBoth = function (self, message_name, ...)
 		print("############ receiveBoth", message_name)
 		if message_name == "barrier_died" then
-			if self.highscore_displayed == false then
-				local text = "The players won, here's how you did:"
-				the.barrier:showHighscore(text)
-				self.highscore_displayed = true
-			end
 		elseif message_name == "reset_game" then
 			switchToGhost()
 			if localconfig.spectator == false then switchToPlayer() end
 		elseif message_name == "set_phase" then
 			local phase_name = ...
-			if the.barrier and phase_name == "warmup" then the.barrier:hideHighscore() end
+			if the.score and phase_name == "warmup" then the.score:hideHighscore() end
 		elseif message_name == "ghost_all_players" then
 			switchToGhost()
 		end
