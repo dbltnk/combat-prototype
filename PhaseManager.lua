@@ -4,12 +4,13 @@ PhaseManager = Sprite:extend
 {
 	class = "PhaseManager",
 
-	props = {"gameId", "x", "y", "width", "height", "phase", "round", "round_start_time", "round_end_time", "next_xp_reset_time"},
-	sync_low = {"gameId", "phase", "round", "round_start_time", "round_end_time", "next_xp_reset_time"},
+	props = {"gameId", "x", "y", "width", "height", "phase", "round", "round_start_time", "round_end_time", "next_xp_reset_time", "phaseCounter"},
+	sync_low = {"gameId", "phase", "round", "round_start_time", "round_end_time", "next_xp_reset_time", "phaseCounter"},
 	phase = "init_needed", -- "init_needed", "warmup", "playing", "after"
 	round = 0,
 	owner = 0,
-	
+	phaseCounter = 0,
+
 	gameId = 0,
 	
 	round_start_time = 0,
@@ -235,6 +236,7 @@ PhaseManager = Sprite:extend
 	end,
 	
 	changePhaseToWarmup = function (self)
+		self.phaseCounter = self.phaseCounter + 1
 		self.round_start_time = network.time + config.warmupTime
 		self.round_end_time = self.round_start_time  + config.roundTime
 		self.phase = "warmup"
@@ -245,6 +247,7 @@ PhaseManager = Sprite:extend
 	end,
 	
 	changePhaseToPlaying = function (self)
+		self.phaseCounter = self.phaseCounter + 1
 		the.lineOfSight.rebuildCollision = true
 		self.phase = "playing"	
 		the.lineOfSight:reset()
@@ -258,6 +261,7 @@ PhaseManager = Sprite:extend
 	end,
 	
 	changePhaseToAfter = function (self)
+		self.phaseCounter = self.phaseCounter + 1
 		self.phase = "after"
 		object_manager.send(self.oid, "set_phase", self.phase)
 		print("changePhaseToAfter", self.phase, self.round)	

@@ -228,7 +228,14 @@ TargetDummy = Animation:extend
 			self.currentPain = self.maxPain
 			self.alive = false
 			local x,y = self.x, self.y
-			self:after(config.dummyRespawn, function() SpawnMobAt(self.spawnX, self.spawnY) end)
+
+			-- keep respawns in the same phase 
+			local currentPhase = the.phaseManager.phaseCounter
+			the.app.view.timer:after(config.dummyRespawn, function() 
+			    if the.phaseManager.phaseCounter == currentPhase then 
+				SpawnMobAt(self.spawnX, self.spawnY) 
+			    end
+			end)
 			self:die()
 		end	
 	end,
