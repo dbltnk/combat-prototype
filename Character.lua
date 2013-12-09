@@ -879,8 +879,13 @@ Character = Animation:extend
 							if v ~= self.oid and self.deaths == ownDeaths and 
 								targetDeaths[v] == object_manager.get_field(v, "deaths", -1)
 							then 
-								object_manager.send(v, "damage", strPerTargetPerTick, self.oid) 
-								object_manager.send(self.oid, "heal", eff * strPerTargetPerTick, self.oid) 
+								if eff > 0 then
+									object_manager.send(v, "damage", strPerTargetPerTick, self.oid) 
+									object_manager.send(self.oid, "heal", eff * strPerTargetPerTick, self.oid) 
+								else
+									object_manager.send(v, "damage", math.abs(eff) * strPerTargetPerTick, self.oid) 
+									object_manager.send(self.oid, "heal", strPerTargetPerTick, self.oid) 								
+								end
 							end
 						end
 					end

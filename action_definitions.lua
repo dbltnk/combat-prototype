@@ -723,7 +723,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_splint_mail},
 					effects = {
-						{effect_type = "transfer", eff = 1, ticks = 1, duration = .1, str = 100}
+						{effect_type = "transfer", eff = -0.5, ticks = 1, duration = .1, str = 75}
 					},
 				}},
 			},	
