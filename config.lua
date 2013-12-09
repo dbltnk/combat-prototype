@@ -37,7 +37,7 @@ config.combatHealXP = 0.07 -- in % of damage / heal done
 config.crowdControlXP = 0.15 -- in % of duration in seconds
 config.ressourceQualityTable = {0.5, 1, 1.5, 3}
 config.numberOfMaps = 4
-config.mapNumber = 0 -- 0 means random
+config.mapNumber = 1 -- 0 means random
 
 -- tracking
 config.trackingOverTimeTimeout = 15
@@ -61,21 +61,21 @@ config.bossDamage_2 = 50
 config.bossDamage_3 = 65
 config.bossDamage_4 = 80
 config.bossDamage_5 = 100
-config.bossHealth_1 = 4000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
-config.bossHealth_2 = 7000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossHealth_1 = 2000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossHealth_2 = 6000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
 config.bossHealth_3 = 10000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
-config.bossHealth_4 = 14000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
+config.bossHealth_4 = 18000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
 config.bossHealth_5 = 20000 / config.timecompression -- 800 dpm * 60 minutes + 2.000 (so one player can't do it alone)
 config.bossMovementSpeed_1 = config.walkspeed * 0.55
 config.bossMovementSpeed_2 = config.walkspeed * 0.55
 config.bossMovementSpeed_3 = config.walkspeed * 0.65
 config.bossMovementSpeed_4 = config.walkspeed * 0.65
 config.bossMovementSpeed_5 = config.walkspeed * 0.75
-config.bossPoints_1 = 1
-config.bossPoints_2 = 3
-config.bossPoints_3 = 5
-config.bossPoints_4 = 7
-config.bossPoints_5 = 9
+--~ config.bossPoints_1 = 1
+--~ config.bossPoints_2 = 3
+--~ config.bossPoints_3 = 5
+--~ config.bossPoints_4 = 7
+--~ config.bossPoints_5 = 9
 
 -- blockers
 config.blockerMaxPain = 200

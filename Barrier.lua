@@ -227,7 +227,7 @@ Barrier = Animation:extend
 	updatePain = function (self, source_oid)
 		if self.currentPain >= self.maxPain and self.stage == 5 then 
 			--~ print("died")
-			local str = config["bossPoints_" .. self.stage]
+			local str = config["bossHealth_" .. self.stage]   
 			self:updateTeamscore(source_oid, str)
 			if the.score then
 			    object_manager.send(the.score.oid, "show") 
@@ -235,7 +235,7 @@ Barrier = Animation:extend
 			self:die()
 		end	
 		if self.currentPain > self.maxPain and self.stage < 5 then 
-			local str = config["bossPoints_" .. self.stage]
+			local str = config["bossHealth_" .. self.stage]
 			self:updateTeamscore(source_oid, str)
 			self:callNextBoss()
 		end	

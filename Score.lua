@@ -51,8 +51,13 @@ Score = Animation:extend
 	
 	updateHighscore = function(self,source_oid,score)
 		-- solo highscore
-		if not self.highscore[source_oid] then self.highscore[source_oid] = 0 end
-		self.highscore[source_oid] = self.highscore[source_oid] + score
+		local src = object_manager.get(source_oid)
+		if src then
+			if not self.teamscore[src.team] then self.teamscore[src.team] = 0 end
+			self.teamscore[src.team] = self.teamscore[src.team] + score
+			if not self.highscore[source_oid] then self.highscore[source_oid] = 0 end
+			self.highscore[source_oid] = self.highscore[source_oid] + score
+		end
 	end,	
 	
 	hideHighscore = function (self)
