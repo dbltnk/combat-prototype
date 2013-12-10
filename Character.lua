@@ -1139,7 +1139,7 @@ Character = Animation:extend
 		end
 		
 		-- or when you are affected by crowd control
-		if self.determination > 0 then regenerating = false end
+		if self.determination > 0 and self.incapacitated == false then regenerating = false end
 		
 		-- to do: no regeneration when someone has attacked you recently
 		
