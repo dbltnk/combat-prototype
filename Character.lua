@@ -826,7 +826,7 @@ Character = Animation:extend
 		--	print("HEAL", str)
 			self:gainPain(-str, source_oid)
 			object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT)
-			if self.hidden then self.hidden = false self.speedOverride = 0 end			
+			--~ if self.hidden then self.hidden = false self.speedOverride = 0 end			
 		elseif message_name == "inc" then
 			local key, value = ...
 			if self[key] then self[key] = self[key] + value end
@@ -898,7 +898,7 @@ Character = Animation:extend
 						self:unfreezeMovement()
 						self.rooted = false
 					end
-					if self.hidden then self.hidden = false self.speedOverride = 0 end						
+					--~ if self.hidden then self.hidden = false self.speedOverride = 0 end						
 				end)				
 			end		
 		elseif message_name == "damage_over_time" then
