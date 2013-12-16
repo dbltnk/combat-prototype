@@ -14,6 +14,8 @@ config.healthreg = 8 -- 50% of that when incapacitated
 config.maxPain = 300
 config.maxEnergy = 300
 config.getUpPain = 0.5 -- in percent
+config.getUpTime = 60
+config.getUpTimeAddedPerLevel = 6
 config.dmgUnmodified = 100
 
 -- next playtest - http://www.epochconverter.com/
