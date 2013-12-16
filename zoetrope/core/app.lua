@@ -177,13 +177,13 @@ App = Class:extend
 
 		-- set up callbacks
 		
-		love.graphics.setCaption(self.name)
+		love.window.setTitle(self.name)
 		love.update = function (elapsed) self:update(elapsed) end
 		love.draw = function() self:draw() end
 		love.focus = function (value) self:onFocus(value) end	
 
 		if self.onRun then self:onRun() end
-		self._nextFrameTime = love.timer.getMicroTime()
+		self._nextFrameTime = love.timer.getTime()
 	end,
 	
 	-- Method: quit
@@ -413,7 +413,7 @@ App = Class:extend
 
 		-- sleep off any unneeded time to keep up at our FPS
 
-		local now = love.timer.getMicroTime()
+		local now = love.timer.getTime()
 
 		if self._nextFrameTime < now then
 			self._nextFrameTime = now

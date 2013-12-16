@@ -132,7 +132,6 @@ function newobject:draw()
 	local internals = self.internals
 	local children = self.children
 	local stencilfunc = function() love.graphics.rectangle("fill", x, y, width, height) end
-	local stencil = love.graphics.newStencil(stencilfunc)
 	local skins = loveframes.skins.available
 	local skinindex = loveframes.config["ACTIVESKIN"]
 	local defaultskin = loveframes.config["DEFAULTSKIN"]
@@ -152,7 +151,7 @@ function newobject:draw()
 		drawfunc(self)
 	end
 	
-	love.graphics.setStencil(stencil)
+	love.graphics.setStencil(stencilfunc)
 		
 	for k, v in ipairs(children) do
 		local col = loveframes.util.BoundingBox(x, v.x, y, v.y, width, v.width, height, v.height)

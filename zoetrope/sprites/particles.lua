@@ -29,8 +29,8 @@ Particles = Sprite:extend
 		obj:updateSystem()
 		
 		obj.system:setEmissionRate(10)
-		obj.system:setLifetime(1)
-		obj.system:setParticleLife(7)
+		--obj.system:setLifetime(1)
+		obj.system:setParticleLifetime(7)
 		obj.system:setDirection(0)
 		obj.system:setSpread(2 * math.pi)
 		obj.system:setSpeed(10, 20)

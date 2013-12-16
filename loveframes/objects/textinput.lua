@@ -138,7 +138,7 @@ function newobject:update(dt)
 		local panel = self:GetLineNumbersPanel()
 		-- get the longest line of text
 		for k, v in ipairs(lines) do
-			local linewidth = self.font:getWidth(v)
+			local linewidth = self:getFontWidth(self.font, v)
 			if linewidth > twidth then
 				twidth = linewidth
 			end
@@ -261,7 +261,6 @@ function newobject:draw()
 	local skinindex = loveframes.config["ACTIVESKIN"]
 	local defaultskin = loveframes.config["DEFAULTSKIN"]
 	local stencilfunc = function() love.graphics.rectangle("fill", self.x, self.y, self.width, self.height) end
-	local stencil = love.graphics.newStencil(stencilfunc)
 	local selfskin = self.skin
 	local skin = skins[selfskin] or skins[skinindex]
 	local drawfunc = skin.DrawTextInput or skins[defaultskin].DrawTextInput
@@ -455,6 +454,29 @@ function newobject:keypressed(key, unicode)
 end
 
 --[[---------------------------------------------------------
+	- func: textpressed(text)
+	- desc: called when the player types text
+--]]---------------------------------------------------------
+function newobject:textpressed(text)
+
+	local state = loveframes.state
+	local selfstate = self.state
+	
+	if state ~= selfstate then
+		return
+	end
+	
+	local visible = self.visible
+	
+	if not visible then
+		return
+	end
+	
+	self:RunKey(nil, text)
+	
+end
+
+--[[---------------------------------------------------------
 	- func: keyreleased(key)
 	- desc: called when the player releases a key
 --]]---------------------------------------------------------
@@ -519,7 +541,7 @@ function newobject:RunKey(key, unicode)
 		if not multiline then
 			self:MoveIndicator(-1)
 			if indicatorx <= self.x and indicatornum ~= 0 then
-				local width = self.font:getWidth(text:sub(indicatornum, indicatornum + 1))
+				local width = self:getFontWidth(self.font, text:sub(indicatornum, indicatornum + 1))
 				self.offsetx = self.offsetx - width
 			elseif indicatornum == 0 and self.offsetx ~= 0 then
 				self.offsetx = 0
@@ -541,10 +563,10 @@ function newobject:RunKey(key, unicode)
 		if not multiline then
 			self:MoveIndicator(1)
 			if indicatorx >= (self.x + swidth) and indicatornum ~= #text then
-				local width = self.font:getWidth(text:sub(indicatornum, indicatornum))
+				local width = self:getFontWidth(self.font, text:sub(indicatornum, indicatornum))
 				self.offsetx = self.offsetx + width
-			elseif indicatornum == #text and self.offsetx ~= ((0 - font:getWidth(text)) + swidth) and font:getWidth(text) + self.textoffsetx > self.width then
-				self.offsetx = ((0 - font:getWidth(text)) + swidth)
+			elseif indicatornum == #text and self.offsetx ~= ((0 - self:getFontWidth(font, text)) + swidth) and self:getFontWidth(font, text) + self.textoffsetx > self.width then
+				self.offsetx = ((0 - self:getFontWidth(font, text)) + swidth)
 			end
 		else
 			if indicatornum == #text then
@@ -608,7 +630,7 @@ function newobject:RunKey(key, unicode)
 					end
 				end
 			end
-			local cwidth = font:getWidth(text:sub(#text))
+			local cwidth = self:getFontWidth(font, text:sub(#text))
 			if self.offsetx ~= 0 then
 				self.offsetx = self.offsetx - cwidth
 			end
@@ -674,13 +696,13 @@ function newobject:RunKey(key, unicode)
 			self:MoveIndicator(1)
 		end
 	else
-		if unicode > 31 and unicode < 127 then
+		if unicode then
 			-- do not continue if the text limit has been reached or exceeded
 			if #text >= self.limit and self.limit ~= 0 then
 				return
 			end
 			-- set the current key
-			ckey = string.char(unicode)
+			ckey = unicode
 			-- check for unusable characters
 			if #self.usable > 0 then
 				local found = false
@@ -731,8 +753,9 @@ function newobject:RunKey(key, unicode)
 			curline = lines[line]
 			text = curline
 			if not multiline then
-				local twidth = font:getWidth(text)
-				local cwidth = font:getWidth(ckey)
+				print(text)
+				local twidth = self:getFontWidth(font, text)
+				local cwidth = self:getFontWidth(font, ckey)
 				-- swidth - 1 is for the "-" character
 				if (twidth + textoffsetx) >= (swidth - 1) then
 					self.offsetx = self.offsetx + cwidth
@@ -747,6 +770,14 @@ function newobject:RunKey(key, unicode)
 		ontextchanged(self, ckey)
 	end
 	
+end
+
+function newobject:getFontWidth(font, text)
+    local w = 6
+    pcall(function()
+	w = self:getFontWidth(font, text)
+    end)
+    return w
 end
 
 --[[---------------------------------------------------------
@@ -813,7 +844,7 @@ function newobject:UpdateIndicator()
 	local width = 0
 	
 	for i=1, indicatornum do
-		width = width + self.font:getWidth(text:sub(i, i))
+		width = width + self:getFontWidth(font, text:sub(i, i))
 	end
 	
 	if multiline then
@@ -839,7 +870,7 @@ function newobject:AddIntoText(t, p)
 	local text = curline
 	local part1 = text:sub(1, p)
 	local part2 = text:sub(p + 1)
-	local new = part1 .. string.char(t) .. part2
+	local new = part1 .. t .. part2
 	
 	return new
 	
@@ -907,7 +938,7 @@ function newobject:GetTextCollisions(x, y)
 			local line = self.line
 			local curline = lines[line]
 			for i=1, #curline do
-				local width = font:getWidth(curline:sub(i, i))
+				local width = self:getFontWidth(font, curline:sub(i, i))
 				local height = font:getHeight(curline:sub(i, i))
 				local tx = self.textx + xpos
 				local ty = self.texty
@@ -937,7 +968,7 @@ function newobject:GetTextCollisions(x, y)
 		end
 	else
 		for i=1, #text do
-			local width = font:getWidth(text:sub(i, i))
+			local width = self:getFontWidth(font, text:sub(i, i))
 			local height = font:getHeight(text:sub(i, i))
 			local tx = self.textx + xpos
 			local ty = self.texty

@@ -140,6 +140,16 @@ function loveframes.mousereleased(x, y, button)
 end
 
 --[[---------------------------------------------------------
+	- func: textpressed(text)
+--]]---------------------------------------------------------
+function loveframes.textpressed(text)
+
+	local base = loveframes.base
+	base:textpressed(text)
+	
+end
+
+--[[---------------------------------------------------------
 	- func: keypressed(key)
 	- desc: called when the player presses a key
 --]]---------------------------------------------------------

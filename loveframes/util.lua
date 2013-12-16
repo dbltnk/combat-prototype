@@ -129,7 +129,7 @@ function loveframes.util.GetDirectoryContents(dir, t)
 
 	local dir = dir
 	local t = t or {}
-	local files = love.filesystem.enumerate(dir)
+	local files = love.filesystem.getDirectoryItems(dir)
 	local dirs = {}
 	
 	for k, v in ipairs(files) do

@@ -27,7 +27,7 @@ GridIndex = Class:extend{
 
 	    if oi == ni then return end
 
-	    print("MOVE OBJ", o.oid, "FROM", oi, "TO", ni)
+	    -- print("MOVE OBJ", o.oid, "FROM", oi, "TO", ni)
 	    self:removeAt(ox,oy,o)
 	    self:insertAt(nx,ny,o)
 	end,

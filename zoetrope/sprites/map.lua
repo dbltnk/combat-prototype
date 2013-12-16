@@ -304,7 +304,7 @@ Map = Sprite:extend{
 				local quad = love.graphics.newQuad(sprite.imageOffset.x, sprite.imageOffset.y,
 											   sprite.width, sprite.height,
 											   imgW, imgH)
-				sb:addq( quad, spriteX, spriteY, 0 )
+				sb:add( quad, spriteX, spriteY, 0 )
 			end
 			sb:unbind()
 			

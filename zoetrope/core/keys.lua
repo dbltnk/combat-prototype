@@ -42,6 +42,7 @@ Keys = Sprite:extend{
 		obj = self:extend(obj)
 		the.keys = obj
 		love.keypressed = function (key, unicode) obj:keyPressed(key, unicode) end
+		love.testinput = function (key, unicode) obj:textInput(text) end
 		love.keyreleased = function (key, unicode) obj:keyReleased(key, unicode) end
 		if obj.onNew then obj:onNew() end
 		return obj
@@ -203,18 +204,15 @@ Keys = Sprite:extend{
 		return unpack(result)
 	end,
 
+	textInput = function (self, text)
+	    print("INPUT", text)
+	    self.typed = self.typed .. text
+	end,
+
 	-- Connects to the love.keypressed callback
 
-	keyPressed = function (self, key, unicode)
+	keyPressed = function (self, key)
 		self._thisFrame[key] = true
-		if unicode and unicode >= 0x20 and unicode ~= 127 and unicode < 0x3000 then
-			local c = nil
-			if pcall(function() 
-				c = string.char(unicode)
-			end) then
-				self.typed = self.typed .. c
-			end
-		end
 
 		-- aliases for modifiers
 

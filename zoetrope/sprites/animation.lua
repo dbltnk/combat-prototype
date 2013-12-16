@@ -224,7 +224,7 @@ Animation = Sprite:extend{
 		if self.flipX then scaleX = scaleX * -1 end
 		if self.flipY then scaleY = scaleY * -1 end
 			
-		love.graphics.drawq(self._imageObj, self._quad, x + self.width / 2, y + self.height / 2, self.rotation,
+		love.graphics.draw(self._imageObj, self._quad, x + self.width / 2, y + self.height / 2, self.rotation,
 							scaleX, scaleY, self.width / 2, self.height / 2)
 		
 		-- reset color

@@ -44,7 +44,7 @@ localconfig = readConfig(arg[2])
 
 --require "enet"
 
-love.graphics.setMode(localconfig.screenWidth, localconfig.screenHeight, localconfig.fullscreen)
+love.window.setMode(localconfig.screenWidth, localconfig.screenHeight, {fullscreen=localconfig.fullscreen})
 
 local luaPrint = print
 print = function (...)

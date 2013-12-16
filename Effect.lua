@@ -33,7 +33,7 @@ Effect = Sprite:extend
 				local ps = self.system
 				ps:setColors(objSelf.r, objSelf.g, objSelf.b, 128)
 				ps:setEmissionRate(100)
-				ps:setParticleLife(objSelf.duration)
+				ps:setParticleLifetime(objSelf.duration)
 				ps:setSpeed(20,30)
 				ps:setSizes(3,4)
 

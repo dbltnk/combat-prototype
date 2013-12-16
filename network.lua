@@ -430,8 +430,6 @@ end
 function network.connect (_host, _port)
 	require "enet"
 
-	print("luasocket version", socket._VERSION)
-
 	host = enet.host_create()
 	server = host:connect(_host .. ":" .. _port, 2)
 	

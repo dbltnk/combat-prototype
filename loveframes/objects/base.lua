@@ -154,7 +154,7 @@ end
 	- func: keypressed(key)
 	- desc: called when the player presses a key
 --]]---------------------------------------------------------
-function newobject:keypressed(key, unicode)
+function newobject:keypressed(key)
 	
 	local state = loveframes.state
 	local selfstate = self.state
@@ -173,13 +173,48 @@ function newobject:keypressed(key, unicode)
 	
 	if children then
 		for k, v in ipairs(children) do
-			v:keypressed(key, unicode)
+			v:keypressed(key)
 		end
 	end
 	
 	if internals then
 		for k, v in ipairs(internals) do
-			v:keypressed(key, unicode)
+			v:keypressed(key)
+		end
+	end
+
+end
+
+--[[---------------------------------------------------------
+	- func: textpressed(text)
+	- desc: called when the player types anything
+--]]---------------------------------------------------------
+function newobject:textpressed(text)
+	
+	local state = loveframes.state
+	local selfstate = self.state
+	
+	if state ~= selfstate then
+		return
+	end
+	
+	local visible = self.visible
+	local children = self.children
+	local internals = self.internals
+	
+	if not visible then
+		return
+	end
+	
+	if children then
+		for k, v in ipairs(children) do
+			v:textpressed(text)
+		end
+	end
+	
+	if internals then
+		for k, v in ipairs(internals) do
+			v:textpressed(text)
 		end
 	end
 
