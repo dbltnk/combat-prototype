@@ -1144,7 +1144,7 @@ Character = Animation:extend
 		-- to do: no regeneration when someone has attacked you recently
 		
 		if self.incapacitated then
-			if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed / 2 end
+			self.currentPain = self.currentPain - self.maxPain / 2 / (config.getUpTime + config.getUpTimeAddedPerLevel * self.level) * elapsed
 		else
 			if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed end
 		end	
