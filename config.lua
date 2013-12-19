@@ -22,7 +22,7 @@ config.dmgUnmodified = 100
 config.nextPlaytestAt = 1372960800
 
 -- progression and round time
-config.timecompression = 2
+config.timecompression = 4
 config.warmupTime = 600 -- in seconds
 config.roundTime = 3600 / config.timecompression -- in seconds
 config.afterTime = 60 -- in seconds
