@@ -487,7 +487,7 @@ action_definitions = {
 		
 		application = {
 			target_selection = {target_selection_type = "cone", 
-				gfx_radius = 75, gfx = "assets/graphics/melee_radians/60_200.png",
+				gfx_radius = 100, gfx = "assets/graphics/melee_radians/60_200.png",
 				range = 100, cone = 30, piercing_number = 5, explosion_color = color_spear},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 8},
@@ -510,7 +510,7 @@ action_definitions = {
 		
 		application = {
 			target_selection = {target_selection_type = "cone", 
-				gfx_radius = 75, gfx = "assets/graphics/melee_radians/60_200.png",
+				gfx_radius = 100, gfx = "assets/graphics/melee_radians/60_200.png",
 				range = 100, cone = 30, piercing_number = 5, explosion_color = color_spear},
 			effects = {
 				{effect_type = "damageOnlyOthers", str = 30},
