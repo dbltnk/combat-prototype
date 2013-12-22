@@ -63,14 +63,17 @@ action_handling.register_target_selection("ae", function (start_target, target_s
 		
 		return t
 	end))
-	
-	local lastSkill = object_manager.get(source_oid).lastUsedSkill
-	if c > 0 then
-		track("skill_hit", lastSkill, source_oid, c)
-		print("skill_hit", lastSkill, source_oid, c)
-	else
-		track("skill_miss", lastSkill, source_oid, c)
-		print("skill_miss", lastSkill, source_oid, c)
+
+	local obj = object_manager.get(source_oid)
+	if obj then
+	    local lastSkill = obj.lastUsedSkill
+	    if c > 0 then
+		    track("skill_hit", lastSkill, source_oid, c)
+		    print("skill_hit", lastSkill, source_oid, c)
+	    else
+		    track("skill_miss", lastSkill, source_oid, c)
+		    print("skill_miss", lastSkill, source_oid, c)
+	    end
 	end
 	
 end)
@@ -124,13 +127,16 @@ action_handling.register_target_selection("cone", function (start_target, target
 		return t
 	end))
 	
-	local lastSkill = object_manager.get(source_oid).lastUsedSkill
-	if c > 0 then
-		track("skill_hit", lastSkill, source_oid, c)
-		--~ print("skill_hit", lastSkill, source_oid, c)
-	else
-		track("skill_miss", lastSkill, source_oid, c)
-		--~ print("skill_miss", lastSkill, source_oid, c)
+	local obj = object_manager.get(source_oid)
+	if obj then
+	    local lastSkill = obj.lastUsedSkill
+	    if c > 0 then
+		    track("skill_hit", lastSkill, source_oid, c)
+		    --~ print("skill_hit", lastSkill, source_oid, c)
+	    else
+		    track("skill_miss", lastSkill, source_oid, c)
+		    --~ print("skill_miss", lastSkill, source_oid, c)
+	    end
 	end
 end)
 

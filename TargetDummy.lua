@@ -228,7 +228,14 @@ TargetDummy = Animation:extend
 			self.currentPain = self.maxPain
 			self.alive = false
 			local x,y = self.x, self.y
-			the.app.view.timer:after(config.dummyRespawn, function() SpawnMobAt(self.spawnX, self.spawnY) end)
+
+			-- keep respawns in the same phase 
+			local currentPhase = the.phaseManager.phaseCounter
+			the.app.view.timer:after(config.dummyRespawn, function() 
+			    if the.phaseManager.phaseCounter == currentPhase then 
+				SpawnMobAt(self.spawnX, self.spawnY) 
+			    end
+			end)
 			self:die()
 		end	
 	end,
@@ -258,10 +265,20 @@ TargetDummy = Animation:extend
 	onUpdateLocal = function (self, elapsed)
 		profile.start("DUMMY")
 		if self.spawnX == 0 and self.spawnY == 0 then
-			local amount = #the.validPositions
-			local randomNumber = math.random(1,amount)
-			self.x, self.y = the.validPositions[randomNumber].x, the.validPositions[randomNumber].y	
-			self.spawnX, self.spawnY = self.x, self.y
+			local amount = 0
+			for _,_ in pairs(the.validPositions) do amount = amount + 1 end 
+			if amount > 0 then
+			    local randomNumber = math.random(1,amount)
+			    -- pick random
+			    for validPosition,_ in pairs(the.validPositions) do 
+				randomNumber = randomNumber - 1
+				if randomNumber == 0 then
+				    self.x, self.y = validPosition.x, validPosition.y	
+				    self.spawnX, self.spawnY = self.x, self.y
+				    break
+				end
+			    end 
+			end
 		end	
 		
 		if self.blockStack > 0 then

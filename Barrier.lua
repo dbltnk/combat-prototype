@@ -4,17 +4,15 @@ Barrier = Animation:extend
 {
 	class = "Barrier",
 
-	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "highscore", "teamscore", "focused_target", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage", "maxPain", "deaths", "animName" },	
+	props = {"x", "y", "rotation", "image", "width", "height", "currentPain", "alive", "focused_target", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage", "maxPain", "deaths", "animName" },	
 	
-	sync_low = {"highscore", "teamscore", "focused_target", "maxPain", "width", "height", "deaths", "animName"},
+	sync_low = {"focused_target", "maxPain", "width", "height", "deaths", "animName"},
 	sync_high = {"x", "y", "currentPain", "alive", "rooted", "stunned", "mezzed", "snared", "powerblocked", "dmgModified", "stage"},
 
 	image = '/assets/graphics/boss_1.png',
 	currentPain = 0,
 	maxPain = 0,
 	deaths = 0,
-	highscore = {},
-	teamscore = {},
 	owner = 0,
 	targetable = true,
 	
@@ -44,6 +42,8 @@ Barrier = Animation:extend
 	spawnY = 0,
 	
 	stage = 1,
+		
+	xyMonitor = nil,
 	
 	sequences = 
 			{
@@ -124,8 +124,7 @@ Barrier = Animation:extend
 		self.xyMonitor = XYMonitor:new{
 			obj = self,
 			onChangeFunction = function(ox,oy, nx,ny)
-				the.gridIndexMovable:removeAt(ox,oy,self)
-				the.gridIndexMovable:insertAt(nx,ny,self)
+				the.gridIndexMovable:moveFromTo(self, ox,oy, nx,ny)
 			end,
 		}
 	end,
@@ -228,12 +227,15 @@ Barrier = Animation:extend
 	updatePain = function (self, source_oid)
 		if self.currentPain >= self.maxPain and self.stage == 5 then 
 			--~ print("died")
-			local str = config["bossPoints_" .. self.stage]
+			local str = config["bossHealth_" .. self.stage]   
 			self:updateTeamscore(source_oid, str)
+			if the.score then
+			    object_manager.send(the.score.oid, "show") 
+			end
 			self:die()
 		end	
 		if self.currentPain > self.maxPain and self.stage < 5 then 
-			local str = config["bossPoints_" .. self.stage]
+			local str = config["bossHealth_" .. self.stage]
 			self:updateTeamscore(source_oid, str)
 			self:callNextBoss()
 		end	
@@ -260,131 +262,15 @@ Barrier = Animation:extend
 	
 	updateTeamscore = function(self,source_oid,score)
 		-- team highscore
-		local src = object_manager.get(source_oid)
-		if src then
-			if not self.teamscore[src.team] then self.teamscore[src.team] = 0 end
-			self.teamscore[src.team] = self.teamscore[src.team] + score
-		end
+		the.score:updateTeamscore(source_oid, score)
 	end,	
 	
 	updateHighscore = function(self,source_oid,score)
 		-- solo highscore
-		if not self.highscore[source_oid] then self.highscore[source_oid] = 0 end
-		self.highscore[source_oid] = self.highscore[source_oid] + score
+		the.score:updateHighscore(source_oid, score)
 		-- dmg tracking
 		object_manager.send(source_oid, "inc", "barrier_dmg", score)
 	end,	
-	
-	hideHighscore = function (self)
-		if self.frame then self.frame:Remove() self.frame = nil end
-		loveframes.SetState("none")
-	end,
-	
-	showHighscore = function (self, title)
-		if self.frame then self.frame:Remove() self.frame = nil end
-	
-		if loveframes.GetState() == "none" then 
-			loveframes.SetState("highscore")
-		else 
-			loveframes.SetState("none")
-		end
-		
-		local frm = loveframes.Create("frame")
-		self.frame = frm
-		frm:SetSize(400, 400)
-		frm:Center()
-		frm:SetName(title or "Highscore")
-		frm:SetState("highscore")
-		
-        for _,v in pairs(self.teamscore) do
-			v = math.floor(v * 10000) / 10000
-		end
-				
-		--show the team highscores
-		local l3 = list.process_keys(self.teamscore)       -- holt alle keys (oids)
-        :orderby(function(a,b) return self.teamscore[a] > self.teamscore[b] end)      -- sortiert diese nach werten aus map
-        :select(function (a) return {k=a, v=self.teamscore[a]} end)        -- und gibt eine liste zurück mit k und v einträge
-        :done() -- l3 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
-		
-		local upperList = loveframes.Create("list", frm)
-		upperList:SetPos(5, 30)
-		upperList:SetSize(390, 85)
-		upperList:SetDisplayType("vertical")
-		upperList:SetPadding(5)
-		upperList:SetSpacing(5)
-		
-		local j = 1
-		local textListTeam = {}
-		for _,x in pairs(l3) do
-		
-			local name = "nobody"
-			if x.k ~= 0 then 
-				name = x.k
-				local o = object_manager.get(x.k)
-				if o and o.name then
-					name = o.name
-				end
-			end	
-		
-			local txt = j .. ". Team " .. name .. " with " .. x.v .. " points"
-			textListTeam[j]= txt	
-			j = j + 1
-
-		end
-
-		for k,v in pairs(textListTeam) do
-			local text = loveframes.Create("text")
-			text:SetText(v) 
-			upperList:AddItem(text)
-		end
-		
-        for _,v in pairs(self.highscore) do
-			v = math.floor(v * 10000) / 10000
-		end
-		
-		--~ -- show the player highscores 
-		local l2 = list.process_keys(self.highscore)       -- holt alle keys (oids)
-        :orderby(function(a,b) return self.highscore[a] > self.highscore[b] end)      -- sortiert diese nach werten aus map
-        :select(function (a) return {k=a, v=self.highscore[a]} end)        -- und gibt eine liste zurück mit k und v einträge
-        :done() -- l2 ist nun sortiert und hat alle relevanten daten in den elementen k,v gespeichert
-
-		local lowerList = loveframes.Create("list", frm)
-		lowerList:SetPos(5, 120)
-		lowerList:SetSize(390, 275)
-		lowerList:SetDisplayType("vertical")
-		lowerList:SetPadding(5)
-		lowerList:SetSpacing(5)
-		
-		local i = 1
-		local textList = {}
-		for _,x in pairs(l2) do
-		
-			local name = "nobody"
-			local team = "no team"
-			if x.k ~= 0 then 
-				name = x.k
-				local o = object_manager.get(x.k)
-				if o and o.name then
-					name = o.name
-				end
-				if o and o.team then
-					team = o.team
-				end
-			end	
-		
-			local txt = i .. ". " .. name .. " [" .. team .. "] with " .. x.v .. " damage to the jailers"
-			textList[i]= txt
-			i = i + 1
-
-		end
-
-		for k,v in pairs(textList) do
-			local text = loveframes.Create("text")
-			text:SetText(v) 
-			lowerList:AddItem(text)
-		end
-
-	end,
 	
 	onDieBoth = function (self)
 		the.gridIndexMovable:removeObject(self)
@@ -397,6 +283,13 @@ Barrier = Animation:extend
 	end,
 	
 	onUpdateLocal = function (self, elapsed)
+	
+		-- move back into map if outside
+		local px,py = self.x+self.width/2, self.y+self.height/2
+		if px < 0 or px > config.map_width or py < 0 or py > config.map_height then
+			local dx,dy = vector.fromToWithLen(px,py,config.map_width/2,config.map_height/2,200)
+			self.x, self.y = self.x+dx,self.y+dy
+		end
 	
 		-- refocus needed?
 		if love.timer.getTime() - self.last_refocus_time > self.refocus_timeout then
@@ -536,6 +429,7 @@ Barrier = Animation:extend
 		if self.snared then self.charDebuffDisplay.snared = "snared" else self.charDebuffDisplay.snared = "" end			
 		if self.powerblocked then self.charDebuffDisplay.powerblocked = "pb'ed" else self.charDebuffDisplay.powerblocked = "" end	
 		if self.dmgModified > config.dmgUnmodified then self.charDebuffDisplay.exposed = "exposed" else self.charDebuffDisplay.exposed = "" end	
-
+		
+		self.xyMonitor:checkAndCall()
 	end,	
 }

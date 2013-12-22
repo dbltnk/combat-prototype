@@ -111,7 +111,7 @@ GameView = View:extend
 		local mapIdx = 1 + (network.seed % config.numberOfMaps)		
 		if config.mapNumber ~= 0 and config.mapNumber then			
 			mapIdx = config.mapNumber            
-        end
+		end
                 
 		the.mapFile = '/assets/maps/desert/desert' .. mapIdx .. '.lua'
                 print("using map", the.mapFile)
@@ -124,7 +124,8 @@ GameView = View:extend
 		
 		-- first client -> setup "new" world
 		if is_server then
-			PhaseManager:new{}
+		    PhaseManager:new{}
+		    Score:new{}
 		end
 		
 		self.collision.visible = false
@@ -348,7 +349,7 @@ GameView = View:extend
 		profile.start("update.displace")
 		
 		local characterDisplaceRange = 100
-		-- xxx
+		
 		for dummy,v in pairs(the.targetDummies) do
 			profile.start("update.displace.collision") self.gridIndexCollision:visitInRange(dummy.x, dummy.y, characterDisplaceRange, function(o) o:displace(dummy) end) profile.stop()
 			profile.start("update.displace.landscape") self.landscape:subdisplace(dummy) profile.stop()
@@ -363,14 +364,12 @@ GameView = View:extend
 			profile.start("update.displace.landscape") self.landscape:subdisplace(blocker) profile.stop()
 			profile.start("update.displace.water") self.water:subdisplace(blocker)		 profile.stop()
 		end
-		
-		for character,_ in pairs(the.characters) do
-			if character and character.class ~= "Ghost" then
-				profile.start("update.displace.collision") self.gridIndexCollision:visitInRange(character.x, character.y, characterDisplaceRange, function(o) o:displace(character) end) profile.stop()
-				profile.start("update.displace.landscape") self.landscape:subdisplace(character) profile.stop()
-				profile.start("update.displace.water") self.water:subdisplace(character) profile.stop()
-				profile.start("update.displace.characters") self.gridIndexMovable:visitInRange(character.x, character.y, characterDisplaceRange, function(o) o:displace(character) end) profile.stop()
-			end
+	
+		if the.player and the.player.class ~= "Ghost" then
+			profile.start("update.displace.collision") self.gridIndexCollision:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) o:displace(the.player) end) profile.stop()
+			profile.start("update.displace.landscape") self.landscape:subdisplace(the.player) profile.stop()
+			profile.start("update.displace.water") self.water:subdisplace(the.player) profile.stop()
+			profile.start("update.displace.characters") self.gridIndexMovable:visitInRange(the.player.x, the.player.y, characterDisplaceRange, function(o) o:displace(the.player) end) profile.stop()
 		end
 		
 		if the.barrier then			
@@ -410,7 +409,7 @@ GameView = View:extend
 		
 		if config.show_profile_info then profile.print() end
 		profile.clear()
-    end,	
+	end,	
 
 	resyncAllLocalObjects = function (self)
 		local s,c = 0,0
@@ -484,11 +483,13 @@ GameView = View:extend
 					print("new player send objects#############")
 					self:resyncAllLocalObjects();
 					print("DONE new player send objects#############")
+					showChatText("SYSTEM", "player joined the game")
 				elseif m.cmd == "disconnect" then
 					print("DISCONNECTED BY SERVER")
 					os.exit()
 				elseif m.cmd == "left" then
 					-- player left so kill all objects from the player
+					showChatText("SYSTEM", "player left the game")
 					for oid,obj in pairs(object_manager.objects) do
 						--~ print("LEFT", oid, obj.owner, m.id)
 						if obj.owner == m.id then

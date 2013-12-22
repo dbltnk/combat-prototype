@@ -4,18 +4,18 @@ PhaseManager = Sprite:extend
 {
 	class = "PhaseManager",
 
-	props = {"gameId", "x", "y", "width", "height", "phase", "round", "round_start_time", "round_end_time", "next_xp_reset_time"},
-	sync_low = {"gameId", "phase", "round", "round_start_time", "round_end_time", "next_xp_reset_time"},
+	props = {"gameId", "x", "y", "width", "height", "phase", "round", "round_start_time", "round_end_time", "next_xp_reset_time", "phaseCounter"},
+	sync_low = {"gameId", "phase", "round", "round_start_time", "round_end_time", "next_xp_reset_time", "phaseCounter"},
 	phase = "init_needed", -- "init_needed", "warmup", "playing", "after"
 	round = 0,
 	owner = 0,
-	
+	phaseCounter = 0,
+
 	gameId = 0,
 	
 	round_start_time = 0,
 	next_xp_reset_time = 0,
 	round_end_time = 0,
-	highscore_displayed = false,
 
 	width = 1,
 	height = 1,
@@ -101,11 +101,11 @@ PhaseManager = Sprite:extend
 				self:changePhaseToAfter()
 				track("game_end", the.barrier and the.barrier.alive == false)
 				network.send({channel = "server", cmd = "game_end"})
-				if the.barrier then
-					for team, points in pairs(the.barrier.teamscore) do
+				if the.score then
+					for team, points in pairs(the.score.teamscore) do
 						track("game_end_score_team", team, points)
 					end
-					for oid, points in pairs(the.barrier.highscore) do
+					for oid, points in pairs(the.score.highscore) do
 						local name = object_manager.get_field(oid, "name", "?")
 						local team = object_manager.get_field(oid, "team", "?")
 						track("game_end_score_player", oid, name, team, points)
@@ -118,11 +118,11 @@ PhaseManager = Sprite:extend
 				self:changePhaseToAfter()
 				track("game_end", the.barrier and the.barrier.alive == true)
 				network.send({channel = "server", cmd = "game_end"})
-				if the.barrier then
-					for team, points in pairs(the.barrier.teamscore) do
+				if the.score then
+					for team, points in pairs(the.score.teamscore) do
 						track("game_end_score_team", team, points)
 					end
-					for oid, points in pairs(the.barrier.highscore) do
+					for oid, points in pairs(the.score.highscore) do
 						local name = object_manager.get_field(oid, "name", "?")
 						local team = object_manager.get_field(oid, "team", "?")
 						track("game_end_score_player", oid, name, team, points)
@@ -150,14 +150,6 @@ PhaseManager = Sprite:extend
 
 	onUpdateBoth = function (self, elapsed)
 		the.app.view.game_start_time = self.round_start_time
-		
-		if self.phase == "after" then
-			if self.highscore_displayed == false then
-				local text = "The players lost, here's how you did:"
-				the.barrier:showHighscore(text)
-				self.highscore_displayed = true
-			end
-		end
 	end,
 	
 	onDieBoth = function (self)
@@ -198,17 +190,13 @@ PhaseManager = Sprite:extend
 	receiveBoth = function (self, message_name, ...)
 		print("############ receiveBoth", message_name)
 		if message_name == "barrier_died" then
-			if self.highscore_displayed == false then
-				local text = "The players won, here's how you did:"
-				the.barrier:showHighscore(text)
-				self.highscore_displayed = true
-			end
 		elseif message_name == "reset_game" then
 			switchToGhost()
 			if localconfig.spectator == false then switchToPlayer() end
 		elseif message_name == "set_phase" then
 			local phase_name = ...
-			if the.barrier and phase_name == "warmup" then the.barrier:hideHighscore() end
+			if the.score and phase_name == "warmup" then the.score:hideHighscore() end
+			if the.score and phase_name == "after" then the.score:showHighscore() end
 		elseif message_name == "ghost_all_players" then
 			switchToGhost()
 		end
@@ -221,11 +209,18 @@ PhaseManager = Sprite:extend
 			local l = object_manager.find_where(function(oid, o) 
 				return o.class and NetworkSyncedObjects[o.class]
 			end)
-			for _,o in pairs(l) do o:die() end
-			
+			for _,o in pairs(l) do 
+			    print("KILL", o.class, o.oid)
+			    o:die()
+			end
+		
 			-- recreate map objects
-                        print("MAP", the.mapFile)
+			print("MAP", the.mapFile)
 			the.app.view:loadMap(the.mapFile, function (o) return o.name and NetworkSyncedObjects[o.name] end)
+
+			self:after(1, function()
+			    the.app.view:resyncAllLocalObjects()
+			end)
 		elseif message_name == "force_next_phase" then
 			self:forceNextPhase()
 		end
@@ -233,6 +228,7 @@ PhaseManager = Sprite:extend
 	
 	resetGame = function (self)
 		object_manager.send(self.oid, "reset_game")
+		if the.score then object_manager.send(the.score.oid, "reset_game") end
 	end,
 	
 	ghostAllPlayers = function (self)
@@ -240,9 +236,9 @@ PhaseManager = Sprite:extend
 	end,
 	
 	changePhaseToWarmup = function (self)
+		self.phaseCounter = self.phaseCounter + 1
 		self.round_start_time = network.time + config.warmupTime
 		self.round_end_time = self.round_start_time  + config.roundTime
-		self.highscore_displayed = false
 		self.phase = "warmup"
 		object_manager.send(self.oid, "set_phase", self.phase)
 		self.round = self.round + 1
@@ -251,6 +247,7 @@ PhaseManager = Sprite:extend
 	end,
 	
 	changePhaseToPlaying = function (self)
+		self.phaseCounter = self.phaseCounter + 1
 		the.lineOfSight.rebuildCollision = true
 		self.phase = "playing"	
 		the.lineOfSight:reset()
@@ -264,6 +261,7 @@ PhaseManager = Sprite:extend
 	end,
 	
 	changePhaseToAfter = function (self)
+		self.phaseCounter = self.phaseCounter + 1
 		self.phase = "after"
 		object_manager.send(self.oid, "set_phase", self.phase)
 		print("changePhaseToAfter", self.phase, self.round)	

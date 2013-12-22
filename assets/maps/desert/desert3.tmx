@@ -229,9 +229,24 @@
   <object name="Cover" x="1964" y="1485" width="326" height="101"/>
   <object name="Cover" x="1867" y="712" width="74" height="373"/>
   <object name="Cover" x="1955" y="418" width="150" height="131"/>
-  <object name="respawnpoint" x="1312" y="364">
+  <object name="respawnpoint1" x="1312" y="364">
    <properties>
-    <property name="_the" value="respawnpoint"/>
+    <property name="_the" value="respawnpoint1"/>
+   </properties>
+  </object>
+  <object name="respawnpoint2" x="3112" y="748">
+   <properties>
+    <property name="_the" value="respawnpoint2"/>
+   </properties>
+  </object>
+  <object name="respawnpoint3" x="2628" y="3060">
+   <properties>
+    <property name="_the" value="respawnpoint3"/>
+   </properties>
+  </object>
+  <object name="respawnpoint4" x="620" y="2740">
+   <properties>
+    <property name="_the" value="respawnpoint4"/>
    </properties>
   </object>
  </objectgroup>

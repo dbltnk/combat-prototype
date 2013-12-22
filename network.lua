@@ -106,7 +106,7 @@ function network.update_lowest_client_id ()
 		l = math.min(l or id, id)
 		network.connected_client_count = network.connected_client_count + 1
 	end
-	print("UPDATE LOWEST",l)
+	print("UPDATE MASTER",l)
 	network.lowest_client_id = l
 end
 
@@ -254,7 +254,7 @@ function network.update (dt, msToWaitForMessages)
 			"IN " .. math.floor(stats.in_bytes / 1024) .. " k/s " .. stats.in_messages .. " m/s " .. in_msg_size .. " b\n" ..
 			"OUT " .. math.floor(stats.out_bytes / 1024) .. " k/s " .. stats.out_messages .. " m/s " .. out_msg_size .. " b\n" ..
 			"LAG " .. network.lag .. " LOSS SEND " .. tools.floor1(network.loss_send) .. " RECV " .. tools.floor1(network.loss_recv) .. "\n" ..
-			"LOWEST " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
+			"MASTER " .. (network.client_id == network.lowest_client_id and "yes" or "no") .. 
 				" OUTBUFF " .. out_buff:len() .. " REQS " .. network.open_request_count
 				 --~ .. "\n" ..
 			--~ "ZONES " .. json.encode(the.player and the.player.zones or {})

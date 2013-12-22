@@ -226,13 +226,12 @@ action_definitions = {
 		cast_particle_color = color_scythe,		
 		
 		application = {
-			target_selection = {target_selection_type = "projectile", range = 400, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_harpoon.png"},
+			target_selection = {target_selection_type = "projectile", range = 800, speed = 600, ae_size = 0, ae_targets = 0, piercing_number = 1,  gfx = "/assets/graphics/action_projectiles/scythe_harpoon.png"},
 			effects = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 50, piercing_number = 1, explosion_color = color_scythe},
 					effects = {
 						{effect_type = "damage", str = 25},
-						{effect_type = "stun", duration = 0.2},
 						{effect_type = "runspeed", duration = 6, str = config.walkspeed / 2},						
 						{effect_type = "moveToMe"},	
 					},
@@ -363,8 +362,8 @@ action_definitions = {
 		icon = nil,
 		sound = nil,
 		cast_time = 1.5,
-		timeout = 9,
-		energy = 40,
+		timeout = 15,
+		energy = 50,
 		on_the_run =  false,
 		cast_particle_color = color_staff,		
 		
@@ -771,7 +770,7 @@ action_definitions = {
 				{effect_type = "spawn", application = {
 					target_selection = {target_selection_type = "ae", range = 150, piercing_number = 20, explosion_color = color_splint_mail},
 					effects = {
-						{effect_type = "transfer", eff = 1, ticks = 1, duration = .1, str = 100}
+						{effect_type = "transfer", eff = -0.5, ticks = 1, duration = .1, str = 75}
 					},
 				}},
 			},	

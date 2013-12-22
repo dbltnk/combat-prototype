@@ -2275,28 +2275,6 @@ return {
           }
         },
         {
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 832,
-          y = 1312,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 564,
-          y = 1351,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
           name = "Cover",
           type = "",
           shape = "rectangle",
@@ -2475,7 +2453,7 @@ return {
           }
         },
         {
-          name = "respawnpoint",
+          name = "respawnpoint1",
           type = "",
           shape = "rectangle",
           x = 2871,
@@ -2484,7 +2462,7 @@ return {
           height = 0,
           visible = true,
           properties = {
-            ["_the"] = "respawnpoint"
+            ["_the"] = "respawnpoint1"
           }
         },
         {
@@ -2598,6 +2576,58 @@ return {
           height = 20,
           visible = true,
           properties = {}
+        },
+        {
+          name = "respawnpoint2",
+          type = "",
+          shape = "rectangle",
+          x = 604,
+          y = 2316,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["_the"] = "respawnpoint2"
+          }
+        },
+        {
+          name = "respawnpoint3",
+          type = "",
+          shape = "rectangle",
+          x = 2229,
+          y = 544,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["_the"] = "respawnpoint3"
+          }
+        },
+        {
+          name = "respawnpoint4",
+          type = "",
+          shape = "rectangle",
+          x = 172,
+          y = 756,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["_the"] = "respawnpoint4"
+          }
+        },
+        {
+          name = "spawnpoint",
+          type = "",
+          shape = "rectangle",
+          x = 704,
+          y = 1305,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["_the"] = "spawnpoint"
+          }
         }
       }
     },
@@ -3168,19 +3198,6 @@ return {
           height = 36,
           visible = true,
           properties = {}
-        },
-        {
-          name = "spawnpoint",
-          type = "",
-          shape = "rectangle",
-          x = 716,
-          y = 1304,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {
-            ["_the"] = "spawnpoint"
-          }
         }
       }
     }

@@ -99,6 +99,7 @@ require 'Projectile'
 require 'GameView'
 require 'TestView'
 require 'PhaseManager'
+require 'Score'
 require 'Footstep'
 require 'Barrier'
 require 'Ressource'
@@ -240,13 +241,7 @@ the.app = App:new
 		--~ end	
 		
 		-- show the highscore table 
-		if loveframes.GetState() == "none" then
-			if the.player and the.barrier then
-				if the.keys:justPressed (localconfig.showHighscore) then the.barrier:showHighscore() end			
-			end
-		else
-			if the.keys:justPressed (localconfig.showHighscore) then the.barrier:showHighscore() end			
-		end
+		if the.keys:justPressed (localconfig.showHighscore) and the.score then the.score:toggleHighscore() end			
 
 		-- resync
 		if the.keys:justPressed ("f7") then the.app.view:resyncAllLocalObjects() end					
@@ -345,6 +340,12 @@ the.app = App:new
 				-- nop
 			else
 				oldDraw(self)
+		
+				if config.draw_collision_info and self.view.gridIndexTargetDummys then
+				    self.view.gridIndexCollision:drawDebug(255,0,0)
+				    self.view.gridIndexMovable:drawDebug(0,255,0)
+				    self.view.gridIndexTargetDummys:drawDebug(0,0,255)
+				end
 			end
 		end		
 		

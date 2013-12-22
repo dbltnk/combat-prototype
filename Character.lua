@@ -66,6 +66,7 @@ Character = Animation:extend
 	coverLocation = nil, 
 	determination = 0,
 	lastUsedSkill = "",
+	respawned = false,
 	
 	xyMonitor = nil,
 	
@@ -211,15 +212,17 @@ Character = Animation:extend
 		-- colored name
 		local nameColor = {0.1, 0.1, 0.1}
 		if self.team == "alpha" then
-			nameColor = config.colorAlpha
+			nameColor = config.teamColors.alpha
 		elseif self.team == "beta" then
-			nameColor = config.colorBeta
+			nameColor = config.teamColors.beta
 		elseif self.team == "gamma" then
-			nameColor = config.colorGamma
+			nameColor = config.teamColors.gamma
 		elseif self.team == "delta" then
-			nameColor = config.colorDelta
+			nameColor = config.teamColors.delta
+		elseif self.team == "dev" then
+			nameColor = config.teamColors.dev
 		else 
-			nameColor = config.colorNeutral
+			nameColor = config.teamColors.neutral
 		end	
 
 		self.nameLevel = NameLevel:new{
@@ -512,8 +515,7 @@ Character = Animation:extend
 		self.xyMonitor = XYMonitor:new{
 			obj = self,
 			onChangeFunction = function(ox,oy, nx,ny)
-				the.gridIndexMovable:removeAt(ox,oy,self)
-				the.gridIndexMovable:insertAt(nx,ny,self)
+				the.gridIndexMovable:moveFromTo(self, ox,oy, nx,ny)
 			end,
 		}
 	end,
@@ -589,6 +591,7 @@ Character = Animation:extend
 			self.incapacitated = false
 			self:unfreezeCasting()
 			self:unfreezeMovement()
+			self.respawned = false
 		end
 	end,
 	
@@ -634,7 +637,20 @@ Character = Animation:extend
 	end,
 		
 	respawn = function (self)
-		self.x, self.y = the.respawnpoint.x, the.respawnpoint.y
+		--self.x, self.y = the.respawnpoint.x, the.respawnpoint.y
+		
+		local randomNumber = math.random(1,4)
+		
+		if randomNumber == 1 then
+			self.x, self.y = the.respawnpoint1.x, the.respawnpoint1.y
+		elseif randomNumber == 2 then
+			self.x, self.y = the.respawnpoint2.x, the.respawnpoint2.y
+		elseif randomNumber == 3 then
+			self.x, self.y = the.respawnpoint3.x, the.respawnpoint3.y
+		else
+			self.x, self.y = the.respawnpoint4.x, the.respawnpoint4.y
+		end
+		
 		--~ self.currentPain = 0
 		--~ self.currentEnergy = 300
 		--~ self:setIncapacitation(false)
@@ -814,7 +830,7 @@ Character = Animation:extend
 		--	print("HEAL", str)
 			self:gainPain(-str, source_oid)
 			object_manager.send(source_oid, "xp", str * config.combatHealXP, CHARACTER_XP_COMBAT)
-			if self.hidden then self.hidden = false self.speedOverride = 0 end			
+			--~ if self.hidden then self.hidden = false self.speedOverride = 0 end			
 		elseif message_name == "inc" then
 			local key, value = ...
 			if self[key] then self[key] = self[key] + value end
@@ -867,8 +883,13 @@ Character = Animation:extend
 							if v ~= self.oid and self.deaths == ownDeaths and 
 								targetDeaths[v] == object_manager.get_field(v, "deaths", -1)
 							then 
-								object_manager.send(v, "damage", strPerTargetPerTick, self.oid) 
-								object_manager.send(self.oid, "heal", eff * strPerTargetPerTick, self.oid) 
+								if eff > 0 then
+									object_manager.send(v, "damage", strPerTargetPerTick, self.oid) 
+									object_manager.send(self.oid, "heal", eff * strPerTargetPerTick, self.oid) 
+								else
+									object_manager.send(v, "damage", math.abs(eff) * strPerTargetPerTick, self.oid) 
+									object_manager.send(self.oid, "heal", strPerTargetPerTick, self.oid) 								
+								end
 							end
 						end
 					end
@@ -881,7 +902,7 @@ Character = Animation:extend
 						self:unfreezeMovement()
 						self.rooted = false
 					end
-					if self.hidden then self.hidden = false self.speedOverride = 0 end						
+					--~ if self.hidden then self.hidden = false self.speedOverride = 0 end						
 				end)				
 			end		
 		elseif message_name == "damage_over_time" then
@@ -1012,7 +1033,8 @@ Character = Animation:extend
 			self.x = x
 			self.y = y
 		elseif message_name == "gank" then
-			if self.incapacitated == true then 
+			if self.incapacitated == true and not self.respawned then 
+				self.respawned = true
 				self:respawn() 
 			end
 		elseif message_name == "sneak" then
@@ -1121,12 +1143,12 @@ Character = Animation:extend
 		end
 		
 		-- or when you are affected by crowd control
-		if self.determination > 0 then regenerating = false end
+		if self.determination > 0 and self.incapacitated == false then regenerating = false end
 		
 		-- to do: no regeneration when someone has attacked you recently
 		
 		if self.incapacitated then
-			if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed / 2 end
+			self.currentPain = self.currentPain - self.maxPain / 2 / (config.getUpTime + config.getUpTimeAddedPerLevel * self.level) * elapsed
 		else
 			if regenerating == true then self.currentPain = self.currentPain - config.healthreg * elapsed end
 		end	
