@@ -39,7 +39,7 @@ config.combatHealXP = 0.07 -- in % of damage / heal done
 config.crowdControlXP = 0.15 -- in % of duration in seconds
 config.ressourceQualityTable = {0.5, 1, 1.5, 3}
 config.numberOfMaps = 4
-config.mapNumber = 1 -- 0 means random
+config.mapNumber = 0 -- 0 means random
 
 -- tracking
 config.trackingOverTimeTimeout = 15
