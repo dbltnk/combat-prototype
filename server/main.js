@@ -310,7 +310,7 @@ server.on('connect', function(peer, data) {
 
 	clients_count = clients_count + 1;
 	
-	client = {};
+	var client = {};
 	client.zones = {};
 	client.id = client_id;
 	client.peer = peer;
