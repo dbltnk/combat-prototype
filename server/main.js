@@ -326,7 +326,7 @@ server.on('connect', function(peer, data) {
 	send_to_one({time: os.uptime(), seed: seed, channel: "server", ids: ids, cmd: "id", id: client.id, first: clients_count == 1, }, client);
 					
 	setTimeout(function() {
-	    send_to_one({channel: "chat", cmd: "text", from: "SERVER", text: config.welcomeMessage, time: os.uptime()}, client, reliable);
+	    send_to_one({channel: "chat", cmd: "text", from: "SERVER", text: config.welcomeMessage, time: os.uptime()}, client);
 	}, 3000);
 
 	updateOnlineStats();
