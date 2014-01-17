@@ -3,6 +3,8 @@ this.adminPassword = "lala";
 
 this.webPort = 12323;
 
+this.welcomeMessage = "Welcome!";
+
 this.accounts = {
 	// name: "key",
 };
