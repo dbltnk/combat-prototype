@@ -1,6 +1,6 @@
 ## About this repository
 
-This is the combat prototype for our upcoming Sandbox PvP game "Das Tal". It's a very rough and volatile in-progress draft of what we plan to make into the core gameplay of the full game. Feel free to play the game, check out the source and give us feedback on it via <alexander.zacher@googlemail.com>.
+This is the combat prototype for our upcoming Sandbox PvP game "Das Tal". It's a very rough and volatile in-progress draft of what we plan to make into the core gameplay of the full game. Feel free to play the game, check out the source and give us feedback on it via <alexander.zacherl@googlemail.com>.
 
 ## How to play the game
 
